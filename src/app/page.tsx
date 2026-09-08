@@ -146,18 +146,18 @@ const modelCategoryCounts = [
 ];
 
 const devTooling = [
-  { icon: Network,        title: "136,500+ MCP Servers & Skills",    desc: "Connect remote SSE and stdio Model Context Protocol servers (GitHub, Postgres, Slack, Brave) or expose Agent Hub workflows as MCP tools to Cursor & Claude." },
-  { icon: Workflow,       title: "11,600+ n8n Workflow Library",      desc: "Browse and import community n8n workflows directly into visual Agent Hub graphs with automatic node and parameter translation." },
-  { icon: Sparkles,       title: "290+ Dify.ai AI Blueprints",        desc: "Import Dify.ai DSL YAML and workflow templates directly into multi-agent canvas graphs with 1-click execution." },
-  { icon: Globe,          title: "2,500+ OpenAPI & REST Tool Hub",    desc: "Browse public APIs (Google, Stripe, Azure, AWS, GitHub) from APIs.guru, install 1-click free tool packs, or import any Swagger/OpenAPI URL." },
-  { icon: LayoutTemplate, title: "Auto-Layout & Snap Grid",           desc: "One click runs layered BFS auto-layout over any hand-built graph, with snap-to-grid guides so complex multi-agent designs stay immaculate." },
-  { icon: Braces,         title: "Monaco Prompt Editor & AI Optimizer",desc: "Monaco prompt editor with {{ results.node.field }} autocomplete, live token-count feedback, and 1-click AI prompt prompt engineering." },
-  { icon: GitCompare,     title: "Visual Version Diffing",            desc: "Side-by-side visual diff of two graph versions — nodes added/removed, edges rerouted — with instant one-click rollback." },
-  { icon: Boxes,          title: "Sub-Graphs & Macros",               desc: "Collapse any complex agent branch into a reusable component node with typed inputs and outputs — nest graphs up to 8 levels deep." },
-  { icon: Palette,        title: "Persisted Canvas Themes",           desc: "Neon/cyberpunk default, graphite minimal, and high-contrast themes — persisted per user with full responsive dark-mode support." },
-  { icon: Link2,          title: "Shareable Read-Only Snapshots",     desc: "Render any graph and its live trace as an embeddable, read-only snapshot link — perfect for documentation, PR reviews, or Slack." },
-  { icon: Terminal,       title: "Deterministic Step Replay",         desc: "Persist every step response and replay past executions with exact recorded outputs for non-LLM nodes to quickly debug logic branches." },
-  { icon: Eye,            title: "Ghost-Mode Dry-Run Preview",        desc: "Run the interpreter in fast-forward dry-run against live state — nodes illuminate showing exactly what would happen with zero token spend." },
+  { icon: Network, title: "136,500+ MCP Servers & Skills", desc: "Connect remote SSE and stdio Model Context Protocol servers (GitHub, Postgres, Slack, Brave) or expose Agent Hub workflows as MCP tools to Cursor & Claude." },
+  { icon: Workflow, title: "11,600+ n8n Workflow Library", desc: "Browse and import community n8n workflows directly into visual Agent Hub graphs with automatic node and parameter translation." },
+  { icon: Sparkles, title: "290+ Dify.ai AI Blueprints", desc: "Import Dify.ai DSL YAML and workflow templates directly into multi-agent canvas graphs with 1-click execution." },
+  { icon: Globe, title: "2,500+ OpenAPI & REST Tool Hub", desc: "Browse public APIs (Google, Stripe, Azure, AWS, GitHub) from APIs.guru, install 1-click free tool packs, or import any Swagger/OpenAPI URL." },
+  { icon: LayoutTemplate, title: "Auto-Layout & Snap Grid", desc: "One click runs layered BFS auto-layout over any hand-built graph, with snap-to-grid guides so complex multi-agent designs stay immaculate." },
+  { icon: Braces, title: "Monaco Prompt Editor & AI Optimizer", desc: "Monaco prompt editor with {{ results.node.field }} autocomplete, live token-count feedback, and 1-click AI prompt prompt engineering." },
+  { icon: GitCompare, title: "Visual Version Diffing", desc: "Side-by-side visual diff of two graph versions — nodes added/removed, edges rerouted — with instant one-click rollback." },
+  { icon: Boxes, title: "Sub-Graphs & Macros", desc: "Collapse any complex agent branch into a reusable component node with typed inputs and outputs — nest graphs up to 8 levels deep." },
+  { icon: Palette, title: "Persisted Canvas Themes", desc: "Neon/cyberpunk default, graphite minimal, and high-contrast themes — persisted per user with full responsive dark-mode support." },
+  { icon: Link2, title: "Shareable Read-Only Snapshots", desc: "Render any graph and its live trace as an embeddable, read-only snapshot link — perfect for documentation, PR reviews, or Slack." },
+  { icon: Terminal, title: "Deterministic Step Replay", desc: "Persist every step response and replay past executions with exact recorded outputs for non-LLM nodes to quickly debug logic branches." },
+  { icon: Eye, title: "Ghost-Mode Dry-Run Preview", desc: "Run the interpreter in fast-forward dry-run against live state — nodes illuminate showing exactly what would happen with zero token spend." },
 ];
 
 const faqItems = [
@@ -210,7 +210,7 @@ export default function LandingPage() {
             >
               <span className="text-[var(--text-primary)] inline-block">VISUAL MULTI&#8209;AGENT</span>
               <br />
-              <span className="text-cyan-400 [text-shadow:0_0_28px_rgba(34,211,238,0.4)] inline-block">ORCHESTRATION STUDIO</span>
+              <span className="text-cyan-400 [text-shadow:0_0_28px_rgba(34,211,238,0.4)] inline-block">ORCHESTRATION HUB</span>
             </h1>
             <div className="space-y-3 max-w-3xl font-sans text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
               <p>
@@ -241,10 +241,10 @@ export default function LandingPage() {
             style={{ animationDelay: "280ms", fontFamily: "'VT323', monospace" }}
           >
             {[
-              { label: "100% Zero-Key Public APIs",         color: "text-emerald-400" },
-              { label: "Open-Source Self-Hostable",          color: "text-cyan-400" },
-              { label: "11.6k+ n8n & 290+ Dify Library",    color: "text-blue-400" },
-              { label: "Idempotent Single-Use Tokens",       color: "text-amber-400" },
+              { label: "100% Zero-Key Public APIs", color: "text-emerald-400" },
+              { label: "Open-Source Self-Hostable", color: "text-cyan-400" },
+              { label: "11.6k+ n8n & 290+ Dify Library", color: "text-blue-400" },
+              { label: "Idempotent Single-Use Tokens", color: "text-amber-400" },
               { label: "28+ Free LLM Models (OpenRouter & Groq)", color: "text-sky-400" },
             ].map(({ label, color }) => (
               <span key={label} className={`flex items-center gap-1.5 ${color}`}>
@@ -266,10 +266,10 @@ export default function LandingPage() {
           ═══════════════════════════════════════════════════════ */}
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {[
-          { value: "28+",     label: "Native Canvas Node Types" },
-          { value: "148K+",   label: "MCP, n8n & Dify Ecosystem Tools" },
-          { value: "100%",    label: "Zero-Key Free & Self-Hosted Stack" },
-          { value: "28+ FREE",label: "Multi-Provider LLM Models (512k Ctx)" },
+          { value: "28+", label: "Native Canvas Node Types" },
+          { value: "148K+", label: "MCP, n8n & Dify Ecosystem Tools" },
+          { value: "100%", label: "Zero-Key Free & Self-Hosted Stack" },
+          { value: "28+ FREE", label: "Multi-Provider LLM Models (512k Ctx)" },
         ].map((stat, i) => (
           <Reveal key={stat.label} delay={i * 80}>
             <div className="bg-[var(--surface-raised)] rounded-md border border-[var(--border-subtle)] shadow-card p-6 space-y-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated hover:border-[var(--border-strong)] text-center sm:text-left">
@@ -601,10 +601,10 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {[
-            { label: "GHOST PREVIEW",   accent: "text-sky-600 dark:text-sky-400", chipBg: "bg-sky-50 dark:bg-sky-950/40", hover: "hover:border-sky-200 dark:hover:border-sky-800/40", icon: Eye,       title: "Zero-Token Dry Run",      desc: "Run the interpreter in fast-forward against live state — nodes light up showing exactly what path a run would take without writing anything or spending tokens." },
-            { label: "LATENCY HEATMAP", accent: "text-amber-600 dark:text-amber-400", chipBg: "bg-amber-50 dark:bg-amber-950/40", hover: "hover:border-amber-200 dark:hover:border-amber-800/40", icon: Gauge,     title: "Per-Node Cost Metrics",    desc: "Per-node latency, token, and dollar costs rendered straight onto the canvas. Toggle heatmap mode to spot slow or expensive branches at a glance." },
-            { label: "TIME SCRUBBER",   accent: "text-violet-600 dark:text-violet-400", chipBg: "bg-violet-50 dark:bg-violet-950/40", hover: "hover:border-violet-200 dark:hover:border-violet-800/40", icon: TimerReset, title: "1×–8× Speed Playback",    desc: "A timeline scrubber replays any past execution — nodes glow and dim in sync with adjustable playback speed so you can debug divergent paths." },
-            { label: "BUDGET CAPS",     accent: "text-emerald-600 dark:text-emerald-400", chipBg: "bg-emerald-50 dark:bg-emerald-950/40", hover: "hover:border-emerald-200 dark:hover:border-emerald-800/40", icon: Wallet,    title: "Hard Cost Limits",        desc: "Set max cost, token, and step caps per node. The interpreter stops runaway agents before unexpected bills occur." },
+            { label: "GHOST PREVIEW", accent: "text-sky-600 dark:text-sky-400", chipBg: "bg-sky-50 dark:bg-sky-950/40", hover: "hover:border-sky-200 dark:hover:border-sky-800/40", icon: Eye, title: "Zero-Token Dry Run", desc: "Run the interpreter in fast-forward against live state — nodes light up showing exactly what path a run would take without writing anything or spending tokens." },
+            { label: "LATENCY HEATMAP", accent: "text-amber-600 dark:text-amber-400", chipBg: "bg-amber-50 dark:bg-amber-950/40", hover: "hover:border-amber-200 dark:hover:border-amber-800/40", icon: Gauge, title: "Per-Node Cost Metrics", desc: "Per-node latency, token, and dollar costs rendered straight onto the canvas. Toggle heatmap mode to spot slow or expensive branches at a glance." },
+            { label: "TIME SCRUBBER", accent: "text-violet-600 dark:text-violet-400", chipBg: "bg-violet-50 dark:bg-violet-950/40", hover: "hover:border-violet-200 dark:hover:border-violet-800/40", icon: TimerReset, title: "1×–8× Speed Playback", desc: "A timeline scrubber replays any past execution — nodes glow and dim in sync with adjustable playback speed so you can debug divergent paths." },
+            { label: "BUDGET CAPS", accent: "text-emerald-600 dark:text-emerald-400", chipBg: "bg-emerald-50 dark:bg-emerald-950/40", hover: "hover:border-emerald-200 dark:hover:border-emerald-800/40", icon: Wallet, title: "Hard Cost Limits", desc: "Set max cost, token, and step caps per node. The interpreter stops runaway agents before unexpected bills occur." },
           ].map((card, i) => (
             <Reveal key={card.label} delay={i * 60}>
               <div className={`bg-[var(--surface-raised)] rounded-md border border-[hsl(var(--border))] shadow-card p-5 space-y-3 hover:-translate-y-1 hover:shadow-elevated ${card.hover} transition-all duration-300 h-full flex flex-col`}>
@@ -669,12 +669,12 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
-            { icon: Lock,       accent: "text-amber-400", chipBg: "bg-amber-950/40", hover: "hover:border-amber-800/40", title: "Single-Use Idempotency Tokens", desc: "Every approved write action generates a single-use token, enforced atomically in the database — replays and concurrent duplicates are blocked." },
-            { icon: Database,   accent: "text-cyan-400",  chipBg: "bg-cyan-950/40",  hover: "hover:border-cyan-800/40",  title: "Multi-Tenant Isolation",          desc: "Strict PostgreSQL tenant boundaries isolate skills, versions, graph executions, and approval records per user account." },
-            { icon: Zap,        accent: "text-emerald-400", chipBg: "bg-emerald-950/40", hover: "hover:border-emerald-800/40", title: "Hard Execution Limits",          desc: "Enforces maximum step boundaries and loop cycles to prevent infinite loops, runaway costs, and resource exhaustion." },
-            { icon: RefreshCw,  accent: "text-sky-400",    chipBg: "bg-sky-950/40",    hover: "hover:border-sky-800/40",    title: "Circuit-Breaker Failover",         desc: "A single model failure never stops a run — the router parks the failing provider in adaptive cooldown and transparently moves to the next healthy model." },
-            { icon: Database,   accent: "text-violet-400", chipBg: "bg-violet-950/40", hover: "hover:border-violet-800/40", title: "Atomic Commit Transactions",       desc: "Skill creation, draft rotation, publish, and execution traces commit in atomic transactions — a crash can never orphan data." },
-            { icon: Activity,   accent: "text-blue-400",   chipBg: "bg-blue-950/40",   hover: "hover:border-blue-800/40",   title: "Full Audit Trails",                desc: "Every mutation writes a structured log and audit row (SKILL_PUBLISHED, APPROVAL_GRANTED, RECOVERY_STARTED) traced back to the acting user." },
+            { icon: Lock, accent: "text-amber-400", chipBg: "bg-amber-950/40", hover: "hover:border-amber-800/40", title: "Single-Use Idempotency Tokens", desc: "Every approved write action generates a single-use token, enforced atomically in the database — replays and concurrent duplicates are blocked." },
+            { icon: Database, accent: "text-cyan-400", chipBg: "bg-cyan-950/40", hover: "hover:border-cyan-800/40", title: "Multi-Tenant Isolation", desc: "Strict PostgreSQL tenant boundaries isolate skills, versions, graph executions, and approval records per user account." },
+            { icon: Zap, accent: "text-emerald-400", chipBg: "bg-emerald-950/40", hover: "hover:border-emerald-800/40", title: "Hard Execution Limits", desc: "Enforces maximum step boundaries and loop cycles to prevent infinite loops, runaway costs, and resource exhaustion." },
+            { icon: RefreshCw, accent: "text-sky-400", chipBg: "bg-sky-950/40", hover: "hover:border-sky-800/40", title: "Circuit-Breaker Failover", desc: "A single model failure never stops a run — the router parks the failing provider in adaptive cooldown and transparently moves to the next healthy model." },
+            { icon: Database, accent: "text-violet-400", chipBg: "bg-violet-950/40", hover: "hover:border-violet-800/40", title: "Atomic Commit Transactions", desc: "Skill creation, draft rotation, publish, and execution traces commit in atomic transactions — a crash can never orphan data." },
+            { icon: Activity, accent: "text-blue-400", chipBg: "bg-blue-950/40", hover: "hover:border-blue-800/40", title: "Full Audit Trails", desc: "Every mutation writes a structured log and audit row (SKILL_PUBLISHED, APPROVAL_GRANTED, RECOVERY_STARTED) traced back to the acting user." },
           ].map((card, i) => (
             <Reveal key={card.title} delay={i * 80}>
               <div className={`bg-[var(--surface-raised)] rounded-md border border-[var(--border-subtle)] shadow-card p-5 space-y-3 hover:-translate-y-1 hover:shadow-elevated ${card.hover} hover:border-[var(--border-strong)] transition-all duration-300 h-full flex flex-col`}>
@@ -744,7 +744,7 @@ export default function LandingPage() {
           {/* Brand */}
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-[10px] bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center">
-              <Sparkles className="h-4 w-4 text-[#0B0F14]" />
+              <Sparkles className="h-4 w-4 text-black" />
             </div>
             <div>
               <div className="font-bold text-sm text-[var(--text-primary)]">Agent Hub</div>
@@ -760,10 +760,10 @@ export default function LandingPage() {
             <div className="space-y-2">
               <div className="font-semibold text-[var(--text-primary)] uppercase tracking-wider text-[10px]">Product</div>
               {[
-                { label: "Canvas",      href: "#canvas" },
+                { label: "Canvas", href: "#canvas" },
                 { label: "Marketplace", href: "#marketplace" },
-                { label: "Models",      href: "#models" },
-                { label: "Tooling",     href: "#tooling" },
+                { label: "Models", href: "#models" },
+                { label: "Tooling", href: "#tooling" },
               ].map(l => (
                 <a key={l.label} href={l.href} className="block text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors">{l.label}</a>
               ))}
@@ -771,9 +771,9 @@ export default function LandingPage() {
             <div className="space-y-2">
               <div className="font-semibold text-[var(--text-primary)] uppercase tracking-wider text-[10px]">Platform</div>
               {[
-                { label: "Open Source",   href: "#opensource" },
-                { label: "Comparison",    href: "#comparison" },
-                { label: "Guardrails",    href: "#guardrails" },
+                { label: "Open Source", href: "#opensource" },
+                { label: "Comparison", href: "#comparison" },
+                { label: "Guardrails", href: "#guardrails" },
                 { label: "Runtime Intel", href: "#runtime-intel" },
               ].map(l => (
                 <a key={l.label} href={l.href} className="block text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors">{l.label}</a>
@@ -782,10 +782,10 @@ export default function LandingPage() {
             <div className="space-y-2">
               <div className="font-semibold text-[var(--text-primary)] uppercase tracking-wider text-[10px]">Dashboard</div>
               {[
-                { label: "Agent Canvas",  href: "/dashboard/canvas" },
+                { label: "Agent Canvas", href: "/dashboard/canvas" },
                 { label: "Skills Studio", href: "/dashboard/skills" },
                 { label: "Tool Registry", href: "/dashboard/tools" },
-                { label: "Settings",      href: "/dashboard/settings" },
+                { label: "Settings", href: "/dashboard/settings" },
               ].map(l => (
                 <Link key={l.label} href={l.href} className="block text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors">{l.label}</Link>
               ))}
@@ -793,8 +793,8 @@ export default function LandingPage() {
             <div className="space-y-2">
               <div className="font-semibold text-[var(--text-primary)] uppercase tracking-wider text-[10px]">Resources</div>
               {[
-                { label: "FAQ",           href: "#faq" },
-                { label: "Dashboard",     href: "/dashboard" },
+                { label: "FAQ", href: "#faq" },
+                { label: "Dashboard", href: "/dashboard" },
               ].map(l => (
                 <Link key={l.label} href={l.href} className="block text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors">{l.label}</Link>
               ))}

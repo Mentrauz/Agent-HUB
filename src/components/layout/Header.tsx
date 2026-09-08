@@ -50,7 +50,7 @@ export function Header() {
     <>
       <header
         className={clsx(
-          "sticky top-0 z-40 bg-[var(--surface-raised)]/90 backdrop-blur-md",
+          "sticky top-0 z-40 bg-[var(--surface-base)]/80 backdrop-blur-md",
           "border-b border-[hsl(var(--border))]",
           "text-[var(--text-primary)] transition-all duration-200",
           scrolled && "header-scrolled"
