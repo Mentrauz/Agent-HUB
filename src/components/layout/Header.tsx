@@ -6,8 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   SignInButton,
   SignUpButton,
-  SignedIn,
-  SignedOut,
+  Show,
   UserButton,
 } from "@clerk/nextjs";
 import { useTheme } from "next-themes";
@@ -137,7 +136,7 @@ export function Header() {
               </button>
             )}
 
-            <SignedOut>
+            <Show when="signed-out">
               <div className="flex items-center gap-2">
                 <SignInButton mode="modal">
                   <button
@@ -172,11 +171,11 @@ export function Header() {
                   </button>
                 </SignUpButton>
               </div>
-            </SignedOut>
+            </Show>
 
-            <SignedIn>
-              <UserButton afterSignOutUrl="/" />
-            </SignedIn>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
           </div>
         </div>
 
@@ -197,7 +196,7 @@ export function Header() {
               </a>
             ))}
             <div className="pt-3 mt-1 border-t border-[hsl(var(--border))] flex flex-col gap-2">
-              <SignedOut>
+              <Show when="signed-out">
                 <SignUpButton mode="modal">
                   <button
                     onClick={() => setLandingMenuOpen(false)}
@@ -216,7 +215,7 @@ export function Header() {
                     Sign In
                   </button>
                 </SignInButton>
-              </SignedOut>
+              </Show>
             </div>
           </nav>
         )}

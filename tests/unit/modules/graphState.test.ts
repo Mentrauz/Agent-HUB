@@ -64,7 +64,7 @@ describe("Agent state graph channels", () => {
 
     const out = await graph.invoke(initialState);
     expect(out.toolCalls).toHaveLength(2);
-    expect(out.toolCalls.map((t) => t.stepNumber)).toEqual([1, 2]);
+    expect(out.toolCalls.map((t: any) => t.stepNumber)).toEqual([1, 2]);
     // Later node results must not clobber earlier ones (merge reducer).
     expect(out.results).toEqual({ step_1: 1, step_2: 2 });
   });

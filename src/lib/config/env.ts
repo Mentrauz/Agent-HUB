@@ -9,7 +9,7 @@ const envSchema = z.object({
   OPENROUTER_API_KEY: z.string().optional(),
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().optional(),
   CLERK_SECRET_KEY: z.string().optional(),
-  NEXTAUTH_SECRET: z.string().min(1, "NEXTAUTH_SECRET must be set in production"),
+  NEXTAUTH_SECRET: z.string().min(1, "NEXTAUTH_SECRET must be set in production").default("dev-only-secret-not-for-production"),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
   /**
    * Bearer token external MCP clients (Cursor, Claude Desktop) present when
@@ -24,7 +24,7 @@ const envSchema = z.object({
    * and auction participants pull manifests from this registry before falling
    * back to the built-in presets.
    */
-  A2A_REGISTRY_URL: z.string().url().optional(),
+  A2A_REGISTRY_URL: z.string().url().optional().or(z.literal("")),
   A2A_REGISTRY_TOKEN: z.string().optional(),
 });
 

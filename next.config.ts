@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
       "lucide-react",
     ],
   },
+  turbopack: {},
   serverExternalPackages: [
     "@langchain/langgraph",
     "@modelcontextprotocol/sdk",

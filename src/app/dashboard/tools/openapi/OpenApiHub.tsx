@@ -21,7 +21,7 @@ import {
   BookOpen,
   Compass,
   ShoppingBag,
-  Github,
+  GitFork,
   Zap,
   X,
   Check,
@@ -42,7 +42,7 @@ const PRESET_ICONS: Record<string, typeof Globe> = {
   BookOpen,
   Compass,
   ShoppingBag,
-  Github,
+  Github: GitFork,
 };
 
 export function OpenApiHub() {

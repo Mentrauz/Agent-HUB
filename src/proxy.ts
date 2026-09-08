@@ -1,4 +1,4 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { clerkMiddleware } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
 // Public routes that bypass Clerk middleware entirely:
@@ -9,13 +9,16 @@ const isPublicRoute = (pathname: string) =>
   pathname.startsWith('/api/mcp/sse') ||
   pathname.startsWith('/api/mcp/messages');
 
-const isProtectedRoute = createRouteMatcher([
-  '/dashboard(.*)',
-  '/executions(.*)',
-  '/versions(.*)',
-  '/approvals(.*)',
-  '/api/(.*)',
-]);
+const protectedPrefixes = [
+  '/dashboard',
+  '/executions',
+  '/versions',
+  '/approvals',
+  '/api',
+];
+
+const isProtectedRoute = (pathname: string) =>
+  protectedPrefixes.some((prefix) => pathname.startsWith(prefix));
 
 export default clerkMiddleware(async (auth, req) => {
   if (isPublicRoute(req.nextUrl.pathname)) {
@@ -29,7 +32,7 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(new URL('/dashboard', req.url))
   }
 
-  if (isProtectedRoute(req)) {
+  if (isProtectedRoute(req.nextUrl.pathname)) {
     await auth.protect()
   }
 })

@@ -739,7 +739,7 @@ function AccountProfileCard({ theme }: { theme?: string }) {
             key={theme}
             routing="hash"
             appearance={{
-              variables:
+              variables: (
                 theme === "light"
                   ? {
                       colorPrimary: "#4f46e5",
@@ -760,7 +760,8 @@ function AccountProfileCard({ theme }: { theme?: string }) {
                       colorInputText: "#ffffff",
                       fontFamily: "JetBrains Mono, monospace",
                       borderRadius: "0.25rem",
-                    },
+                    }
+              ) as any,
               elements: {
                 card: "bg-transparent border-0 shadow-none text-slate-900 dark:text-slate-100 w-full",
                 navbar: "hidden",

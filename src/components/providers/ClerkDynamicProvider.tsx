@@ -105,9 +105,6 @@ export function ClerkDynamicProvider({ children }: { children: React.ReactNode }
   return (
     <ClerkProvider
       appearance={{
-        layout: {
-          unsafe_disableDevelopmentModeWarnings: true,
-        },
         variables: themeConfig.variables,
         elements: themeConfig.elements,
       }}

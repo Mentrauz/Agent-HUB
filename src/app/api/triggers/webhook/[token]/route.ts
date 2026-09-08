@@ -61,10 +61,7 @@ export async function POST(
   }
 }
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ token: string }> }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ token: string }> }) {
   // Support GET webhooks with query parameters
-  return POST(req, { params });
+  return POST(req, props);
 }

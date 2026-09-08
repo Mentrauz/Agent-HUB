@@ -1,17 +1,7 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Bridge for Next's legacy-format configs into ESLint 9 flat config.
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+import nextConfig from "eslint-config-next";
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...nextConfig,
   {
     ignores: [
       ".next/**",
@@ -25,6 +15,7 @@ const eslintConfig = [
     ],
   },
   {
+    files: ["**/*.ts", "**/*.tsx"],
     rules: {
       // The codebase deliberately uses `any` in a few typed-boundary spots
       // (Prisma JSON casts, test fakes). Keep the rule on but allow explicit
@@ -38,8 +29,12 @@ const eslintConfig = [
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
 
-      // React 19 + Next 15: we prefer function components; allow the explicit
-      // React import where files rely on `React.ReactNode` types.
+      // React 19 + Next 16: react-hooks compiler rules
+      "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/incompatible-library": "warn",
+      "react-hooks/refs": "warn",
+      "react-hooks/purity": "warn",
+      "react-hooks/static-components": "warn",
       "react/react-in-jsx-scope": "off",
 
       // Hyphenated/underscore file names (page.tsx, route.ts) are standard.

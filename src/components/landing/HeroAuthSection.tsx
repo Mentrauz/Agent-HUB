@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { SignInButton, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, Show } from "@clerk/nextjs";
 import { UserCheck, Sparkles, LogIn, MousePointerClick } from "lucide-react";
 
 /**
@@ -14,12 +14,12 @@ export function HeroAuthSection() {
     <>
       {/* Auth status badge (signed-in only) */}
       <div className="animate-fadeInUp text-xs" style={{ animationDelay: "250ms" }}>
-        <SignedIn>
+        <Show when="signed-in">
           <div className="inline-flex max-w-full items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-800/40 bg-emerald-950/40 text-emerald-400 shadow-sm text-[11px] font-semibold font-sans">
             <UserCheck className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
             <span className="truncate">Authenticated · Workspace Access Granted</span>
           </div>
-        </SignedIn>
+        </Show>
       </div>
 
       {/* CTAs */}
@@ -27,7 +27,7 @@ export function HeroAuthSection() {
         className="animate-fadeInUp flex flex-wrap items-center gap-3 sm:gap-4 pt-2"
         style={{ animationDelay: "300ms" }}
       >
-        <SignedOut>
+        <Show when="signed-out">
           {/* Primary: indigo action button */}
           <SignUpButton mode="modal">
             <button className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm border border-indigo-400/40 shadow-sm hover:shadow-md transition-all cursor-pointer whitespace-nowrap font-sans">
@@ -43,9 +43,9 @@ export function HeroAuthSection() {
               Sign In
             </button>
           </SignInButton>
-        </SignedOut>
+        </Show>
 
-        <SignedIn>
+        <Show when="signed-in">
           <Link
             href="/dashboard"
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm border border-indigo-400/40 shadow-sm hover:shadow-md transition-all cursor-pointer whitespace-nowrap font-sans"
@@ -53,7 +53,7 @@ export function HeroAuthSection() {
             <Sparkles className="h-4 w-4 text-cyan-300" />
             Open Studio Dashboard →
           </Link>
-        </SignedIn>
+        </Show>
 
         {/* Tertiary: live demo link */}
         <a

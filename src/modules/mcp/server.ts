@@ -172,13 +172,13 @@ export class AgentStudioMcpServer {
 
     const tools = await this.listExposedSkillTools();
     for (const tool of tools) {
-      server.registerTool(
+      (server as any).registerTool(
         tool.name,
         {
           description: tool.description,
           inputSchema: jsonSchemaToZod(tool.inputSchema),
         },
-        async (args) => this.runSkillTool(tool, args as Record<string, unknown>)
+        async (args: any) => this.runSkillTool(tool, args as Record<string, unknown>)
       );
     }
     logger.info({ toolCount: tools.length }, "Agent Hub MCP server built");

@@ -122,7 +122,7 @@ export class ExecutionEngine {
 
     try {
       const finalState: AgentState = await withTimeout(
-        this.graph.invoke(initialState, { configurable: { runtime } }),
+        this.graph.invoke(initialState, { configurable: { runtime } } as any),
         this.deps.timeoutMs ?? DEFAULT_TIMEOUT_MS,
         input.signal
       );

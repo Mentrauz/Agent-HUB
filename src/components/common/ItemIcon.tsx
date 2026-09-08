@@ -21,7 +21,7 @@ import {
   Search,
   Boxes,
   ShoppingBag,
-  Github,
+  GitFork,
   Bot,
   Mail,
   FolderTree,
@@ -125,7 +125,7 @@ function getFallbackIcon(
   const query = `${name} ${category} ${tags.join(" ")} ${iconName || ""}`.toLowerCase();
 
   // Name / Keyword Heuristics
-  if (query.includes("github") || query.includes("git")) return Github;
+  if (query.includes("github") || query.includes("git")) return GitFork;
   if (query.includes("postgres") || query.includes("mysql") || query.includes("sql") || query.includes("supabase") || query.includes("database") || query.includes("mongo") || query.includes("db")) return Database;
   if (query.includes("qdrant") || query.includes("pinecone") || query.includes("vector") || query.includes("weaviate") || query.includes("chroma")) return Boxes;
   if (query.includes("weather") || query.includes("forecast") || query.includes("climate") || query.includes("meteo")) return CloudSun;
