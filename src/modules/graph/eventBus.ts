@@ -1,0 +1,266 @@
+/**
+ * In-process execution event bus.
+ *
+ * Graph nodes publish coarse-grained lifecycle events as they run
+ * (node started / completed, edge traversed, execution status change). The
+ * SSE stream route subscribes per execution id and fans them out to the canvas
+ * trace view. In single-instance deployments this is lossless; for horizontally
+ * scaled deployments, the SSE route also replays persisted ExecutionStep rows
+ * on connect so late viewers still see the full trace. To go fully multi-
+ * instance, swap the Map for a Redis pub/sub channel keyed by executionId —
+ * the publish/subscribe surface here is intentionally the only coupling.
+ *
+ * Granular events (tool:call, llm:call, mcp:tool, approval, router:decision,
+ * loop:iteration, parallel:branch) provide detailed trace visibility for
+ * debugging and observability.
+ */
+
+export type GraphNodeStatus = "RUNNING" | "SUCCESS" | "FAILED" | "AWAITING_APPROVAL" | "SKIPPED";
+
+interface ExecutionEventBase {
+  executionId: string;
+  /** Monotonic sequence for ordering on the client. */
+  seq: number;
+  /** Server timestamp (ms epoch). */
+  at: number;
+}
+
+export interface NodeStartedEvent extends ExecutionEventBase {
+  type: "node:start";
+  nodeId: string;
+  nodeLabel: string;
+  nodeType: string;
+}
+
+export interface NodeCompletedEvent extends ExecutionEventBase {
+  type: "node:end";
+  nodeId: string;
+  status: GraphNodeStatus;
+  /** Short summary of the node output for the trace console. */
+  detail?: string;
+  error?: string;
+  /** Wall-clock duration of the node execution (ms) — drives the heatmap. */
+  durationMs?: number;
+}
+
+export interface EdgeTraversedEvent extends ExecutionEventBase {
+  type: "edge:traverse";
+  sourceId: string;
+  targetId: string;
+  /** Persisted edge id (for clients to highlight the exact edge). */
+  edgeId?: string;
+  label?: string;
+}
+
+export interface ExecutionStatusEvent extends ExecutionEventBase {
+  type: "execution:status";
+  status: string;
+}
+
+export interface ExecutionLogEvent extends ExecutionEventBase {
+  type: "log";
+  level: "info" | "warn" | "error";
+  message: string;
+}
+
+// ─── Granular Events ───
+
+export interface ToolCallStartedEvent extends ExecutionEventBase {
+  type: "tool:call:start";
+  nodeId: string;
+  toolName: string;
+  action?: string;
+  input?: unknown;
+}
+
+export interface ToolCallCompletedEvent extends ExecutionEventBase {
+  type: "tool:call:end";
+  nodeId: string;
+  toolName: string;
+  status: "SUCCESS" | "FAILED";
+  output?: unknown;
+  error?: string;
+  durationMs?: number;
+}
+
+export interface LlmCallStartedEvent extends ExecutionEventBase {
+  type: "llm:call:start";
+  nodeId: string;
+  model?: string;
+  promptPreview?: string;
+  tokenEstimate?: number;
+}
+
+export interface LlmCallCompletedEvent extends ExecutionEventBase {
+  type: "llm:call:end";
+  nodeId: string;
+  status: "SUCCESS" | "FAILED";
+  model?: string;
+  inputTokens?: number;
+  outputTokens?: number;
+  durationMs?: number;
+  error?: string;
+}
+
+export interface McpToolStartedEvent extends ExecutionEventBase {
+  type: "mcp:tool:start";
+  nodeId: string;
+  serverId: string;
+  toolName: string;
+  params?: unknown;
+}
+
+export interface McpToolCompletedEvent extends ExecutionEventBase {
+  type: "mcp:tool:end";
+  nodeId: string;
+  serverId: string;
+  toolName: string;
+  status: "SUCCESS" | "FAILED";
+  output?: unknown;
+  error?: string;
+  durationMs?: number;
+}
+
+export interface ApprovalRequestedEvent extends ExecutionEventBase {
+  type: "approval:requested";
+  nodeId: string;
+  reason?: string;
+  action?: string;
+}
+
+export interface ApprovalResolvedEvent extends ExecutionEventBase {
+  type: "approval:resolved";
+  nodeId: string;
+  decision: "APPROVED" | "DENIED";
+  resolvedBy?: string;
+}
+
+export interface RouterDecisionEvent extends ExecutionEventBase {
+  type: "router:decision";
+  nodeId: string;
+  mode: "deterministic" | "ai";
+  chosenLabel: string;
+  reason?: string;
+}
+
+export interface LoopIterationEvent extends ExecutionEventBase {
+  type: "loop:iteration";
+  nodeId: string;
+  iteration: number;
+  maxIterations: number;
+  exited: boolean;
+}
+
+export interface ParallelBranchEvent extends ExecutionEventBase {
+  type: "parallel:branch";
+  nodeId: string;
+  branchNodeId: string;
+  status: "started" | "completed";
+  mode: "map" | "fan-out";
+  branchIndex?: number;
+}
+
+export interface TokenChunkEvent extends ExecutionEventBase {
+  type: "node:token_chunk";
+  nodeId: string;
+  chunk: string;
+  isThinking?: boolean;
+  totalTokens?: number;
+  tokensPerSec?: number;
+}
+
+export interface A2ATaskDelegatedEvent extends ExecutionEventBase {
+  type: "a2a:task:delegated";
+  nodeId: string;
+  agentUrl: string;
+  capability?: string;
+  taskId: string;
+  status: "DELEGATING" | "STREAMING" | "COMPLETED" | "FAILED";
+  inputSummary?: string;
+  resultSummary?: string;
+  durationMs?: number;
+  tokensUsed?: number;
+  error?: string;
+}
+
+export interface A2AMessageEvent extends ExecutionEventBase {
+  type: "a2a:message:exchange";
+  nodeId: string;
+  sender: string;
+  recipient?: string;
+  content: string;
+  turn: number;
+  mode?: string;
+}
+
+export type ExecutionEvent =
+  | NodeStartedEvent
+  | NodeCompletedEvent
+  | EdgeTraversedEvent
+  | ExecutionStatusEvent
+  | ExecutionLogEvent
+  | ToolCallStartedEvent
+  | ToolCallCompletedEvent
+  | LlmCallStartedEvent
+  | LlmCallCompletedEvent
+  | TokenChunkEvent
+  | McpToolStartedEvent
+  | McpToolCompletedEvent
+  | A2ATaskDelegatedEvent
+  | A2AMessageEvent
+  | ApprovalRequestedEvent
+  | ApprovalResolvedEvent
+  | RouterDecisionEvent
+  | LoopIterationEvent
+  | ParallelBranchEvent;
+
+type Listener = (event: ExecutionEvent) => void;
+
+/** Distributive mapped type — keeps each event variant's own fields. */
+type PublishableEvent = {
+  [E in ExecutionEvent as E["type"]]: Omit<E, "executionId" | "seq" | "at">;
+}[ExecutionEvent["type"]];
+
+class ExecutionEventBus {
+  private listeners = new Map<string, Set<Listener>>();
+  private counters = new Map<string, number>();
+
+  /** Subscribe to events for one execution. Returns an unsubscribe fn. */
+  subscribe(executionId: string, listener: Listener): () => void {
+    let set = this.listeners.get(executionId);
+    if (!set) {
+      set = new Set();
+      this.listeners.set(executionId, set);
+    }
+    set.add(listener);
+    return () => {
+      set?.delete(listener);
+      if (set && set.size === 0) this.listeners.delete(executionId);
+    };
+  }
+
+  /** Publish an event to all listeners of one execution. */
+  publish(executionId: string, event: PublishableEvent): void {
+    const listeners = this.listeners.get(executionId);
+    if (!listeners || listeners.size === 0) return;
+
+    const seq = (this.counters.get(executionId) ?? 0) + 1;
+    this.counters.set(executionId, seq);
+    const full: ExecutionEvent = {
+      ...(event as ExecutionEvent),
+      executionId,
+      seq,
+      at: Date.now(),
+    } as ExecutionEvent;
+    for (const listener of listeners) {
+      try {
+        listener(full);
+      } catch {
+        // A slow/stale listener must never break the runtime.
+      }
+    }
+  }
+}
+
+/** Singleton — one process-wide bus shared by the interpreter and SSE routes. */
+export const executionEventBus = new ExecutionEventBus();

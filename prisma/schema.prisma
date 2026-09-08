@@ -1,0 +1,720 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String               @id @default(cuid())
+  email               String               @unique
+  name                String?
+  role                Role                 @default(USER)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  api_keys            ApiKey[]
+  approvals           ApprovalRequest[]
+  auditLogs           AuditLog[]
+  documents           Document[]
+  evalRunReports      EvalRunReport[]
+  executions          Execution[]
+  sentInvitations     Invitation[]
+  mcpServers          McpServer[]
+  openApiIntegrations OpenApiIntegration[]
+  invitedOrgs         OrganizationMember[] @relation("Inviter")
+  memberships         OrganizationMember[]
+  skills              Skill[]
+  tasks               Task[]
+  vaultEntries        VaultEntry[]
+  webhookTriggers     WebhookTrigger[]
+  cronSchedules       CronSchedule[]
+  agentMemories       AgentMemory[]
+
+  @@map("users")
+}
+
+model Skill {
+  id                 String           @id @default(cuid())
+  userId             String
+  name               String
+  purpose            String
+  status             SkillStatus      @default(DRAFT)
+  currentDraftId     String?          @unique
+  publishedVersionId String?          @unique
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  /// Soft-delete timestamp. Non-null means the skill has been deleted.
+  /// Use `where: { deletedAt: null }` on all active-skill queries.
+  deletedAt          DateTime?
+  organizationId     String?
+  versions           SkillVersion[]   @relation("SkillToVersions")
+  webhookTriggers    WebhookTrigger[]
+  cronSchedules      CronSchedule[]
+  organization       Organization?    @relation(fields: [organizationId], references: [id])
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([organizationId])
+  @@map("skills")
+}
+
+model SkillVersion {
+  id                       String      @id @default(cuid())
+  skillId                  String
+  versionNumber            Int
+  status                   SkillStatus @default(DRAFT)
+  inputSchema              Json
+  outputSchema             Json
+  instructions             String
+  examples                 Json
+  allowedTools             Json
+  actionsRequiringApproval Json
+  maxExecutionSteps        Int         @default(10)
+  changelog                String?
+  notes                    String?
+  createdAt                DateTime    @default(now())
+  publishedAt              DateTime?
+  graphDefinition          Json?
+  approvalPolicy           Json?
+  executions               Execution[]
+  skill                    Skill       @relation("SkillToVersions", fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([skillId, versionNumber])
+  @@index([skillId, status])
+  @@map("skill_versions")
+}
+
+model Execution {
+  id                      String            @id @default(cuid())
+  userId                  String
+  /// Nullable: set to NULL when the parent SkillVersion is deleted (onDelete: SetNull).
+  /// Execution history is preserved; use `skillName` for display.
+  skillVersionId          String?
+  status                  ExecutionStatus   @default(PENDING)
+  inputData               Json
+  finalOutput             Json?
+  plannerOutput           Json?
+  provider                String?
+  durationMs              Int?
+  stepCount               Int               @default(0)
+  maxSteps                Int
+  errorMessage            String?
+  startedAt               DateTime          @default(now())
+  completedAt             DateTime?
+  replayedFromExecutionId String?
+  skillName               String?
+  organizationId          String?
+  approvalRequests        ApprovalRequest[]
+  auditLogs               AuditLog[]
+  logs                    ExecutionLog[]
+  steps                   ExecutionStep[]
+  organization            Organization?     @relation(fields: [organizationId], references: [id])
+  replayedFrom            Execution?        @relation("ExecutionReplay", fields: [replayedFromExecutionId], references: [id])
+  replays                 Execution[]       @relation("ExecutionReplay")
+  skillVersion            SkillVersion?     @relation(fields: [skillVersionId], references: [id], onDelete: SetNull)
+  user                    User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  toolCalls               ToolCall[]
+
+  @@index([userId])
+  @@index([skillVersionId])
+  @@index([organizationId])
+  @@index([status])
+  @@index([startedAt])
+  @@index([replayedFromExecutionId])
+  @@map("executions")
+}
+
+model ExecutionLog {
+  id          String    @id @default(cuid())
+  executionId String
+  event       String
+  level       String
+  status      String?
+  durationMs  Int?
+  metadata    Json
+  timestamp   DateTime  @default(now())
+  execution   Execution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+
+  @@index([executionId])
+  @@index([timestamp])
+  @@map("execution_logs")
+}
+
+model ExecutionStep {
+  id            String     @id @default(cuid())
+  executionId   String
+  stepNumber    Int
+  nodeName      String
+  stateSnapshot Json
+  status        StepStatus @default(RUNNING)
+  startedAt     DateTime   @default(now())
+  completedAt   DateTime?
+  execution     Execution  @relation(fields: [executionId], references: [id], onDelete: Cascade)
+  toolCalls     ToolCall[]
+
+  @@unique([executionId, stepNumber])
+  @@map("execution_steps")
+}
+
+model ToolCall {
+  id           String         @id @default(cuid())
+  executionId  String
+  stepId       String?
+  toolName     String
+  action       String
+  inputArgs    Json
+  outputResult Json?
+  status       String
+  errorMessage String?
+  executedAt   DateTime       @default(now())
+  durationMs   Int?
+  execution    Execution      @relation(fields: [executionId], references: [id], onDelete: Cascade)
+  step         ExecutionStep? @relation(fields: [stepId], references: [id])
+
+  @@index([executionId])
+  @@map("tool_calls")
+}
+
+model ApprovalRequest {
+  id              String         @id @default(cuid())
+  executionId     String
+  userId          String
+  toolName        String
+  action          String
+  inputPayload    Json
+  status          ApprovalStatus @default(PENDING)
+  idempotencyKey  String         @unique
+  requestedAt     DateTime       @default(now())
+  respondedAt     DateTime?
+  rejectionReason String?
+  plannerReason   String?
+  skillName       String?
+  execution       Execution      @relation(fields: [executionId], references: [id], onDelete: Cascade)
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([executionId])
+  @@index([status])
+  @@map("approval_requests")
+}
+
+model ApprovalHistory {
+  id          String   @id @default(cuid())
+  approvalId  String
+  executionId String
+  userId      String
+  action      String
+  details     Json
+  timestamp   DateTime @default(now())
+
+  @@index([approvalId])
+  @@index([executionId])
+  @@map("approval_history")
+}
+
+model ToolDefinition {
+  id               String   @id @default(cuid())
+  name             String   @unique
+  displayName      String
+  description      String
+  type             ToolType @default(READ)
+  parameters       Json
+  requiresAuth     Boolean  @default(false)
+  isSystem         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  category         String?
+  requiresApproval Boolean  @default(false)
+
+  @@map("tool_definitions")
+}
+
+model VersionComparison {
+  id         String   @id @default(cuid())
+  userId     String
+  skillId    String
+  versionAId String
+  versionBId String
+  result     Json
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([skillId])
+  @@map("version_comparisons")
+}
+
+model McpServer {
+  id             String          @id @default(cuid())
+  userId         String
+  name           String
+  transport      McpTransport
+  endpointUrl    String?
+  command        String?
+  headers        Json?
+  status         McpServerStatus @default(DISCONNECTED)
+  cachedTools    Json            @default("[]")
+  lastError      String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  organizationId String?
+  organization   Organization?   @relation(fields: [organizationId], references: [id])
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions       McpSession[]
+
+  @@index([userId])
+  @@index([organizationId])
+  @@map("mcp_servers")
+}
+
+model McpSession {
+  id           String     @id @default(cuid())
+  sessionId    String     @unique
+  serverId     String?
+  userId       String?
+  transport    String     @default("SSE")
+  status       String     @default("ACTIVE")
+  metadata     Json?
+  createdAt    DateTime   @default(now())
+  lastActiveAt DateTime   @default(now())
+  expiresAt    DateTime?
+  server       McpServer? @relation(fields: [serverId], references: [id])
+
+  @@index([sessionId])
+  @@index([serverId])
+  @@index([status])
+  @@map("mcp_sessions")
+}
+
+model AuditLog {
+  id             String        @id @default(cuid())
+  userId         String?
+  executionId    String?
+  action         String
+  details        Json
+  ipAddress      String?
+  timestamp      DateTime      @default(now())
+  organizationId String?
+  execution      Execution?    @relation(fields: [executionId], references: [id])
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  user           User?         @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([executionId])
+  @@index([organizationId])
+  @@index([timestamp])
+  @@map("audit_logs")
+}
+
+model OpenApiIntegration {
+  id          String          @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  specUrl     String?
+  rawSpec     Json
+  baseUrl     String
+  authType    OpenApiAuthType @default(NONE)
+  authConfig  Json?
+  endpoints   Json            @default("[]")
+  status      OpenApiStatus   @default(CONNECTED)
+  lastError   String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("openapi_integrations")
+}
+
+model VaultEntry {
+  id             String        @id @default(cuid())
+  userId         String
+  name           String
+  category       VaultCategory @default(API_KEY)
+  key            String
+  value          String
+  iv             String
+  tag            String
+  description    String?
+  tags           String[]      @default([])
+  lastUsedAt     DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  keyVersion     Int           @default(1)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, key])
+  @@index([userId])
+  @@index([organizationId])
+  @@index([keyVersion])
+  @@map("vault_entries")
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  userId      String?
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  dueDate     DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  user        User?        @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("tasks")
+}
+
+model Document {
+  id         String          @id @default(cuid())
+  userId     String?
+  title      String
+  source     String?
+  mimeType   String?         @default("text/plain")
+  content    String
+  metadata   Json            @default("{}")
+  collection String          @default("default")
+  chunkCount Int             @default(0)
+  tokenCount Int?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  chunks     DocumentChunk[]
+  user       User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([collection])
+  @@index([createdAt])
+  @@map("documents")
+}
+
+model DocumentChunk {
+  id               String                 @id @default(cuid())
+  documentId       String
+  chunkIndex       Int
+  content          String
+  metadata         Json                   @default("{}")
+  tokenCount       Int?
+  startOffset      Int?
+  endOffset        Int?
+  embedding        Float[]                @default([])
+  createdAt        DateTime               @default(now())
+  embedding_vector Unsupported("vector")?
+  document         Document               @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@index([chunkIndex])
+  @@index([embedding_vector])
+  @@map("document_chunks")
+}
+
+model EvalRunReport {
+  id           String    @id
+  userId       String?
+  datasetId    String
+  datasetName  String
+  targetType   String
+  targetId     String
+  targetName   String
+  name         String
+  status       String
+  startedAt    DateTime
+  completedAt  DateTime?
+  durationMs   Int
+  overallScore Int
+  passRate     Int
+  /// Full EvalRunReport payload (judgeConfig, summary, verdicts, regressionAlerts).
+  data         Json
+  createdAt    DateTime  @default(now())
+  user         User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([startedAt])
+  @@map("eval_run_reports")
+}
+
+model Organization {
+  id              String               @id @default(cuid())
+  name            String
+  slug            String               @unique
+  plan            String               @default("free")
+  billingEmail    String?
+  settings        Json                 @default("{}")
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  apiKeys         ApiKey[]
+  auditLogs       AuditLog[]
+  customRoles     CustomRole[]
+  executions      Execution[]
+  invitations     Invitation[]
+  mcpServers      McpServer[]
+  members         OrganizationMember[]
+  skills          Skill[]
+  vaultEntries    VaultEntry[]
+  webhookTriggers WebhookTrigger[]
+  cronSchedules   CronSchedule[]
+  agentMemories   AgentMemory[]
+  budgetPolicy    BudgetPolicy?
+
+  @@map("organizations")
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  organizationId String
+  userId         String
+  role           OrgRole      @default(MEMBER)
+  permissions    Json         @default("[]")
+  invitedBy      String?
+  joinedAt       DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  customRoleId   String?
+  customRole     CustomRole?  @relation(fields: [customRoleId], references: [id], onDelete: SetNull)
+  inviter        User?        @relation("Inviter", fields: [invitedBy], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([userId])
+  @@map("organization_members")
+}
+
+model Invitation {
+  id             String       @id @default(cuid())
+  organizationId String
+  email          String
+  role           OrgRole      @default(MEMBER)
+  token          String       @unique
+  invitedBy      String
+  expiresAt      DateTime
+  acceptedAt     DateTime?
+  createdAt      DateTime     @default(now())
+  inviter        User         @relation(fields: [invitedBy], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([email, organizationId])
+  @@map("invitations")
+}
+
+model CustomRole {
+  id             String               @id @default(cuid())
+  organizationId String
+  name           String
+  description    String?
+  permissions    Json                 @default("[]")
+  isSystem       Boolean              @default(false)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  members        OrganizationMember[]
+
+  @@unique([organizationId, name])
+  @@index([organizationId])
+  @@map("custom_roles")
+}
+
+model ApiKey {
+  id             String       @id @default(cuid())
+  organizationId String
+  name           String
+  keyHash        String       @unique
+  keyPrefix      String
+  scopes         Json         @default("[]")
+  expiresAt      DateTime?
+  lastUsedAt     DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  createdBy      String
+  users          User         @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([keyPrefix])
+  @@index([organizationId])
+  @@map("api_keys")
+}
+
+model WebhookTrigger {
+  id              String        @id @default(cuid())
+  userId          String
+  skillId         String
+  name            String
+  token           String        @unique
+  secret          String?
+  isActive        Boolean       @default(true)
+  inputMapping    Json          @default("{}")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  lastTriggeredAt DateTime?
+  triggerCount    Int           @default(0)
+  organizationId  String?
+  organization    Organization? @relation(fields: [organizationId], references: [id])
+  skill           Skill         @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([skillId])
+  @@index([token])
+  @@index([organizationId])
+  @@map("webhook_triggers")
+}
+
+model CronSchedule {
+  id              String        @id @default(cuid())
+  userId          String
+  skillId         String
+  name            String
+  cronExpression  String
+  isActive        Boolean       @default(true)
+  payloadTemplate Json          @default("{}")
+  lastRunAt       DateTime?
+  nextRunAt       DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  organizationId  String?
+  organization    Organization? @relation(fields: [organizationId], references: [id])
+  skill           Skill         @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([skillId])
+  @@index([organizationId])
+  @@map("cron_schedules")
+}
+
+model AgentMemory {
+  id             String        @id @default(cuid())
+  userId         String
+  skillId        String?
+  memoryType     String        @default("semantic")
+  key            String
+  content        String
+  metadata       Json          @default("{}")
+  lastAccessedAt DateTime      @default(now())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([skillId])
+  @@index([key])
+  @@index([organizationId])
+  @@map("agent_memories")
+}
+
+model BudgetPolicy {
+  id                    String       @id @default(cuid())
+  organizationId        String       @unique
+  monthlyBudgetUsd      Float        @default(100.0)
+  currentSpendUsd       Float        @default(0.0)
+  alertThresholdPercent Int          @default(80)
+  actionOnExceed        String       @default("ALERT")
+  downgradeModel        String?      @default("groq/llama-3.3-70b-versatile")
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+  organization          Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("budget_policies")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum SkillStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ExecutionStatus {
+  PENDING
+  RUNNING
+  PAUSED_FOR_APPROVAL
+  COMPLETED
+  FAILED
+  CANCELLED
+  STEP_LIMIT_EXCEEDED
+}
+
+enum StepStatus {
+  RUNNING
+  SUCCESS
+  FAILED
+  SKIPPED
+  AWAITING_APPROVAL
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum ToolType {
+  READ
+  WRITE
+}
+
+enum McpTransport {
+  SSE
+  STDIO
+}
+
+enum McpServerStatus {
+  CONNECTED
+  DISCONNECTED
+  ERROR
+}
+
+enum OpenApiAuthType {
+  NONE
+  BEARER
+  API_KEY
+  BASIC
+  CUSTOM_HEADER
+}
+
+enum OpenApiStatus {
+  CONNECTED
+  ERROR
+}
+
+enum VaultCategory {
+  API_KEY
+  OAUTH_TOKEN
+  DATABASE_URL
+  CONNECTION_STRING
+  PASSWORD
+  CERTIFICATE
+  WEBHOOK_SECRET
+  OTHER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum OrgRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
