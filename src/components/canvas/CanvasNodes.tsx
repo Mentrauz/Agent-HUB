@@ -209,14 +209,14 @@ function BaseShell({
   return (
     <div
       className={clsx(
-        "relative w-[230px] rounded-xl border bg-white/95 dark:bg-[#0c0d18]/95 font-mono shadow-md dark:shadow-xl dark:shadow-black/50 transition-all duration-150 canvas-node",
+        "relative w-[230px] rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] font-mono shadow-md transition-all duration-150 canvas-node",
         accentClass,
         statusClasses(data.traceStatus) || heatmapClasses(data.heatmapLatency, data.heatmapMax),
-        selected && "ring-2 ring-indigo-500/80 dark:ring-indigo-400/80 shadow-indigo-500/20",
-        isHighlighted && "ring-2 ring-amber-400 dark:ring-amber-400/80 shadow-[0_0_20px_rgba(251,191,36,0.4)] animate-pulse-ring"
+        selected && "ring-2 ring-cyan-400 shadow-[0_0_16px_rgba(34,211,238,0.25)]",
+        isHighlighted && "ring-2 ring-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.4)] animate-pulse-ring"
       )}
     >
-      {showTarget && <Handle type="target" position={Position.Left} className="!bg-indigo-500 dark:!bg-indigo-400 !border-0 !w-2.5 !h-2.5 shadow-sm" />}
+      {showTarget && <Handle type="target" position={Position.Left} className="!bg-cyan-400 !border-0 !w-2.5 !h-2.5 shadow-sm" />}
       {Array.from({ length: Math.max(1, sourceCount) }).map((_, i) => (
         <Handle
           key={i}
@@ -224,15 +224,15 @@ function BaseShell({
           id={sourceCount > 1 ? `src-${i}` : undefined}
           position={Position.Right}
           style={sourceCount > 1 ? { top: `${((i + 1) * 100) / (sourceCount + 1)}%` } : undefined}
-          className="!bg-emerald-500 dark:!bg-emerald-400 !border-0 !w-2.5 !h-2.5"
+          className="!bg-emerald-400 !border-0 !w-2.5 !h-2.5"
         />
       ))}
 
       <div className="p-2.5 space-y-1.5">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="text-indigo-600 dark:text-indigo-400 shrink-0">{icon}</span>
-            <span className="text-[10px] font-bold tracking-wider uppercase text-slate-800 dark:text-slate-100 truncate">
+            <span className="text-cyan-400 shrink-0">{icon}</span>
+            <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--text-primary)] truncate">
               {data.label}
             </span>
           </div>
@@ -245,8 +245,8 @@ function BaseShell({
         </div>
         {children}
         {data.heatmapLatency !== undefined && data.heatmapMax !== undefined && data.heatmapMax > 0 && (
-          <div className="flex items-center gap-1 text-[8px] font-bold text-slate-500 dark:text-slate-400 truncate">
-            <Clock className="h-2.5 w-2.5 text-indigo-400" /> {formatMs(data.heatmapLatency)}
+          <div className="flex items-center gap-1 text-[8px] font-bold text-[var(--text-muted)] truncate">
+            <Clock className="h-2.5 w-2.5 text-cyan-400" /> {formatMs(data.heatmapLatency)}
           </div>
         )}
         {data.traceDetail && (

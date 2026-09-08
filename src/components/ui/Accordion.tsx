@@ -34,7 +34,7 @@ export function Accordion({ items, className, multiple = false }: AccordionProps
   }
 
   return (
-    <div className={clsx("divide-y divide-[hsl(var(--border))]", className)}>
+    <div className={clsx("divide-y divide-[var(--border-subtle)]", className)}>
       {items.map((item) => {
         const isOpen = openIds.has(item.id);
         return (
@@ -72,7 +72,7 @@ export function Accordion({ items, className, multiple = false }: AccordionProps
               <div
                 className={clsx(
                   "px-1 pb-5 pt-0 text-sm text-[var(--text-secondary)] leading-relaxed",
-                  "border-l-2 border-indigo-200 dark:border-indigo-800/60 pl-4 ml-1"
+                  "border-l-2 border-cyan-500/40 pl-4 ml-1"
                 )}
               >
                 {item.answer}

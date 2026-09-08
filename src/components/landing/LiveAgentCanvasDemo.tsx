@@ -749,16 +749,60 @@ export function LiveAgentCanvasDemo() {
     setLogHistory([]);
   };
 
-  // Mouse wheel zoom
-  const handleWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
-    const delta = e.deltaY < 0 ? 0.1 : -0.1;
-    setZoom((z) => Math.max(0.6, Math.min(1.5, Number((z + delta).toFixed(2)))));
-  };
+  // Non-passive wheel and middle-click listeners to prevent page scrolling while zooming or panning canvas
+  useEffect(() => {
+    const el = canvasRef.current;
+    if (!el) return;
 
-  // Canvas Pan Handlers
+    const onWheel = (e: WheelEvent) => {
+      // Strictly prevent browser page scrolling up/down when mouse wheel is turned over canvas
+      e.preventDefault();
+      e.stopPropagation();
+
+      const rect = el.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      setZoom((prevZoom) => {
+        const delta = e.deltaY < 0 ? 0.08 : -0.08;
+        const newZoom = Math.max(0.5, Math.min(1.8, Number((prevZoom + delta).toFixed(2))));
+        if (newZoom === prevZoom) return prevZoom;
+
+        // Smoothly zoom centered on mouse pointer position
+        setPan((prevPan) => {
+          const scaleRatio = newZoom / prevZoom;
+          return {
+            x: Math.round(mouseX - (mouseX - prevPan.x) * scaleRatio),
+            y: Math.round(mouseY - (mouseY - prevPan.y) * scaleRatio),
+          };
+        });
+
+        return newZoom;
+      });
+    };
+
+    // Prevent browser auto-scroll icon on Windows middle-mouse-click
+    const onMouseDown = (e: MouseEvent) => {
+      if (e.button === 1) {
+        e.preventDefault();
+      }
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("mousedown", onMouseDown, { passive: false });
+
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("mousedown", onMouseDown);
+    };
+  }, []);
+
+  // Canvas Pan Handlers (Left click or Middle mouse button)
   const handleMouseDownCanvas = (e: React.MouseEvent) => {
-    if (e.button !== 0 || draggingNodeId) return;
+    if (e.button === 1) {
+      e.preventDefault(); // Stop Windows middle-click autoscroll
+    }
+    if ((e.button !== 0 && e.button !== 1) || draggingNodeId) return;
     setIsPanning(true);
     panStartRef.current = { x: e.clientX - pan.x, y: e.clientY - pan.y };
   };
@@ -936,13 +980,13 @@ export function LiveAgentCanvasDemo() {
         {/* LEFT: Full Interactive Canvas (7 Cols) */}
         <div
           ref={canvasRef}
-          onWheel={handleWheel}
           onMouseDown={handleMouseDownCanvas}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          style={{ overscrollBehavior: "contain" }}
           className={clsx(
-            "lg:col-span-7 relative h-[380px] sm:h-[480px] lg:h-[540px] overflow-hidden select-none",
+            "lg:col-span-7 relative h-[380px] sm:h-[480px] lg:h-[540px] overflow-hidden select-none overscroll-contain",
             "bg-slate-50/95 dark:bg-[#07070d]",
             "bg-[radial-gradient(rgba(99,102,241,0.18)_1px,transparent_1px)] [background-size:20px_20px]",
             isPanning ? "cursor-grabbing" : "cursor-grab"

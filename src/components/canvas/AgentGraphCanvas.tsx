@@ -1216,6 +1216,7 @@ function CanvasInner({
               nodesConnectable={!isLocked}
               edgesFocusable={!isLocked}
               elementsSelectable={!isLocked}
+              preventScrolling={true}
               proOptions={{ hideAttribution: true }}
             >
               <Background variant={BackgroundVariant.Dots} gap={24} size={1.5} color={canvasTheme === "paper" ? "#cbd5e1" : canvasTheme === "graphite" ? "#2a2e3a" : isDark ? "#334155" : "#cbd5e1"} />
@@ -1714,6 +1715,7 @@ function CanvasInner({
             nodesConnectable={!isLocked}
             edgesFocusable={!isLocked}
             elementsSelectable={!isLocked}
+            preventScrolling={true}
             proOptions={{ hideAttribution: true }}
           >
             <Background

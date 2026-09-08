@@ -71,7 +71,7 @@ export function Sidebar() {
       {/* ── Top: Section label + collapse toggle ── */}
       <div
         className={clsx(
-          "shrink-0 flex items-center pb-3 border-b border-[hsl(var(--border))]",
+          "shrink-0 flex items-center pb-3 border-b border-[var(--border-subtle)]",
           collapsed ? "justify-center" : "justify-between px-1"
         )}
       >
@@ -125,9 +125,9 @@ export function Sidebar() {
                   : "px-3 py-2.5",
                 isActive
                   ? [
-                      "bg-indigo-50 dark:bg-indigo-950/50",
-                      "text-indigo-700 dark:text-indigo-300",
-                      "border-l-2 border-indigo-500 dark:border-indigo-400",
+                      "bg-cyan-950/40",
+                      "text-cyan-300",
+                      "border-l-2 border-cyan-400",
                       collapsed ? "border-l-0" : "pl-[10px]",
                     ]
                   : [
@@ -141,7 +141,7 @@ export function Sidebar() {
                 className={clsx(
                   "h-4 w-4 shrink-0",
                   isActive
-                    ? "text-indigo-600 dark:text-indigo-400"
+                    ? "text-cyan-400"
                     : "text-[var(--text-muted)]"
                 )}
               />
@@ -154,7 +154,7 @@ export function Sidebar() {
       </nav>
 
       {/* ── Bottom: Sign out ── */}
-      <div className="shrink-0 pt-3 border-t border-[hsl(var(--border))]">
+      <div className="shrink-0 pt-3 border-t border-[var(--border-subtle)]">
         <button
           type="button"
           onClick={() => { closeMobile(); setIsSignOutModalOpen(true); }}
@@ -192,7 +192,7 @@ export function Sidebar() {
         className={clsx(
           "fixed inset-y-0 left-0 z-50 w-72 flex flex-col",
           "bg-[var(--surface-raised)] p-4",
-          "border-r border-[hsl(var(--border))]",
+          "border-r border-[var(--border-subtle)]",
           "shadow-elevated",
           "transition-transform duration-300 ease-in-out md:hidden overflow-hidden h-full"
         )}
@@ -206,7 +206,7 @@ export function Sidebar() {
         className={clsx(
           "hidden md:flex flex-col shrink-0 h-full overflow-hidden",
           "bg-[var(--surface-raised)]/80 backdrop-blur-md",
-          "border-r border-[hsl(var(--border))]",
+          "border-r border-[var(--border-subtle)]",
           "transition-all duration-300 ease-in-out",
           collapsed ? "w-16 p-2" : "w-60 p-4"
         )}

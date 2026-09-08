@@ -4,7 +4,6 @@ import {
   Check,
   GitCompare,
   Lock,
-  ShieldCheck,
   Database,
   Zap,
   ChevronDown,
@@ -20,13 +19,11 @@ import {
   Gauge,
   TimerReset,
   Wallet,
-  MousePointerClick,
   LayoutTemplate,
   Palette,
   Link2,
   Network,
   Globe,
-  Package,
   Sparkles,
   HardDrive,
   FileCheck,
@@ -180,11 +177,10 @@ export default function LandingPage() {
           SECTION 1 — HERO
           ═══════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden -mx-4 sm:-mx-6 lg:-mx-10 -mt-0">
-        {/* Soft gradient blobs */}
+        {/* Restrained radial accents — cyan and blue per AGENTS.md */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -left-32 h-[600px] w-[600px] rounded-full bg-gradient-to-tr from-indigo-200/60 to-violet-200/40 dark:from-indigo-900/30 dark:to-violet-900/20 blur-[120px]" />
-          <div className="absolute top-1/4 -right-32 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-sky-200/50 to-indigo-200/30 dark:from-sky-900/20 dark:to-indigo-900/15 blur-[120px]" />
-          <div className="absolute -bottom-24 left-1/3 h-[400px] w-[400px] rounded-full bg-gradient-to-tr from-violet-200/40 to-pink-200/20 dark:from-violet-900/20 dark:to-pink-900/10 blur-[120px]" />
+          <div className="absolute -top-40 -left-32 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-cyan-500/10 to-blue-500/05 blur-[140px]" />
+          <div className="absolute top-1/4 -right-32 h-[450px] w-[450px] rounded-full bg-gradient-to-tr from-blue-500/08 to-cyan-500/05 blur-[140px]" />
           {/* Subtle dot grid */}
           <div className="absolute inset-0 bg-dot-grid [mask-image:radial-gradient(ellipse_80%_80%_at_50%_30%,black_40%,transparent_95%)]" />
         </div>
@@ -192,29 +188,46 @@ export default function LandingPage() {
         <div className="relative z-10 py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-10 max-w-5xl space-y-8">
           {/* Announcement pill */}
           <div className="animate-fadeInUp">
-            <div className="inline-flex max-w-full items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-200 dark:border-indigo-700/50 bg-white/80 dark:bg-indigo-950/30 backdrop-blur-sm shadow-sm text-[11px] font-semibold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider">
+            <div
+              className="inline-flex max-w-full items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-sm text-xs font-pixel text-cyan-300 uppercase tracking-wider"
+              style={{ fontFamily: "'VT323', monospace" }}
+            >
               <span className="relative flex h-2 w-2 shrink-0">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
               </span>
               <span className="truncate">
-                Open-Source AI Stack · 11.6k+ n8n & 290+ Dify Workflows · 136k+ MCP Tools · 28+ Visual Nodes
+                • OPEN-SOURCE AI STACK • 11.6K+ N8N & 290+ DIFY WORKFLOWS • 136K+ MCP TOOLS • 28+ VISUAL NODES
               </span>
             </div>
           </div>
 
           {/* Headline */}
           <div className="animate-fadeInUp space-y-4" style={{ animationDelay: "80ms" }}>
-            <h1 className="font-sans font-extrabold text-4xl sm:text-6xl lg:text-7xl tracking-tight leading-[1.06] text-[var(--text-primary)] max-w-4xl">
-              Visual Multi-Agent{" "}
-              <span className="text-gradient-glow">Orchestration</span>{" "}
-              Studio
+            <h1
+              className="font-pixel text-5xl sm:text-7xl lg:text-8xl tracking-wider leading-[1.05] uppercase max-w-5xl"
+              style={{ fontFamily: "'VT323', monospace" }}
+            >
+              <span className="text-[var(--text-primary)] inline-block">VISUAL MULTI&#8209;AGENT</span>
+              <br />
+              <span className="text-cyan-400 [text-shadow:0_0_28px_rgba(34,211,238,0.4)] inline-block">ORCHESTRATION STUDIO</span>
             </h1>
-            <p className="text-lg sm:text-xl text-[var(--text-secondary)] max-w-3xl leading-relaxed font-sans">
-              Architect, simulate, and deploy{" "}
-              <span className="font-semibold text-[var(--text-primary)]">autonomous multi-agent graphs</span>{" "}
-              powered by 100% free open-source microservices, Model Context Protocol (MCP) toolkits, and human-in-the-loop governance.
-            </p>
+            <div className="space-y-3 max-w-3xl font-sans text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
+              <p>
+                Architect, simulate, and deploy{" "}
+                <span className="font-semibold text-cyan-400">autonomous multi-agent graphs</span>{" "}
+                powered by 100% free open-source microservices, Model Context Protocol (MCP) toolkits, and human-in-the-loop governance.
+              </p>
+              <p className="text-sm sm:text-base text-[var(--text-muted)]">
+                Wire Supervisor → Specialist → Critic loops with{" "}
+                <span className="font-semibold text-emerald-400">SearXNG</span>,{" "}
+                <span className="font-semibold text-teal-400">Crawl4AI</span>,{" "}
+                <span className="font-semibold text-sky-400">IBM Docling</span>,{" "}
+                <span className="font-semibold text-purple-400">Qdrant</span> &{" "}
+                <span className="font-semibold text-blue-400">Gotenberg</span>, import 11,600+ n8n workflows, watch runs pulse in real time, and protect sensitive actions with{" "}
+                <span className="font-semibold text-amber-400">single-use approval locks</span>.
+              </p>
+            </div>
           </div>
 
           {/* CTAs */}
@@ -223,16 +236,19 @@ export default function LandingPage() {
           </div>
 
           {/* Trust strip */}
-          <div className="animate-fadeInUp flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-[var(--text-secondary)]" style={{ animationDelay: "280ms" }}>
+          <div
+            className="animate-fadeInUp flex flex-wrap items-center gap-x-6 gap-y-2 text-xs sm:text-sm font-pixel tracking-wider text-[var(--text-secondary)]"
+            style={{ animationDelay: "280ms", fontFamily: "'VT323', monospace" }}
+          >
             {[
-              { label: "100% Zero-Key Public APIs",         color: "text-emerald-600 dark:text-emerald-400" },
-              { label: "Open-Source Self-Hostable",          color: "text-indigo-600 dark:text-indigo-400" },
-              { label: "11.6k+ n8n & 290+ Dify Library",    color: "text-purple-600 dark:text-purple-400" },
-              { label: "Idempotent Single-Use Tokens",       color: "text-amber-600 dark:text-amber-400" },
-              { label: "28+ Free LLM Models",                color: "text-sky-600 dark:text-sky-400" },
+              { label: "100% Zero-Key Public APIs",         color: "text-emerald-400" },
+              { label: "Open-Source Self-Hostable",          color: "text-cyan-400" },
+              { label: "11.6k+ n8n & 290+ Dify Library",    color: "text-blue-400" },
+              { label: "Idempotent Single-Use Tokens",       color: "text-amber-400" },
+              { label: "28+ Free LLM Models (OpenRouter & Groq)", color: "text-sky-400" },
             ].map(({ label, color }) => (
-              <span key={label} className={`flex items-center gap-1.5 font-medium ${color}`}>
-                <Check className="h-3.5 w-3.5 shrink-0" />
+              <span key={label} className={`flex items-center gap-1.5 ${color}`}>
+                <Check className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
                 {label}
               </span>
             ))}
@@ -250,17 +266,20 @@ export default function LandingPage() {
           ═══════════════════════════════════════════════════════ */}
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {[
-          { value: "28+",     label: "Native Canvas Node Types",        accent: "text-indigo-600 dark:text-indigo-400", chipBg: "bg-indigo-50 dark:bg-indigo-950/40" },
-          { value: "148K+",   label: "MCP, n8n & Dify Ecosystem Tools",  accent: "text-emerald-600 dark:text-emerald-400", chipBg: "bg-emerald-50 dark:bg-emerald-950/40" },
-          { value: "100%",    label: "Zero-Key Free & Self-Hosted",       accent: "text-amber-600 dark:text-amber-400", chipBg: "bg-amber-50 dark:bg-amber-950/40" },
-          { value: "28+ FREE",label: "Multi-Provider LLM (512k ctx)",    accent: "text-sky-600 dark:text-sky-400", chipBg: "bg-sky-50 dark:bg-sky-950/40" },
+          { value: "28+",     label: "Native Canvas Node Types" },
+          { value: "148K+",   label: "MCP, n8n & Dify Ecosystem Tools" },
+          { value: "100%",    label: "Zero-Key Free & Self-Hosted Stack" },
+          { value: "28+ FREE",label: "Multi-Provider LLM Models (512k Ctx)" },
         ].map((stat, i) => (
           <Reveal key={stat.label} delay={i * 80}>
-            <div className="bg-[var(--surface-raised)] rounded-md border border-[hsl(var(--border))] shadow-card p-6 space-y-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated hover:border-indigo-200 dark:hover:border-indigo-800/50">
-              <div className={`text-3xl sm:text-4xl font-extrabold font-sans leading-none tracking-tight ${stat.accent}`}>
+            <div className="bg-[var(--surface-raised)] rounded-md border border-[var(--border-subtle)] shadow-card p-6 space-y-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated hover:border-[var(--border-strong)] text-center sm:text-left">
+              <div
+                className="text-4xl sm:text-5xl lg:text-6xl font-pixel leading-none tracking-wider text-slate-100"
+                style={{ fontFamily: "'VT323', monospace" }}
+              >
                 {stat.value}
               </div>
-              <div className="text-xs font-semibold text-[var(--text-secondary)] leading-snug">
+              <div className="text-xs font-sans text-[var(--text-secondary)] leading-snug">
                 {stat.label}
               </div>
             </div>
@@ -274,9 +293,10 @@ export default function LandingPage() {
       <section id="canvas" className="space-y-10">
         <Reveal>
           <SectionHeader
-            eyebrow="Agent Canvas"
-            eyebrowIcon={<MousePointerClick className="h-3.5 w-3.5" />}
-            heading="Design, Simulate & Execute on One Canvas"
+            sectionNumber="// 01."
+            heading="DESIGN, SIMULATE & EXECUTE ON ONE CANVAS"
+            rightMeta="28+ PRODUCTION NODE TYPES"
+            eyebrowColor="text-cyan-400"
             subhead="Build complex multi-agent graphs with drag-and-drop. Run live, watch nodes pulse in real time, replay any past execution."
           />
         </Reveal>
@@ -289,35 +309,35 @@ export default function LandingPage() {
         <Reveal delay={160}>
           <div className="bg-[var(--surface-raised)] rounded-md border border-[hsl(var(--border))] shadow-card p-6 sm:p-8 space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-[hsl(var(--border))]">
-              <div className="text-sm font-semibold text-[var(--text-primary)]">
+              <div className="text-sm font-pixel text-slate-200 uppercase tracking-wider">
                 28+ Production Node Types
               </div>
-              <span className="text-xs text-[var(--text-muted)] font-medium">
+              <span className="text-xs text-[var(--text-muted)] font-pixel uppercase tracking-wider">
                 Logic & Control · Search · Document Intel · Memory · Triggers
               </span>
             </div>
             <div className="space-y-5">
               {canvasNodeCategories.map((cat) => (
                 <div key={cat.category} className="space-y-2.5">
-                  <div className="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 shrink-0" />
-                    {cat.category}
+                  <div className="text-xs font-pixel text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shrink-0" />
+                    • {cat.category}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
                     {cat.nodes.map((n) => (
                       <div
                         key={n.name}
-                        className="p-3 rounded-[10px] border border-[hsl(var(--border))] bg-[var(--surface-sunken)] flex items-start gap-2.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card hover:border-indigo-200 dark:hover:border-indigo-800/50"
+                        className="p-3 rounded-[10px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] flex items-start gap-2.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card hover:border-[var(--border-strong)]"
                       >
-                        <n.icon className="h-4 w-4 shrink-0 mt-0.5 text-indigo-500 dark:text-indigo-400" />
+                        <n.icon className="h-4 w-4 shrink-0 mt-0.5 text-cyan-400" />
                         <div className="min-w-0 flex-1 space-y-1">
                           <div className="flex items-center justify-between gap-1">
-                            <span className="font-semibold text-[11px] text-[var(--text-primary)] truncate">{n.name}</span>
-                            <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/40 text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-tight shrink-0">
+                            <span className="font-semibold text-[11px] text-[var(--text-primary)] truncate font-sans">{n.name}</span>
+                            <span className="text-[10px] font-pixel px-1.5 py-0.5 rounded bg-cyan-950/50 border border-cyan-800/40 text-cyan-300 uppercase tracking-wider shrink-0">
                               {n.badge}
                             </span>
                           </div>
-                          <p className="text-[10px] text-[var(--text-muted)] leading-snug">{n.desc}</p>
+                          <p className="text-[10px] text-[var(--text-muted)] leading-snug font-sans">{n.desc}</p>
                         </div>
                       </div>
                     ))}
@@ -335,11 +355,11 @@ export default function LandingPage() {
       <section id="opensource" className="space-y-10">
         <Reveal>
           <SectionHeader
-            eyebrow="Open-Source Stack"
-            eyebrowIcon={<Sparkles className="h-3.5 w-3.5" />}
-            heading="Zero API Keys. Self-Hostable. 100% Free."
+            sectionNumber="// 02."
+            heading="THE OPEN-SOURCE & ZERO-KEY AI STACK"
+            rightMeta="SELF-HOSTABLE · ZERO SUBSCRIPTIONS"
+            eyebrowColor="text-emerald-400"
             subhead="Six battle-tested open-source tools embedded natively — no subscriptions, no paywalls, no vendor lock-in."
-            eyebrowColor="text-emerald-600 dark:text-emerald-400"
           />
         </Reveal>
 
@@ -353,17 +373,17 @@ export default function LandingPage() {
                       <p.icon className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-sm text-[var(--text-primary)]">{p.title}</h3>
+                      <h3 className="font-semibold text-sm text-[var(--text-primary)] font-sans">{p.title}</h3>
                     </div>
                   </div>
-                  <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${p.chipBg} ${p.accent} border border-current/20 shrink-0`}>
+                  <span className={`text-[10px] font-pixel px-2 py-0.5 rounded uppercase tracking-wider ${p.chipBg} ${p.accent} border border-current/20 shrink-0`}>
                     {p.badge}
                   </span>
                 </div>
-                <p className="text-sm text-[var(--text-secondary)] leading-relaxed flex-1">{p.desc}</p>
-                <div className="pt-3 border-t border-[hsl(var(--border))] text-xs text-[var(--text-muted)]">
-                  <span className="font-semibold text-[var(--text-secondary)]">Best for: </span>
-                  {p.useCase}
+                <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed flex-1 font-sans">{p.desc}</p>
+                <div className="pt-3 border-t border-[hsl(var(--border))] text-xs">
+                  <span className="font-pixel text-xs tracking-wider text-[var(--text-secondary)] uppercase">BEST FOR: </span>
+                  <span className="font-sans text-[var(--text-muted)]">{p.useCase}</span>
                 </div>
               </div>
             </Reveal>
@@ -377,9 +397,10 @@ export default function LandingPage() {
       <section id="marketplace" className="space-y-10">
         <Reveal>
           <SectionHeader
-            eyebrow="Marketplace"
-            eyebrowIcon={<Package className="h-3.5 w-3.5" />}
-            heading="Unified Template Hub"
+            sectionNumber="// 03."
+            heading="UNIFIED MARKETPLACE & TEMPLATE HUB"
+            rightMeta="11.6K+ N8N · 290+ DIFY · 136K+ MCP"
+            eyebrowColor="text-cyan-400"
             subhead="11.6k+ n8n flows, 290+ Dify blueprints, and 136k+ MCP servers — all importable in one click."
           />
         </Reveal>
@@ -394,18 +415,18 @@ export default function LandingPage() {
                     <N8nOfficialLogo className="h-6 w-6" />
                   </div>
                   <div>
-                    <div className="font-semibold text-sm text-[var(--text-primary)]">n8n Community Library</div>
+                    <div className="font-semibold text-sm text-[var(--text-primary)] font-sans">n8n Community Library</div>
                     <div className="text-[10px] text-[var(--text-muted)] font-mono">api.n8n.io · 1-click import</div>
                   </div>
                 </div>
-                <span className="text-[9px] px-2 py-0.5 rounded-full font-bold text-[#EA4B71] bg-[#EA4B71]/10 border border-[#EA4B71]/20">11,600+ FLOWS</span>
+                <span className="text-[10px] font-pixel px-2 py-0.5 rounded text-[#EA4B71] bg-[#EA4B71]/10 border border-[#EA4B71]/20 uppercase tracking-wider">11,600+ FLOWS</span>
               </div>
-              <p className="text-sm text-[var(--text-secondary)] leading-relaxed flex-1">
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed flex-1 font-sans">
                 Direct live access to the entire n8n template registry. Search by apps, triggers, and automations. Agent Hub automatically parses n8n JSON nodes and wires them onto the visual multi-agent canvas.
               </p>
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {["SALESFORCE", "HUBSPOT", "STRIPE", "POSTGRES", "NOTION"].map((tag) => (
-                  <span key={tag} className="text-[9px] px-2 py-0.5 rounded-full border border-[#EA4B71]/20 text-[#EA4B71] font-semibold bg-[#EA4B71]/5">{tag}</span>
+                  <span key={tag} className="text-[10px] font-pixel px-2 py-0.5 rounded border border-[#EA4B71]/20 text-[#EA4B71] bg-[#EA4B71]/5 uppercase tracking-wider">{tag}</span>
                 ))}
               </div>
             </div>
@@ -420,18 +441,18 @@ export default function LandingPage() {
                     <DifyOfficialLogo className="h-6 w-6" />
                   </div>
                   <div>
-                    <div className="font-semibold text-sm text-[var(--text-primary)]">Dify.ai Workflows</div>
+                    <div className="font-semibold text-sm text-[var(--text-primary)] font-sans">Dify.ai Workflows</div>
                     <div className="text-[10px] text-[var(--text-muted)] font-mono">marketplace.dify.ai · DSL converter</div>
                   </div>
                 </div>
-                <span className="text-[9px] px-2 py-0.5 rounded-full font-bold text-[#155EEF] bg-[#155EEF]/10 border border-[#155EEF]/20">290+ BLUEPRINTS</span>
+                <span className="text-[10px] font-pixel px-2 py-0.5 rounded text-[#155EEF] bg-[#155EEF]/10 border border-[#155EEF]/20 uppercase tracking-wider">290+ BLUEPRINTS</span>
               </div>
-              <p className="text-sm text-[var(--text-secondary)] leading-relaxed flex-1">
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed flex-1 font-sans">
                 Import multi-step LLM chains, agent loops, and RAG knowledge pipelines created for Dify.ai. Our universal converter translates Dify DSL YAML files into Agent Hub graphs with live execution.
               </p>
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {["RAG PIPELINES", "CHATBOTS", "CODE GEN", "TRANSLATION"].map((tag) => (
-                  <span key={tag} className="text-[9px] px-2 py-0.5 rounded-full border border-[#155EEF]/20 text-[#155EEF] font-semibold bg-[#155EEF]/5">{tag}</span>
+                  <span key={tag} className="text-[10px] font-pixel px-2 py-0.5 rounded border border-[#155EEF]/20 text-[#155EEF] bg-[#155EEF]/5 uppercase tracking-wider">{tag}</span>
                 ))}
               </div>
             </div>
@@ -446,18 +467,18 @@ export default function LandingPage() {
                     <SmitheryOfficialLogo className="h-5 w-5" />
                   </div>
                   <div>
-                    <div className="font-semibold text-sm text-[var(--text-primary)]">MCP Multi-Registry Hub</div>
+                    <div className="font-semibold text-sm text-[var(--text-primary)] font-sans">MCP Multi-Registry Hub</div>
                     <div className="text-[10px] text-[var(--text-muted)] font-mono">5 registries · SSE & stdio</div>
                   </div>
                 </div>
-                <span className="text-[9px] px-2 py-0.5 rounded-full font-bold text-[#FF5601] bg-[#FF5601]/10 border border-[#FF5601]/20">136,500+ SERVERS</span>
+                <span className="text-[10px] font-pixel px-2 py-0.5 rounded text-[#FF5601] bg-[#FF5601]/10 border border-[#FF5601]/20 uppercase tracking-wider">136,500+ SERVERS</span>
               </div>
-              <p className="text-sm text-[var(--text-secondary)] leading-relaxed flex-1">
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed flex-1 font-sans">
                 Unified discovery across Smithery.ai, Glama.ai, Composio, Arcade, and mcp.so. Mount remote MCP tools, inspect parameter schemas, and connect Cursor/Claude as clients.
               </p>
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {["SMITHERY", "GLAMA", "COMPOSIO", "ARCADE", "MCP.SO"].map((tag) => (
-                  <span key={tag} className="text-[9px] px-2 py-0.5 rounded-full border border-[#FF5601]/20 text-[#FF5601] font-semibold bg-[#FF5601]/5">{tag}</span>
+                  <span key={tag} className="text-[10px] font-pixel px-2 py-0.5 rounded border border-[#FF5601]/20 text-[#FF5601] bg-[#FF5601]/5 uppercase tracking-wider">{tag}</span>
                 ))}
               </div>
             </div>
@@ -471,11 +492,11 @@ export default function LandingPage() {
       <section id="models" className="space-y-10">
         <Reveal>
           <SectionHeader
-            eyebrow="LLM Engine"
-            eyebrowIcon={<Cpu className="h-3.5 w-3.5" />}
-            heading="28+ Free Models, One Resilient Router"
+            sectionNumber="// 04."
+            heading="MULTI-PROVIDER FREE LLM ENGINE"
+            rightMeta="28+ FREE MODELS · 512K CONTEXT · 750 T/S · 8 SPECIALIZATIONS"
+            eyebrowColor="text-cyan-400"
             subhead="Circuit-breaker failover across Groq and OpenRouter — zero cost, 512k context, 750 tokens/second."
-            eyebrowColor="text-sky-600 dark:text-sky-400"
           />
         </Reveal>
 
@@ -498,22 +519,22 @@ export default function LandingPage() {
         <Reveal delay={100}>
           <div className="bg-[var(--surface-raised)] rounded-md border border-[hsl(var(--border))] shadow-card p-6 space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[hsl(var(--border))]">
-              <span className="text-sm font-semibold text-[var(--text-primary)] flex items-center gap-2">
-                <Layers className="h-4 w-4 text-indigo-500" />
-                Capability Domains
+              <span className="text-xs sm:text-sm font-pixel tracking-wider text-[var(--text-secondary)] uppercase flex items-center gap-2">
+                <Layers className="h-4 w-4 text-cyan-400" />
+                NUMERICAL BREAKDOWN BY CAPABILITY DOMAIN
               </span>
-              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
-                ● Auto circuit-breaker cooldown active
+              <span className="text-xs font-pixel text-emerald-400 uppercase tracking-wider">
+                ● AUTOMATIC CIRCUIT-BREAKER COOLDOWN (30S TRANSIENT · 40S 429)
               </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {modelCategoryCounts.map((cat) => (
-                <div key={cat.category} className={`p-3 rounded-[10px] border space-y-1.5 ${cat.color}`}>
+                <div key={cat.category} className={`p-3 rounded-[10px] border border-[var(--border-subtle)] space-y-1.5 ${cat.color}`}>
                   <div className="flex items-center justify-between gap-1">
-                    <span className="text-[10px] font-bold tracking-wide truncate">{cat.category}</span>
-                    <span className="text-[9px] font-bold font-mono px-1.5 py-0.5 rounded-full bg-white/40 dark:bg-black/20 shrink-0">{cat.count}</span>
+                    <span className="text-xs font-pixel tracking-wider truncate uppercase">{cat.category}</span>
+                    <span className="text-[10px] font-pixel px-1.5 py-0.5 rounded bg-white/10 dark:bg-black/20 shrink-0">{cat.count}</span>
                   </div>
-                  <p className="text-[9.5px] opacity-80 leading-tight">{cat.specs}</p>
+                  <p className="text-[10px] font-sans opacity-85 leading-tight">{cat.specs}</p>
                 </div>
               ))}
             </div>
@@ -527,32 +548,33 @@ export default function LandingPage() {
       <section id="comparison" className="space-y-10">
         <Reveal>
           <SectionHeader
-            eyebrow="Comparison"
-            eyebrowIcon={<GitCompare className="h-3.5 w-3.5" />}
-            heading="Agent Hub vs the Alternatives"
+            sectionNumber="// 05."
+            heading="ARCHITECTURAL COMPARISON"
+            rightMeta="AGENT STUDIO VS INDUSTRY ALTERNATIVES"
+            eyebrowColor="text-cyan-400"
             subhead="Designed from the ground up for autonomous multi-agent orchestration — not a repurposed ETL tool."
           />
         </Reveal>
 
         <Reveal delay={60}>
-          <div className="overflow-x-auto rounded-md border border-[hsl(var(--border))] shadow-card">
+          <div className="overflow-x-auto rounded-md border border-[var(--border-subtle)] shadow-card">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-[hsl(var(--border))] bg-[var(--surface-sunken)] text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
-                  <th className="p-4 font-bold text-[var(--text-secondary)]">Capability</th>
-                  <th className="p-4 font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40 border-b-2 border-indigo-400 dark:border-indigo-500">
-                    ✦ Agent Hub
+                <tr className="border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-xs font-pixel uppercase tracking-wider text-[var(--text-muted)]">
+                  <th className="p-4 font-normal text-[var(--text-secondary)]">CAPABILITIES & ARCHITECTURE</th>
+                  <th className="p-4 font-normal text-cyan-300 bg-cyan-950/40 border-b-2 border-cyan-400">
+                    AGENT STUDIO
                   </th>
-                  <th className="p-4 font-bold">n8n</th>
-                  <th className="p-4 font-bold">Dify.ai</th>
-                  <th className="p-4 font-bold hidden sm:table-cell">Langflow / Flowise</th>
+                  <th className="p-4 font-normal">N8N</th>
+                  <th className="p-4 font-normal">DIFY.AI</th>
+                  <th className="p-4 font-normal hidden sm:table-cell">LANGFLOW / FLOWISE</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[hsl(var(--border))] bg-[var(--surface-raised)]">
+              <tbody className="divide-y divide-[var(--border-subtle)] bg-[var(--surface-raised)] font-sans">
                 {comparisonRows.map((row, i) => (
                   <tr key={row.feature} className={`transition-colors hover:bg-[var(--surface-sunken)] ${i % 2 === 1 ? "bg-[var(--surface-sunken)]/40" : ""}`}>
                     <td className="p-4 font-semibold text-[var(--text-primary)] max-w-[160px]">{row.feature}</td>
-                    <td className="p-4 font-semibold text-emerald-700 dark:text-emerald-400 bg-indigo-50/50 dark:bg-indigo-950/20">{row.studio}</td>
+                    <td className="p-4 font-semibold text-emerald-400 bg-cyan-950/20">{row.studio}</td>
                     <td className="p-4 text-[var(--text-secondary)]">{row.n8n}</td>
                     <td className="p-4 text-[var(--text-secondary)]">{row.dify}</td>
                     <td className="p-4 text-[var(--text-secondary)] hidden sm:table-cell">{row.langflow}</td>
@@ -563,18 +585,17 @@ export default function LandingPage() {
           </div>
         </Reveal>
       </section>
-
       {/* ═══════════════════════════════════════════════════════
           SECTION 8 — OBSERVABILITY
           ═══════════════════════════════════════════════════════ */}
       <section id="runtime-intel" className="space-y-10">
         <Reveal>
           <SectionHeader
-            eyebrow="Observability"
-            eyebrowIcon={<Activity className="h-3.5 w-3.5" />}
-            heading="Live Runtime Intelligence"
+            sectionNumber="// 06."
+            heading="LIVE RUNTIME OBSERVABILITY & CONTROLS"
+            rightMeta="SSE PULSES · HEATMAPS · STEP REPLAY"
+            eyebrowColor="text-cyan-400"
             subhead="Ghost dry-run previews, per-node latency heatmaps, time-scrubber replay, and hard budget caps."
-            eyebrowColor="text-sky-600 dark:text-sky-400"
           />
         </Reveal>
 
@@ -591,12 +612,12 @@ export default function LandingPage() {
                   <div className={`w-9 h-9 rounded-[8px] flex items-center justify-center ${card.chipBg} ${card.accent}`}>
                     <card.icon className="h-4 w-4" />
                   </div>
-                  <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${card.chipBg} ${card.accent} border border-current/20`}>
+                  <span className={`text-[10px] font-pixel px-2 py-0.5 rounded uppercase tracking-wider ${card.chipBg} ${card.accent} border border-current/20`}>
                     {card.label}
                   </span>
                 </div>
-                <h3 className="font-semibold text-sm text-[var(--text-primary)]">{card.title}</h3>
-                <p className="text-xs text-[var(--text-secondary)] leading-relaxed flex-1">{card.desc}</p>
+                <h3 className="font-semibold text-sm text-[var(--text-primary)] font-sans">{card.title}</h3>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed flex-1 font-sans">{card.desc}</p>
               </div>
             </Reveal>
           ))}
@@ -609,9 +630,10 @@ export default function LandingPage() {
       <section id="tooling" className="space-y-10">
         <Reveal>
           <SectionHeader
-            eyebrow="Developer Tooling"
-            eyebrowIcon={<Terminal className="h-3.5 w-3.5" />}
-            heading="Engineered for Power Users"
+            sectionNumber="// 07."
+            heading="DEVELOPER TOOLING & GRAPH EDITING"
+            rightMeta="ENGINEERED FOR POWER USERS"
+            eyebrowColor="text-cyan-400"
             subhead="12 advanced capabilities that make Agent Hub the developer-first choice for serious AI orchestration."
           />
         </Reveal>
@@ -619,12 +641,12 @@ export default function LandingPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {devTooling.map((t, i) => (
             <Reveal key={t.title} delay={i * 40}>
-              <div className="bg-[var(--surface-raised)] rounded-md border border-[hsl(var(--border))] shadow-card p-5 space-y-3 hover:-translate-y-1 hover:shadow-elevated hover:border-indigo-200 dark:hover:border-indigo-800/40 transition-all duration-300 h-full flex flex-col">
-                <div className="w-9 h-9 rounded-[8px] flex items-center justify-center bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400">
+              <div className="bg-[var(--surface-raised)] rounded-md border border-[var(--border-subtle)] shadow-card p-5 space-y-3 hover:-translate-y-1 hover:shadow-elevated hover:border-[var(--border-strong)] transition-all duration-300 h-full flex flex-col">
+                <div className="w-9 h-9 rounded-[8px] flex items-center justify-center bg-cyan-950/40 text-cyan-400 border border-cyan-800/30">
                   <t.icon className="h-4 w-4" />
                 </div>
-                <h3 className="font-semibold text-sm text-[var(--text-primary)] leading-snug">{t.title}</h3>
-                <p className="text-xs text-[var(--text-secondary)] leading-relaxed flex-1">{t.desc}</p>
+                <h3 className="font-semibold text-sm text-[var(--text-primary)] leading-snug font-sans">{t.title}</h3>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed flex-1 font-sans">{t.desc}</p>
               </div>
             </Reveal>
           ))}
@@ -637,30 +659,30 @@ export default function LandingPage() {
       <section id="guardrails" className="space-y-10">
         <Reveal>
           <SectionHeader
-            eyebrow="Enterprise Security"
-            eyebrowIcon={<ShieldCheck className="h-3.5 w-3.5" />}
-            heading="Zero Trust Runtime Governance"
+            sectionNumber="// 08."
+            heading="ENTERPRISE SECURITY & GOVERNANCE"
+            rightMeta="[ ZERO TRUST RUNTIME ]"
+            eyebrowColor="text-emerald-400"
             subhead="Idempotency tokens, tenant isolation, circuit-breakers, and atomic transactions at every layer."
-            eyebrowColor="text-emerald-600 dark:text-emerald-400"
           />
         </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
-            { icon: Lock,       accent: "text-amber-600 dark:text-amber-400", chipBg: "bg-amber-50 dark:bg-amber-950/40", hover: "hover:border-amber-200 dark:hover:border-amber-800/40", title: "Single-Use Idempotency Tokens", desc: "Every approved write action generates a single-use token, enforced atomically in the database — replays and concurrent duplicates are blocked." },
-            { icon: Database,   accent: "text-indigo-600 dark:text-indigo-400", chipBg: "bg-indigo-50 dark:bg-indigo-950/40", hover: "hover:border-indigo-200 dark:hover:border-indigo-800/40", title: "Multi-Tenant Isolation",          desc: "Strict PostgreSQL tenant boundaries isolate skills, versions, graph executions, and approval records per user account." },
-            { icon: Zap,        accent: "text-emerald-600 dark:text-emerald-400", chipBg: "bg-emerald-50 dark:bg-emerald-950/40", hover: "hover:border-emerald-200 dark:hover:border-emerald-800/40", title: "Hard Execution Limits",          desc: "Enforces maximum step boundaries and loop cycles to prevent infinite loops, runaway costs, and resource exhaustion." },
-            { icon: RefreshCw,  accent: "text-sky-600 dark:text-sky-400", chipBg: "bg-sky-50 dark:bg-sky-950/40", hover: "hover:border-sky-200 dark:hover:border-sky-800/40", title: "Circuit-Breaker Failover",         desc: "A single model failure never stops a run — the router parks the failing provider in adaptive cooldown and transparently moves to the next healthy model." },
-            { icon: Database,   accent: "text-violet-600 dark:text-violet-400", chipBg: "bg-violet-50 dark:bg-violet-950/40", hover: "hover:border-violet-200 dark:hover:border-violet-800/40", title: "Atomic Commit Transactions",       desc: "Skill creation, draft rotation, publish, and execution traces commit in atomic transactions — a crash can never orphan data." },
-            { icon: Activity,   accent: "text-teal-600 dark:text-teal-400", chipBg: "bg-teal-50 dark:bg-teal-950/40", hover: "hover:border-teal-200 dark:hover:border-teal-800/40", title: "Full Audit Trails",                desc: "Every mutation writes a structured log and audit row (SKILL_PUBLISHED, APPROVAL_GRANTED, RECOVERY_STARTED) traced back to the acting user." },
+            { icon: Lock,       accent: "text-amber-400", chipBg: "bg-amber-950/40", hover: "hover:border-amber-800/40", title: "Single-Use Idempotency Tokens", desc: "Every approved write action generates a single-use token, enforced atomically in the database — replays and concurrent duplicates are blocked." },
+            { icon: Database,   accent: "text-cyan-400",  chipBg: "bg-cyan-950/40",  hover: "hover:border-cyan-800/40",  title: "Multi-Tenant Isolation",          desc: "Strict PostgreSQL tenant boundaries isolate skills, versions, graph executions, and approval records per user account." },
+            { icon: Zap,        accent: "text-emerald-400", chipBg: "bg-emerald-950/40", hover: "hover:border-emerald-800/40", title: "Hard Execution Limits",          desc: "Enforces maximum step boundaries and loop cycles to prevent infinite loops, runaway costs, and resource exhaustion." },
+            { icon: RefreshCw,  accent: "text-sky-400",    chipBg: "bg-sky-950/40",    hover: "hover:border-sky-800/40",    title: "Circuit-Breaker Failover",         desc: "A single model failure never stops a run — the router parks the failing provider in adaptive cooldown and transparently moves to the next healthy model." },
+            { icon: Database,   accent: "text-violet-400", chipBg: "bg-violet-950/40", hover: "hover:border-violet-800/40", title: "Atomic Commit Transactions",       desc: "Skill creation, draft rotation, publish, and execution traces commit in atomic transactions — a crash can never orphan data." },
+            { icon: Activity,   accent: "text-blue-400",   chipBg: "bg-blue-950/40",   hover: "hover:border-blue-800/40",   title: "Full Audit Trails",                desc: "Every mutation writes a structured log and audit row (SKILL_PUBLISHED, APPROVAL_GRANTED, RECOVERY_STARTED) traced back to the acting user." },
           ].map((card, i) => (
             <Reveal key={card.title} delay={i * 80}>
-              <div className={`bg-[var(--surface-raised)] rounded-md border border-[hsl(var(--border))] shadow-card p-5 space-y-3 hover:-translate-y-1 hover:shadow-elevated ${card.hover} transition-all duration-300 h-full flex flex-col`}>
+              <div className={`bg-[var(--surface-raised)] rounded-md border border-[var(--border-subtle)] shadow-card p-5 space-y-3 hover:-translate-y-1 hover:shadow-elevated ${card.hover} hover:border-[var(--border-strong)] transition-all duration-300 h-full flex flex-col`}>
                 <div className={`w-9 h-9 rounded-[8px] flex items-center justify-center ${card.chipBg} ${card.accent}`}>
                   <card.icon className="h-4 w-4" />
                 </div>
-                <h3 className="font-semibold text-sm text-[var(--text-primary)]">{card.title}</h3>
-                <p className="text-xs text-[var(--text-secondary)] leading-relaxed flex-1">{card.desc}</p>
+                <h3 className="font-semibold text-sm text-[var(--text-primary)] font-sans">{card.title}</h3>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed flex-1 font-sans">{card.desc}</p>
               </div>
             </Reveal>
           ))}
@@ -673,15 +695,16 @@ export default function LandingPage() {
       <section id="faq" className="space-y-10">
         <Reveal>
           <SectionHeader
-            eyebrow="FAQ"
-            heading="Frequently Asked Questions"
+            sectionNumber="// 09."
+            heading="FREQUENTLY ASKED QUESTIONS"
+            rightMeta="KNOWLEDGE BASE & FAQ"
+            eyebrowColor="text-cyan-400"
             subhead="Everything you need to know about Agent Hub's architecture and capabilities."
-            align="center"
           />
         </Reveal>
 
         <Reveal delay={80}>
-          <div className="max-w-3xl mx-auto bg-[var(--surface-raised)] rounded-md border border-[hsl(var(--border))] shadow-card px-6 sm:px-8 py-2">
+          <div className="max-w-3xl mx-auto bg-[var(--surface-raised)] rounded-md border border-[var(--border-subtle)] shadow-card px-6 sm:px-8 py-2">
             <Accordion items={faqItems} />
           </div>
         </Reveal>
@@ -690,21 +713,21 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════════════════
           SECTION 12 — FINAL CTA BAND
           ═══════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden rounded-md bg-[var(--accent-contrast)] dark:bg-[var(--surface-raised)] dark:border dark:border-[hsl(var(--border))] p-10 sm:p-16 text-center space-y-6">
-        {/* Background glow */}
+      <section className="relative overflow-hidden rounded-md bg-[var(--surface-raised)] border border-[var(--border-subtle)] p-10 sm:p-16 text-center space-y-6">
+        {/* Background glow — restrained cyan and blue per AGENTS.md */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden rounded-md">
-          <div className="absolute -top-24 left-1/4 h-[300px] w-[300px] rounded-full bg-gradient-to-br from-indigo-500/20 to-violet-500/20 blur-[80px]" />
-          <div className="absolute -bottom-16 right-1/4 h-[250px] w-[250px] rounded-full bg-gradient-to-br from-sky-500/15 to-indigo-500/15 blur-[80px]" />
+          <div className="absolute -top-24 left-1/4 h-[300px] w-[300px] rounded-full bg-gradient-to-br from-cyan-500/10 to-blue-500/10 blur-[80px]" />
+          <div className="absolute -bottom-16 right-1/4 h-[250px] w-[250px] rounded-full bg-gradient-to-br from-blue-500/10 to-cyan-500/10 blur-[80px]" />
         </div>
 
         <div className="relative z-10 space-y-6 max-w-2xl mx-auto">
-          <div className="text-xs font-semibold uppercase tracking-[0.14em] text-indigo-300 dark:text-indigo-400">
-            Ready to Build?
+          <div className="text-xs font-pixel uppercase tracking-wider text-[var(--accent-primary)]">
+            READY TO BUILD?
           </div>
-          <h2 className="font-sans font-extrabold text-3xl sm:text-5xl leading-tight tracking-tight text-white dark:text-[var(--text-primary)]">
-            Launch Agent Hub Today
+          <h2 className="font-pixel text-4xl sm:text-5xl lg:text-6xl leading-tight tracking-wider uppercase text-[var(--text-primary)]">
+            LAUNCH AGENT STUDIO TODAY
           </h2>
-          <p className="text-base text-indigo-200 dark:text-[var(--text-secondary)] leading-relaxed">
+          <p className="text-base text-[var(--text-secondary)] leading-relaxed font-sans">
             Start building autonomous multi-agent workflows — free, open-source, and self-hostable.
           </p>
           <div className="flex justify-center gap-4 pt-2">
@@ -716,17 +739,17 @@ export default function LandingPage() {
       {/* ═══════════════════════════════════════════════════════
           FOOTER
           ═══════════════════════════════════════════════════════ */}
-      <footer className="border-t border-[hsl(var(--border))] pt-10 pb-6 space-y-8">
+      <footer className="border-t border-[var(--border-subtle)] pt-10 pb-6 space-y-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           {/* Brand */}
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-[10px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
-              <Sparkles className="h-4 w-4 text-white" />
+            <div className="w-8 h-8 rounded-[10px] bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-[#0B0F14]" />
             </div>
             <div>
               <div className="font-bold text-sm text-[var(--text-primary)]">Agent Hub</div>
               <div className="text-xs text-[var(--text-muted)] flex items-center gap-1.5">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 All Systems Operational · © 2026
               </div>
             </div>

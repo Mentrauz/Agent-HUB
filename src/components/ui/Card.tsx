@@ -33,7 +33,7 @@ export function Card({
         hoverable && [
           "cursor-pointer",
           "hover:-translate-y-1 hover:shadow-elevated",
-          "hover:border-indigo-200 dark:hover:border-indigo-800/60",
+          "hover:border-[var(--border-strong)]",
         ],
         !noPadding && "p-6",
         className
@@ -56,7 +56,7 @@ interface FeatureCardProps {
 
 export function FeatureCard({
   icon,
-  iconColor = "text-indigo-600 dark:text-indigo-400",
+  iconColor = "text-[var(--accent-primary)]",
   title,
   description,
   badge,
@@ -67,8 +67,8 @@ export function FeatureCard({
       {icon && (
         <div
           className={clsx(
-            "w-10 h-10 rounded-[10px] flex items-center justify-center",
-            "bg-indigo-50 dark:bg-indigo-950/40",
+            "w-10 h-10 rounded-[10px] flex items-center justify-center border border-[var(--border-subtle)]",
+            "bg-[var(--surface-sunken)]",
             iconColor
           )}
         >

@@ -232,9 +232,7 @@ Do not remove the semantic node-type colors used on the canvas (agent/tool/contr
 HITL). Re-map them to the tokenized palette above so nodes remain distinguishable
 without reverting to neon colors.
 
-Typography: replace the monospace/pixel display font used for headings with a clean
-geometric sans for display type (e.g. Geist, Inter, or a similar variable font
-already available in the project). Reserve monospace for code, JSON payloads,
+Reserve monospace for code, JSON payloads,
 execution logs, IDs, and node parameter fields where it improves readability.
 
 Hero and page composition guidance

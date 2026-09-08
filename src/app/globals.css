@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,148 +11,244 @@
 
 @layer base {
   :root {
-    /* ── Shadcn/Tailwind semantic tokens (light) ── */
-    --background: 250 50% 98%;        /* #FAFAFC */
-    --foreground: 240 6% 7%;          /* #0E0E12 */
+    /* ── Surfaces — dark graphite infrastructure palette (Default) ── */
+    --surface-base: #0B0F14;
+    --surface-raised: #151E27;
+    --surface-sunken: #111820;
+    --surface-elevated: #1B2530;
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 6% 7%;
+    /* Borders / dividers */
+    --border-subtle: #273340;
+    --border-strong: #344250;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 6% 7%;
+    /* Text */
+    --text-primary: #E8EDF2;
+    --text-secondary: #8996A3;
+    --text-muted: #5F6C78;
 
-    --primary: 243 75% 59%;           /* #4F46E5 indigo */
-    --primary-foreground: 210 40% 98%;
+    /* System / brand accents */
+    --accent-primary: #22D3EE;   /* cyan — orchestration, MCP, runtime, tools */
+    --accent-secondary: #60A5FA; /* blue — data, integrations, connections */
+    --accent-contrast: #0B0F14;  /* dark contrast for light-on-accent UI */
 
-    --secondary: 245 20% 94%;         /* #F2F1F8 */
-    --secondary-foreground: 240 6% 7%;
+    /* Semantic system states */
+    --state-success: #34D399;   /* autonomous execution / healthy */
+    --state-warning: #FBBF24;   /* human approval / governance */
+    --state-error: #F87171;     /* blocked / failure */
 
-    --muted: 245 20% 94%;
-    --muted-foreground: 240 4% 36%;   /* #5B5B68 */
+    /* React Flow node semantics */
+    --node-agent: #8B7CF6;       /* agent / reasoning — violet retained only here */
+    --node-tool: #22D3EE;        /* tools / MCP / integrations */
+    --node-control: #FBBF24;     /* control / routing / guardrails */
+    --node-hitl: #F59E0B;        /* human-in-the-loop / approval */
 
-    --accent: 245 20% 94%;
-    --accent-foreground: 240 6% 7%;
+    /* Elevation */
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.18);
+    --shadow-md: 0 8px 24px rgba(0,0,0,0.24);
+    --shadow-lg: 0 24px 64px rgba(0,0,0,0.32);
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 243 75% 59%;
-
-    --radius: 0.625rem;               /* 10px base */
-
-    /* ── Cosmoq-spec Surface Tokens ── */
-    --surface-base: #FAFAFC;
-    --surface-raised: #FFFFFF;
-    --surface-sunken: #F2F1F8;
-
-    /* ── Cosmoq-spec Text Tokens ── */
-    --text-primary: #0E0E12;
-    --text-secondary: #5B5B68;
-    --text-muted: #8C8C97;
-
-    /* ── Brand / Accent Tokens ── */
-    --accent-primary: #4F46E5;
-    --accent-secondary: #7C6CF0;
-    --accent-contrast: #0E0E12;
-
-    /* ── Semantic Node-type Colors ── */
-    --node-agent: #6D5EF0;
-    --node-tool: #2FB8A6;
-    --node-control: #F0A23C;
-    --node-hitl: #E5484D;
-
-    /* ── Elevation Shadows ── */
-    --shadow-sm: 0 1px 2px rgba(16,16,24,0.04);
-    --shadow-md: 0 8px 24px rgba(16,16,24,0.08);
-    --shadow-lg: 0 24px 64px rgba(16,16,24,0.12);
-
-    /* ── Radius Tokens ── */
+    /* Radius */
     --radius-sm: 10px;
     --radius-md: 16px;
     --radius-lg: 24px;
     --radius-pill: 999px;
 
-    /* ── Preloader Custom Properties (Light Mode) ── */
-    --preloader-primary: 243 75% 59%;
-    --preloader-primary-hex: #4f46e5;
-    --preloader-secondary: 199 89% 48%;
-    --preloader-secondary-hex: #0284c7;
-    --preloader-accent: 262 83% 58%;
-    --preloader-accent-hex: #7c3aed;
-    --preloader-bg: 250 50% 98%;
-    --preloader-surface: 0 0% 100%;
-    --preloader-border: 240 6% 88%;
-    --preloader-text: 240 6% 7%;
-    --preloader-muted: 240 4% 36%;
-    --preloader-glow: rgba(79, 70, 229, 0.25);
+    /* Technical background treatments */
+    --grid-dot: rgba(137,150,163,0.13);
+    --glow-cyan: rgba(34,211,238,0.10);
+    --glow-blue: rgba(96,165,250,0.08);
+
+    /* Font fallbacks / mappings */
+    --font-vt323: 'VT323', monospace;
+    --font-pixel: 'VT323', monospace;
+    --font-sans: var(--font-geist);
+
+    /* ── Shadcn/Tailwind semantic tokens (dark default) ── */
+    --background: 213 29% 6%;         /* #0B0F14 */
+    --foreground: 210 24% 93%;        /* #E8EDF2 */
+
+    --card: 212 30% 12%;              /* #151E27 */
+    --card-foreground: 210 24% 93%;
+
+    --popover: 212 28% 15%;           /* #1B2530 */
+    --popover-foreground: 210 24% 93%;
+
+    --primary: 189 94% 53%;           /* #22D3EE cyan */
+    --primary-foreground: 213 29% 6%; /* #0B0F14 */
+
+    --secondary: 212 28% 15%;         /* #1B2530 */
+    --secondary-foreground: 210 24% 93%;
+
+    --muted: 212 30% 12%;             /* #151E27 */
+    --muted-foreground: 211 11% 59%;  /* #8996A3 */
+
+    --accent: 212 28% 15%;            /* #1B2530 */
+    --accent-foreground: 189 94% 53%; /* #22D3EE */
+
+    --destructive: 0 94% 71%;         /* #F87171 */
+    --destructive-foreground: 213 29% 6%;
+
+    --border: 212 24% 20%;            /* #273340 */
+    --input: 212 24% 20%;
+    --ring: 189 94% 53%;
+
+    --radius: 0.625rem;
+
+    /* Preloader properties */
+    --preloader-primary: 189 94% 53%;
+    --preloader-primary-hex: #22d3ee;
+    --preloader-secondary: 217 91% 60%;
+    --preloader-secondary-hex: #60a5fa;
+    --preloader-accent: 160 84% 39%;
+    --preloader-accent-hex: #34d399;
+    --preloader-bg: 213 29% 6%;
+    --preloader-surface: 212 30% 12%;
+    --preloader-border: 212 24% 20%;
+    --preloader-text: 210 24% 93%;
+    --preloader-muted: 211 11% 59%;
+    --preloader-glow: rgba(34, 211, 238, 0.25);
   }
 
-  /* ── Dark Theme Overrides ── */
+  /* ── Light Secondary Theme ── */
+  [data-theme="light"],
+  .light {
+    --surface-base: #F5F7F8;
+    --surface-raised: #FFFFFF;
+    --surface-sunken: #EEF2F4;
+    --surface-elevated: #FFFFFF;
+
+    --border-subtle: #D7DEE3;
+    --border-strong: #C2CCD4;
+
+    --text-primary: #101820;
+    --text-secondary: #5F6B76;
+    --text-muted: #7A8792;
+
+    --accent-primary: #0891B2;
+    --accent-secondary: #2563EB;
+    --accent-contrast: #101820;
+
+    --state-success: #059669;
+    --state-warning: #D97706;
+    --state-error: #DC2626;
+
+    --node-agent: #6D5EF0;
+    --node-tool: #0891B2;
+    --node-control: #D97706;
+    --node-hitl: #DC2626;
+
+    --shadow-sm: 0 1px 2px rgba(16,24,32,0.05);
+    --shadow-md: 0 8px 24px rgba(16,24,32,0.08);
+    --shadow-lg: 0 24px 64px rgba(16,24,32,0.12);
+
+    --grid-dot: rgba(95,107,118,0.12);
+    --glow-cyan: rgba(8,145,178,0.08);
+    --glow-blue: rgba(37,99,235,0.06);
+
+    --background: 200 14% 97%;        /* #F5F7F8 */
+    --foreground: 210 33% 10%;        /* #101820 */
+
+    --card: 0 0% 100%;                /* #FFFFFF */
+    --card-foreground: 210 33% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 33% 10%;
+
+    --primary: 192 91% 36%;           /* #0891B2 cyan */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 200 17% 95%;         /* #EEF2F4 */
+    --secondary-foreground: 210 33% 10%;
+
+    --muted: 200 17% 95%;             /* #EEF2F4 */
+    --muted-foreground: 210 11% 42%;  /* #5F6B76 */
+
+    --accent: 200 17% 95%;
+    --accent-foreground: 192 91% 36%;
+
+    --destructive: 0 72% 51%;         /* #DC2626 */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 204 14% 87%;            /* #D7DEE3 */
+    --input: 204 14% 87%;
+    --ring: 192 91% 36%;
+
+    --preloader-primary: 192 91% 36%;
+    --preloader-primary-hex: #0891b2;
+    --preloader-secondary: 221 83% 53%;
+    --preloader-secondary-hex: #2563eb;
+    --preloader-accent: 160 84% 39%;
+    --preloader-accent-hex: #059669;
+    --preloader-bg: 200 14% 97%;
+    --preloader-surface: 0 0% 100%;
+    --preloader-border: 204 14% 87%;
+    --preloader-text: 210 33% 10%;
+    --preloader-muted: 210 11% 42%;
+    --preloader-glow: rgba(8, 145, 178, 0.2);
+  }
+
+  /* ── Dark Theme Overrides (matches :root) ── */
   .dark {
-    --background: 240 10% 4%;         /* #0B0B0F */
-    --foreground: 240 5% 96%;         /* #F5F5F7 */
+    --surface-base: #0B0F14;
+    --surface-raised: #151E27;
+    --surface-sunken: #111820;
+    --surface-elevated: #1B2530;
 
-    --card: 240 8% 9%;                /* #16161C */
-    --card-foreground: 240 5% 96%;
+    --border-subtle: #273340;
+    --border-strong: #344250;
 
-    --popover: 240 8% 9%;
-    --popover-foreground: 240 5% 96%;
+    --text-primary: #E8EDF2;
+    --text-secondary: #8996A3;
+    --text-muted: #5F6C78;
 
-    --primary: 243 80% 65%;
-    --primary-foreground: 240 10% 4%;
+    --accent-primary: #22D3EE;
+    --accent-secondary: #60A5FA;
+    --accent-contrast: #0B0F14;
 
-    --secondary: 240 7% 12%;          /* #1D1D24 */
-    --secondary-foreground: 240 5% 96%;
+    --state-success: #34D399;
+    --state-warning: #FBBF24;
+    --state-error: #F87171;
 
-    --muted: 240 7% 12%;
-    --muted-foreground: 240 5% 70%;   /* #A8A8B3 */
+    --node-agent: #8B7CF6;
+    --node-tool: #22D3EE;
+    --node-control: #FBBF24;
+    --node-hitl: #F59E0B;
 
-    --accent: 243 80% 65%;
-    --accent-foreground: 240 10% 4%;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.18);
+    --shadow-md: 0 8px 24px rgba(0,0,0,0.24);
+    --shadow-lg: 0 24px 64px rgba(0,0,0,0.32);
 
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 240 5% 96%;
+    --grid-dot: rgba(137,150,163,0.13);
+    --glow-cyan: rgba(34,211,238,0.10);
+    --glow-blue: rgba(96,165,250,0.08);
 
-    --border: 240 6% 18%;
-    --input: 240 6% 18%;
-    --ring: 243 80% 65%;
+    --background: 213 29% 6%;
+    --foreground: 210 24% 93%;
 
-    /* ── Dark Surface Tokens ── */
-    --surface-base: #0B0B0F;
-    --surface-raised: #16161C;
-    --surface-sunken: #1D1D24;
+    --card: 212 30% 12%;
+    --card-foreground: 210 24% 93%;
 
-    /* ── Dark Text Tokens ── */
-    --text-primary: #F5F5F7;
-    --text-secondary: #A8A8B3;
-    --text-muted: #6E6E7A;
+    --popover: 212 28% 15%;
+    --popover-foreground: 210 24% 93%;
 
-    /* ── Accent stays same hue, adjusted lightness ── */
-    --accent-primary: #6D63F5;
-    --accent-secondary: #9B8EF8;
-    --accent-contrast: #F5F5F7;
+    --primary: 189 94% 53%;
+    --primary-foreground: 213 29% 6%;
 
-    /* ── Node colors slightly brighter in dark ── */
-    --node-agent: #8B7FF5;
-    --node-tool: #3DCFBA;
-    --node-control: #F5B555;
-    --node-hitl: #F06468;
+    --secondary: 212 28% 15%;
+    --secondary-foreground: 210 24% 93%;
 
-    /* ── Dark Preloader Properties ── */
-    --preloader-primary: 187 92% 55%;
-    --preloader-primary-hex: #00f0ff;
-    --preloader-secondary: 239 84% 67%;
-    --preloader-secondary-hex: #818cf8;
-    --preloader-accent: 263 70% 68%;
-    --preloader-accent-hex: #c084fc;
-    --preloader-bg: 224 71% 4%;
-    --preloader-surface: 222 47% 7%;
-    --preloader-border: 217 33% 20%;
-    --preloader-text: 210 40% 98%;
-    --preloader-muted: 215 20% 65%;
-    --preloader-glow: rgba(0, 240, 255, 0.35);
+    --muted: 212 30% 12%;
+    --muted-foreground: 211 11% 59%;
+
+    --accent: 212 28% 15%;
+    --accent-foreground: 189 94% 53%;
+
+    --destructive: 0 94% 71%;
+    --destructive-foreground: 213 29% 6%;
+
+    --border: 212 24% 20%;
+    --input: 212 24% 20%;
+    --ring: 189 94% 53%;
   }
 
   * {
@@ -161,15 +259,15 @@
     background-color: var(--surface-base);
     color: var(--text-primary);
     font-family: var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    /* Subtle dot grid — very light in default, invisible on dark */
-    background-image: radial-gradient(rgba(79, 70, 229, 0.055) 1px, transparent 1px);
-    background-size: 28px 28px;
+    /* Subtle dot grid on dark graphite */
+    background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+    background-size: 24px 24px;
     background-attachment: fixed;
   }
 
-  .dark body {
+  .light body, [data-theme="light"] body {
     background-color: var(--surface-base);
-    background-image: radial-gradient(rgba(99, 102, 241, 0.08) 1px, transparent 1px);
+    background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
   }
 
   /* Smooth theme transitions */
@@ -177,12 +275,12 @@
   html.pixel-theme-transitioning *,
   html.pixel-theme-transitioning *::before,
   html.pixel-theme-transitioning *::after {
-    transition: background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 0.7s cubic-bezier(0.4, 0, 0.2, 1),
-                color 0.7s cubic-bezier(0.4, 0, 0.2, 1),
-                fill 0.7s cubic-bezier(0.4, 0, 0.2, 1),
-                stroke 0.7s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.7s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                fill 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                stroke 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
 }
 
@@ -197,14 +295,19 @@
    Typography Utility Classes
    ========================================================================= */
 
-/* Monospace reserved for code, logs, trace output, node params */
-.font-pixel {
-  font-family: var(--font-pixel), 'Silkscreen', 'Press Start 2P', monospace;
-  letter-spacing: -0.02em;
+/* Pixel font: VT323 retro terminal / CRT monospace display font */
+.font-pixel,
+.font-vt323 {
+  font-family: 'VT323', var(--font-vt323), monospace !important;
+  letter-spacing: 0.05em;
+}
+
+.font-geist {
+  font-family: var(--font-geist), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .font-mono-tech {
-  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-family: var(--font-mono), 'Geist Mono', 'JetBrains Mono', monospace;
 }
 
 .font-serif-reading {
@@ -212,83 +315,74 @@
 }
 
 /* =========================================================================
-   Premium SaaS Utility Classes
+   Agent Infrastructure Utility Classes
    ========================================================================= */
 
-/* Soft gradient headline — light (dark indigo) + dark (light indigo) */
+/* Cyan/Blue infrastructure gradient headline */
 .text-gradient-glow {
-  background: linear-gradient(135deg, #3730a3 0%, #4F46E5 45%, #7C3AED 90%);
+  background: linear-gradient(135deg, #22D3EE 0%, #38BDF8 50%, #60A5FA 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-.dark .text-gradient-glow {
-  background: linear-gradient(135deg, #a5b4fc 0%, #818cf8 45%, #c4b5fd 90%);
+.light .text-gradient-glow,
+[data-theme="light"] .text-gradient-glow {
+  background: linear-gradient(135deg, #0891B2 0%, #0284C7 50%, #2563EB 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-/* Soft background blobs (CSS-only, no lib dependency) */
+/* Restrained radial accents — cyan and blue (low opacity) */
 .bg-blob-primary {
-  background: radial-gradient(ellipse at center, rgba(79, 70, 229, 0.12) 0%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(34, 211, 238, 0.08) 0%, transparent 70%);
 }
 
 .bg-blob-secondary {
-  background: radial-gradient(ellipse at center, rgba(124, 108, 240, 0.10) 0%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(96, 165, 250, 0.06) 0%, transparent 70%);
 }
 
 /* Subtle dot grid for section backgrounds */
 .bg-dot-grid {
-  background-image: radial-gradient(rgba(79, 70, 229, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
-.dark .bg-dot-grid {
-  background-image: radial-gradient(rgba(99, 102, 241, 0.10) 1px, transparent 1px);
-}
-
-/* Legacy blueprint grid — kept for canvas, no longer used on hero */
+/* Legacy blueprint grid — re-mapped to graphite / steel lines */
 .bg-grid-faint {
   background-image:
-    linear-gradient(rgba(99, 102, 241, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(137, 150, 163, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(137, 150, 163, 0.06) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 
-.dark .bg-grid-faint {
-  background-image:
-    linear-gradient(rgba(99, 102, 241, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(99, 102, 241, 0.07) 1px, transparent 1px);
-}
-
-/* Glow text — only in dark mode */
+/* System glow text */
 .text-pixel-glow {
   color: var(--accent-primary);
 }
 
-.dark .text-pixel-glow {
-  color: #a5b4fc;
-  text-shadow: 0 0 14px rgba(165, 180, 252, 0.5);
+.dark .text-pixel-glow,
+:root .text-pixel-glow {
+  color: #22D3EE;
+  text-shadow: 0 0 14px rgba(34, 211, 238, 0.4);
 }
 
 /* Soft tech border */
 .border-tech {
-  border: 1px solid rgba(79, 70, 229, 0.15);
-}
-
-.dark .border-tech {
-  border: 1px solid rgba(99, 102, 241, 0.30);
+  border: 1px solid var(--border-subtle);
 }
 
 /* Header scroll shadow */
 .header-scrolled {
-  box-shadow: 0 1px 12px rgba(16, 16, 24, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border-bottom-color: var(--border-subtle);
 }
 
-.dark .header-scrolled {
-  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+.light .header-scrolled,
+[data-theme="light"] .header-scrolled {
+  box-shadow: 0 1px 12px rgba(16, 24, 32, 0.06);
+  border-bottom-color: var(--border-subtle);
 }
 
 /* =========================================================================
@@ -472,136 +566,107 @@
 }
 
 /* =========================================================================
-   React Flow Canvas Theme — Light Default
+   React Flow Canvas Theme — Agent Infrastructure Palette
    ========================================================================= */
 
-/* Canvas background — subtle dot grid */
+/* Canvas background — subtle dot grid on dark graphite base */
 .react-flow {
-  background-color: #F8F9FD;
-  background-image: radial-gradient(rgba(99, 102, 241, 0.10) 1px, transparent 1px);
+  background-color: var(--surface-base);
+  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
-.dark .react-flow {
-  background-color: #0F0F14;
-  background-image: radial-gradient(rgba(99, 102, 241, 0.12) 1px, transparent 1px);
+.light .react-flow,
+[data-theme="light"] .react-flow {
+  background-color: #F5F7F8;
+  background-image: radial-gradient(rgba(95, 107, 118, 0.12) 1px, transparent 1px);
 }
 
 /* Edges */
 .react-flow__edge-path {
-  stroke: #CBD5E1;
+  stroke: var(--border-strong);
   stroke-width: 1.5;
   transition: stroke 0.2s ease;
 }
 
-.dark .react-flow__edge-path {
-  stroke: #334155;
+.light .react-flow__edge-path,
+[data-theme="light"] .react-flow__edge-path {
+  stroke: #C2CCD4;
 }
 
 .react-flow__edge.selected .react-flow__edge-path,
 .react-flow__edge:hover .react-flow__edge-path {
-  stroke: #4F46E5 !important;
+  stroke: var(--accent-primary) !important;
   stroke-width: 2 !important;
 }
 
 .react-flow__edge-text {
-  fill: #1e293b !important;
+  fill: var(--text-primary) !important;
   font-family: var(--font-mono), 'JetBrains Mono', monospace !important;
   font-size: 10px !important;
   font-weight: 600;
 }
 
-.dark .react-flow__edge-text {
-  fill: #94a3b8 !important;
-}
-
 .react-flow__edge-textbg {
-  fill: #ffffff !important;
+  fill: var(--surface-raised) !important;
   fill-opacity: 0.95 !important;
-  stroke: #e2e8f0 !important;
+  stroke: var(--border-subtle) !important;
   stroke-width: 1 !important;
   rx: 6 !important;
   ry: 6 !important;
 }
 
-.dark .react-flow__edge-textbg {
-  fill: #1e293b !important;
-  fill-opacity: 0.95 !important;
-  stroke: #334155 !important;
-}
-
 /* React Flow Controls */
 .react-flow__controls {
-  background: white;
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(16, 16, 24, 0.08);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
-.dark .react-flow__controls {
-  background: #16161C;
-  border-color: rgba(55, 65, 81, 0.6);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-}
-
 .react-flow__controls-button {
-  background: white;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
-  color: #5B5B68;
+  background: var(--surface-raised);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  fill: var(--text-secondary);
   transition: background 0.15s ease, color 0.15s ease;
 }
 
 .react-flow__controls-button:hover {
-  background: #F2F1F8;
-  color: #4F46E5;
-}
-
-.dark .react-flow__controls-button {
-  background: #16161C;
-  border-bottom-color: rgba(55, 65, 81, 0.4);
-  color: #A8A8B3;
-  fill: #A8A8B3;
-}
-
-.dark .react-flow__controls-button:hover {
-  background: #1D1D24;
-  color: #7C6CF0;
-  fill: #7C6CF0;
+  background: var(--surface-sunken);
+  color: var(--accent-primary);
+  fill: var(--accent-primary);
 }
 
 /* Minimap */
 .react-flow__minimap {
-  background: white;
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(16, 16, 24, 0.08);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
-.dark .react-flow__minimap {
-  background: #16161C;
-  border-color: rgba(55, 65, 81, 0.6);
-}
-
 .react-flow__minimap-mask {
-  fill: rgba(242, 241, 248, 0.7);
+  fill: rgba(11, 15, 20, 0.7);
 }
 
-.dark .react-flow__minimap-mask {
-  fill: rgba(29, 29, 36, 0.7);
+.light .react-flow__minimap-mask,
+[data-theme="light"] .react-flow__minimap-mask {
+  fill: rgba(238, 242, 244, 0.7);
 }
 
 /* Selection box */
 .react-flow__selection {
-  background: rgba(79, 70, 229, 0.06);
-  border: 1.5px dashed rgba(79, 70, 229, 0.5);
+  background: rgba(34, 211, 238, 0.08);
+  border: 1.5px dashed rgba(34, 211, 238, 0.5);
   border-radius: 8px;
 }
 
 /* Connection line */
 .react-flow__connectionline {
-  stroke: #4F46E5;
+  stroke: var(--accent-primary);
   stroke-width: 2;
   stroke-dasharray: 5 5;
 }
@@ -630,19 +695,19 @@
   display: none !important;
 }
 
-/* Light mode Clerk card */
+/* Clerk Card & Popover — Adaptive Tokens */
 .cl-card,
 .cl-userProfile-root {
-  background-color: #FFFFFF !important;
-  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  background-color: var(--surface-raised) !important;
+  border: 1px solid var(--border-subtle) !important;
   border-radius: 16px !important;
-  box-shadow: 0 8px 32px rgba(16, 16, 24, 0.10) !important;
+  box-shadow: var(--shadow-lg) !important;
   color: var(--text-primary) !important;
   font-family: var(--font-inter), Inter, sans-serif !important;
 }
 
 .cl-headerTitle {
-  color: #0E0E12 !important;
+  color: var(--text-primary) !important;
   font-family: var(--font-inter), Inter, sans-serif !important;
   font-weight: 700 !important;
   font-size: 1.25rem !important;
@@ -652,33 +717,34 @@
 .cl-headerSubtitle,
 .cl-profileSectionSubtitleText,
 .cl-breadcrumbsItem {
-  color: #5B5B68 !important;
+  color: var(--text-secondary) !important;
   font-family: var(--font-inter), Inter, sans-serif !important;
 }
 
 .cl-profileSectionTitleText {
-  color: #4F46E5 !important;
+  color: var(--accent-primary) !important;
   font-family: var(--font-inter), Inter, sans-serif !important;
   font-weight: 600 !important;
 }
 
 .cl-formFieldLabel {
-  color: #5B5B68 !important;
+  color: var(--text-secondary) !important;
   font-family: var(--font-inter), Inter, sans-serif !important;
   font-weight: 500 !important;
 }
 
 .cl-formFieldInput {
-  background-color: #FAFAFC !important;
-  border: 1px solid rgba(226, 232, 240, 0.9) !important;
-  color: #0E0E12 !important;
+  background-color: var(--surface-sunken) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-primary) !important;
   font-family: var(--font-inter), Inter, sans-serif !important;
   border-radius: 10px !important;
   padding: 0.625rem 0.875rem !important;
 }
 
 .cl-formButtonPrimary {
-  background-color: #0E0E12 !important;
+  background-color: var(--text-primary) !important;
+  color: var(--surface-base) !important;
   border: none !important;
   font-family: var(--font-inter), Inter, sans-serif !important;
   font-weight: 600 !important;
@@ -688,53 +754,22 @@
 }
 
 .cl-formButtonPrimary:hover {
-  background-color: #1a1a24 !important;
+  opacity: 0.9 !important;
 }
 
-.cl-accordionTriggerButton { color: #0E0E12 !important; }
-.cl-menuButton { color: #0E0E12 !important; }
+.cl-accordionTriggerButton { color: var(--text-primary) !important; }
+.cl-menuButton { color: var(--text-primary) !important; }
 
 .cl-userButtonPopoverCard {
-  background-color: #FFFFFF !important;
-  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  background-color: var(--surface-raised) !important;
+  border: 1px solid var(--border-subtle) !important;
   border-radius: 16px !important;
-  box-shadow: 0 8px 32px rgba(16, 16, 24, 0.10) !important;
-  color: #0E0E12 !important;
+  box-shadow: var(--shadow-lg) !important;
+  color: var(--text-primary) !important;
 }
 
-.cl-userButtonPopoverActionButtonText { color: #5B5B68 !important; }
-.cl-userButtonPopoverActionButtonIcon { color: #4F46E5 !important; }
-
-/* Dark mode Clerk overrides */
-.dark .cl-card,
-.dark .cl-userProfile-root {
-  background-color: #16161C !important;
-  border-color: rgba(55, 65, 81, 0.5) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
-  color: #F5F5F7 !important;
-}
-
-.dark .cl-headerTitle { color: #F5F5F7 !important; }
-.dark .cl-headerSubtitle,
-.dark .cl-profileSectionSubtitleText,
-.dark .cl-breadcrumbsItem { color: #A8A8B3 !important; }
-.dark .cl-profileSectionTitleText { color: #9B8EF8 !important; }
-.dark .cl-formFieldLabel { color: #A8A8B3 !important; }
-.dark .cl-formFieldInput {
-  background-color: #0B0B0F !important;
-  border-color: rgba(99, 102, 241, 0.3) !important;
-  color: #F5F5F7 !important;
-}
-.dark .cl-formButtonPrimary { background-color: #6D63F5 !important; }
-.dark .cl-accordionTriggerButton { color: #F5F5F7 !important; }
-.dark .cl-menuButton { color: #F5F5F7 !important; }
-.dark .cl-userButtonPopoverCard {
-  background-color: #16161C !important;
-  border-color: rgba(55, 65, 81, 0.5) !important;
-  color: #F5F5F7 !important;
-}
-.dark .cl-userButtonPopoverActionButtonText { color: #A8A8B3 !important; }
-.dark .cl-userButtonPopoverActionButtonIcon { color: #9B8EF8 !important; }
+.cl-userButtonPopoverActionButtonText { color: var(--text-secondary) !important; }
+.cl-userButtonPopoverActionButtonIcon { color: var(--accent-primary) !important; }
 
 /* =========================================================================
    Agent Hub Preloader — Kept Intact

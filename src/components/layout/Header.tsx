@@ -17,11 +17,11 @@ import { usePixelThemeTransition } from "@/components/effects/PixelThemeTransiti
 import { clsx } from "clsx";
 
 const landingNavLinks = [
-  { label: "Runtime",    href: "#runtime" },
-  { label: "Features",   href: "#features" },
-  { label: "Tools",      href: "#tools" },
-  { label: "Guardrails", href: "#guardrails" },
-  { label: "FAQ",        href: "#faq" },
+  { label: "[ RUNTIME ]",    href: "#canvas" },
+  { label: "[ FEATURES ]",   href: "#opensource" },
+  { label: "[ TOOLS ]",      href: "#tooling" },
+  { label: "[ GUARDRAILS ]", href: "#guardrails" },
+  { label: "[ FAQ ]",        href: "#faq" },
 ];
 
 export function Header() {
@@ -72,28 +72,27 @@ export function Header() {
             )}
 
             <Link href="/" className="group flex items-center gap-2">
-              {/* Logo mark */}
-              <div className="w-8 h-8 rounded-[10px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
-                <Sparkles className="h-4 w-4 text-white" />
-              </div>
-              <span className="font-sans font-bold text-base tracking-tight text-[var(--text-primary)]">
-                Agent Hub
+              <span
+                className="font-pixel text-xl sm:text-2xl tracking-wider text-cyan-400 group-hover:text-cyan-300 transition-colors uppercase"
+                style={{ fontFamily: "'VT323', monospace" }}
+              >
+                AGENT STUDIO
               </span>
             </Link>
           </div>
 
           {/* ── Center: Landing page nav links ── */}
           {isLanding && (
-            <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
+            <nav className="hidden lg:flex items-center gap-2" aria-label="Main navigation">
               {landingNavLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
                   className={clsx(
-                    "px-3.5 py-2 rounded-[10px] text-sm font-medium font-sans",
-                    "text-[var(--text-secondary)] hover:text-[var(--text-primary)]",
-                    "hover:bg-[var(--surface-sunken)] transition-all duration-150"
+                    "px-2.5 py-1 text-sm sm:text-base font-pixel tracking-wider",
+                    "text-cyan-400/80 hover:text-cyan-300 transition-colors"
                   )}
+                  style={{ fontFamily: "'VT323', monospace" }}
                 >
                   {link.label}
                 </a>
@@ -125,16 +124,16 @@ export function Header() {
                 title={isDark ? "Switch to light mode" : "Switch to dark mode"}
                 aria-label="Toggle theme"
                 className={clsx(
-                  "p-2 rounded-[10px] bg-[var(--surface-sunken)]",
+                  "p-2 rounded bg-[var(--surface-sunken)] border border-[var(--border-subtle)]",
                   "text-[var(--text-secondary)] hover:text-[var(--text-primary)]",
-                  "hover:bg-slate-100 dark:hover:bg-slate-800",
+                  "hover:bg-[var(--surface-raised)] hover:border-[var(--border-strong)]",
                   "transition-all cursor-pointer select-none",
                   isTransitioning && "opacity-60 pointer-events-none"
                 )}
               >
                 {isDark
-                  ? <Sun  className="h-4 w-4 text-amber-500" />
-                  : <Moon className="h-4 w-4" />}
+                  ? <Sun  className="h-4 w-4 text-amber-400" />
+                  : <Moon className="h-4 w-4 text-cyan-400" />}
               </button>
             )}
 
@@ -145,14 +144,15 @@ export function Header() {
                     aria-label="Sign in"
                     className={clsx(
                       "hidden sm:inline-flex items-center gap-1.5",
-                      "px-4 py-2 rounded-pill text-sm font-semibold font-sans",
-                      "text-[var(--text-secondary)] border border-[hsl(var(--border))]",
-                      "hover:text-[var(--text-primary)] hover:border-slate-300 dark:hover:border-slate-600",
+                      "px-3 py-1 rounded text-xs sm:text-sm font-pixel tracking-wider",
+                      "text-cyan-300 border border-cyan-500/30 bg-cyan-950/30",
+                      "hover:text-cyan-100 hover:border-cyan-400 hover:bg-cyan-900/40",
                       "transition-all duration-150 cursor-pointer"
                     )}
+                    style={{ fontFamily: "'VT323', monospace" }}
                   >
-                    <LogIn className="h-3.5 w-3.5 shrink-0" />
-                    Sign In
+                    <LogIn className="h-3.5 w-3.5 shrink-0 text-cyan-400" />
+                    [ SIGN IN ]
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
@@ -160,15 +160,15 @@ export function Header() {
                     aria-label="Get started for free"
                     className={clsx(
                       "inline-flex items-center gap-1.5",
-                      "px-4 py-2 rounded-pill text-sm font-semibold font-sans",
-                      "bg-[var(--accent-contrast)] text-white",
-                      "hover:bg-slate-800 dark:hover:bg-slate-100 dark:text-slate-900 dark:bg-[var(--text-primary)]",
-                      "shadow-sm hover:shadow-md transition-all duration-150 cursor-pointer"
+                      "px-3.5 py-1 rounded text-xs sm:text-sm font-pixel tracking-wider",
+                      "text-white bg-indigo-600 border border-indigo-400/40",
+                      "hover:bg-indigo-500 hover:border-indigo-300",
+                      "shadow-sm transition-all duration-150 cursor-pointer"
                     )}
+                    style={{ fontFamily: "'VT323', monospace" }}
                   >
-                    <Sparkles className="h-3.5 w-3.5 shrink-0" />
-                    <span className="hidden xs:inline">Get Started</span>
-                    <span className="xs:hidden">Start</span>
+                    <Sparkles className="h-3.5 w-3.5 shrink-0 text-cyan-300" />
+                    [ GET STARTED ]
                   </button>
                 </SignUpButton>
               </div>

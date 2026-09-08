@@ -11,10 +11,12 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        pixel: ["var(--font-pixel)", "Silkscreen", "Press Start 2P", "monospace"],
-        mono: ["var(--font-mono)", "JetBrains Mono", "monospace"],
+        pixel: ["'VT323'", "var(--font-vt323)", "monospace"],
+        vt323: ["'VT323'", "var(--font-vt323)", "monospace"],
+        mono: ["var(--font-mono)", "Geist Mono", "monospace"],
         serif: ["var(--font-serif)", "Lora", "Georgia", "serif"],
-        sans: ["var(--font-inter)", "Inter", "sans-serif"],
+        sans: ["var(--font-geist)", "Geist", "sans-serif"],
+        geist: ["var(--font-geist)", "Geist", "sans-serif"],
       },
       colors: {
         background: "hsl(var(--background))",
@@ -47,19 +49,29 @@ const config: Config = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
-        border: "hsl(var(--border))",
+        border: {
+          DEFAULT: "hsl(var(--border))",
+          subtle: "var(--border-subtle)",
+          strong: "var(--border-strong)",
+        },
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        // ── Cosmoq Design Tokens ──
+        // ── Agent Infrastructure Design Tokens ──
         surface: {
           base: "var(--surface-base)",
           raised: "var(--surface-raised)",
           sunken: "var(--surface-sunken)",
+          elevated: "var(--surface-elevated)",
         },
         brand: {
           primary: "var(--accent-primary)",
           secondary: "var(--accent-secondary)",
           contrast: "var(--accent-contrast)",
+        },
+        state: {
+          success: "var(--state-success)",
+          warning: "var(--state-warning)",
+          error: "var(--state-error)",
         },
         node: {
           agent: "var(--node-agent)",
@@ -83,9 +95,9 @@ const config: Config = {
         DEFAULT: "var(--shadow-md)",
         md: "var(--shadow-md)",
         lg: "var(--shadow-lg)",
-        card: "0 2px 8px rgba(16,16,24,0.06), 0 8px 24px rgba(16,16,24,0.08)",
-        elevated: "0 12px 40px rgba(16,16,24,0.12)",
-        glow: "0 0 0 3px rgba(79,70,229,0.25), 0 8px 24px rgba(79,70,229,0.15)",
+        card: "0 1px 3px rgba(0,0,0,0.18), 0 8px 24px rgba(0,0,0,0.24)",
+        elevated: "0 12px 32px rgba(0,0,0,0.32)",
+        glow: "0 0 0 1px rgba(34,211,238,0.25), 0 8px 24px rgba(34,211,238,0.12)",
       },
       animation: {
         "fade-in": "fadeIn 0.4s ease-out both",

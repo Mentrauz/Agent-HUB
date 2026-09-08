@@ -1,15 +1,29 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Silkscreen, Lora } from "next/font/google";
+import { Geist, Geist_Mono, VT323 } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/app/providers";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Toaster } from "@/components/feedback/Toaster";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
-const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
-const silkscreen = Silkscreen({ weight: ["400", "700"], subsets: ["latin"], variable: "--font-pixel", display: "swap" });
-const lora = Lora({ subsets: ["latin"], variable: "--font-serif", display: "swap" });
+const geistSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist",
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
+const vt323 = VT323({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-vt323",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Agent Hub — Visual AI Agent & Multi-Agent Orchestration Platform",
@@ -17,7 +31,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FAFAFC",
+  themeColor: "#0B0F14",
   width: "device-width",
   initialScale: 1,
 };
@@ -29,7 +43,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} ${inter.variable} ${jetbrainsMono.variable} ${silkscreen.variable} ${lora.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
+      </head>
+      <body className={`${geistSans.className} ${geistSans.variable} ${geistMono.variable} ${vt323.variable}`}>
         <a href="#main-content" className="skip-to-content-link">
           Skip to main content
         </a>

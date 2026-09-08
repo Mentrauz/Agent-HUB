@@ -3,11 +3,11 @@
 import React from "react";
 import Link from "next/link";
 import { SignInButton, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
-import { UserCheck, Sparkles, ArrowRight, LogIn, MousePointerClick, Terminal } from "lucide-react";
+import { UserCheck, Sparkles, LogIn, MousePointerClick } from "lucide-react";
 
 /**
  * Client-side auth section for the landing page hero.
- * Moved to a client component so the main page stays a pure RSC.
+ * Styled to match the dark graphite developer infrastructure aesthetic.
  */
 export function HeroAuthSection() {
   return (
@@ -15,8 +15,8 @@ export function HeroAuthSection() {
       {/* Auth status badge (signed-in only) */}
       <div className="animate-fadeInUp text-xs" style={{ animationDelay: "250ms" }}>
         <SignedIn>
-          <div className="inline-flex max-w-full items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-700/40 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 shadow-sm text-[11px] font-semibold">
-            <UserCheck className="h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+          <div className="inline-flex max-w-full items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-800/40 bg-emerald-950/40 text-emerald-400 shadow-sm text-[11px] font-semibold font-sans">
+            <UserCheck className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
             <span className="truncate">Authenticated · Workspace Access Granted</span>
           </div>
         </SignedIn>
@@ -28,19 +28,18 @@ export function HeroAuthSection() {
         style={{ animationDelay: "300ms" }}
       >
         <SignedOut>
-          {/* Primary: solid dark pill */}
+          {/* Primary: indigo action button */}
           <SignUpButton mode="modal">
-            <button className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-pill bg-[var(--accent-contrast)] text-white font-semibold text-sm hover:bg-slate-800 dark:hover:bg-slate-100 dark:text-slate-900 dark:bg-[var(--text-primary)] shadow-sm hover:shadow-md transition-all cursor-pointer whitespace-nowrap">
-              <Sparkles className="h-4 w-4" />
-              Get Started Free
-              <ArrowRight className="h-4 w-4" />
+            <button className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm border border-indigo-400/40 shadow-sm hover:shadow-md transition-all cursor-pointer whitespace-nowrap font-sans">
+              <Sparkles className="h-4 w-4 text-cyan-300" />
+              Get Started Free →
             </button>
           </SignUpButton>
 
-          {/* Secondary: outlined ghost pill */}
+          {/* Secondary: outlined ghost button */}
           <SignInButton mode="modal">
-            <button className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-pill border border-[hsl(var(--border))] bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-indigo-300 dark:hover:border-indigo-700 shadow-sm transition-all cursor-pointer text-sm font-medium whitespace-nowrap">
-              <LogIn className="h-4 w-4" />
+            <button className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg border border-[var(--border-strong)] bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent-primary)] shadow-sm transition-all cursor-pointer text-sm font-medium whitespace-nowrap font-sans">
+              <LogIn className="h-4 w-4 text-cyan-400" />
               Sign In
             </button>
           </SignInButton>
@@ -49,21 +48,20 @@ export function HeroAuthSection() {
         <SignedIn>
           <Link
             href="/dashboard"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-pill bg-[var(--accent-contrast)] text-white font-semibold text-sm hover:bg-slate-800 dark:hover:bg-slate-100 dark:text-slate-900 dark:bg-[var(--text-primary)] shadow-sm hover:shadow-md transition-all cursor-pointer whitespace-nowrap"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm border border-indigo-400/40 shadow-sm hover:shadow-md transition-all cursor-pointer whitespace-nowrap font-sans"
           >
-            <Sparkles className="h-4 w-4" />
-            Open Studio Dashboard
-            <ArrowRight className="h-4 w-4" />
+            <Sparkles className="h-4 w-4 text-cyan-300" />
+            Open Studio Dashboard →
           </Link>
         </SignedIn>
 
         {/* Tertiary: live demo link */}
         <a
           href="#canvas"
-          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-pill border border-[hsl(var(--border))] bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-indigo-300 dark:hover:border-indigo-700 shadow-sm transition-all cursor-pointer text-sm font-medium whitespace-nowrap"
+          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent-primary)] shadow-sm transition-all cursor-pointer text-sm font-medium whitespace-nowrap font-sans"
         >
-          <MousePointerClick className="h-4 w-4 text-indigo-500 dark:text-indigo-400" />
-          Live Demo
+          <MousePointerClick className="h-4 w-4 text-[var(--accent-primary)]" />
+          Live Interactive Demo
         </a>
 
         {/* Subtle GitHub link */}
@@ -71,10 +69,9 @@ export function HeroAuthSection() {
           href="https://github.com/Mentrauz/Agent-HUB"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors whitespace-nowrap"
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-sm font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-colors whitespace-nowrap"
         >
-          <Terminal className="h-4 w-4" />
-          GitHub →
+          <span>&gt;_ GitHub</span>
         </a>
       </div>
     </>
@@ -87,10 +84,9 @@ export function HeroAuthSection() {
 export function FooterAuthCTA() {
   return (
     <SignUpButton mode="modal">
-      <button className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-pill bg-white text-slate-900 font-semibold text-sm hover:bg-slate-100 shadow-sm hover:shadow-md transition-all cursor-pointer w-full sm:w-auto">
-        <Sparkles className="h-4 w-4" />
-        Get Started Free
-        <ArrowRight className="h-4 w-4" />
+      <button className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm border border-indigo-400/40 shadow-sm hover:shadow-md transition-all cursor-pointer w-full sm:w-auto font-sans">
+        <Sparkles className="h-4 w-4 text-cyan-300" />
+        Get Started Free →
       </button>
     </SignUpButton>
   );

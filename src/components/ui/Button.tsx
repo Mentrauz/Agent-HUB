@@ -14,29 +14,28 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
-  /** Solid dark pill — primary CTA, like Cosmoq */
+  /** High-contrast solid pill — primary CTA */
   primary: clsx(
-    "bg-[var(--accent-contrast)] text-white",
-    "hover:bg-slate-800 dark:hover:bg-slate-100 dark:text-slate-900 dark:bg-[var(--text-primary)]",
-    "shadow-sm hover:shadow-md active:scale-[0.98]",
-    "transition-all duration-200"
+    "bg-[var(--text-primary)] text-[var(--surface-base)] font-semibold",
+    "hover:opacity-90 active:scale-[0.98]",
+    "shadow-sm hover:shadow-md transition-all duration-200"
   ),
-  /** Outlined / ghost pill — secondary CTA */
+  /** Restrained outlined pill — secondary CTA */
   secondary: clsx(
-    "bg-transparent text-[var(--accent-primary)] border border-[var(--accent-primary)]",
-    "hover:bg-indigo-50 dark:hover:bg-indigo-950/30",
+    "bg-[var(--surface-raised)] text-[var(--text-primary)] border border-[var(--border-strong)] font-medium",
+    "hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]",
     "active:scale-[0.98] transition-all duration-200"
   ),
   /** Subtle ghost — neutral actions */
   ghost: clsx(
-    "bg-transparent text-[var(--text-secondary)] border border-[hsl(var(--border))]",
-    "hover:bg-[var(--surface-sunken)] hover:text-[var(--text-primary)]",
+    "bg-transparent text-[var(--text-secondary)] border border-[var(--border-subtle)] font-medium",
+    "hover:bg-[var(--surface-sunken)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)]",
     "active:scale-[0.98] transition-all duration-200"
   ),
   /** Text link with arrow */
   tertiary: clsx(
-    "bg-transparent text-[var(--accent-primary)] underline-offset-4 hover:underline",
-    "p-0 rounded-none transition-colors duration-150"
+    "bg-transparent text-[var(--accent-primary)] hover:text-[var(--accent-secondary)] underline-offset-4 hover:underline",
+    "p-0 rounded-none transition-colors duration-150 font-medium"
   ),
 };
 

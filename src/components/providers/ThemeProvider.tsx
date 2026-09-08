@@ -19,9 +19,11 @@ function ThemeClassSync() {
     if (currentTheme === "light") {
       root.classList.add("light");
       root.classList.remove("dark");
+      root.setAttribute("data-theme", "light");
     } else {
       root.classList.add("dark");
       root.classList.remove("light");
+      root.setAttribute("data-theme", "dark");
     }
   }, [theme, resolvedTheme]);
 
