@@ -40,7 +40,7 @@ describe("TriggerService Unit Tests", () => {
     it("maps mapped fields correctly from body, headers, and query", () => {
       const payload = {
         body: {
-          user: { name: "Himanshu", email: "himanshu@example.com" },
+          user: { name: "Soumya Singh", email: "Soumya@example.com" },
           item: { id: "item_99" },
         },
         headers: {
@@ -63,8 +63,8 @@ describe("TriggerService Unit Tests", () => {
       const mapped = TriggerService.mapPayloadToInput(payload, mappingRules);
 
       expect(mapped).toEqual({
-        customerName: "Himanshu",
-        customerEmail: "himanshu@example.com",
+        customerName: "Soumya",
+        customerEmail: "Soumya@example.com",
         eventType: "USER_SIGNUP",
         campaign: "campaign_1",
         staticTag: "production",

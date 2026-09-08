@@ -814,9 +814,9 @@ npm run build
 
 ```typescript
 interface Developer {
-  name: "Himanshu";
-  github: "https://github.com/devhimanshuu";
-  role: "Creator & Lead Architect";
+  name: "Soumya Singh";
+  github: "https://github.com/Mentrauz/";
+  role: "Fullstack Developer";
   project: "Agent Hub";
   stack: ["Next.js 15", "TypeScript", "React Flow", "MCP", "Prisma", "PostgreSQL"];
   mission: "Architecting autonomous visual agent ecosystems and multi-agent workflows 🚀";
@@ -824,7 +824,7 @@ interface Developer {
 ```
 
 <p align="left">
-  <b>Engineered with ❤️ & ☕ by <a href="https://github.com/devhimanshuu">Himanshu (@devhimanshuu)</a></b>
+  <b>Engineered with ❤️ & ☕ by <a href="https://github.com/Mentrauz/">Soumya Singh (@Mentrauz)</a></b>
 </p>
 
 ---

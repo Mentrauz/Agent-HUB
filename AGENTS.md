@@ -47,11 +47,6 @@ data it renders).
 
 Design reference
 
-Structural/reference direction: https://cosmoq.framer.website
-
-Study it before writing any code. Borrow the presentation discipline — spacing,
-typography hierarchy, rounded surfaces, section composition, and restrained motion —
-but do not copy its palette or make Agent Hub look like a generic AI landing page.
 The visual identity should communicate agent infrastructure, orchestration,
 developer tooling, MCP, runtime systems, workflows, and governance.
 

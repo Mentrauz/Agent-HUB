@@ -4,7 +4,7 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   {
     key: "Content-Security-Policy",
-    value: "frame-ancestors 'self' https://devhimanshuu.vercel.app https://*.vercel.app http://localhost:*",
+    value: "frame-ancestors 'self' https://soumyasingh.site/ https://*.vercel.app http://localhost:*",
   },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

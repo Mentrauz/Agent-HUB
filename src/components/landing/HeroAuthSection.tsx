@@ -68,7 +68,7 @@ export function HeroAuthSection() {
 
         {/* Subtle GitHub link */}
         <a
-          href="https://github.com/devhimanshuu/Agent-Studio"
+          href="https://github.com/Mentrauz/Agent-HUB"
           target="_blank"
           rel="noreferrer"
           className="inline-flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors whitespace-nowrap"
