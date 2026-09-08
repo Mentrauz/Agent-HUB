@@ -32,36 +32,60 @@ type Env = z.infer<typeof envSchema>;
 
 function parseEnv(): Env {
   const isServer = typeof window === "undefined";
-  const result = envSchema.safeParse(process.env);
+
+  // Normalize empty strings to undefined so Zod defaults and optional() behave correctly
+  const cleanedEnv: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(process.env)) {
+    if (value !== "" && value !== undefined) {
+      cleanedEnv[key] = value;
+    }
+  }
+
+  // Auto-detect Vercel deployment URL if NEXT_PUBLIC_APP_URL is not explicitly set
+  if (!cleanedEnv.NEXT_PUBLIC_APP_URL && process.env.VERCEL_URL) {
+    cleanedEnv.NEXT_PUBLIC_APP_URL = `https://${process.env.VERCEL_URL}`;
+  }
+
+  const result = envSchema.safeParse(cleanedEnv);
   if (!result.success) {
     const formatted = result.error.format();
 
-    // In production on the server, crash immediately — a misconfigured deploy should never
-    // silently serve requests with wrong/missing credentials.
-    if (process.env.NODE_ENV === "production" && isServer) {
-      console.error("[FATAL] Invalid environment variables in production:");
+    // Check if we are in Next.js build phase
+    const isBuildPhase =
+      process.env.NEXT_PHASE === "phase-production-build" ||
+      process.env.npm_lifecycle_event === "build";
+
+    // In production runtime on the server (not during build phase), log fatal error
+    if (process.env.NODE_ENV === "production" && isServer && !isBuildPhase) {
+      console.error("[FATAL] Invalid environment variables in production runtime:");
       console.error(JSON.stringify(formatted, null, 2));
       if (typeof process !== "undefined" && typeof process.exit === "function") {
         process.exit(1);
       }
     }
 
-    // In development/test (or when running on server), log the warning
+    // In development, build phase, or when variables are missing during build, log warning
     if (isServer) {
       console.warn("[Config Warning] Some environment variables are missing or invalid:");
       console.warn(JSON.stringify(formatted, null, 2));
     }
 
-    // Re-parse with safe defaults — NODE_ENV gets a default so it
-    // won't fail, and optional keys are simply undefined.
+    // Re-parse with safe defaults
     const fallback = envSchema.partial().parse({});
     return envSchema.parse({
-      DATABASE_URL: fallback.DATABASE_URL ?? "postgresql://postgres:postgres@localhost:5432/agent_studio?schema=public",
+      DATABASE_URL:
+        (cleanedEnv.DATABASE_URL as string) ||
+        (fallback.DATABASE_URL ??
+          "postgresql://postgres:postgres@localhost:5432/agent_studio?schema=public"),
       NEXTAUTH_SECRET: fallback.NEXTAUTH_SECRET ?? "dev-only-secret-not-for-production",
       NODE_ENV: (process.env.NODE_ENV as Env["NODE_ENV"]) || "development",
-      LOG_LEVEL: (process.env.LOG_LEVEL as Env["LOG_LEVEL"]) || "info",
-      NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+      LOG_LEVEL: ((cleanedEnv.LOG_LEVEL as string) as Env["LOG_LEVEL"]) || "info",
+      NEXT_PUBLIC_APP_URL:
+        (cleanedEnv.NEXT_PUBLIC_APP_URL as string) ||
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"),
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+        (cleanedEnv.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY as string) ||
+        process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     });
   }
   return result.data;
