@@ -26,7 +26,7 @@ const vt323 = VT323({
 });
 
 export const metadata: Metadata = {
-  title: "Agent Hub — Visual AI Agent & Multi-Agent Orchestration Platform",
+  title: "Agent Hub",
   description: "Build complex multi-agent graphs on an interactive canvas, orchestrate workflows, connect to 500+ MCP tools, and stream live execution telemetry. Enterprise-grade AI orchestration, 100% open-source.",
 };
 
