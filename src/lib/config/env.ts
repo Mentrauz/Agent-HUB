@@ -33,16 +33,31 @@ type Env = z.infer<typeof envSchema>;
 function parseEnv(): Env {
   const isServer = typeof window === "undefined";
 
-  // Normalize empty strings to undefined so Zod defaults and optional() behave correctly
+  // Normalize empty strings and trim quotes
   const cleanedEnv: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(process.env)) {
+  for (let [key, value] of Object.entries(process.env)) {
+    if (typeof value === "string") {
+      value = value.trim();
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))
+      ) {
+        value = value.slice(1, -1).trim();
+      }
+    }
     if (value !== "" && value !== undefined) {
       cleanedEnv[key] = value;
     }
   }
 
-  // Auto-detect Vercel deployment URL if NEXT_PUBLIC_APP_URL is not explicitly set
-  if (!cleanedEnv.NEXT_PUBLIC_APP_URL && process.env.VERCEL_URL) {
+  // Auto-detect and format Vercel deployment URL
+  let appUrl = cleanedEnv.NEXT_PUBLIC_APP_URL as string | undefined;
+  if (appUrl) {
+    if (!appUrl.startsWith("http://") && !appUrl.startsWith("https://")) {
+      appUrl = `https://${appUrl}`;
+      cleanedEnv.NEXT_PUBLIC_APP_URL = appUrl;
+    }
+  } else if (process.env.VERCEL_URL) {
     cleanedEnv.NEXT_PUBLIC_APP_URL = `https://${process.env.VERCEL_URL}`;
   }
 
