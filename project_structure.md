@@ -1,6 +1,6 @@
 # Agent Hub — Project Structure & File Map
 
-> **Agent Hub** is an enterprise-grade Visual AI Agent & Multi-Agent Orchestration Platform built on **Next.js 15** (App Router), **React 19**, **TypeScript**, **Prisma/PostgreSQL**, and **Clerk Auth**. It lets users design complex agent graphs on an interactive canvas, orchestrate multi-step workflows, connect to MCP tool servers, and stream live execution telemetry via SSE.
+> **Agent Hub** is an enterprise-grade Visual AI Agent & Multi-Agent Orchestration Platform built on **Next.js 16** (App Router + Turbopack), **React 19**, **TypeScript**, **Tailwind CSS v4**, **Prisma/PostgreSQL**, and **Clerk Auth (v7)**. It lets users design complex agent graphs on an interactive canvas, orchestrate multi-step workflows, connect to MCP tool servers, and stream live execution telemetry via SSE.
 
 ---
 
@@ -8,17 +8,17 @@
 
 | File | Purpose |
 |---|---|
-| [`next.config.ts`](file:///c:/Project/Agent%20Hub/next.config.ts) | Next.js 15 configuration (App Router, image domains, etc.) |
-| [`tsconfig.json`](file:///c:/Project/Agent%20Hub/tsconfig.json) | TypeScript strict-mode compiler configuration |
-| [`tailwind.config.ts`](file:///c:/Project/Agent%20Hub/tailwind.config.ts) | TailwindCSS design tokens and plugin config |
+| [`next.config.ts`](file:///c:/Project/Agent%20Hub/next.config.ts) | Next.js 16 configuration (App Router, Turbopack, CSP security headers, server external packages) |
+| [`tsconfig.json`](file:///c:/Project/Agent%20Hub/tsconfig.json) | TypeScript strict-mode compiler configuration with path aliases (`@/*`) |
+| [`tailwind.config.ts`](file:///c:/Project/Agent%20Hub/tailwind.config.ts) | Tailwind CSS v4 design tokens, VT323 pixel font, and typography extensions |
 | [`postcss.config.js`](file:///c:/Project/Agent%20Hub/postcss.config.js) | PostCSS configuration for TailwindCSS |
-| [`eslint.config.mjs`](file:///c:/Project/Agent%20Hub/eslint.config.mjs) | ESLint rules (TypeScript + React) |
+| [`eslint.config.mjs`](file:///c:/Project/Agent%20Hub/eslint.config.mjs) | ESLint rules (TypeScript + React flat config) |
 | [`vitest.config.ts`](file:///c:/Project/Agent%20Hub/vitest.config.ts) | Vitest unit test runner configuration |
 | [`playwright.config.ts`](file:///c:/Project/Agent%20Hub/playwright.config.ts) | Playwright E2E test configuration |
 | [`.lintstagedrc.json`](file:///c:/Project/Agent%20Hub/.lintstagedrc.json) | lint-staged pre-commit hook rules |
 | [`docker-compose.yml`](file:///c:/Project/Agent%20Hub/docker-compose.yml) | Docker Compose for local Postgres + app container |
 | [`.env.example`](file:///c:/Project/Agent%20Hub/.env.example) | Template for all required environment variables |
-| [`package.json`](file:///c:/Project/Agent%20Hub/package.json) | npm dependencies, scripts (`dev`, `build`, `test`, `db:seed`) |
+| [`package.json`](file:///c:/Project/Agent%20Hub/package.json) | npm dependencies (Next.js 16.3.4, React 19.2.8, Clerk 7.9.1, Tailwind 4.3.3, Prisma 6.19.3, LangGraph 1.4.14), scripts (`dev`, `dev:webpack`, `build`, `test`, `lint`) |
 | [`README.md`](file:///c:/Project/Agent%20Hub/README.md) | Full product documentation, architecture diagrams, quickstart |
 | [`CONTRIBUTING.md`](file:///c:/Project/Agent%20Hub/CONTRIBUTING.md) | Contribution guide, PR workflow, code standards |
 
@@ -74,14 +74,14 @@ Presentation  →  API (Route Handlers)  →  Services  →  Repositories / DB
 
 | File | Purpose |
 |---|---|
-| [`layout.tsx`](file:///c:/Project/Agent%20Hub/src/app/layout.tsx) | Root layout: wraps app with Clerk Auth, Theme Provider, and Sidebar providers |
-| [`page.tsx`](file:///c:/Project/Agent%20Hub/src/app/page.tsx) | Public landing page with an interactive **Live Agent Canvas Demo** playground |
+| [`layout.tsx`](file:///c:/Project/Agent%20Hub/src/app/layout.tsx) | Root layout: Google Fonts preconnect (`VT323`, `Geist`, `Geist_Mono`), Clerk provider, Theme provider, pitch black viewport theme (`#000000`) |
+| [`page.tsx`](file:///c:/Project/Agent%20Hub/src/app/page.tsx) | Public landing page (`VISUAL MULTI-AGENT ORCHESTRATION HUB`) with left-aligned hero, pitch black theme, retro pixel typography, and interactive `LiveAgentCanvasDemo` |
 | [`providers.tsx`](file:///c:/Project/Agent%20Hub/src/app/providers.tsx) | Client-side providers: TanStack Query, Zustand, Toaster |
-| [`globals.css`](file:///c:/Project/Agent%20Hub/src/app/globals.css) | Global CSS: design tokens, glassmorphism utilities, animations |
+| [`globals.css`](file:///c:/Project/Agent%20Hub/src/app/globals.css) | Global styles: Tailwind CSS v4 (`@import "tailwindcss"; @config "../../tailwind.config.ts";`), VT323 pixel font (`font-pixel`), Geist typography, and pitch black (`#000000`) dark theme system tokens |
 | [`loading.tsx`](file:///c:/Project/Agent%20Hub/src/app/loading.tsx) | Root loading skeleton |
 | [`not-found.tsx`](file:///c:/Project/Agent%20Hub/src/app/not-found.tsx) | Custom 404 page |
 | [`global-error.tsx`](file:///c:/Project/Agent%20Hub/src/app/global-error.tsx) | Top-level error boundary |
-| `middleware.ts` | Clerk Auth middleware — protects all `/dashboard/*` and `/api/*` routes |
+| [`proxy.ts`](file:///c:/Project/Agent%20Hub/src/proxy.ts) | Next.js 16 Edge proxy & Clerk Auth middleware — protects `/dashboard/*` and `/api/*` routes with public bypasses for `/api/health` and `/api/mcp/*` |
 
 ---
 
@@ -140,7 +140,7 @@ Presentation  →  API (Route Handlers)  →  Services  →  Repositories / DB
 ### `canvas/` — Visual Graph Builder Components
 | File | Purpose |
 |---|---|
-| `AgentGraphCanvas.tsx` | Main canvas: fullscreen/normal layout, pan/zoom, live node highlighting |
+| `AgentGraphCanvas.tsx` | Main canvas with fullscreen/normal layouts, pan/zoom, live node highlighting, and `preventScrolling={true}` |
 | `MarketplacePanel.tsx` | Drag-and-drop pre-built workflow templates marketplace panel |
 | `ConditionalBranchEditor.tsx` | Visual branch editor for Router/Supervisor nodes (deterministic + AI modes) |
 | `ConditionExpressionEditor.tsx` | Syntax-highlighted condition expression editor with autocomplete |
@@ -152,21 +152,22 @@ Presentation  →  API (Route Handlers)  →  Services  →  Repositories / DB
 ### Other Component Groups
 | Group | Purpose |
 |---|---|
+| `landing/` | `LiveAgentCanvasDemo.tsx` (interactive playground with cursor-centered wheel zoom, middle-mouse pan, blueprint switcher), `HeroAuthSection.tsx` (Clerk v7 `<Show when="...">` auth gates) |
+| `layout/` | `Header.tsx` (pitch black frosted glass header, VT323 bracketed links, Clerk v7 `<Show when="...">` auth buttons), `Sidebar.tsx` (collapsible navigation) |
+| `ui/` | `SectionHeader.tsx` (VT323 terminal section headers `// 01.`), `StatTile.tsx` (VT323 retro metric tiles), `Button.tsx`, `Badge.tsx`, `Card.tsx`, `Accordion.tsx` |
 | `workflows/` | WorkflowForm, WorkflowCard, WorkflowStepChain, import stepper components |
 | `skills/` | SkillForm, StatusBadge, VersionList, skill marketplace components |
 | `executions/` | ExecutionTimeline, ExecutionStatusBadge, trace detail components |
 | `mcp/` | MCP server browser, connection modals, tool discovery UI |
-| `landing/` | `LiveAgentCanvasDemo` — interactive playground shown on the public landing page |
 | `common/` | BrandLogos (exact SVG vectors for OpenRouter & Groq), shared UI primitives |
 | `feedback/` | Toaster notifications, ConfirmDialog, Skeleton Library, ErrorBoundary |
-| `layout/` | Sidebar, Navbar, breadcrumb navigation components |
 | `dashboard/` | Dashboard stats cards, charts, metric panels |
 | `organizations/` | Org management UI, member lists, role assignment |
 | `vault/` | Secret management UI components |
 | `evals/` | Evaluation results display components |
 | `benchmarks/` | Benchmark comparison and leaderboard components |
 | `effects/` | Background effect animations (particle systems, gradients) |
-| `providers/` | Client-side React context providers |
+| `providers/` | Client-side React context providers (SidebarContext, ThemeProvider) |
 | [`Reveal.tsx`](file:///c:/Project/Agent%20Hub/src/components/Reveal.tsx) | Intersection Observer scroll-reveal animation wrapper |
 
 ---
@@ -176,8 +177,8 @@ Presentation  →  API (Route Handlers)  →  Services  →  Repositories / DB
 ### `graph/` — Graph Interpreter Engine
 | File | Purpose |
 |---|---|
-| [`graphInterpreter.ts`](file:///c:/Project/Agent%20Hub/src/modules/graph/graphInterpreter.ts) | **Central state machine** (150KB) — executes visual graphs node-by-node, handles all 14 node types, typed state transitions, step-level persistence |
-| [`expression.ts`](file:///c:/Project/Agent%20Hub/src/modules/graph/expression.ts) | **Safe expression evaluator** — JSONPath queries, logical operators (`==`, `!=`, `>`, `contains`, `in`), no `eval()` |
+| [`graphInterpreter.ts`](file:///c:/Project/Agent%20Hub/src/modules/graph/graphInterpreter.ts) | **Central state machine** — executes visual graphs node-by-node, handles all 14 node types, typed state transitions, step-level persistence |
+| [`expression.ts`](file:///c:/Project/Agent%20Hub/src/modules/graph/expression.ts) | **Safe expression evaluator** — JSONPath queries, logical operators (`==`, `!=`, `>`, `<`, `contains`, `in`), no `eval()` |
 | [`eventBus.ts`](file:///c:/Project/Agent%20Hub/src/modules/graph/eventBus.ts) | **Real-time EventBus** — emits lifecycle events (`step_start`, `step_complete`, `tool_call`, `paused_for_approval`) to SSE clients |
 | [`previewStore.ts`](file:///c:/Project/Agent%20Hub/src/modules/graph/previewStore.ts) | In-memory ghost dry-run store for canvas preview mode |
 
@@ -323,11 +324,11 @@ Other files: `registry/` (runtime tool catalog), `interfaces/` (ITool contract),
 |---|---|
 | `converters/dify-converter.ts` | **Dify YAML AST Converter** — maps Dify workflow nodes to studio graph nodes |
 | `converters/n8n-converter.ts` | **n8n JSON AST Converter** — maps n8n workflow JSON to studio graph nodes |
-| `config/` | Zod-validated environment variable schema — fails fast on missing required vars |
+| `config/env.ts` | Zod-validated environment variable schema with Vercel URL auto-detection and quote normalization |
 | `logger/` | Pino structured JSON logger setup with log levels and context |
-| `utils/` | Shared utility functions (pricing calculation, formatting, etc.) |
+| `utils/pricing.ts` | Dynamic token pricing calculation & formatting utilities |
 | `api/` | Shared API client helpers and fetch wrappers |
-| `catalogs/` | Static data catalogs (e.g. tool categories, node type metadata) |
+| `catalogs/` | Static data catalogs (e.g. tool categories, node type metadata, MCP directories) |
 | `execution/` | Shared execution utility types |
 | `vault/` | Vault encryption helpers |
 | `secrets.ts` | Secret resolution utilities (resolves vault references in tool configs) |
@@ -419,12 +420,14 @@ graph TB
 
 | Decision | Detail |
 |---|---|
-| **Next.js App Router** | All routes use Server Components + Route Handlers; no Pages Router |
+| **Next.js 16 + Turbopack** | App Router powered by Next.js 16 with high-speed Turbopack compilation and dev server |
 | **Clean Architecture** | Strict separation: API → Services → Repositories → DB, no cross-layer leakage |
 | **Dependency Inversion** | All repositories and services have interface contracts in `interfaces/` sub-folders |
 | **SSE for real-time** | Native Web Streams API used for execution telemetry, no WebSocket dependency |
 | **Zod everywhere** | All API inputs, env vars, and graph schemas validated with Zod |
 | **Immutable versioning** | Published skill versions are frozen; edits create new draft branches |
-| **Circuit-breaker LLM** | LLMRouter auto-fails over between Groq → OpenRouter on errors with cooldowns |
+| **Circuit-breaker LLM** | LLMRouter auto-fails over between Groq → OpenRouter on errors with adaptive cooldowns |
 | **No `eval()`** | Expression evaluator uses safe AST-based parsing (no eval, no exec) |
 | **MCP dual-role** | App is both an MCP *Client* (consuming external servers) and an MCP *Server* (exposing skills) |
+| **Pitch Black UI & Dual Typography** | Pure pitch-black (`#000000`) dark theme paired with VT323 pixel font and Geist sans readability |
+| **Isolated Canvas Scrolling** | Canvas mouse wheel zoom is non-passive and cursor-centered with zero parent page scroll chaining |

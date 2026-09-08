@@ -1,6 +1,6 @@
 # Agent Hub — Visual Agent Canvas & Multi-Agent Orchestration Platform
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://agent-studio-v1.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://agenthub-seven-rouge.vercel.app/)
 [![MCP](https://img.shields.io/badge/MCP-Protocol_Client_%26_Server-8A2BE2?style=for-the-badge&logoColor=white)](https://modelcontextprotocol.io)
 [![Database](https://img.shields.io/badge/Database-Neon_Postgres-02E693?style=for-the-badge&logo=postgresql&logoColor=white)](https://neon.tech)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict_Mode-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -16,7 +16,7 @@
 
 ## Overview
 
-Agent Hub is a production-grade **Visual AI Agent Platform** combining the visual graph architecture of LangGraph Studio, the enterprise control of LangSmith, and the modularity of the Model Context Protocol (MCP) built on Next.js 15 and React Flow.
+Agent Hub is a production-grade **Visual AI Agent Platform** combining the visual graph architecture of LangGraph Studio, the enterprise control of LangSmith, and the modularity of the Model Context Protocol (MCP) built on **Next.js 16 (App Router + Turbopack)**, **React 19**, and **XYFlow / React Flow**.
 
 Users can visually design **Multi-Agent Graphs**, orchestrate **Chained Workflows**, import **Dify YAML** and **n8n JSON** workflows via AST converters, connect to **Model Context Protocol (MCP)** servers from a public directory of 500+ servers, configure **Reusable Skills**, version them like software, chain them into **Skill Chains**, build **Server Compositions**, track **Live Model Pricing** from OpenRouter and Groq, monitor **Health Dashboards**, and execute on an autonomous **Graph Interpreter Runtime (v2)** with real-time SSE streaming, permission validation, circuit-breaker LLM routing, and HITL approval gates.
 
@@ -181,7 +181,7 @@ Users can visually design **Multi-Agent Graphs**, orchestrate **Chained Workflow
 
 ```
 Agent Hub
-|-- Presentation Layer (Next.js 15 App Router, React 19, Vanilla CSS & Glassmorphism, XYFlow, Zustand, TanStack Query)
+|-- Presentation Layer (Next.js 16 App Router + Turbopack, React 19, Tailwind CSS v4, VT323 & Geist Typography, Pitch Black Dark Theme, XYFlow, Zustand, TanStack Query)
 |   |-- /dashboard/canvas       -> Visual Graph Builder, Node Palette, Auto Layout, Snapshot & Diff
 |   |-- /dashboard/workflows    -> Multi-Step Workflow Pipeline & AST Import Steppers
 |   |-- /dashboard/skills       -> Schema-driven Skill CRUD, Version History & Compare
@@ -615,6 +615,7 @@ Every tool implements the unified `ITool` contract (`id`, `name`, `description`,
 │   │   │   └── settings/              # Provider Models, API Keys & Live Pricing
 │   │   ├── page.tsx                   # Landing page with interactive Live Agent Canvas Demo
 │   │   └── layout.tsx                 # Root layout with Clerk, Theme, and Sidebar providers
+│   ├── proxy.ts                       # Next.js 16 Edge proxy & Clerk Auth middleware
 │   ├── components/
 │   │   ├── canvas/                    # AgentGraphCanvas, CanvasNodes, NodeInspector, AutoLayout, Diff
 │   │   │   ├── AgentGraphCanvas.tsx   # Main canvas with fullscreen/normal layouts, pan/zoom, highlight
@@ -818,7 +819,7 @@ interface Developer {
   github: "https://github.com/Mentrauz/";
   role: "Fullstack Developer";
   project: "Agent Hub";
-  stack: ["Next.js 15", "TypeScript", "React Flow", "MCP", "Prisma", "PostgreSQL"];
+  stack: ["Next.js 16", "React 19", "TypeScript", "XYFlow", "MCP", "Prisma", "PostgreSQL"];
   mission: "Architecting autonomous visual agent ecosystems and multi-agent workflows 🚀";
 }
 ```

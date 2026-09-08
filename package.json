@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/Mentrauz/Agent-HUB"
   },
-  "homepage": "https://agent-studio-v1.vercel.app",
+  "homepage": "https://agenthub-seven-rouge.vercel.app/",
   "scripts": {
     "dev": "next dev",
     "dev:webpack": "next dev --webpack",
