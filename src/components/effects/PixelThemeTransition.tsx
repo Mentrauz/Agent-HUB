@@ -9,6 +9,7 @@ import React, {
   useState,
 } from "react";
 import { useTheme } from "next-themes";
+import { parseThemeKey, type ThemeKey } from "@/components/providers/ThemeProvider";
 
 interface PixelTransitionContextType {
   togglePixelTheme: (e?: React.MouseEvent | { clientX: number; clientY: number }) => void;
@@ -51,7 +52,10 @@ export function PixelThemeTransitionProvider({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animFrameRef = useRef<number | null>(null);
 
-  const currentTheme = theme || resolvedTheme || "dark";
+  const currentTheme = (theme || resolvedTheme || "calm-green-dark") as ThemeKey;
+  const { identity: currentIdentity, appearance: currentAppearance } =
+    parseThemeKey(currentTheme);
+  const isGoingDark = currentAppearance !== "light";
 
   const runPixelAnimation = useCallback(
     (targetTheme: string, originX: number, originY: number) => {
@@ -109,30 +113,37 @@ export function PixelThemeTransitionProvider({
         ...corners.map((c) => Math.hypot(c.x - originX, c.y - originY))
       );
 
-      const isGoingDark = targetTheme === "dark";
+      // Palette accurately sampled from target theme identity
+      const { identity: targetIdentity, appearance: targetAppearance } =
+        parseThemeKey(targetTheme);
+      const targetIsDark = targetAppearance !== "light";
 
-      // Palette accurately sampled from Agent Hub's actual theme surfaces and brand tokens
-      const palette = isGoingDark
-        ? [
-          "#000000", // Obsidian (UI dark background)
-          "#050711", // Deep dark
-          "#0a0f24", // Midnight terminal surface
-          "#0f172a", // Slate 900
-          "#1e1b4b", // Indigo 950 (card border)
-          "#2e2a72", // Subtle dark indigo
-          "#3730a3", // Brand primary indigo muted
-        ]
-        : [
-          "#ffffff", // Clean white (UI light card surface)
-          "#f8fafc", // Slate 50 (UI light background)
-          "#f1f5f9", // Slate 100
-          "#e2e8f0", // Slate 200 (UI light border)
-          "#e0e7ff", // Indigo 100 (subtle brand tint)
-          "#c7d2fe", // Indigo 200
-          "#cbd5e1", // Slate 300
-        ];
+      // Punk palette: pitch black / indigo
+      const punkDarkPalette = [
+        "#000000", "#050711", "#0a0f24", "#0f172a", "#1e1b4b", "#2e2a72", "#3730a3",
+      ];
+      const punkLightPalette = [
+        "#ffffff", "#f8fafc", "#f1f5f9", "#e2e8f0", "#e0e7ff", "#c7d2fe", "#cbd5e1",
+      ];
+      // Calm Green palette: pitch black / sage
+      const calmGreenDarkPalette = [
+        "#000000", "#000000", "#050706", "#0a0e0c", "#1a241f", "#24332c", "#7FAF9B",
+      ];
+      const calmGreenLightPalette = [
+        "#F4F6F5", "#EAEEEC", "#FFFFFF", "#D5DDD9", "#BEC9C4", "#E7E9E5", "#c5d4ce",
+      ];
 
-      const leadBorderColor = isGoingDark ? "#4f46e5" : "#818cf8";
+      let palette: string[];
+      let leadBorderColor: string;
+
+      if (targetIdentity === "calm-green") {
+        palette = targetIsDark ? calmGreenDarkPalette : calmGreenLightPalette;
+        leadBorderColor = targetIsDark ? "#7FAF9B" : "#4D8A73";
+      } else {
+        // punk
+        palette = targetIsDark ? punkDarkPalette : punkLightPalette;
+        leadBorderColor = targetIsDark ? "#4f46e5" : "#818cf8";
+      }
 
       // Precompute grid cells with jittered delay and transparent alpha
       interface GridCell {
@@ -174,11 +185,18 @@ export function PixelThemeTransitionProvider({
         }
       }
 
-      // Sparkle micro-pixels matching brand colors
+      // Sparkle micro-pixels matching target theme identity
       const particles: Particle[] = [];
-      const particleColors = isGoingDark
-        ? ["#4f46e5", "#6366f1", "#818cf8", "#312e81", "#1e1b4b"]
-        : ["#6366f1", "#818cf8", "#a5b4fc", "#cbd5e1", "#e2e8f0"];
+      let particleColors: string[];
+      if (targetIdentity === "calm-green") {
+        particleColors = targetIsDark
+          ? ["#7FAF9B", "#9BC7B2", "#5E907C", "#24332c", "#000000"]
+          : ["#4D8A73", "#3D6472", "#7FAF9B", "#D5DDD9", "#EAEEEC"];
+      } else {
+        particleColors = targetIsDark
+          ? ["#4f46e5", "#6366f1", "#818cf8", "#312e81", "#1e1b4b"]
+          : ["#6366f1", "#818cf8", "#a5b4fc", "#cbd5e1", "#e2e8f0"];
+      }
 
       for (let i = 0; i < 16; i++) {
         const angle = Math.random() * Math.PI * 2;
@@ -229,14 +247,15 @@ export function PixelThemeTransitionProvider({
 
         if (currentRadius > 0) {
           const gradient = ctx.createRadialGradient(
-            originX,
-            originY,
-            innerRadius,
-            originX,
-            originY,
-            currentRadius + pixelSize * 2
+            originX, originY, innerRadius,
+            originX, originY, currentRadius + pixelSize * 2
           );
-          const washColor = isGoingDark ? "10, 15, 36" : "241, 245, 249";
+          let washColor: string;
+          if (targetIdentity === "calm-green") {
+            washColor = targetIsDark ? "11, 13, 12" : "244, 246, 245";
+          } else {
+            washColor = targetIsDark ? "10, 15, 36" : "241, 245, 249";
+          }
           const washAlpha = Math.min(0.20, (1 - fadeFront / 1.25) * 0.20);
 
           gradient.addColorStop(0, `rgba(${washColor}, ${fadeFront > 0 ? 0 : washAlpha})`);
@@ -363,12 +382,17 @@ export function PixelThemeTransitionProvider({
     [isTransitioning, runPixelAnimation]
   );
 
+  /**
+   * Toggle appearance (dark ↔ light) within the SAME identity.
+   * e.g. punk-dark → punk-light, calm-green-dark → calm-green-light
+   */
   const togglePixelTheme = useCallback(
     (e?: React.MouseEvent | { clientX: number; clientY: number }) => {
-      const nextTheme = currentTheme === "dark" ? "light" : "dark";
+      const nextAppearance = currentAppearance === "dark" ? "light" : "dark";
+      const nextTheme = `${currentIdentity}-${nextAppearance}` as ThemeKey;
       setThemeWithPixelTransition(nextTheme, e);
     },
-    [currentTheme, setThemeWithPixelTransition]
+    [currentIdentity, currentAppearance, setThemeWithPixelTransition]
   );
 
   useEffect(() => {

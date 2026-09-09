@@ -4,47 +4,61 @@
 @config "../../tailwind.config.ts";
 
 /* =========================================================================
-   AGENT HUB — COSMOQ-STYLE DESIGN TOKEN SYSTEM
-   Light-first premium SaaS aesthetic
+   AGENT HUB — THEME SYSTEM
+   Two-axis: Identity (Punk / Calm Green) × Appearance (Dark / Light)
+   Compound theme keys: punk-dark | punk-light | calm-green-dark | calm-green-light
    ========================================================================= */
 
 @layer base {
+  /* =====================================================================
+     CALM GREEN DARK (default)
+     Calm / sophisticated / technical / mature — pitch black dark mode
+     Primary surfaces: pitch black (#000000)
+     Accent: sage (#7FAF9B) — primary CTA / active states
+     ===================================================================== */
   :root {
-    /* ── Surfaces — pitch black dark mode infrastructure palette (Default) ── */
-    --surface-base: #000000;
-    --surface-sunken: #05070a;
-    --surface-raised: #0d1117;
-    --surface-elevated: #151b23;
+    /* ── Surfaces — pitch black base (Default) ── */
+    --surface-base:     #000000;   /* pitch black base */
+    --surface-sunken:   #000000;
+    --surface-raised:   #000000;   /* pitch black surfaces */
+    --surface-elevated: #0a0e0c;   /* subtle elevated panels / modals */
 
     /* Borders / dividers */
-    --border-subtle: #21262d;
-    --border-strong: #30363d;
+    --border-subtle:   #1a241f;
+    --border-strong:   #24332c;
 
     /* Text */
-    --text-primary: #f0f6fc;
-    --text-secondary: #8b949e;
-    --text-muted: #6e7681;
+    --text-primary:   #E7E9E5;   /* warm off-white — high contrast on pitch black */
+    --text-secondary: #93A49C;   /* sage graphite */
+    --text-muted:     #6B7C73;   /* subtle labels */
 
     /* System / brand accents */
-    --accent-primary: #22D3EE;   /* cyan — orchestration, MCP, runtime, tools */
-    --accent-secondary: #60A5FA; /* blue — data, integrations, connections */
-    --accent-contrast: #000000;  /* dark contrast for light-on-accent UI */
+    --accent-primary:   #7FAF9B;  /* sage — primary CTA / active states */
+    --accent-secondary: #718A96;  /* slate-blue secondary */
+    --accent-contrast:  #000000;  /* dark contrast for sage buttons */
 
     /* Semantic system states */
-    --state-success: #34D399;   /* autonomous execution / healthy */
-    --state-warning: #FBBF24;   /* human approval / governance */
-    --state-error: #F87171;     /* blocked / failure */
+    --state-success: #7FAF9B;
+    --state-warning: #C7A96B;
+    --state-error:   #A85858;    /* muted red — not neon */
+
+    --cta-primary-bg: #7FAF9B;
+    --cta-primary-hover: #9BC7B2;
+    --cta-primary-text: #000000;
+    --cta-primary-border: #7FAF9B;
+    --cta-primary-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    --hero-glow: none;
 
     /* React Flow node semantics */
-    --node-agent: #8B7CF6;       /* agent / reasoning — violet retained only here */
-    --node-tool: #22D3EE;        /* tools / MCP / integrations */
-    --node-control: #FBBF24;     /* control / routing / guardrails */
-    --node-hitl: #F59E0B;        /* human-in-the-loop / approval */
+    --node-agent:   #7FAF9B;
+    --node-tool:    #718A96;
+    --node-control: #C7A96B;
+    --node-hitl:    #A85858;
 
     /* Elevation */
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
-    --shadow-md: 0 8px 24px rgba(0,0,0,0.6);
-    --shadow-lg: 0 24px 64px rgba(0,0,0,0.8);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.5);
+    --shadow-md: 0 8px 24px rgba(0,0,0,0.7);
+    --shadow-lg: 0 24px 64px rgba(0,0,0,0.85);
 
     /* Radius */
     --radius-sm: 10px;
@@ -53,64 +67,71 @@
     --radius-pill: 999px;
 
     /* Technical background treatments */
-    --grid-dot: rgba(139,148,158,0.12);
-    --glow-cyan: rgba(34,211,238,0.10);
-    --glow-blue: rgba(96,165,250,0.08);
+    --grid-dot:  rgba(127,175,155,0.08);       /* subtle, low-contrast sage grid on pitch black */
+    --glow-cyan: rgba(127,175,155,0.05);    /* sage glow — minimal */
+    --glow-blue: rgba(113,138,150,0.04);
 
     /* Font fallbacks / mappings */
     --font-vt323: 'VT323', monospace;
     --font-pixel: 'VT323', monospace;
     --font-sans: var(--font-geist);
 
-    /* ── Shadcn/Tailwind semantic tokens (pitch black default) ── */
-    --background: 0 0% 0%;            /* #000000 pitch black */
-    --foreground: 210 24% 93%;        /* #E8EDF2 */
+    /* ── Shadcn/Tailwind semantic tokens (Calm Green Dark default) ── */
+    --background: 0 0% 0%;             /* #000000 pitch black */
+    --foreground: 90 5% 91%;           /* #E7E9E5 */
 
-    --card: 216 28% 7%;               /* #0d1117 */
-    --card-foreground: 210 24% 93%;
+    --card: 0 0% 0%;                   /* #000000 pitch black */
+    --card-foreground: 90 5% 91%;
 
-    --popover: 216 28% 11%;           /* #151b23 */
-    --popover-foreground: 210 24% 93%;
+    --popover: 150 14% 3%;             /* pitch black */
+    --popover-foreground: 90 5% 91%;
 
-    --primary: 189 94% 53%;           /* #22D3EE cyan */
-    --primary-foreground: 0 0% 0%;    /* #000000 */
+    --primary: 157 22% 59%;            /* #7FAF9B sage */
+    --primary-foreground: 0 0% 0%;     /* #000000 — dark text on sage */
 
-    --secondary: 216 28% 11%;         /* #151b23 */
-    --secondary-foreground: 210 24% 93%;
+    --secondary: 0 0% 0%;              /* #000000 */
+    --secondary-foreground: 90 5% 91%;
 
-    --muted: 216 28% 7%;              /* #0d1117 */
-    --muted-foreground: 215 14% 56%;  /* #8b949e */
+    --muted: 0 0% 0%;
+    --muted-foreground: 153 8% 46%;    /* #6B7C73 */
 
-    --accent: 216 28% 11%;            /* #151b23 */
-    --accent-foreground: 189 94% 53%; /* #22D3EE */
+    --accent: 150 14% 4%;              /* #090c0b */
+    --accent-foreground: 157 22% 59%;  /* sage */
 
-    --destructive: 0 94% 71%;         /* #F87171 */
-    --destructive-foreground: 0 0% 0%;
+    --destructive: 0 28% 50%;          /* #A85858 muted red */
+    --destructive-foreground: 90 5% 91%;
 
-    --border: 215 15% 15%;            /* #21262d */
-    --input: 215 15% 15%;
-    --ring: 189 94% 53%;
+    --border: 153 14% 17%;             /* #24332c */
+    --input: 153 14% 17%;
+    --ring: 157 22% 59%;               /* sage focus ring */
 
     --radius: 0.625rem;
 
     /* Preloader properties */
-    --preloader-primary: 189 94% 53%;
-    --preloader-primary-hex: #22d3ee;
-    --preloader-secondary: 217 91% 60%;
-    --preloader-secondary-hex: #60a5fa;
-    --preloader-accent: 160 84% 39%;
-    --preloader-accent-hex: #34d399;
-    --preloader-bg: 0 0% 0%;
-    --preloader-surface: 216 28% 7%;
-    --preloader-border: 215 15% 15%;
-    --preloader-text: 210 24% 93%;
-    --preloader-muted: 215 14% 56%;
-    --preloader-glow: rgba(34, 211, 238, 0.25);
+    --preloader-primary: 157 22% 59%;
+    --preloader-primary-hex: #7faf9b;
+    --preloader-secondary: 202 14% 51%;
+    --preloader-secondary-hex: #718a96;
+    --preloader-accent: 38 40% 60%;
+    --preloader-accent-hex: #c7a96b;
+    --preloader-bg: 0 0% 0%;           /* #000000 pitch black */
+    --preloader-surface: 0 0% 0%;      /* #000000 */
+    --preloader-border: 157 8% 17%;
+    --preloader-text: 90 5% 91%;
+    --preloader-muted: 157 8% 46%;
+    --preloader-glow: rgba(127, 175, 155, 0.15);
   }
 
-  /* ── Light Secondary Theme ── */
-  [data-theme="light"],
-  .light {
+  /* =====================================================================
+     PUNK LIGHT
+     Bold / energetic Ã¢â‚¬â€ light appearance
+     ===================================================================== */
+  .punk-light,
+  html.punk-light,
+  html[data-theme-identity="punk"].light,
+  html[data-theme-identity="punk"][data-theme-appearance="light"],
+  html.light:not([data-theme-identity="calm-green"]),
+  html[data-theme="light"]:not([data-theme-identity="calm-green"]) {
     --surface-base: #F5F7F8;
     --surface-raised: #FFFFFF;
     --surface-sunken: #EEF2F4;
@@ -119,9 +140,10 @@
     --border-subtle: #D7DEE3;
     --border-strong: #C2CCD4;
 
-    --text-primary: #101820;
-    --text-secondary: #5F6B76;
-    --text-muted: #7A8792;
+    /* Punk Light Ã¢â‚¬â€ high-contrast text for proper readability */
+    --text-primary: #0A0E14;     /* near-black Ã¢â‚¬â€ max contrast on white */
+    --text-secondary: #3F4D5A;   /* dark slate Ã¢â‚¬â€ readable secondary */
+    --text-muted: #65737E;       /* slate muted */
 
     --accent-primary: #0891B2;
     --accent-secondary: #2563EB;
@@ -130,6 +152,13 @@
     --state-success: #059669;
     --state-warning: #D97706;
     --state-error: #DC2626;
+
+    --cta-primary-bg: #4f46e5;
+    --cta-primary-hover: #4338ca;
+    --cta-primary-text: #ffffff;
+    --cta-primary-border: #4f46e5;
+    --cta-primary-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+    --hero-glow: none;
 
     --node-agent: #6D5EF0;
     --node-tool: #0891B2;
@@ -145,22 +174,22 @@
     --glow-blue: rgba(37,99,235,0.06);
 
     --background: 200 14% 97%;        /* #F5F7F8 */
-    --foreground: 210 33% 10%;        /* #101820 */
+    --foreground: 214 44% 7%;         /* #0A0E14 near-black for contrast */
 
     --card: 0 0% 100%;                /* #FFFFFF */
-    --card-foreground: 210 33% 10%;
+    --card-foreground: 214 44% 7%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 33% 10%;
+    --popover-foreground: 214 44% 7%;
 
     --primary: 192 91% 36%;           /* #0891B2 cyan */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 200 17% 95%;         /* #EEF2F4 */
-    --secondary-foreground: 210 33% 10%;
+    --secondary-foreground: 214 44% 7%;
 
     --muted: 200 17% 95%;             /* #EEF2F4 */
-    --muted-foreground: 210 11% 42%;  /* #5F6B76 */
+    --muted-foreground: 210 18% 30%;  /* #3F4D5A dark slate */
 
     --accent: 200 17% 95%;
     --accent-foreground: 192 91% 36%;
@@ -181,13 +210,21 @@
     --preloader-bg: 200 14% 97%;
     --preloader-surface: 0 0% 100%;
     --preloader-border: 204 14% 87%;
-    --preloader-text: 210 33% 10%;
-    --preloader-muted: 210 11% 42%;
+    --preloader-text: 214 44% 7%;
+    --preloader-muted: 210 18% 30%;
     --preloader-glow: rgba(8, 145, 178, 0.2);
   }
 
-  /* ── Dark Theme Overrides (matches :root) ── */
-  .dark {
+  /* =====================================================================
+     PUNK DARK override (matches :root)
+     Bold / energetic Ã¢â‚¬â€ dark appearance
+     ===================================================================== */
+  .punk-dark,
+  html.punk-dark,
+  html[data-theme-identity="punk"].dark,
+  html[data-theme-identity="punk"][data-theme-appearance="dark"],
+  html.dark:not([data-theme-identity="calm-green"]),
+  html[data-theme="dark"]:not([data-theme-identity="calm-green"]) {
     --surface-base: #000000;
     --surface-sunken: #05070a;
     --surface-raised: #0d1117;
@@ -207,6 +244,13 @@
     --state-success: #34D399;
     --state-warning: #FBBF24;
     --state-error: #F87171;
+
+    --cta-primary-bg: #4f46e5;
+    --cta-primary-hover: #4338ca;
+    --cta-primary-text: #ffffff;
+    --cta-primary-border: rgba(99, 102, 241, 0.4);
+    --cta-primary-shadow: 0 0 20px rgba(79, 70, 229, 0.35);
+    --hero-glow: 0 0 28px rgba(34, 211, 238, 0.4);
 
     --node-agent: #8B7CF6;
     --node-tool: #22D3EE;
@@ -250,6 +294,194 @@
     --ring: 189 94% 53%;
   }
 
+  /* =====================================================================
+     CALM GREEN DARK
+     Calm / sophisticated / technical / mature Ã¢â‚¬â€  dark appearance
+     Primary surfaces: layered deep graphite-green
+     Accent: sage (#7FAF9B) Ã¢â‚¬â€  used sparingly (CTA, active, selected)
+     80% neutral Ã‚Â· 15% sage Ã‚Â· 5% supporting
+     ===================================================================== */
+  .calm-green-dark,
+  html.calm-green-dark,
+  html[data-theme-identity="calm-green"].dark,
+  html[data-theme-identity="calm-green"][data-theme-appearance="dark"] {
+    --surface-base:     #000000;   /* pitch black base */
+    --surface-sunken:   #000000;
+    --surface-raised:   #000000;   /* pitch black surfaces */
+    --surface-elevated: #0a0e0c;   /* subtle elevated panels / modals */
+
+    --border-subtle:   #1a241f;
+    --border-strong:   #24332c;
+
+    --text-primary:   #E7E9E5;   /* warm off-white — high contrast on pitch black */
+    --text-secondary: #93A49C;   /* sage graphite */
+    --text-muted:     #6B7C73;   /* subtle labels */
+
+    --accent-primary:   #7FAF9B;  /* sage — primary CTA / active states */
+    --accent-secondary: #718A96;  /* slate-blue secondary */
+    --accent-contrast:  #000000;  /* text on sage buttons */
+
+    --state-success: #7FAF9B;
+    --state-warning: #C7A96B;
+    --state-error:   #A85858;    /* muted red — not neon */
+
+    --cta-primary-bg: #7FAF9B;
+    --cta-primary-hover: #9BC7B2;
+    --cta-primary-text: #000000;
+    --cta-primary-border: #7FAF9B;
+    --cta-primary-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    --hero-glow: none;
+
+    --node-agent:   #7FAF9B;
+    --node-tool:    #718A96;
+    --node-control: #C7A96B;
+    --node-hitl:    #A85858;
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.5);
+    --shadow-md: 0 8px 24px rgba(0,0,0,0.7);
+    --shadow-lg: 0 24px 64px rgba(0,0,0,0.85);
+
+    --grid-dot:  rgba(127,175,155,0.08);       /* subtle, low-contrast sage grid on pitch black */
+    --glow-cyan: rgba(127,175,155,0.05);    /* sage glow — minimal */
+    --glow-blue: rgba(113,138,150,0.04);
+
+    /* shadcn/Tailwind HSL tokens — Calm Green Dark */
+    --background: 0 0% 0%;             /* #000000 pitch black */
+    --foreground: 90 5% 91%;           /* #E7E9E5 */
+
+    --card: 0 0% 0%;                   /* #000000 pitch black */
+    --card-foreground: 90 5% 91%;
+
+    --popover: 150 14% 3%;             /* pitch black */
+    --popover-foreground: 90 5% 91%;
+
+    --primary: 157 22% 59%;            /* #7FAF9B sage */
+    --primary-foreground: 0 0% 0%;     /* #000000 — dark text on sage */
+
+    --secondary: 0 0% 0%;              /* #000000 */
+    --secondary-foreground: 90 5% 91%;
+
+    --muted: 0 0% 0%;
+    --muted-foreground: 153 8% 46%;    /* #6B7C73 */
+
+    --accent: 150 14% 4%;              /* #090c0b */
+    --accent-foreground: 157 22% 59%;  /* sage */
+
+    --destructive: 0 28% 50%;          /* #A85858 muted red */
+    --destructive-foreground: 90 5% 91%;
+
+    --border: 153 14% 17%;             /* #24332c */
+    --input: 153 14% 17%;
+    --ring: 157 22% 59%;               /* sage focus ring */
+
+    --preloader-primary: 157 22% 59%;
+    --preloader-primary-hex: #7faf9b;
+    --preloader-secondary: 202 14% 51%;
+    --preloader-secondary-hex: #718a96;
+    --preloader-accent: 38 40% 60%;
+    --preloader-accent-hex: #c7a96b;
+    --preloader-bg: 0 0% 0%;           /* #000000 pitch black */
+    --preloader-surface: 0 0% 0%;      /* #000000 */
+    --preloader-border: 157 8% 17%;
+    --preloader-text: 90 5% 91%;
+    --preloader-muted: 157 8% 46%;
+    --preloader-glow: rgba(127, 175, 155, 0.15);
+  }
+
+  /* =====================================================================
+     CALM GREEN LIGHT
+     Calm / sophisticated Ã¢â‚¬â€ light appearance
+     Surfaces: warm off-white with sage accents
+     Text: near-black for maximum readability
+     ===================================================================== */
+  .calm-green-light,
+  html.calm-green-light,
+  html[data-theme-identity="calm-green"].light,
+  html[data-theme-identity="calm-green"][data-theme-appearance="light"] {
+    --surface-base:     #F4F6F5;   /* warm white with green undertone */
+    --surface-sunken:   #EAEEEC;
+    --surface-raised:   #FFFFFF;
+    --surface-elevated: #FFFFFF;
+
+    --border-subtle: #D5DDD9;
+    --border-strong: #BEC9C4;
+
+    /* High contrast text Ã¢â‚¬â€ essential for light mode readability */
+    --text-primary:   #0E1411;   /* near-black */
+    --text-secondary: #3D4E47;   /* dark forest */
+    --text-muted:     #5E7269;   /* muted green-grey */
+
+    --accent-primary:   #4D8A73;  /* darker sage Ã¢â‚¬â€ readable on white */
+    --accent-secondary: #3D6472;
+    --accent-contrast:  #FFFFFF;  /* white text on sage buttons */
+
+    --state-success: #3D7A62;
+    --state-warning: #9A7A3A;
+    --state-error:   #8A3535;
+
+    --cta-primary-bg: #4D8A73;
+    --cta-primary-hover: #3D7360;
+    --cta-primary-text: #FFFFFF;
+    --cta-primary-border: #4D8A73;
+    --cta-primary-shadow: 0 1px 3px rgba(14,20,17,0.1);
+    --hero-glow: none;
+
+    --node-agent:   #4D8A73;
+    --node-tool:    #3D6472;
+    --node-control: #9A7A3A;
+    --node-hitl:    #8A3535;
+
+    --shadow-sm: 0 1px 2px rgba(14,20,17,0.06);
+    --shadow-md: 0 8px 24px rgba(14,20,17,0.10);
+    --shadow-lg: 0 24px 64px rgba(14,20,17,0.14);
+
+    --grid-dot:  rgba(61,78,71,0.10);
+    --glow-cyan: rgba(77,138,115,0.08);
+    --glow-blue: rgba(61,100,114,0.06);
+
+    /* shadcn/Tailwind HSL tokens Ã¢â‚¬â€ Calm Green Light */
+    --background: 150 10% 96%;         /* #F4F6F5 */
+    --foreground: 150 20% 7%;          /* #0E1411 near-black */
+
+    --card: 0 0% 100%;
+    --card-foreground: 150 20% 7%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 150 20% 7%;
+
+    --primary: 157 28% 42%;            /* #4D8A73 darker sage */
+    --primary-foreground: 0 0% 100%;   /* white text on sage */
+
+    --secondary: 150 10% 92%;          /* #EAEEEC */
+    --secondary-foreground: 150 20% 7%;
+
+    --muted: 150 10% 92%;
+    --muted-foreground: 150 15% 30%;   /* #3D4E47 */
+
+    --accent: 150 10% 92%;
+    --accent-foreground: 157 28% 42%;
+
+    --destructive: 0 40% 38%;          /* #8A3535 */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 150 12% 83%;             /* #D5DDD9 */
+    --input: 150 12% 83%;
+    --ring: 157 28% 42%;
+
+    --preloader-primary: 157 28% 42%;
+    --preloader-primary-hex: #4d8a73;
+    --preloader-secondary: 202 28% 34%;
+    --preloader-secondary-hex: #3d6472;
+    --preloader-accent: 38 44% 42%;
+    --preloader-accent-hex: #9a7a3a;
+    --preloader-bg: 150 10% 96%;
+    --preloader-surface: 0 0% 100%;
+    --preloader-border: 150 12% 83%;
+    --preloader-text: 150 20% 7%;
+    --preloader-muted: 150 15% 30%;
+    --preloader-glow: rgba(77, 138, 115, 0.18);
+  }
+
   * {
     border-color: hsl(var(--border));
   }
@@ -267,6 +499,125 @@
   .light body, [data-theme="light"] body {
     background-color: var(--surface-base);
     background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+  }
+
+  /* ── Calm Green Dark: Global Backgrounds — Pitch Black Base ──────────── */
+  html.calm-green-dark,
+  html.calm-green-dark body,
+  [data-theme-identity="calm-green"].dark,
+  [data-theme-identity="calm-green"].dark body,
+  .calm-green-dark body {
+    background-color: #000000 !important;
+    color: #E7E9E5 !important;
+    background-image: none !important;
+  }
+
+  /* ── Calm Green Light: Global Backgrounds — Off-white Sage Base ──────────── */
+  html.calm-green-light,
+  html.calm-green-light body,
+  [data-theme-identity="calm-green"].light,
+  [data-theme-identity="calm-green"].light body,
+  .calm-green-light body {
+    background-color: #F4F6F5 !important;
+    color: #0E1411 !important;
+    background-image: radial-gradient(rgba(61,78,71,0.10) 1px, transparent 1px) !important;
+  }
+
+  /* Header in Calm Green Dark — pure pitch black with no leaking background blurs */
+  .calm-green-dark header,
+  [data-theme-identity="calm-green"].dark header,
+  .calm-green-dark header.sticky,
+  [data-theme-identity="calm-green"].dark header.sticky {
+    background-color: #000000 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Header in Calm Green Light */
+  .calm-green-light header,
+  [data-theme-identity="calm-green"].light header {
+    background-color: rgba(244, 246, 245, 0.88) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+
+  .calm-green-light header.header-scrolled,
+  [data-theme-identity="calm-green"].light header.header-scrolled {
+    background-color: rgba(244, 246, 245, 0.96) !important;
+    box-shadow: 0 1px 12px rgba(14, 20, 17, 0.06) !important;
+  }
+
+  /* Root layout & Main container in Calm Green Dark — pitch black */
+  .calm-green-dark #main-content,
+  .calm-green-dark main,
+  .calm-green-dark .h-screen,
+  [data-theme-identity="calm-green"].dark #main-content,
+  [data-theme-identity="calm-green"].dark main,
+  [data-theme-identity="calm-green"].dark .h-screen {
+    background-color: #000000 !important;
+    color: #E7E9E5;
+  }
+
+  /* Root layout & Main container in Calm Green Light */
+  .calm-green-light #main-content,
+  .calm-green-light main,
+  [data-theme-identity="calm-green"].light #main-content,
+  [data-theme-identity="calm-green"].light main {
+    background-color: #F4F6F5 !important;
+    color: #0E1411;
+  }
+
+  /* Canvas in Calm Green Dark — pure pitch black */
+  .calm-green-dark .react-flow,
+  [data-theme-identity="calm-green"].dark .react-flow {
+    background-color: #000000 !important;
+  }
+
+  /* Canvas in Calm Green Light */
+  .calm-green-light .react-flow,
+  [data-theme-identity="calm-green"].light .react-flow {
+    background-color: #F4F6F5 !important;
+  }
+
+  /* Calm Green Dark: Hide ambient background gradient blobs to keep background pitch black */
+  .calm-green-dark .hero-ambient-blob,
+  [data-theme-identity="calm-green"].dark .hero-ambient-blob {
+    display: none !important;
+  }
+
+  /* Override hardcoded black backgrounds throughout Calm Green Dark */
+  .calm-green-dark .bg-black,
+  .calm-green-dark .dark\:bg-black,
+  .calm-green-dark [class*="dark:bg-[#000000]"],
+  .calm-green-dark [class*="dark:bg-[#0a0a0a]"],
+  .calm-green-dark [class*="dark:bg-[#07070d]"],
+  .calm-green-dark [class*="dark:bg-[#0a0a14]"],
+  .calm-green-dark [class*="dark:bg-[#14161c]"],
+  .calm-green-dark [class*="dark:bg-[#1a1d27]"],
+  .calm-green-dark [class*="dark:bg-[#0d0e1a]"],
+  .calm-green-dark [class*="dark:bg-slate-950"],
+  .calm-green-dark [class*="dark:bg-zinc-950"],
+  .calm-green-dark [class*="dark:bg-neutral-950"] {
+    background-color: #000000 !important;
+  }
+
+  /* Card and panel surfaces in Calm Green Dark — pure pitch black */
+  .calm-green-dark [class*="dark:bg-[#0a0a0a]/"],
+  .calm-green-dark [class*="dark:bg-[#07070d]/"],
+  .calm-green-dark [class*="dark:bg-[#0a0a14]/"],
+  .calm-green-dark [class*="dark:bg-black/40"],
+  .calm-green-dark [class*="dark:bg-black/50"],
+  .calm-green-dark [class*="dark:bg-black/60"],
+  .calm-green-dark [class*="dark:bg-black/70"] {
+    background-color: rgba(0, 0, 0, 0.85) !important;
+  }
+
+  /* Calm Green Dark borders */
+  .calm-green-dark [class*="dark:border-indigo-900"],
+  .calm-green-dark [class*="dark:border-indigo-950"],
+  .calm-green-dark [class*="dark:border-slate-800"],
+  .calm-green-dark [class*="dark:border-slate-700"] {
+    border-color: #24332c !important;
   }
 
   /* Smooth theme transitions */
@@ -294,11 +645,31 @@
    Typography Utility Classes
    ========================================================================= */
 
-/* Pixel font: VT323 retro terminal / CRT monospace display font */
-.font-pixel,
+/* Pixel / Display typography: default technical sans-serif (Calm Green default) */
+.font-pixel {
+  font-family: var(--font-geist), Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: -0.01em;
+}
+
 .font-vt323 {
-  font-family: 'VT323', var(--font-vt323), monospace !important;
+  font-family: var(--font-vt323), 'VT323', monospace;
   letter-spacing: 0.05em;
+}
+
+/* Punk typography override: VT323 retro terminal monospace display font */
+[data-theme-identity="punk"] .font-pixel,
+.punk-dark .font-pixel,
+.punk-light .font-pixel {
+  font-family: var(--font-vt323), 'VT323', monospace !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* Calm Green typography: modern technical sans-serif */
+[data-theme-identity="calm-green"] .font-pixel,
+.calm-green-dark .font-pixel,
+.calm-green-light .font-pixel {
+  font-family: var(--font-geist), Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  letter-spacing: -0.01em !important;
 }
 
 .font-geist {
@@ -317,16 +688,26 @@
    Agent Infrastructure Utility Classes
    ========================================================================= */
 
-/* Cyan/Blue infrastructure gradient headline */
+/* Default headline gradient: Sage (Calm Green default) */
 .text-gradient-glow {
+  background: linear-gradient(135deg, #7FAF9B 0%, #9BC7B2 50%, #718A96 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Punk Dark headline gradient */
+.punk-dark .text-gradient-glow,
+[data-theme-identity="punk"].dark .text-gradient-glow {
   background: linear-gradient(135deg, #22D3EE 0%, #38BDF8 50%, #60A5FA 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-.light .text-gradient-glow,
-[data-theme="light"] .text-gradient-glow {
+/* Punk Light headline gradient */
+.punk-light .text-gradient-glow,
+[data-theme-identity="punk"].light .text-gradient-glow {
   background: linear-gradient(135deg, #0891B2 0%, #0284C7 50%, #2563EB 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -356,15 +737,22 @@
   background-size: 48px 48px;
 }
 
-/* System glow text */
+/* System glow text: Sage (Calm Green default) */
 .text-pixel-glow {
   color: var(--accent-primary);
+  text-shadow: 0 0 10px rgba(127, 175, 155, 0.25);
 }
 
-.dark .text-pixel-glow,
-:root .text-pixel-glow {
+.punk-dark .text-pixel-glow,
+[data-theme-identity="punk"].dark .text-pixel-glow {
   color: #22D3EE;
   text-shadow: 0 0 14px rgba(34, 211, 238, 0.4);
+}
+
+.punk-light .text-pixel-glow,
+[data-theme-identity="punk"].light .text-pixel-glow {
+  color: #0891B2;
+  text-shadow: none;
 }
 
 /* Soft tech border */
@@ -379,9 +767,57 @@
 }
 
 .light .header-scrolled,
-[data-theme="light"] .header-scrolled {
+[data-theme="light"] .header-scrolled,
+.punk-light .header-scrolled {
   box-shadow: 0 1px 12px rgba(16, 24, 32, 0.06);
   border-bottom-color: var(--border-subtle);
+}
+
+/* =========================================================================
+   CALM GREEN Ã¢â‚¬â€  Utility Class Overrides
+   Theme-aware overrides that use semantic tokens automatically;
+   no additional overrides needed for components using var(--*) tokens.
+   ========================================================================= */
+
+/* Sage gradient headline — replaces cyan/blue in Calm Green */
+.calm-green-dark .text-gradient-glow,
+[data-theme-identity="calm-green"].dark .text-gradient-glow {
+  background: linear-gradient(135deg, #7FAF9B 0%, #9BC7B2 50%, #718A96 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.calm-green-light .text-gradient-glow,
+[data-theme-identity="calm-green"].light .text-gradient-glow {
+  background: linear-gradient(135deg, #4D8A73 0%, #3D6472 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Calm Green glow text — sage instead of cyan */
+.calm-green-dark .text-pixel-glow,
+[data-theme-identity="calm-green"].dark .text-pixel-glow {
+  color: #7FAF9B;
+  text-shadow: 0 0 10px rgba(127, 175, 155, 0.25);
+}
+
+.calm-green-light .text-pixel-glow,
+[data-theme-identity="calm-green"].light .text-pixel-glow {
+  color: #4D8A73;
+  text-shadow: none;
+}
+
+/* Calm Green radial accent blobs — transparent in dark mode for pure pitch black background */
+.calm-green-dark .bg-blob-primary,
+[data-theme-identity="calm-green"].dark .bg-blob-primary {
+  background: transparent !important;
+}
+
+.calm-green-dark .bg-blob-secondary,
+[data-theme-identity="calm-green"].dark .bg-blob-secondary {
+  background: transparent !important;
 }
 
 /* =========================================================================
@@ -420,7 +856,7 @@
 .animate-pulse-gentle { animation: pulse-gentle 2s ease-in-out infinite; }
 
 /* =========================================================================
-   Glitch — Kept for dark-mode canvas (opt-in only)
+   Glitch Ã¢â‚¬â€ Kept for dark-mode canvas (opt-in only)
    ========================================================================= */
 
 @keyframes glitch-shift-before {
@@ -485,7 +921,7 @@
   .glitch::before, .glitch::after { animation: none; }
 }
 
-/* CRT scanlines — dark-only, kept for canvas */
+/* CRT scanlines Ã¢â‚¬â€ dark-only, kept for canvas */
 .crt-lines {
   /* No-op in light mode */
 }
@@ -565,10 +1001,10 @@
 }
 
 /* =========================================================================
-   React Flow Canvas Theme — Agent Infrastructure Palette
+   React Flow Canvas Theme Ã¢â‚¬â€ Agent Infrastructure Palette
    ========================================================================= */
 
-/* Canvas background — subtle dot grid on dark graphite base */
+/* Canvas background Ã¢â‚¬â€ subtle dot grid on dark graphite base */
 .react-flow {
   background-color: var(--surface-base);
   background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
@@ -663,6 +1099,30 @@
   border-radius: 8px;
 }
 
+/* Calm Green canvas overrides Ã¢â‚¬â€ all use semantic vars automatically,
+   but selection + minimap mask need explicit overrides */
+.calm-green-dark .react-flow__selection {
+  background: rgba(127, 175, 155, 0.06);
+  border: 1.5px dashed rgba(127, 175, 155, 0.4);
+  border-radius: 8px;
+}
+
+.calm-green-light .react-flow,
+[data-theme-identity="calm-green"].light .react-flow {
+  background-color: #F4F6F5;
+  background-image: radial-gradient(rgba(61, 78, 71, 0.10) 1px, transparent 1px);
+}
+
+.calm-green-dark .react-flow__minimap-mask,
+[data-theme-identity="calm-green"].dark .react-flow__minimap-mask {
+  fill: rgba(11, 13, 12, 0.72);
+}
+
+.calm-green-light .react-flow__minimap-mask,
+[data-theme-identity="calm-green"].light .react-flow__minimap-mask {
+  fill: rgba(234, 238, 236, 0.72);
+}
+
 /* Connection line */
 .react-flow__connectionline {
   stroke: var(--accent-primary);
@@ -671,7 +1131,7 @@
 }
 
 /* =========================================================================
-   Clerk Auth — Clean Light Aesthetic
+   Clerk Auth Ã¢â‚¬â€ Clean Light Aesthetic
    ========================================================================= */
 
 .cl-rootBox {
@@ -694,7 +1154,7 @@
   display: none !important;
 }
 
-/* Clerk Card & Popover — Adaptive Tokens */
+/* Clerk Card & Popover Ã¢â‚¬â€ Adaptive Tokens */
 .cl-card,
 .cl-userProfile-root {
   background-color: var(--surface-raised) !important;
@@ -771,7 +1231,7 @@
 .cl-userButtonPopoverActionButtonIcon { color: var(--accent-primary) !important; }
 
 /* =========================================================================
-   Agent Hub Preloader — Kept Intact
+   Agent Hub Preloader Ã¢â‚¬â€ Kept Intact
    ========================================================================= */
 
 @keyframes preloader-radar-pulse {
@@ -857,8 +1317,8 @@
 }
 
 /* =========================================================================
-   Canvas Execution Animations — Agent Graph Runtime
-   (These work on both light and dark canvas — box-shadows still visible)
+   Canvas Execution Animations Ã¢â‚¬â€ Agent Graph Runtime
+   (These work on both light and dark canvas Ã¢â‚¬â€ box-shadows still visible)
    ========================================================================= */
 
 @keyframes node-running {
@@ -985,7 +1445,7 @@
 .dark img[data-logo-invert] { filter: invert(1) brightness(2); }
 
 /* =========================================================================
-   Scrollbar — Clean & Minimal
+   Scrollbar Ã¢â‚¬â€ Clean & Minimal
    ========================================================================= */
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -998,6 +1458,14 @@
 
 .dark ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.25); }
 .dark ::-webkit-scrollbar-thumb:hover { background: rgba(129, 140, 248, 0.5); }
+
+/* Calm Green Ã¢â‚¬â€ sage-tinted scrollbar */
+.calm-green-dark ::-webkit-scrollbar-thumb {
+  background: rgba(127, 175, 155, 0.2);
+}
+.calm-green-dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(127, 175, 155, 0.4);
+}
 
 .no-scrollbar, .scrollbar-none {
   -ms-overflow-style: none !important;

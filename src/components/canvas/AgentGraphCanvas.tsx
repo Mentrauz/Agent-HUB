@@ -78,7 +78,15 @@ function CanvasInner({
   onSubgraphEdit,
 }: AgentGraphCanvasProps) {
   const { theme, resolvedTheme } = useTheme();
-  const isDark = theme !== "light" && resolvedTheme !== "light";
+  // Compound key format: "punk-dark", "calm-green-light" etc.
+  const currentThemeKey = theme || resolvedTheme || "calm-green-dark";
+  const isCalmGreen = currentThemeKey.startsWith("calm-green");
+  // Appearance is "light" if key ends with "-light" or exactly equals "light"
+  const isDark =
+    !theme?.includes("-light") &&
+    theme !== "light" &&
+    !resolvedTheme?.includes("-light") &&
+    resolvedTheme !== "light";
 
   const initial = useMemo(() => graphToFlow(graph), [graph]);
   const [nodes, setNodes] = useNodesState<CanvasNode>(initial.nodes);
@@ -1088,11 +1096,13 @@ function CanvasInner({
           {!readOnly && (
             <div className={clsx(
               "shrink-0 border-r transition-all duration-200 overflow-hidden",
-              canvasTheme === "paper"
-                ? "border-slate-200 bg-white"
-                : canvasTheme === "graphite"
-                  ? "border-slate-600 bg-[#1a1d27]"
-                  : "border-indigo-900/40 bg-[#0a0a14]",
+              isCalmGreen
+                ? (isDark ? "border-[#252D2A] bg-[#000000]" : "border-[#D5DDD9] bg-white")
+                : (canvasTheme === "paper"
+                    ? "border-slate-200 bg-white"
+                    : canvasTheme === "graphite"
+                      ? "border-slate-600 bg-[#1a1d27]"
+                      : "border-indigo-900/40 bg-[#0a0a14]"),
               fsLeftOpen ? "w-56" : "w-10"
             )}>
               <div className={clsx("flex items-center justify-between px-2 py-2 border-b", canvasTheme === "paper" ? "border-slate-200" : canvasTheme === "graphite" ? "border-slate-600" : "border-indigo-900/30")}>
@@ -1112,11 +1122,13 @@ function CanvasInner({
           {/* Center canvas */}
           <div ref={wrapperRef} onDrop={onDrop} onDragOver={onDragOver} className={clsx(
             "flex-1 min-w-0 relative",
-            canvasTheme === "paper"
-              ? "bg-slate-50"
-              : canvasTheme === "graphite"
-                ? "bg-[#14161c]"
-                : "bg-[#07070d]"
+            isCalmGreen
+              ? (isDark ? "bg-[#000000]" : "bg-[#F4F6F5]")
+              : (canvasTheme === "paper"
+                  ? "bg-slate-50"
+                  : canvasTheme === "graphite"
+                    ? "bg-[#14161c]"
+                    : "bg-[#07070d]")
           )}>
             {/* Validation warnings (Floating at bottom-left in Fullscreen) */}
             {!inTraceMode && !readOnly && issues.length > 0 && (
@@ -1219,34 +1231,51 @@ function CanvasInner({
               preventScrolling={true}
               proOptions={{ hideAttribution: true }}
             >
-              <Background variant={BackgroundVariant.Dots} gap={24} size={1.5} color={canvasTheme === "paper" ? "#cbd5e1" : canvasTheme === "graphite" ? "#2a2e3a" : isDark ? "#334155" : "#cbd5e1"} />
+              <Background
+                variant={BackgroundVariant.Dots}
+                gap={24}
+                size={1.5}
+                color={
+                  isCalmGreen
+                    ? (isDark ? "rgba(37, 45, 42, 0.75)" : "#D5DDD9")
+                    : (canvasTheme === "paper" ? "#cbd5e1" : canvasTheme === "graphite" ? "#2a2e3a" : isDark ? "#334155" : "#cbd5e1")
+                }
+              />
               <Controls className={clsx(
                 "!shadow-lg [&>button]:!shadow-sm",
-                canvasTheme === "paper"
-                  ? "!border-slate-200 !bg-white [&>button]:!border-slate-200 [&>button]:!text-slate-700 [&>button]:!bg-white [&>button:hover]:!bg-slate-100"
-                  : canvasTheme === "graphite"
-                    ? "!border-slate-600 !bg-[#1a1d27] [&>button]:!border-slate-600 [&>button]:!text-slate-300 [&>button]:!bg-[#1a1d27] [&>button:hover]:!bg-slate-700"
-                    : "!border-slate-700 !bg-[#0a0a14] [&>button]:!border-slate-700 [&>button]:!text-slate-400 [&>button]:!bg-[#0a0a14] [&>button:hover]:!bg-slate-800 [&>button:hover]:!text-white"
+                isCalmGreen
+                  ? (isDark
+                      ? "!border-[#252D2A] !bg-[#000000] [&>button]:!border-[#252D2A] [&>button]:!text-[#8D9691] [&>button]:!bg-[#000000] [&>button:hover]:!bg-[#0a0e0c] [&>button:hover]:!text-[#E7E9E5]"
+                      : "!border-[#D5DDD9] !bg-white [&>button]:!border-[#D5DDD9] [&>button]:!text-[#3D4E47] [&>button]:!bg-white [&>button:hover]:!bg-slate-100")
+                  : (canvasTheme === "paper"
+                      ? "!border-slate-200 !bg-white [&>button]:!border-slate-200 [&>button]:!text-slate-700 [&>button]:!bg-white [&>button:hover]:!bg-slate-100"
+                      : canvasTheme === "graphite"
+                        ? "!border-slate-600 !bg-[#1a1d27] [&>button]:!border-slate-600 [&>button]:!text-slate-300 [&>button]:!bg-[#1a1d27] [&>button:hover]:!bg-slate-700"
+                        : "!border-slate-700 !bg-[#0a0a14] [&>button]:!border-slate-700 [&>button]:!text-slate-400 [&>button]:!bg-[#0a0a14] [&>button:hover]:!bg-slate-800 [&>button:hover]:!text-white")
               )} position="bottom-right" />
               <MiniMap
                 pannable
                 zoomable
                 className={clsx(
                   "!shadow-lg",
-                  canvasTheme === "paper"
-                    ? "!bg-white !border-slate-200"
-                    : canvasTheme === "graphite"
-                      ? "!bg-[#1a1d27] !border-slate-600"
-                      : "!bg-[#0a0a14] !border-slate-700"
+                  isCalmGreen
+                    ? (isDark ? "!bg-[#000000] !border-[#252D2A]" : "!bg-white !border-[#D5DDD9]")
+                    : (canvasTheme === "paper"
+                        ? "!bg-white !border-slate-200"
+                        : canvasTheme === "graphite"
+                          ? "!bg-[#1a1d27] !border-slate-600"
+                          : "!bg-[#0a0a14] !border-slate-700")
                 )}
-                maskColor={isDark ? "rgba(0, 0, 0, 0.6)" : "rgba(241, 245, 249, 0.7)"}
+                maskColor={isDark ? (isCalmGreen ? "rgba(0, 0, 0, 0.75)" : "rgba(0, 0, 0, 0.6)") : "rgba(241, 245, 249, 0.7)"}
                 nodeColor={(n) => {
                   const t = n.data?.traceStatus;
-                  if (t === "RUNNING") return "#818cf8";
+                  if (t === "RUNNING") return isCalmGreen ? "#7FAF9B" : "#818cf8";
                   if (t === "SUCCESS") return "#34d399";
-                  if (t === "FAILED") return "#f87171";
-                  if (t === "AWAITING_APPROVAL") return "#fbbf24";
-                  return canvasTheme === "paper" ? "#cbd5e1" : canvasTheme === "graphite" ? "#2a2e3a" : isDark ? "#334155" : "#cbd5e1";
+                  if (t === "FAILED") return isCalmGreen ? "#A85858" : "#f87171";
+                  if (t === "AWAITING_APPROVAL") return isCalmGreen ? "#C7A96B" : "#fbbf24";
+                  return isCalmGreen
+                    ? (isDark ? "#0a0e0c" : "#EAEEEC")
+                    : (canvasTheme === "paper" ? "#cbd5e1" : canvasTheme === "graphite" ? "#2a2e3a" : isDark ? "#334155" : "#cbd5e1");
                 }}
               />
             </ReactFlow>
@@ -1649,11 +1678,13 @@ function CanvasInner({
           onDragOver={onDragOver}
           className={clsx(
             "relative flex-1 min-h-[480px] rounded border border-slate-200 dark:border-indigo-900/40 overflow-hidden",
-            canvasTheme === "paper"
-              ? "bg-slate-50"
-              : canvasTheme === "graphite"
-                ? "bg-[#14161c]"
-                : "bg-[#07070d]"
+            isCalmGreen
+              ? (isDark ? "bg-[#000000]" : "bg-[#F4F6F5]")
+              : (canvasTheme === "paper"
+                  ? "bg-slate-50"
+                  : canvasTheme === "graphite"
+                    ? "bg-[#14161c]"
+                    : "bg-[#07070d]")
           )}
         >
           <ReactFlow
@@ -1722,21 +1753,37 @@ function CanvasInner({
               variant={BackgroundVariant.Dots}
               gap={24}
               size={1.5}
-              color={canvasTheme === "paper" ? "#cbd5e1" : canvasTheme === "graphite" ? "#2a2e3a" : isDark ? "#334155" : "#cbd5e1"}
+              color={
+                isCalmGreen
+                  ? (isDark ? "rgba(37, 45, 42, 0.75)" : "#D5DDD9")
+                  : (canvasTheme === "paper" ? "#cbd5e1" : canvasTheme === "graphite" ? "#2a2e3a" : isDark ? "#334155" : "#cbd5e1")
+              }
             />
-            <Controls className="!border-slate-200 dark:!border-slate-700 !bg-white dark:!bg-[#0b0b12] !shadow-md dark:!shadow-none [&>button]:!border-slate-200 dark:[&>button]:!border-slate-700 [&>button]:!text-slate-700 dark:[&>button]:!text-slate-300 [&>button]:!bg-white dark:[&>button]:!bg-[#0b0b12] [&>button:hover]:!bg-slate-100 dark:[&>button:hover]:!bg-slate-800" />
+            <Controls className={clsx(
+              isCalmGreen
+                ? (isDark
+                    ? "!border-[#252D2A] !bg-[#000000] !shadow-none [&>button]:!border-[#252D2A] [&>button]:!text-[#8D9691] [&>button]:!bg-[#000000] [&>button:hover]:!bg-[#0a0e0c] [&>button:hover]:!text-[#E7E9E5]"
+                    : "!border-[#D5DDD9] !bg-white !shadow-md [&>button]:!border-[#D5DDD9] [&>button]:!text-[#3D4E47] [&>button]:!bg-white [&>button:hover]:!bg-slate-100")
+                : "!border-slate-200 dark:!border-slate-700 !bg-white dark:!bg-[#0b0b12] !shadow-md dark:!shadow-none [&>button]:!border-slate-200 dark:[&>button]:!border-slate-700 [&>button]:!text-slate-700 dark:[&>button]:!text-slate-300 [&>button]:!bg-white dark:[&>button]:!bg-[#0b0b12] [&>button:hover]:!bg-slate-100 dark:[&>button:hover]:!bg-slate-800"
+            )} />
             <MiniMap
               pannable
               zoomable
-              className="!bg-white dark:!bg-[#0b0b12] !border-slate-200 dark:!border-slate-700 !shadow-md dark:!shadow-none"
-              maskColor={isDark ? "rgba(0, 0, 0, 0.6)" : "rgba(241, 245, 249, 0.7)"}
+              className={clsx(
+                isCalmGreen
+                  ? (isDark ? "!bg-[#000000] !border-[#252D2A] !shadow-none" : "!bg-white !border-[#D5DDD9] !shadow-md")
+                  : "!bg-white dark:!bg-[#0b0b12] !border-slate-200 dark:!border-slate-700 !shadow-md dark:!shadow-none"
+              )}
+              maskColor={isDark ? (isCalmGreen ? "rgba(0, 0, 0, 0.75)" : "rgba(0, 0, 0, 0.6)") : "rgba(241, 245, 249, 0.7)"}
               nodeColor={(n) => {
                 const t = n.data?.traceStatus;
-                if (t === "RUNNING") return "#818cf8";
+                if (t === "RUNNING") return isCalmGreen ? "#7FAF9B" : "#818cf8";
                 if (t === "SUCCESS") return "#34d399";
-                if (t === "FAILED") return "#f87171";
-                if (t === "AWAITING_APPROVAL") return "#fbbf24";
-                return isDark ? "#334155" : "#cbd5e1";
+                if (t === "FAILED") return isCalmGreen ? "#A85858" : "#f87171";
+                if (t === "AWAITING_APPROVAL") return isCalmGreen ? "#C7A96B" : "#fbbf24";
+                return isCalmGreen
+                  ? (isDark ? "#0a0e0c" : "#EAEEEC")
+                  : (isDark ? "#334155" : "#cbd5e1");
               }}
             />
           </ReactFlow>

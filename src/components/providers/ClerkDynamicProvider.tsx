@@ -5,7 +5,10 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { useTheme } from "next-themes";
 
 function getClerkThemeConfig(theme: string | undefined) {
-  if (theme === "light") {
+  // Parse appearance from compound key (e.g. "punk-light", "calm-green-dark")
+  const isLight = theme?.includes("-light") || theme === "light";
+
+  if (isLight) {
     return {
       variables: {
         colorPrimary: "#4f46e5",
@@ -99,7 +102,7 @@ export function ClerkDynamicProvider({ children }: { children: React.ReactNode }
     setMounted(true);
   }, []);
 
-  const currentTheme = mounted ? theme : "dark";
+  const currentTheme = mounted ? theme : "calm-green-dark";
   const themeConfig = getClerkThemeConfig(currentTheme);
 
   return (

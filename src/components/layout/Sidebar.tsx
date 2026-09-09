@@ -125,9 +125,9 @@ export function Sidebar() {
                   : "px-3 py-2.5",
                 isActive
                   ? [
-                      "bg-cyan-950/40",
-                      "text-cyan-300",
-                      "border-l-2 border-cyan-400",
+                      "bg-[var(--accent-primary)]/15",
+                      "text-[var(--accent-primary)]",
+                      "border-l-2 border-[var(--accent-primary)]",
                       collapsed ? "border-l-0" : "pl-[10px]",
                     ]
                   : [
@@ -141,7 +141,7 @@ export function Sidebar() {
                 className={clsx(
                   "h-4 w-4 shrink-0",
                   isActive
-                    ? "text-cyan-400"
+                    ? "text-[var(--accent-primary)]"
                     : "text-[var(--text-muted)]"
                 )}
               />

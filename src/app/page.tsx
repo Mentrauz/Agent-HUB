@@ -57,7 +57,7 @@ const FooterAuthCTA = dynamic(() =>
   import("@/components/landing/HeroAuthSection").then((m) => m.FooterAuthCTA)
 );
 
-// ────────────── Data ──────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Data Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 const openSourcePillars = [
   {
     title: "SearXNG Metasearch",
@@ -135,14 +135,14 @@ const llmEngineMetrics = [
 ];
 
 const modelCategoryCounts = [
-  { category: "REASONING & SUPERVISOR", count: "6 MODELS", specs: "Up to 262k context · Multi-step logic & self-reflection loops", color: "text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/30 border-purple-100 dark:border-purple-900/40" },
-  { category: "CODE SYNTHESIS & SCRIPTING", count: "4 MODELS", specs: "256k context · TypeScript, Python, JSON schema & SQL", color: "text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30 border-indigo-100 dark:border-indigo-900/40" },
-  { category: "HIGH-THROUGHPUT DISPATCH", count: "5 MODELS", specs: "Up to 750 t/s · Ultra-fast edge routing & triage turns", color: "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/30 border-emerald-100 dark:border-emerald-900/40" },
-  { category: "VISION & MULTIMODAL OCR", count: "3 MODELS", specs: "128k context · UI screenshots, diagrams, papers & charts", color: "text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/30 border-sky-100 dark:border-sky-900/40" },
+  { category: "REASONING & SUPERVISOR", count: "6 MODELS", specs: "Up to 262k context Ã‚Â· Multi-step logic & self-reflection loops", color: "text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/30 border-purple-100 dark:border-purple-900/40" },
+  { category: "CODE SYNTHESIS & SCRIPTING", count: "4 MODELS", specs: "256k context Ã‚Â· TypeScript, Python, JSON schema & SQL", color: "text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/30 border-indigo-100 dark:border-indigo-900/40" },
+  { category: "HIGH-THROUGHPUT DISPATCH", count: "5 MODELS", specs: "Up to 750 t/s Ã‚Â· Ultra-fast edge routing & triage turns", color: "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/30 border-emerald-100 dark:border-emerald-900/40" },
+  { category: "VISION & MULTIMODAL OCR", count: "3 MODELS", specs: "128k context Ã‚Â· UI screenshots, diagrams, papers & charts", color: "text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/30 border-sky-100 dark:border-sky-900/40" },
   { category: "VECTOR EMBEDDING & MEMORY", count: "4 MODELS", specs: "Dense semantic embeddings for Qdrant long-term memory", color: "text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/30 border-teal-100 dark:border-teal-900/40" },
   { category: "VOICE, AUDIO & SPEECH AI", count: "3 MODELS", specs: "Streaming STT transcription & natural neural TTS synthesis", color: "text-pink-700 dark:text-pink-300 bg-pink-50 dark:bg-pink-950/30 border-pink-100 dark:border-pink-900/40" },
   { category: "CONTENT SAFETY & GUARDRAILS", count: "2 MODELS", specs: "Sub-260ms policy enforcement & output validation gates", color: "text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/30 border-amber-100 dark:border-amber-900/40" },
-  { category: "DYNAMIC AUTO-FREE ROUTER", count: "1 DYNAMIC", specs: "openrouter/free dynamically routes to the healthiest capacity", color: "text-cyan-700 dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-950/30 border-cyan-100 dark:border-cyan-900/40" },
+  { category: "DYNAMIC AUTO-FREE ROUTER", count: "1 DYNAMIC", specs: "openrouter/free dynamically routes to the healthiest capacity", color: "text-cyan-700 dark:text-[var(--accent-primary)] bg-cyan-50 dark:bg-cyan-950/30 border-cyan-100 dark:border-cyan-900/40" },
 ];
 
 const devTooling = [
@@ -152,35 +152,35 @@ const devTooling = [
   { icon: Globe, title: "2,500+ OpenAPI & REST Tool Hub", desc: "Browse public APIs (Google, Stripe, Azure, AWS, GitHub) from APIs.guru, install 1-click free tool packs, or import any Swagger/OpenAPI URL." },
   { icon: LayoutTemplate, title: "Auto-Layout & Snap Grid", desc: "One click runs layered BFS auto-layout over any hand-built graph, with snap-to-grid guides so complex multi-agent designs stay immaculate." },
   { icon: Braces, title: "Monaco Prompt Editor & AI Optimizer", desc: "Monaco prompt editor with {{ results.node.field }} autocomplete, live token-count feedback, and 1-click AI prompt prompt engineering." },
-  { icon: GitCompare, title: "Visual Version Diffing", desc: "Side-by-side visual diff of two graph versions — nodes added/removed, edges rerouted — with instant one-click rollback." },
-  { icon: Boxes, title: "Sub-Graphs & Macros", desc: "Collapse any complex agent branch into a reusable component node with typed inputs and outputs — nest graphs up to 8 levels deep." },
-  { icon: Palette, title: "Persisted Canvas Themes", desc: "Neon/cyberpunk default, graphite minimal, and high-contrast themes — persisted per user with full responsive dark-mode support." },
-  { icon: Link2, title: "Shareable Read-Only Snapshots", desc: "Render any graph and its live trace as an embeddable, read-only snapshot link — perfect for documentation, PR reviews, or Slack." },
+  { icon: GitCompare, title: "Visual Version Diffing", desc: "Side-by-side visual diff of two graph versions Ã¢â‚¬â€ nodes added/removed, edges rerouted Ã¢â‚¬â€ with instant one-click rollback." },
+  { icon: Boxes, title: "Sub-Graphs & Macros", desc: "Collapse any complex agent branch into a reusable component node with typed inputs and outputs Ã¢â‚¬â€ nest graphs up to 8 levels deep." },
+  { icon: Palette, title: "Persisted Canvas Themes", desc: "Neon/cyberpunk default, graphite minimal, and high-contrast themes Ã¢â‚¬â€ persisted per user with full responsive dark-mode support." },
+  { icon: Link2, title: "Shareable Read-Only Snapshots", desc: "Render any graph and its live trace as an embeddable, read-only snapshot link Ã¢â‚¬â€ perfect for documentation, PR reviews, or Slack." },
   { icon: Terminal, title: "Deterministic Step Replay", desc: "Persist every step response and replay past executions with exact recorded outputs for non-LLM nodes to quickly debug logic branches." },
-  { icon: Eye, title: "Ghost-Mode Dry-Run Preview", desc: "Run the interpreter in fast-forward dry-run against live state — nodes illuminate showing exactly what would happen with zero token spend." },
+  { icon: Eye, title: "Ghost-Mode Dry-Run Preview", desc: "Run the interpreter in fast-forward dry-run against live state Ã¢â‚¬â€ nodes illuminate showing exactly what would happen with zero token spend." },
 ];
 
 const faqItems = [
   { id: "faq-1", question: "How does the Open-Source & Zero-Key Stack work?", answer: "Agent Hub embeds native connectors for SearXNG (privacy metasearch), Crawl4AI (LLM-friendly scraper), IBM Docling (PDF/table parser), Gotenberg (PDF exporter), Qdrant (vector database), and PocketBase/NocoDB (SQLite & Airtable). These tools can run against public instances with zero API keys or against your self-hosted Docker containers with zero subscription costs." },
   { id: "faq-2", question: "How do n8n and Dify.ai workflow imports work?", answer: "Agent Hub includes universal converters in /lib/converters that translate n8n JSON nodes and Dify DSL YAML workflows into native Agent Hub visual graph nodes. You can browse over 11,600 n8n workflows and 290 Dify blueprints in our Unified Marketplace and launch them with 1 click." },
   { id: "faq-3", question: "How does Model Context Protocol (MCP) integration work?", answer: "Agent Hub is a full dual-mode MCP Client and MCP Server. As a client, it searches 136,500+ MCP servers across Smithery, Glama, Composio, Arcade, and mcp.so and mounts them into agent graphs. As a server, external IDEs like Cursor and Claude Desktop can call your published workflows via /api/mcp/sse." },
-  { id: "faq-4", question: "What makes Agent Hub different from Langflow, Flowise, or n8n?", answer: "Unlike traditional ETL tools that only execute linear DAGs, Agent Hub is designed specifically for autonomous Multi-Agent orchestration — supporting supervisor loops, critic reflection, map-reduce fan-out, human-in-the-loop idempotency tokens, and real-time SSE execution telemetry." },
+  { id: "faq-4", question: "What makes Agent Hub different from Langflow, Flowise, or n8n?", answer: "Unlike traditional ETL tools that only execute linear DAGs, Agent Hub is designed specifically for autonomous Multi-Agent orchestration Ã¢â‚¬â€ supporting supervisor loops, critic reflection, map-reduce fan-out, human-in-the-loop idempotency tokens, and real-time SSE execution telemetry." },
   { id: "faq-5", question: "How does the 28+ Free Model Failover Router protect my runs?", answer: "Every LLM step routes through a resilient circuit-breaker router supporting 28+ free models across OpenRouter and Groq spanning 8 specialization domains. With context windows up to 512k tokens and speeds up to 750 t/s, if any model hits a rate limit (429) or outage (5xx), the router seamlessly quarantines it and falls over to the next healthy model with $0 token expense." },
-  { id: "faq-6", question: "How do Human-in-the-Loop (HITL) write locks guarantee safety?", answer: "Whenever an agent reaches an approval node (e.g. before spending money, modifying a database, or sending emails), the execution is paused in PAUSED_FOR_APPROVAL. An atomic single-use cryptographic token is generated in PostgreSQL — guaranteeing the action cannot be dispatched twice." },
+  { id: "faq-6", question: "How do Human-in-the-Loop (HITL) write locks guarantee safety?", answer: "Whenever an agent reaches an approval node (e.g. before spending money, modifying a database, or sending emails), the execution is paused in PAUSED_FOR_APPROVAL. An atomic single-use cryptographic token is generated in PostgreSQL Ã¢â‚¬â€ guaranteeing the action cannot be dispatched twice." },
 ];
 
 export default function LandingPage() {
   return (
     <div className="space-y-20 sm:space-y-28 px-4 sm:px-6 lg:px-10 pt-0">
 
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 1 — HERO
-          ═══════════════════════════════════════════════════════ */}
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+          SECTION 1 Ã¢â‚¬â€ HERO
+          Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <section className="relative overflow-hidden -mx-4 sm:-mx-6 lg:-mx-10 -mt-0">
-        {/* Restrained radial accents — cyan and blue per AGENTS.md */}
+        {/* Restrained radial accents Ã¢â‚¬â€ cyan and blue per AGENTS.md */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -left-32 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-cyan-500/10 to-blue-500/05 blur-[140px]" />
-          <div className="absolute top-1/4 -right-32 h-[450px] w-[450px] rounded-full bg-gradient-to-tr from-blue-500/08 to-cyan-500/05 blur-[140px]" />
+          <div className="hero-ambient-blob absolute -top-40 -left-32 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-[var(--accent-primary)]/10 to-[var(--accent-secondary)]/5 blur-[140px]" />
+          <div className="hero-ambient-blob absolute top-1/4 -right-32 h-[450px] w-[450px] rounded-full bg-gradient-to-tr from-[var(--accent-secondary)]/8 to-[var(--accent-primary)]/5 blur-[140px]" />
           {/* Subtle dot grid */}
           <div className="absolute inset-0 bg-dot-grid [mask-image:radial-gradient(ellipse_80%_80%_at_50%_30%,black_40%,transparent_95%)]" />
         </div>
@@ -189,12 +189,11 @@ export default function LandingPage() {
           {/* Announcement pill */}
           <div className="animate-fadeInUp">
             <div
-              className="inline-flex max-w-full items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-sm text-xs font-pixel text-cyan-300 uppercase tracking-wider"
-              style={{ fontFamily: "'VT323', monospace" }}
+              className="inline-flex max-w-full items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-sm text-xs font-pixel text-[var(--accent-primary)] uppercase tracking-wider"
             >
               <span className="relative flex h-2 w-2 shrink-0">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent-primary)] opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--accent-primary)]" />
               </span>
               <span className="truncate">
                 • OPEN-SOURCE AI STACK • 11.6K+ N8N & 290+ DIFY WORKFLOWS • 136K+ MCP TOOLS • 28+ VISUAL NODES
@@ -205,27 +204,26 @@ export default function LandingPage() {
           {/* Headline */}
           <div className="animate-fadeInUp space-y-4" style={{ animationDelay: "80ms" }}>
             <h1
-              className="font-pixel text-5xl sm:text-7xl lg:text-8xl tracking-wider leading-[1.05] uppercase max-w-5xl"
-              style={{ fontFamily: "'VT323', monospace" }}
+              className="font-pixel text-5xl sm:text-7xl lg:text-8xl font-bold tracking-wider leading-[1.05] uppercase max-w-5xl"
             >
               <span className="text-[var(--text-primary)] inline-block">VISUAL MULTI&#8209;AGENT</span>
               <br />
-              <span className="text-cyan-400 [text-shadow:0_0_28px_rgba(34,211,238,0.4)] inline-block">ORCHESTRATION HUB</span>
+              <span className="text-[var(--accent-primary)] [text-shadow:var(--hero-glow)] inline-block">ORCHESTRATION HUB</span>
             </h1>
             <div className="space-y-3 max-w-3xl font-sans text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
               <p>
                 Architect, simulate, and deploy{" "}
-                <span className="font-semibold text-cyan-400">autonomous multi-agent graphs</span>{" "}
+                <span className="font-semibold text-[var(--accent-primary)]">autonomous multi-agent graphs</span>{" "}
                 powered by 100% free open-source microservices, Model Context Protocol (MCP) toolkits, and human-in-the-loop governance.
               </p>
               <p className="text-sm sm:text-base text-[var(--text-muted)]">
                 Wire Supervisor → Specialist → Critic loops with{" "}
-                <span className="font-semibold text-emerald-400">SearXNG</span>,{" "}
-                <span className="font-semibold text-teal-400">Crawl4AI</span>,{" "}
-                <span className="font-semibold text-sky-400">IBM Docling</span>,{" "}
-                <span className="font-semibold text-purple-400">Qdrant</span> &{" "}
-                <span className="font-semibold text-blue-400">Gotenberg</span>, import 11,600+ n8n workflows, watch runs pulse in real time, and protect sensitive actions with{" "}
-                <span className="font-semibold text-amber-400">single-use approval locks</span>.
+                <span className="font-semibold text-[var(--text-primary)]">SearXNG</span>,{" "}
+                <span className="font-semibold text-[var(--text-primary)]">Crawl4AI</span>,{" "}
+                <span className="font-semibold text-[var(--text-primary)]">IBM Docling</span>,{" "}
+                <span className="font-semibold text-[var(--text-primary)]">Qdrant</span> &{" "}
+                <span className="font-semibold text-[var(--text-primary)]">Gotenberg</span>, import 11,600+ n8n workflows, watch runs pulse in real time, and protect sensitive actions with{" "}
+                <span className="font-semibold text-[var(--state-warning)]">single-use approval locks</span>.
               </p>
             </div>
           </div>
@@ -238,33 +236,40 @@ export default function LandingPage() {
           {/* Trust strip */}
           <div
             className="animate-fadeInUp flex flex-wrap items-center gap-x-6 gap-y-2 text-xs sm:text-sm font-pixel tracking-wider text-[var(--text-secondary)]"
-            style={{ animationDelay: "280ms", fontFamily: "'VT323', monospace" }}
+            style={{ animationDelay: "280ms" }}
           >
             {[
-              { label: "100% Zero-Key Public APIs", color: "text-emerald-400" },
-              { label: "Open-Source Self-Hostable", color: "text-cyan-400" },
-              { label: "11.6k+ n8n & 290+ Dify Library", color: "text-blue-400" },
-              { label: "Idempotent Single-Use Tokens", color: "text-amber-400" },
-              { label: "28+ Free LLM Models (OpenRouter & Groq)", color: "text-sky-400" },
-            ].map(({ label, color }) => (
-              <span key={label} className={`flex items-center gap-1.5 ${color}`}>
-                <Check className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
+              { label: "100% Zero-Key Public APIs" },
+              { label: "Open-Source Self-Hostable" },
+              { label: "11.6k+ n8n & 290+ Dify Library" },
+              { label: "Idempotent Single-Use Tokens" },
+              { label: "28+ Free LLM Models (OpenRouter & Groq)" },
+            ].map(({ label }) => (
+              <span key={label} className="flex items-center gap-1.5 text-[var(--text-secondary)]">
+                <Check className="h-3.5 w-3.5 shrink-0 text-[var(--accent-primary)]" />
                 {label}
               </span>
             ))}
           </div>
 
-          {/* Scroll hint */}
-          <div className="flex justify-start pt-2 animate-float">
-            <ChevronDown className="h-5 w-5 text-[var(--text-muted)]" />
-          </div>
+        </div>
+
+        {/* Scroll hint — centered in the middle of the page above stats */}
+        <div className="relative z-10 w-full flex justify-center pb-6 pt-2 animate-float">
+          <a
+            href="#stats"
+            aria-label="Scroll down to statistics"
+            className="p-1.5 rounded-full text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors cursor-pointer"
+          >
+            <ChevronDown className="h-5 w-5" />
+          </a>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 2 — STAT STRIP
-          ═══════════════════════════════════════════════════════ */}
-      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+          SECTION 2 Ã¢â‚¬â€ STAT STRIP
+          Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      <section id="stats" className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {[
           { value: "28+", label: "Native Canvas Node Types" },
           { value: "148K+", label: "MCP, n8n & Dify Ecosystem Tools" },
@@ -274,8 +279,7 @@ export default function LandingPage() {
           <Reveal key={stat.label} delay={i * 80}>
             <div className="bg-[var(--surface-raised)] rounded-md border border-[var(--border-subtle)] shadow-card p-6 space-y-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated hover:border-[var(--border-strong)] text-center sm:text-left">
               <div
-                className="text-4xl sm:text-5xl lg:text-6xl font-pixel leading-none tracking-wider text-slate-100"
-                style={{ fontFamily: "'VT323', monospace" }}
+                className="text-4xl sm:text-5xl lg:text-6xl font-pixel font-bold leading-none tracking-wider text-[var(--text-primary)]"
               >
                 {stat.value}
               </div>
@@ -287,16 +291,16 @@ export default function LandingPage() {
         ))}
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 3 — VISUAL CANVAS
-          ═══════════════════════════════════════════════════════ */}
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+          SECTION 3 Ã¢â‚¬â€ VISUAL CANVAS
+          Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <section id="canvas" className="space-y-10">
         <Reveal>
           <SectionHeader
             sectionNumber="// 01."
             heading="DESIGN, SIMULATE & EXECUTE ON ONE CANVAS"
             rightMeta="28+ PRODUCTION NODE TYPES"
-            eyebrowColor="text-cyan-400"
+            eyebrowColor="text-[var(--accent-primary)]"
             subhead="Build complex multi-agent graphs with drag-and-drop. Run live, watch nodes pulse in real time, replay any past execution."
           />
         </Reveal>
@@ -313,15 +317,15 @@ export default function LandingPage() {
                 28+ Production Node Types
               </div>
               <span className="text-xs text-[var(--text-muted)] font-pixel uppercase tracking-wider">
-                Logic & Control · Search · Document Intel · Memory · Triggers
+                Logic & Control Ã‚Â· Search Ã‚Â· Document Intel Ã‚Â· Memory Ã‚Â· Triggers
               </span>
             </div>
             <div className="space-y-5">
               {canvasNodeCategories.map((cat) => (
                 <div key={cat.category} className="space-y-2.5">
-                  <div className="text-xs font-pixel text-cyan-400 uppercase tracking-wider flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shrink-0" />
-                    • {cat.category}
+                  <div className="text-xs font-pixel text-[var(--accent-primary)] uppercase tracking-wider flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-primary)] shrink-0" />
+                    â€¢ {cat.category}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
                     {cat.nodes.map((n) => (
@@ -329,11 +333,11 @@ export default function LandingPage() {
                         key={n.name}
                         className="p-3 rounded-[10px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] flex items-start gap-2.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card hover:border-[var(--border-strong)]"
                       >
-                        <n.icon className="h-4 w-4 shrink-0 mt-0.5 text-cyan-400" />
+                        <n.icon className="h-4 w-4 shrink-0 mt-0.5 text-[var(--accent-primary)]" />
                         <div className="min-w-0 flex-1 space-y-1">
                           <div className="flex items-center justify-between gap-1">
                             <span className="font-semibold text-[11px] text-[var(--text-primary)] truncate font-sans">{n.name}</span>
-                            <span className="text-[10px] font-pixel px-1.5 py-0.5 rounded bg-cyan-950/50 border border-cyan-800/40 text-cyan-300 uppercase tracking-wider shrink-0">
+                            <span className="text-[10px] font-pixel px-1.5 py-0.5 rounded bg-[var(--accent-primary)]/10 border border-[var(--accent-primary)]/20 text-[var(--accent-primary)] uppercase tracking-wider shrink-0">
                               {n.badge}
                             </span>
                           </div>
@@ -349,17 +353,17 @@ export default function LandingPage() {
         </Reveal>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 4 — OPEN-SOURCE PILLARS
-          ═══════════════════════════════════════════════════════ */}
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+          SECTION 4 Ã¢â‚¬â€ OPEN-SOURCE PILLARS
+          Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <section id="opensource" className="space-y-10">
         <Reveal>
           <SectionHeader
             sectionNumber="// 02."
             heading="THE OPEN-SOURCE & ZERO-KEY AI STACK"
-            rightMeta="SELF-HOSTABLE · ZERO SUBSCRIPTIONS"
+            rightMeta="SELF-HOSTABLE Ã‚Â· ZERO SUBSCRIPTIONS"
             eyebrowColor="text-emerald-400"
-            subhead="Six battle-tested open-source tools embedded natively — no subscriptions, no paywalls, no vendor lock-in."
+            subhead="Six battle-tested open-source tools embedded natively Ã¢â‚¬â€ no subscriptions, no paywalls, no vendor lock-in."
           />
         </Reveal>
 
@@ -391,17 +395,17 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 5 — MARKETPLACE HUB
-          ═══════════════════════════════════════════════════════ */}
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+          SECTION 5 Ã¢â‚¬â€ MARKETPLACE HUB
+          Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <section id="marketplace" className="space-y-10">
         <Reveal>
           <SectionHeader
             sectionNumber="// 03."
             heading="UNIFIED MARKETPLACE & TEMPLATE HUB"
-            rightMeta="11.6K+ N8N · 290+ DIFY · 136K+ MCP"
-            eyebrowColor="text-cyan-400"
-            subhead="11.6k+ n8n flows, 290+ Dify blueprints, and 136k+ MCP servers — all importable in one click."
+            rightMeta="11.6K+ N8N Ã‚Â· 290+ DIFY Ã‚Â· 136K+ MCP"
+            eyebrowColor="text-[var(--accent-primary)]"
+            subhead="11.6k+ n8n flows, 290+ Dify blueprints, and 136k+ MCP servers Ã¢â‚¬â€ all importable in one click."
           />
         </Reveal>
 
@@ -416,7 +420,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <div className="font-semibold text-sm text-[var(--text-primary)] font-sans">n8n Community Library</div>
-                    <div className="text-[10px] text-[var(--text-muted)] font-mono">api.n8n.io · 1-click import</div>
+                    <div className="text-[10px] text-[var(--text-muted)] font-mono">api.n8n.io Ã‚Â· 1-click import</div>
                   </div>
                 </div>
                 <span className="text-[10px] font-pixel px-2 py-0.5 rounded text-[#EA4B71] bg-[#EA4B71]/10 border border-[#EA4B71]/20 uppercase tracking-wider">11,600+ FLOWS</span>
@@ -442,7 +446,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <div className="font-semibold text-sm text-[var(--text-primary)] font-sans">Dify.ai Workflows</div>
-                    <div className="text-[10px] text-[var(--text-muted)] font-mono">marketplace.dify.ai · DSL converter</div>
+                    <div className="text-[10px] text-[var(--text-muted)] font-mono">marketplace.dify.ai Ã‚Â· DSL converter</div>
                   </div>
                 </div>
                 <span className="text-[10px] font-pixel px-2 py-0.5 rounded text-[#155EEF] bg-[#155EEF]/10 border border-[#155EEF]/20 uppercase tracking-wider">290+ BLUEPRINTS</span>
@@ -468,7 +472,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <div className="font-semibold text-sm text-[var(--text-primary)] font-sans">MCP Multi-Registry Hub</div>
-                    <div className="text-[10px] text-[var(--text-muted)] font-mono">5 registries · SSE & stdio</div>
+                    <div className="text-[10px] text-[var(--text-muted)] font-mono">5 registries Ã‚Â· SSE & stdio</div>
                   </div>
                 </div>
                 <span className="text-[10px] font-pixel px-2 py-0.5 rounded text-[#FF5601] bg-[#FF5601]/10 border border-[#FF5601]/20 uppercase tracking-wider">136,500+ SERVERS</span>
@@ -486,17 +490,17 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 6 — LLM ENGINE
-          ═══════════════════════════════════════════════════════ */}
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+          SECTION 6 Ã¢â‚¬â€ LLM ENGINE
+          Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <section id="models" className="space-y-10">
         <Reveal>
           <SectionHeader
             sectionNumber="// 04."
             heading="MULTI-PROVIDER FREE LLM ENGINE"
-            rightMeta="28+ FREE MODELS · 512K CONTEXT · 750 T/S · 8 SPECIALIZATIONS"
-            eyebrowColor="text-cyan-400"
-            subhead="Circuit-breaker failover across Groq and OpenRouter — zero cost, 512k context, 750 tokens/second."
+            rightMeta="28+ FREE MODELS Ã‚Â· 512K CONTEXT Ã‚Â· 750 T/S Ã‚Â· 8 SPECIALIZATIONS"
+            eyebrowColor="text-[var(--accent-primary)]"
+            subhead="Circuit-breaker failover across Groq and OpenRouter Ã¢â‚¬â€ zero cost, 512k context, 750 tokens/second."
           />
         </Reveal>
 
@@ -520,11 +524,11 @@ export default function LandingPage() {
           <div className="bg-[var(--surface-raised)] rounded-md border border-[hsl(var(--border))] shadow-card p-6 space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[hsl(var(--border))]">
               <span className="text-xs sm:text-sm font-pixel tracking-wider text-[var(--text-secondary)] uppercase flex items-center gap-2">
-                <Layers className="h-4 w-4 text-cyan-400" />
+                <Layers className="h-4 w-4 text-[var(--accent-primary)]" />
                 NUMERICAL BREAKDOWN BY CAPABILITY DOMAIN
               </span>
               <span className="text-xs font-pixel text-emerald-400 uppercase tracking-wider">
-                ● AUTOMATIC CIRCUIT-BREAKER COOLDOWN (30S TRANSIENT · 40S 429)
+                Ã¢â€”Â AUTOMATIC CIRCUIT-BREAKER COOLDOWN (30S TRANSIENT Ã‚Â· 40S 429)
               </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -542,17 +546,17 @@ export default function LandingPage() {
         </Reveal>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 7 — COMPARISON TABLE
-          ═══════════════════════════════════════════════════════ */}
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+          SECTION 7 Ã¢â‚¬â€ COMPARISON TABLE
+          Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <section id="comparison" className="space-y-10">
         <Reveal>
           <SectionHeader
             sectionNumber="// 05."
             heading="ARCHITECTURAL COMPARISON"
             rightMeta="AGENT STUDIO VS INDUSTRY ALTERNATIVES"
-            eyebrowColor="text-cyan-400"
-            subhead="Designed from the ground up for autonomous multi-agent orchestration — not a repurposed ETL tool."
+            eyebrowColor="text-[var(--accent-primary)]"
+            subhead="Designed from the ground up for autonomous multi-agent orchestration Ã¢â‚¬â€ not a repurposed ETL tool."
           />
         </Reveal>
 
@@ -562,7 +566,7 @@ export default function LandingPage() {
               <thead>
                 <tr className="border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-xs font-pixel uppercase tracking-wider text-[var(--text-muted)]">
                   <th className="p-4 font-normal text-[var(--text-secondary)]">CAPABILITIES & ARCHITECTURE</th>
-                  <th className="p-4 font-normal text-cyan-300 bg-cyan-950/40 border-b-2 border-cyan-400">
+                  <th className="p-4 font-normal text-[var(--accent-primary)] bg-[var(--accent-primary)]/8 border-b-2 border-[var(--accent-primary)]">
                     AGENT STUDIO
                   </th>
                   <th className="p-4 font-normal">N8N</th>
@@ -574,7 +578,7 @@ export default function LandingPage() {
                 {comparisonRows.map((row, i) => (
                   <tr key={row.feature} className={`transition-colors hover:bg-[var(--surface-sunken)] ${i % 2 === 1 ? "bg-[var(--surface-sunken)]/40" : ""}`}>
                     <td className="p-4 font-semibold text-[var(--text-primary)] max-w-[160px]">{row.feature}</td>
-                    <td className="p-4 font-semibold text-emerald-400 bg-cyan-950/20">{row.studio}</td>
+                    <td className="p-4 font-semibold text-[var(--state-success)] bg-[var(--accent-primary)]/5">{row.studio}</td>
                     <td className="p-4 text-[var(--text-secondary)]">{row.n8n}</td>
                     <td className="p-4 text-[var(--text-secondary)]">{row.dify}</td>
                     <td className="p-4 text-[var(--text-secondary)] hidden sm:table-cell">{row.langflow}</td>
@@ -585,25 +589,25 @@ export default function LandingPage() {
           </div>
         </Reveal>
       </section>
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 8 — OBSERVABILITY
-          ═══════════════════════════════════════════════════════ */}
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+          SECTION 8 Ã¢â‚¬â€ OBSERVABILITY
+          Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <section id="runtime-intel" className="space-y-10">
         <Reveal>
           <SectionHeader
             sectionNumber="// 06."
             heading="LIVE RUNTIME OBSERVABILITY & CONTROLS"
-            rightMeta="SSE PULSES · HEATMAPS · STEP REPLAY"
-            eyebrowColor="text-cyan-400"
+            rightMeta="SSE PULSES Ã‚Â· HEATMAPS Ã‚Â· STEP REPLAY"
+            eyebrowColor="text-[var(--accent-primary)]"
             subhead="Ghost dry-run previews, per-node latency heatmaps, time-scrubber replay, and hard budget caps."
           />
         </Reveal>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {[
-            { label: "GHOST PREVIEW", accent: "text-sky-600 dark:text-sky-400", chipBg: "bg-sky-50 dark:bg-sky-950/40", hover: "hover:border-sky-200 dark:hover:border-sky-800/40", icon: Eye, title: "Zero-Token Dry Run", desc: "Run the interpreter in fast-forward against live state — nodes light up showing exactly what path a run would take without writing anything or spending tokens." },
+            { label: "GHOST PREVIEW", accent: "text-sky-600 dark:text-sky-400", chipBg: "bg-sky-50 dark:bg-sky-950/40", hover: "hover:border-sky-200 dark:hover:border-sky-800/40", icon: Eye, title: "Zero-Token Dry Run", desc: "Run the interpreter in fast-forward against live state Ã¢â‚¬â€ nodes light up showing exactly what path a run would take without writing anything or spending tokens." },
             { label: "LATENCY HEATMAP", accent: "text-amber-600 dark:text-amber-400", chipBg: "bg-amber-50 dark:bg-amber-950/40", hover: "hover:border-amber-200 dark:hover:border-amber-800/40", icon: Gauge, title: "Per-Node Cost Metrics", desc: "Per-node latency, token, and dollar costs rendered straight onto the canvas. Toggle heatmap mode to spot slow or expensive branches at a glance." },
-            { label: "TIME SCRUBBER", accent: "text-violet-600 dark:text-violet-400", chipBg: "bg-violet-50 dark:bg-violet-950/40", hover: "hover:border-violet-200 dark:hover:border-violet-800/40", icon: TimerReset, title: "1×–8× Speed Playback", desc: "A timeline scrubber replays any past execution — nodes glow and dim in sync with adjustable playback speed so you can debug divergent paths." },
+            { label: "TIME SCRUBBER", accent: "text-violet-600 dark:text-violet-400", chipBg: "bg-violet-50 dark:bg-violet-950/40", hover: "hover:border-violet-200 dark:hover:border-violet-800/40", icon: TimerReset, title: "1Ãƒâ€”Ã¢â‚¬â€œ8Ãƒâ€” Speed Playback", desc: "A timeline scrubber replays any past execution Ã¢â‚¬â€ nodes glow and dim in sync with adjustable playback speed so you can debug divergent paths." },
             { label: "BUDGET CAPS", accent: "text-emerald-600 dark:text-emerald-400", chipBg: "bg-emerald-50 dark:bg-emerald-950/40", hover: "hover:border-emerald-200 dark:hover:border-emerald-800/40", icon: Wallet, title: "Hard Cost Limits", desc: "Set max cost, token, and step caps per node. The interpreter stops runaway agents before unexpected bills occur." },
           ].map((card, i) => (
             <Reveal key={card.label} delay={i * 60}>
@@ -624,16 +628,16 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 9 — DEVELOPER TOOLING
-          ═══════════════════════════════════════════════════════ */}
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+          SECTION 9 Ã¢â‚¬â€ DEVELOPER TOOLING
+          Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <section id="tooling" className="space-y-10">
         <Reveal>
           <SectionHeader
             sectionNumber="// 07."
             heading="DEVELOPER TOOLING & GRAPH EDITING"
             rightMeta="ENGINEERED FOR POWER USERS"
-            eyebrowColor="text-cyan-400"
+            eyebrowColor="text-[var(--accent-primary)]"
             subhead="12 advanced capabilities that make Agent Hub the developer-first choice for serious AI orchestration."
           />
         </Reveal>
@@ -642,7 +646,7 @@ export default function LandingPage() {
           {devTooling.map((t, i) => (
             <Reveal key={t.title} delay={i * 40}>
               <div className="bg-[var(--surface-raised)] rounded-md border border-[var(--border-subtle)] shadow-card p-5 space-y-3 hover:-translate-y-1 hover:shadow-elevated hover:border-[var(--border-strong)] transition-all duration-300 h-full flex flex-col">
-                <div className="w-9 h-9 rounded-[8px] flex items-center justify-center bg-cyan-950/40 text-cyan-400 border border-cyan-800/30">
+                <div className="w-9 h-9 rounded-[8px] flex items-center justify-center bg-[var(--accent-primary)]/8 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25">
                   <t.icon className="h-4 w-4" />
                 </div>
                 <h3 className="font-semibold text-sm text-[var(--text-primary)] leading-snug font-sans">{t.title}</h3>
@@ -653,9 +657,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 10 — GUARDRAILS / SECURITY
-          ═══════════════════════════════════════════════════════ */}
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+          SECTION 10 Ã¢â‚¬â€ GUARDRAILS / SECURITY
+          Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <section id="guardrails" className="space-y-10">
         <Reveal>
           <SectionHeader
@@ -669,11 +673,11 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
-            { icon: Lock, accent: "text-amber-400", chipBg: "bg-amber-950/40", hover: "hover:border-amber-800/40", title: "Single-Use Idempotency Tokens", desc: "Every approved write action generates a single-use token, enforced atomically in the database — replays and concurrent duplicates are blocked." },
-            { icon: Database, accent: "text-cyan-400", chipBg: "bg-cyan-950/40", hover: "hover:border-cyan-800/40", title: "Multi-Tenant Isolation", desc: "Strict PostgreSQL tenant boundaries isolate skills, versions, graph executions, and approval records per user account." },
+            { icon: Lock, accent: "text-amber-400", chipBg: "bg-amber-950/40", hover: "hover:border-amber-800/40", title: "Single-Use Idempotency Tokens", desc: "Every approved write action generates a single-use token, enforced atomically in the database Ã¢â‚¬â€ replays and concurrent duplicates are blocked." },
+            { icon: Database, accent: "text-[var(--accent-primary)]", chipBg: "bg-[var(--accent-primary)]/8", hover: "hover:border-[var(--accent-primary)]/40", title: "Multi-Tenant Isolation", desc: "Strict PostgreSQL tenant boundaries isolate skills, versions, graph executions, and approval records per user account." },
             { icon: Zap, accent: "text-emerald-400", chipBg: "bg-emerald-950/40", hover: "hover:border-emerald-800/40", title: "Hard Execution Limits", desc: "Enforces maximum step boundaries and loop cycles to prevent infinite loops, runaway costs, and resource exhaustion." },
-            { icon: RefreshCw, accent: "text-sky-400", chipBg: "bg-sky-950/40", hover: "hover:border-sky-800/40", title: "Circuit-Breaker Failover", desc: "A single model failure never stops a run — the router parks the failing provider in adaptive cooldown and transparently moves to the next healthy model." },
-            { icon: Database, accent: "text-violet-400", chipBg: "bg-violet-950/40", hover: "hover:border-violet-800/40", title: "Atomic Commit Transactions", desc: "Skill creation, draft rotation, publish, and execution traces commit in atomic transactions — a crash can never orphan data." },
+            { icon: RefreshCw, accent: "text-sky-400", chipBg: "bg-sky-950/40", hover: "hover:border-sky-800/40", title: "Circuit-Breaker Failover", desc: "A single model failure never stops a run Ã¢â‚¬â€ the router parks the failing provider in adaptive cooldown and transparently moves to the next healthy model." },
+            { icon: Database, accent: "text-violet-400", chipBg: "bg-violet-950/40", hover: "hover:border-violet-800/40", title: "Atomic Commit Transactions", desc: "Skill creation, draft rotation, publish, and execution traces commit in atomic transactions Ã¢â‚¬â€ a crash can never orphan data." },
             { icon: Activity, accent: "text-blue-400", chipBg: "bg-blue-950/40", hover: "hover:border-blue-800/40", title: "Full Audit Trails", desc: "Every mutation writes a structured log and audit row (SKILL_PUBLISHED, APPROVAL_GRANTED, RECOVERY_STARTED) traced back to the acting user." },
           ].map((card, i) => (
             <Reveal key={card.title} delay={i * 80}>
@@ -689,16 +693,16 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 11 — FAQ (Accordion)
-          ═══════════════════════════════════════════════════════ */}
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+          SECTION 11 Ã¢â‚¬â€ FAQ (Accordion)
+          Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <section id="faq" className="space-y-10">
         <Reveal>
           <SectionHeader
             sectionNumber="// 09."
             heading="FREQUENTLY ASKED QUESTIONS"
             rightMeta="KNOWLEDGE BASE & FAQ"
-            eyebrowColor="text-cyan-400"
+            eyebrowColor="text-[var(--accent-primary)]"
             subhead="Everything you need to know about Agent Hub's architecture and capabilities."
           />
         </Reveal>
@@ -710,14 +714,14 @@ export default function LandingPage() {
         </Reveal>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 12 — FINAL CTA BAND
-          ═══════════════════════════════════════════════════════ */}
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+          SECTION 12 Ã¢â‚¬â€ FINAL CTA BAND
+          Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <section className="relative overflow-hidden rounded-md bg-[var(--surface-raised)] border border-[var(--border-subtle)] p-10 sm:p-16 text-center space-y-6">
-        {/* Background glow — restrained cyan and blue per AGENTS.md */}
+        {/* Background glow Ã¢â‚¬â€ restrained cyan and blue per AGENTS.md */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden rounded-md">
-          <div className="absolute -top-24 left-1/4 h-[300px] w-[300px] rounded-full bg-gradient-to-br from-cyan-500/10 to-blue-500/10 blur-[80px]" />
-          <div className="absolute -bottom-16 right-1/4 h-[250px] w-[250px] rounded-full bg-gradient-to-br from-blue-500/10 to-cyan-500/10 blur-[80px]" />
+          <div className="hero-ambient-blob absolute -top-24 left-1/4 h-[300px] w-[300px] rounded-full bg-gradient-to-br from-cyan-500/10 to-blue-500/10 blur-[80px]" />
+          <div className="hero-ambient-blob absolute -bottom-16 right-1/4 h-[250px] w-[250px] rounded-full bg-gradient-to-br from-blue-500/10 to-cyan-500/10 blur-[80px]" />
         </div>
 
         <div className="relative z-10 space-y-6 max-w-2xl mx-auto">
@@ -728,7 +732,7 @@ export default function LandingPage() {
             LAUNCH AGENT STUDIO TODAY
           </h2>
           <p className="text-base text-[var(--text-secondary)] leading-relaxed font-sans">
-            Start building autonomous multi-agent workflows — free, open-source, and self-hostable.
+            Start building autonomous multi-agent workflows Ã¢â‚¬â€ free, open-source, and self-hostable.
           </p>
           <div className="flex justify-center gap-4 pt-2">
             <FooterAuthCTA />
@@ -736,9 +740,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
           FOOTER
-          ═══════════════════════════════════════════════════════ */}
+          Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <footer className="border-t border-[var(--border-subtle)] pt-10 pb-6 space-y-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           {/* Brand */}
@@ -750,7 +754,7 @@ export default function LandingPage() {
               <div className="font-bold text-sm text-[var(--text-primary)]">Agent Hub</div>
               <div className="text-xs text-[var(--text-muted)] flex items-center gap-1.5">
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                All Systems Operational · © 2026
+                All Systems Operational Ã‚Â· Ã‚Â© 2026
               </div>
             </div>
           </div>
@@ -807,3 +811,5 @@ export default function LandingPage() {
     </div>
   );
 }
+
+

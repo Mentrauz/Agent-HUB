@@ -47,14 +47,12 @@ export function SectionHeader({
             {sectionNumber && (
               <span
                 className={clsx("font-pixel text-lg sm:text-xl font-bold tracking-wider", eyebrowColor)}
-                style={{ fontFamily: "'VT323', monospace" }}
               >
                 {sectionNumber}
               </span>
             )}
             <Tag
               className="font-pixel text-lg sm:text-xl uppercase tracking-wider text-[var(--text-primary)]"
-              style={{ fontFamily: "'VT323', monospace" }}
             >
               {heading}
             </Tag>
@@ -62,7 +60,6 @@ export function SectionHeader({
           {rightMeta && (
             <span
               className={clsx("font-pixel text-xs sm:text-sm uppercase tracking-wider", eyebrowColor)}
-              style={{ fontFamily: "'VT323', monospace" }}
             >
               {rightMeta}
             </span>

@@ -30,6 +30,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { clsx } from "clsx";
+import { useTheme } from "next-themes";
+import { parseThemeKey } from "@/components/providers/ThemeProvider";
 
 type NodeStatus = "idle" | "running" | "done" | "awaiting";
 
@@ -604,6 +606,14 @@ const BLUEPRINT_PRESETS: BlueprintPreset[] = [
 ];
 
 export function LiveAgentCanvasDemo() {
+  const { theme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  const currentThemeKey = theme || resolvedTheme || "calm-green-dark";
+  const { identity, appearance } = parseThemeKey(currentThemeKey);
+  const isCalmGreen = mounted && identity === "calm-green";
+  const isLight = mounted && appearance === "light";
+
   const [selectedPresetIndex, setSelectedPresetIndex] = useState<number>(0);
   const currentPreset = BLUEPRINT_PRESETS[selectedPresetIndex];
 
@@ -846,7 +856,14 @@ export function LiveAgentCanvasDemo() {
   const selectedNode = nodes.find((n) => n.id === selectedNodeId) || nodes[0];
 
   return (
-    <div className="rounded-xl border border-slate-300 dark:border-indigo-950 bg-white/90 dark:bg-[#080911]/95 shadow-2xl overflow-hidden backdrop-blur-md font-mono">
+    <div
+      className={clsx(
+        "rounded-xl border shadow-2xl overflow-hidden backdrop-blur-md font-mono",
+        isCalmGreen
+          ? (isLight ? "border-[#D5DDD9] bg-white shadow-xl" : "border-[#24332c] bg-[#000000]")
+          : "border-slate-300 dark:border-indigo-950 bg-white/90 dark:bg-[#080911]/95"
+      )}
+    >
       {/* Global CSS for animated glowing edge SVG lines */}
       <style jsx global>{`
         @keyframes edgeFlowSmooth {
@@ -882,9 +899,23 @@ export function LiveAgentCanvasDemo() {
       `}</style>
 
       {/* Preset Blueprint Switcher Header Bar */}
-      <div className="px-3 sm:px-4 py-2.5 bg-slate-100/95 dark:bg-[#0a0f1e] border-b border-slate-200 dark:border-indigo-950 flex flex-wrap items-center justify-between gap-2.5 text-xs">
+      <div
+        className={clsx(
+          "px-3 sm:px-4 py-2.5 border-b flex flex-wrap items-center justify-between gap-2.5 text-xs",
+          isCalmGreen
+            ? (isLight ? "bg-[#EAEEEC] border-[#D5DDD9]" : "bg-[#000000] border-[#24332c]")
+            : "bg-slate-100/95 dark:bg-[#0a0f1e] border-slate-200 dark:border-indigo-950"
+        )}
+      >
         <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 max-w-full">
-          <span className="text-[10px] text-slate-500 font-bold uppercase mr-1 hidden sm:inline">PRESET BLUEPRINTS:</span>
+          <span
+            className={clsx(
+              "text-[10px] font-bold uppercase mr-1 hidden sm:inline",
+              isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#8D9691]") : "text-slate-500"
+            )}
+          >
+            PRESET BLUEPRINTS:
+          </span>
           {BLUEPRINT_PRESETS.map((preset, idx) => {
             const isSelected = selectedPresetIndex === idx;
             return (
@@ -895,7 +926,13 @@ export function LiveAgentCanvasDemo() {
                 className={clsx(
                   "px-2.5 py-1 rounded text-[10px] font-bold tracking-wide uppercase transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap",
                   isSelected
-                    ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30 ring-1 ring-indigo-400/50"
+                    ? isCalmGreen
+                      ? (isLight ? "bg-[#4D8A73] text-white shadow-sm ring-1 ring-[#4D8A73]" : "bg-[#7FAF9B] text-[#000000] shadow-sm ring-1 ring-[#7FAF9B]")
+                      : "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30 ring-1 ring-indigo-400/50"
+                    : isCalmGreen
+                    ? (isLight
+                        ? "border border-[#D5DDD9] bg-white text-[#3D4E47] hover:text-[#0E1411] hover:border-[#4D8A73]/40"
+                        : "border border-[#252D2A] bg-[#000000] text-[#8D9691] hover:text-[#E7E9E5] hover:border-[#7FAF9B]/40")
                     : "border border-slate-300 dark:border-indigo-950/80 bg-white dark:bg-black/40 text-slate-700 dark:text-slate-300 hover:border-indigo-400"
                 )}
               >
@@ -909,7 +946,14 @@ export function LiveAgentCanvasDemo() {
         {/* Speed, Heatmap & Ghost-Mode Toggles */}
         <div className="flex items-center gap-2">
           {/* Speed Buttons */}
-          <div className="flex items-center rounded border border-slate-300 dark:border-indigo-950 bg-white dark:bg-black/50 p-0.5 text-[9px] font-bold">
+          <div
+            className={clsx(
+              "flex items-center rounded border p-0.5 text-[9px] font-bold",
+              isCalmGreen
+                ? (isLight ? "border-[#D5DDD9] bg-white" : "border-[#252D2A] bg-[#000000]")
+                : "border-slate-300 dark:border-indigo-950 bg-white dark:bg-black/50"
+            )}
+          >
             {[1, 2, 4].map((s) => (
               <button
                 key={s}
@@ -918,7 +962,11 @@ export function LiveAgentCanvasDemo() {
                 className={clsx(
                   "px-1.5 py-0.5 rounded cursor-pointer transition-colors",
                   simSpeed === s
-                    ? "bg-indigo-600 text-white"
+                    ? isCalmGreen
+                      ? (isLight ? "bg-[#4D8A73] text-white" : "bg-[#7FAF9B] text-[#000000]")
+                      : "bg-indigo-600 text-white"
+                    : isCalmGreen
+                    ? (isLight ? "text-[#5E7269] hover:text-[#0E1411]" : "text-[#8D9691] hover:text-[#E7E9E5]")
                     : "text-slate-500 hover:text-slate-300"
                 )}
               >
@@ -936,6 +984,10 @@ export function LiveAgentCanvasDemo() {
               "px-2 py-1 rounded text-[9px] font-bold tracking-wider uppercase border transition-all cursor-pointer flex items-center gap-1",
               showHeatmap
                 ? "border-amber-500 bg-amber-500/20 text-amber-300"
+                : isCalmGreen
+                ? (isLight
+                    ? "border-[#D5DDD9] bg-white text-[#5E7269] hover:text-[#0E1411]"
+                    : "border-[#252D2A] bg-[#000000] text-[#8D9691] hover:text-[#E7E9E5]")
                 : "border-slate-300 dark:border-indigo-950 bg-white dark:bg-black/40 text-slate-500 hover:text-slate-300"
             )}
           >
@@ -948,7 +1000,14 @@ export function LiveAgentCanvasDemo() {
             type="button"
             onClick={handleStepAdvance}
             title="Step-by-step debug"
-            className="px-2 py-1 rounded text-[9px] font-bold tracking-wider uppercase border border-slate-300 dark:border-indigo-900 bg-slate-50 dark:bg-indigo-950/40 text-slate-700 dark:text-slate-300 hover:border-indigo-400 transition-all cursor-pointer flex items-center gap-0.5"
+            className={clsx(
+              "px-2 py-1 rounded text-[9px] font-bold tracking-wider uppercase border transition-all cursor-pointer flex items-center gap-0.5",
+              isCalmGreen
+                ? (isLight
+                    ? "border-[#D5DDD9] bg-white text-[#3D4E47] hover:text-[#0E1411] hover:border-[#4D8A73]/40"
+                    : "border-[#252D2A] bg-[#000000] text-[#8D9691] hover:text-[#E7E9E5] hover:border-[#7FAF9B]/40")
+                : "border border-slate-300 dark:border-indigo-900 bg-slate-50 dark:bg-indigo-950/40 text-slate-700 dark:text-slate-300 hover:border-indigo-400"
+            )}
           >
             <span>STEP</span>
             <ChevronRight className="h-3 w-3" />
@@ -959,7 +1018,14 @@ export function LiveAgentCanvasDemo() {
             <button
               type="button"
               onClick={() => handleRunSimulation(false)}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold shadow-md shadow-emerald-500/25 transition-all cursor-pointer whitespace-nowrap"
+              className={clsx(
+                "inline-flex items-center gap-1.5 px-3 py-1 rounded text-[10px] font-bold shadow-md transition-all cursor-pointer whitespace-nowrap",
+                isCalmGreen
+                  ? (isLight
+                      ? "bg-[#4D8A73] hover:bg-[#3D7360] text-white shadow-sm"
+                      : "bg-[#7FAF9B] hover:bg-[#9BC7B2] text-[#000000] shadow-sm")
+                  : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-500/25"
+              )}
             >
               <Play className="h-3 w-3 fill-current" /> <span>RUN SIM</span>
             </button>
@@ -976,7 +1042,14 @@ export function LiveAgentCanvasDemo() {
       </div>
 
       {/* Main 2-Column Split: Interactive Canvas (Left) + Telemetry & Node Inspector (Right) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200 dark:divide-indigo-950/80 min-h-0">
+      <div
+        className={clsx(
+          "grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x min-h-0",
+          isCalmGreen
+            ? (isLight ? "divide-[#D5DDD9]" : "divide-[#252D2A]")
+            : "divide-slate-200 dark:divide-indigo-950/80"
+        )}
+      >
         {/* LEFT: Full Interactive Canvas (7 Cols) */}
         <div
           ref={canvasRef}
@@ -987,25 +1060,40 @@ export function LiveAgentCanvasDemo() {
           style={{ overscrollBehavior: "contain" }}
           className={clsx(
             "lg:col-span-7 relative h-[380px] sm:h-[480px] lg:h-[540px] overflow-hidden select-none overscroll-contain",
-            "bg-slate-50/95 dark:bg-[#07070d]",
-            "bg-[radial-gradient(rgba(99,102,241,0.18)_1px,transparent_1px)] [background-size:20px_20px]",
+            isCalmGreen
+              ? (isLight
+                  ? "bg-[#F4F6F5] bg-[radial-gradient(rgba(61,78,71,0.15)_1px,transparent_1px)] [background-size:20px_20px]"
+                  : "bg-[#000000] bg-[radial-gradient(rgba(127,175,155,0.12)_1px,transparent_1px)] [background-size:20px_20px]")
+              : "bg-slate-50/95 dark:bg-[#07070d] bg-[radial-gradient(rgba(99,102,241,0.18)_1px,transparent_1px)] [background-size:20px_20px]",
             isPanning ? "cursor-grabbing" : "cursor-grab"
           )}
         >
           {/* Top Canvas Status Bar */}
           <div className="absolute top-2.5 left-2.5 sm:left-3 right-2.5 sm:right-3 z-20 flex items-center justify-between gap-2 pointer-events-none">
-            <div className="flex items-center gap-1.5 sm:gap-2 rounded border border-slate-200 dark:border-indigo-900/40 bg-white/90 dark:bg-[#0a0f1e]/90 px-2 sm:px-2.5 py-1 text-[9px] sm:text-[10px] shadow-sm backdrop-blur-sm">
+            <div
+              className={clsx(
+                "flex items-center gap-1.5 sm:gap-2 rounded border px-2 sm:px-2.5 py-1 text-[9px] sm:text-[10px] shadow-sm backdrop-blur-sm",
+                isCalmGreen
+                  ? (isLight ? "border-[#D5DDD9] bg-white/90" : "border-[#252D2A] bg-[#000000]/90")
+                  : "border-slate-200 dark:border-indigo-900/40 bg-white/90 dark:bg-[#0a0f1e]/90"
+              )}
+            >
               <span
                 className={clsx(
                   "inline-block h-2 w-2 rounded-full",
                   phase === "running"
-                    ? "bg-emerald-500 animate-pulse"
+                    ? (isCalmGreen ? (isLight ? "bg-[#4D8A73] animate-pulse" : "bg-[#7FAF9B] animate-pulse") : "bg-emerald-500 animate-pulse")
                     : phase === "done"
-                    ? "bg-emerald-500"
+                    ? (isCalmGreen ? (isLight ? "bg-[#4D8A73]" : "bg-[#7FAF9B]") : "bg-emerald-500")
                     : "bg-slate-400"
                 )}
               />
-              <span className="font-bold text-slate-700 dark:text-slate-300">
+              <span
+                className={clsx(
+                  "font-bold",
+                  isCalmGreen ? (isLight ? "text-[#0E1411]" : "text-[#E7E9E5]") : "text-slate-700 dark:text-slate-300"
+                )}
+              >
                 {phase === "running"
                   ? "LIVE EXECUTION TRACE STREAMING"
                   : phase === "done"
@@ -1014,7 +1102,14 @@ export function LiveAgentCanvasDemo() {
               </span>
             </div>
 
-            <div className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-mono bg-white/80 dark:bg-black/60 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-800">
+            <div
+              className={clsx(
+                "text-[9px] sm:text-[10px] font-mono px-2 py-0.5 rounded border",
+                isCalmGreen
+                  ? (isLight ? "border-[#D5DDD9] bg-white/80 text-[#5E7269]" : "border-[#252D2A] bg-[#000000]/80 text-[#8D9691]")
+                  : "border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-black/60 text-slate-500 dark:text-slate-400"
+              )}
+            >
               <span className="hidden sm:inline">Scroll to zoom · Pan canvas · Click node to inspect</span>
               <span className="sm:hidden">Zoom · Pan · Inspect</span>
             </div>
@@ -1054,7 +1149,7 @@ export function LiveAgentCanvasDemo() {
                   markerHeight="6"
                   orient="auto-start-reverse"
                 >
-                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#94a3b8" />
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill={isCalmGreen ? (isLight ? "#5E7269" : "#8D9691") : "#94a3b8"} />
                 </marker>
                 <marker
                   id="canvas-arrow-active"
@@ -1065,7 +1160,7 @@ export function LiveAgentCanvasDemo() {
                   markerHeight="7"
                   orient="auto-start-reverse"
                 >
-                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#818cf8" />
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill={isCalmGreen ? (isLight ? "#4D8A73" : "#7FAF9B") : "#818cf8"} />
                 </marker>
               </defs>
 
@@ -1094,8 +1189,10 @@ export function LiveAgentCanvasDemo() {
                   pathD = `M ${sx} ${sy} C ${sx + dx} ${sy}, ${tx - dx} ${ty}, ${tx} ${ty}`;
                 }
 
-                const baseColor = "#475569";
-                const activeColor = edge.accept ? "#34d399" : edge.loop ? "#fbbf24" : "#818cf8";
+                const baseColor = isCalmGreen ? (isLight ? "#D5DDD9" : "#252D2A") : "#475569";
+                const activeColor = isCalmGreen
+                  ? (edge.loop ? (isLight ? "#9A7A3A" : "#C7A96B") : (isLight ? "#4D8A73" : "#7FAF9B"))
+                  : (edge.accept ? "#34d399" : edge.loop ? "#fbbf24" : "#818cf8");
                 const markerId = active ? "url(#canvas-arrow-active)" : "url(#canvas-arrow-default)";
 
                 return (
@@ -1189,52 +1286,108 @@ export function LiveAgentCanvasDemo() {
                   }}
                   className={clsx(
                     "absolute z-10 rounded-xl border font-mono transition-all duration-150 cursor-grab active:cursor-grabbing select-none",
-                    "bg-white/95 dark:bg-[#0c0d18]/95 backdrop-blur-md shadow-md",
-                    node.accentClass,
+                    isCalmGreen
+                      ? (isLight
+                          ? "bg-white/95 backdrop-blur-md shadow-md text-[#0E1411] border-[#BEC9C4]"
+                          : "bg-[#000000]/95 backdrop-blur-md shadow-md text-[#E7E9E5] border-[#24332c]")
+                      : "bg-white/95 dark:bg-[#0c0d18]/95 backdrop-blur-md shadow-md",
+                    isCalmGreen ? "" : node.accentClass,
                     heatmapColor,
-                    isSelected ? "ring-2 ring-indigo-500 shadow-xl shadow-indigo-500/20 scale-[1.02]" : "",
-                    status === "running" && "ring-2 ring-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.55)] animate-pulse",
-                    status === "done" && "border-emerald-500 dark:border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.35)]",
+                    isSelected
+                      ? isCalmGreen
+                        ? (isLight
+                            ? "ring-2 ring-[#4D8A73] border-[#4D8A73] shadow-md scale-[1.02]"
+                            : "ring-2 ring-[#7FAF9B] border-[#7FAF9B] shadow-lg shadow-black/40 scale-[1.02]")
+                        : "ring-2 ring-indigo-500 shadow-xl shadow-indigo-500/20 scale-[1.02]"
+                      : "",
+                    status === "running" &&
+                      (isCalmGreen
+                        ? (isLight
+                            ? "ring-2 ring-[#4D8A73] border-[#4D8A73] shadow-[0_0_16px_rgba(77,138,115,0.4)] animate-pulse"
+                            : "ring-2 ring-[#7FAF9B] border-[#7FAF9B] shadow-[0_0_16px_rgba(127,175,155,0.4)] animate-pulse")
+                        : "ring-2 ring-indigo-400 shadow-[0_0_20px_rgba(99,102,241,0.55)] animate-pulse"),
+                    status === "done" &&
+                      (isCalmGreen
+                        ? (isLight
+                            ? "border-[#4D8A73] shadow-[0_0_10px_rgba(77,138,115,0.25)]"
+                            : "border-[#7FAF9B] shadow-[0_0_10px_rgba(127,175,155,0.25)]")
+                        : "border-emerald-500 dark:border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.35)]"),
                     status === "awaiting" && "border-amber-500 shadow-[0_0_18px_rgba(245,158,11,0.45)] animate-pulse"
                   )}
                 >
                   {/* Left Target Connection Handle */}
                   {showTarget && (
-                    <span className="absolute -left-[5px] top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full bg-indigo-500 dark:bg-indigo-400 border border-white dark:border-black shadow-sm" />
+                    <span
+                      className={clsx(
+                        "absolute -left-[5px] top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full border border-white dark:border-black shadow-sm",
+                        isCalmGreen ? (isLight ? "bg-[#3D6472]" : "bg-[#718A96]") : "bg-indigo-500 dark:bg-indigo-400"
+                      )}
+                    />
                   )}
                   {/* Right Source Connection Handle */}
                   {showSource && (
-                    <span className="absolute -right-[5px] top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full bg-emerald-500 dark:bg-emerald-400 border border-white dark:border-black shadow-sm" />
+                    <span
+                      className={clsx(
+                        "absolute -right-[5px] top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full border border-white dark:border-black shadow-sm",
+                        isCalmGreen ? (isLight ? "bg-[#4D8A73]" : "bg-[#7FAF9B]") : "bg-emerald-500 dark:bg-emerald-400"
+                      )}
+                    />
                   )}
 
                   <div className="p-2.5 space-y-1.5">
                     {/* Header Row */}
                     <div className="flex items-center justify-between gap-1.5">
                       <div className="flex items-center gap-1.5 min-w-0">
-                        <node.icon className="h-3.5 w-3.5 shrink-0" />
+                        <node.icon className={clsx("h-3.5 w-3.5 shrink-0", isCalmGreen ? (isLight ? "text-[#4D8A73]" : "text-[#7FAF9B]") : "")} />
                         <span className="text-[10px] font-bold tracking-wider uppercase truncate">
                           {node.label}
                         </span>
                       </div>
-                      <span className={clsx("px-1.5 py-0.2 rounded border text-[7.5px] font-bold tracking-wider shrink-0 uppercase", node.badgeClass)}>
+                      <span
+                        className={clsx(
+                          "px-1.5 py-0.2 rounded border text-[7.5px] font-bold tracking-wider shrink-0 uppercase",
+                          isCalmGreen
+                            ? (isLight ? "bg-[#EAEEEC] text-[#4D8A73] border-[#D5DDD9]" : "bg-[#0a0e0c] text-[#7FAF9B] border-[#24332c]")
+                            : node.badgeClass
+                        )}
+                      >
                         {node.badge}
                       </span>
                     </div>
 
                     {/* Parameter Snippet Preview */}
                     {node.snippet && (
-                      <div className="text-[8px] font-mono text-indigo-600 dark:text-indigo-300 bg-indigo-50/70 dark:bg-indigo-950/40 px-1.5 py-0.5 rounded truncate border border-indigo-200/50 dark:border-indigo-900/30">
+                      <div
+                        className={clsx(
+                          "text-[8px] font-mono px-1.5 py-0.5 rounded truncate border",
+                          isCalmGreen
+                            ? (isLight ? "text-[#3D4E47] bg-[#EAEEEC] border-[#D5DDD9]" : "text-[#8D9691] bg-[#000000] border-[#24332c]")
+                            : "text-indigo-600 dark:text-indigo-300 bg-indigo-50/70 dark:bg-indigo-950/40 border-indigo-200/50 dark:border-indigo-900/30"
+                        )}
+                      >
                         {node.snippet}
                       </div>
                     )}
 
                     {/* Sub description */}
-                    <p className="text-[8px] text-slate-500 dark:text-slate-400 leading-tight line-clamp-1">
+                    <p
+                      className={clsx(
+                        "text-[8px] leading-tight line-clamp-1",
+                        isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#8D9691]") : "text-slate-500 dark:text-slate-400"
+                      )}
+                    >
                       {node.sub}
                     </p>
 
                     {/* Live Telemetry Pill */}
-                    <div className="pt-0.5 flex items-center justify-between text-[7.5px] text-slate-400 border-t border-slate-200/60 dark:border-indigo-950/60 font-mono">
+                    <div
+                      className={clsx(
+                        "pt-0.5 flex items-center justify-between text-[7.5px] border-t font-mono",
+                        isCalmGreen
+                          ? (isLight ? "text-[#5E7269] border-[#D5DDD9]" : "text-[#626B66] border-[#252D2A]")
+                          : "text-slate-400 border-slate-200/60 dark:border-indigo-950/60"
+                      )}
+                    >
                       <span>{node.latencyMs}ms</span>
                       <span>{node.tokens} tok</span>
                     </div>
@@ -1245,12 +1398,24 @@ export function LiveAgentCanvasDemo() {
           </div>
 
           {/* Floating Controls (Zoom, Reset) */}
-          <div className="absolute left-3 bottom-3 z-20 flex flex-col overflow-hidden rounded-md border border-slate-300 dark:border-slate-700 bg-white/95 dark:bg-[#0b0b12]/95 shadow-md">
+          <div
+            className={clsx(
+              "absolute left-3 bottom-3 z-20 flex flex-col overflow-hidden rounded-md shadow-md",
+              isCalmGreen
+                ? (isLight ? "border border-[#D5DDD9] bg-white/95" : "border border-[#252D2A] bg-[#000000]/95")
+                : "border border-slate-300 dark:border-slate-700 bg-white/95 dark:bg-[#0b0b12]/95"
+            )}
+          >
             <button
               type="button"
               onClick={() => setZoom((z) => Math.min(1.5, Number((z + 0.15).toFixed(2))))}
               title="Zoom In"
-              className="flex h-7 w-7 items-center justify-center border-b border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors cursor-pointer"
+              className={clsx(
+                "flex h-7 w-7 items-center justify-center transition-colors cursor-pointer",
+                isCalmGreen
+                  ? (isLight ? "border-b border-[#D5DDD9] text-[#5E7269] hover:text-[#0E1411] hover:bg-[#EAEEEC]" : "border-b border-[#252D2A] text-[#8D9691] hover:text-[#E7E9E5] hover:bg-[#0a0e0c]")
+                  : "border-b border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50"
+              )}
             >
               <Plus className="h-3.5 w-3.5" />
             </button>
@@ -1258,7 +1423,12 @@ export function LiveAgentCanvasDemo() {
               type="button"
               onClick={() => setZoom((z) => Math.max(0.6, Number((z - 0.15).toFixed(2))))}
               title="Zoom Out"
-              className="flex h-7 w-7 items-center justify-center border-b border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors cursor-pointer"
+              className={clsx(
+                "flex h-7 w-7 items-center justify-center transition-colors cursor-pointer",
+                isCalmGreen
+                  ? (isLight ? "border-b border-[#D5DDD9] text-[#5E7269] hover:text-[#0E1411] hover:bg-[#EAEEEC]" : "border-b border-[#252D2A] text-[#8D9691] hover:text-[#E7E9E5] hover:bg-[#0a0e0c]")
+                  : "border-b border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50"
+              )}
             >
               <Minus className="h-3.5 w-3.5" />
             </button>
@@ -1269,22 +1439,41 @@ export function LiveAgentCanvasDemo() {
                 setPan({ x: 0, y: 0 });
               }}
               title="Reset View"
-              className="flex h-7 w-7 items-center justify-center text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors cursor-pointer"
+              className={clsx(
+                "flex h-7 w-7 items-center justify-center transition-colors cursor-pointer",
+                isCalmGreen
+                  ? (isLight ? "text-[#5E7269] hover:text-[#0E1411] hover:bg-[#EAEEEC]" : "text-[#8D9691] hover:text-[#E7E9E5] hover:bg-[#0a0e0c]")
+                  : "text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50"
+              )}
             >
               <RotateCcw className="h-3.5 w-3.5" />
             </button>
           </div>
 
           {/* MiniMap Viewport Preview */}
-          <div className="absolute right-3 bottom-3 z-20 h-20 w-32 rounded-md border border-slate-300 dark:border-slate-700/80 bg-white/95 dark:bg-[#0b0b12]/95 p-1.5 shadow-md hidden sm:block">
-            <div className="text-[7px] text-slate-400 uppercase font-bold tracking-widest mb-1 flex items-center justify-between">
+          <div
+            className={clsx(
+              "absolute right-3 bottom-3 z-20 h-20 w-32 rounded-md p-1.5 shadow-md hidden sm:block",
+              isCalmGreen
+                ? (isLight ? "border border-[#D5DDD9] bg-white/95" : "border border-[#252D2A] bg-[#000000]/95")
+                : "border border-slate-300 dark:border-slate-700/80 bg-white/95 dark:bg-[#0b0b12]/95"
+            )}
+          >
+            <div
+              className={clsx(
+                "text-[7px] uppercase font-bold tracking-widest mb-1 flex items-center justify-between",
+                isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#8D9691]") : "text-slate-400"
+              )}
+            >
               <span>MINIMAP</span>
               <span>{(zoom * 100).toFixed(0)}%</span>
             </div>
             <svg viewBox="0 0 950 500" className="h-12 w-full" aria-hidden="true">
               {nodes.map((n) => {
                 const s = getNodeStatus(n.id);
-                const fill = s === "running" ? "#818cf8" : s === "done" ? "#34d399" : "#64748b";
+                const fill = isCalmGreen
+                  ? (s === "running" ? (isLight ? "#4D8A73" : "#7FAF9B") : s === "done" ? (isLight ? "#4D8A73" : "#7FAF9B") : (isLight ? "#D5DDD9" : "#252D2A"))
+                  : (s === "running" ? "#818cf8" : s === "done" ? "#34d399" : "#64748b");
                 return (
                   <rect
                     key={n.id}
@@ -1303,9 +1492,21 @@ export function LiveAgentCanvasDemo() {
         </div>
 
         {/* RIGHT: Live Execution Terminal & Node Inspector Panel (5 Cols) */}
-        <div className="lg:col-span-5 flex flex-col h-[420px] sm:h-[480px] lg:h-[540px] bg-white dark:bg-[#0a0a0f] font-mono">
+        <div
+          className={clsx(
+            "lg:col-span-5 flex flex-col h-[420px] sm:h-[480px] lg:h-[540px] font-mono",
+            isCalmGreen ? (isLight ? "bg-white" : "bg-[#000000]") : "bg-white dark:bg-[#0a0a0f]"
+          )}
+        >
           {/* Panel Header with Switchable Tabs */}
-          <div className="flex items-center justify-between border-b border-slate-200 dark:border-indigo-950 bg-slate-50 dark:bg-[#0a0f1e]/60 px-3 py-2 text-xs">
+          <div
+            className={clsx(
+              "flex items-center justify-between border-b px-3 py-2 text-xs",
+              isCalmGreen
+                ? (isLight ? "border-[#D5DDD9] bg-[#EAEEEC]" : "border-[#24332c] bg-[#000000]")
+                : "border-slate-200 dark:border-indigo-950 bg-slate-50 dark:bg-[#0a0f1e]/60"
+            )}
+          >
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
@@ -1313,13 +1514,24 @@ export function LiveAgentCanvasDemo() {
                 className={clsx(
                   "px-2.5 py-1 rounded text-[10px] font-bold tracking-wider uppercase transition-colors cursor-pointer flex items-center gap-1",
                   activeTab === "terminal"
-                    ? "bg-indigo-600 text-white shadow-sm"
+                    ? isCalmGreen
+                      ? (isLight ? "bg-[#4D8A73] text-white shadow-sm" : "bg-[#7FAF9B] text-[#000000] shadow-sm")
+                      : "bg-indigo-600 text-white shadow-sm"
+                    : isCalmGreen
+                    ? (isLight ? "text-[#5E7269] hover:text-[#0E1411]" : "text-[#8D9691] hover:text-[#E7E9E5]")
                     : "text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300"
                 )}
               >
                 <Terminal className="h-3 w-3" />
                 <span>TRACE STREAM</span>
-                {phase === "running" && <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />}
+                {phase === "running" && (
+                  <span
+                    className={clsx(
+                      "h-1.5 w-1.5 rounded-full animate-ping",
+                      isCalmGreen ? (isLight ? "bg-white" : "bg-[#000000]") : "bg-emerald-400"
+                    )}
+                  />
+                )}
               </button>
 
               <button
@@ -1328,7 +1540,11 @@ export function LiveAgentCanvasDemo() {
                 className={clsx(
                   "px-2.5 py-1 rounded text-[10px] font-bold tracking-wider uppercase transition-colors cursor-pointer flex items-center gap-1",
                   activeTab === "inspector"
-                    ? "bg-indigo-600 text-white shadow-sm"
+                    ? isCalmGreen
+                      ? (isLight ? "bg-[#4D8A73] text-white shadow-sm" : "bg-[#7FAF9B] text-[#000000] shadow-sm")
+                      : "bg-indigo-600 text-white shadow-sm"
+                    : isCalmGreen
+                    ? (isLight ? "text-[#5E7269] hover:text-[#0E1411]" : "text-[#8D9691] hover:text-[#E7E9E5]")
                     : "text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300"
                 )}
               >
@@ -1342,7 +1558,11 @@ export function LiveAgentCanvasDemo() {
                 className={clsx(
                   "px-2.5 py-1 rounded text-[10px] font-bold tracking-wider uppercase transition-colors cursor-pointer flex items-center gap-1",
                   activeTab === "spec"
-                    ? "bg-indigo-600 text-white shadow-sm"
+                    ? isCalmGreen
+                      ? (isLight ? "bg-[#4D8A73] text-white shadow-sm" : "bg-[#7FAF9B] text-[#000000] shadow-sm")
+                      : "bg-indigo-600 text-white shadow-sm"
+                    : isCalmGreen
+                    ? (isLight ? "text-[#5E7269] hover:text-[#0E1411]" : "text-[#8D9691] hover:text-[#E7E9E5]")
                     : "text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300"
                 )}
               >
@@ -1357,14 +1577,30 @@ export function LiveAgentCanvasDemo() {
             <div className="flex-1 flex flex-col min-h-0">
               <div
                 ref={terminalScrollRef}
-                className="flex-1 p-3 overflow-y-auto space-y-2 font-mono text-[10px] leading-relaxed bg-slate-900 text-slate-200 dark:bg-black/70"
+                className={clsx(
+                  "flex-1 p-3 overflow-y-auto space-y-2 font-mono text-[10px] leading-relaxed",
+                  isCalmGreen
+                    ? (isLight ? "bg-[#F4F6F5] text-[#0E1411]" : "bg-[#000000] text-[#E7E9E5]")
+                    : "bg-slate-900 text-slate-200 dark:bg-black/70"
+                )}
               >
                 {logHistory.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-2 text-slate-500">
-                    <Terminal className="h-8 w-8 text-indigo-400/60 animate-pulse" />
-                    <p className="font-semibold text-slate-400">Execution Telemetry Stream Idle</p>
-                    <p className="text-[9px] max-w-xs text-slate-500">
-                      Press <span className="text-emerald-400 font-bold">[ RUN SIM ]</span> to trace real-time execution across the canvas.
+                  <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-2">
+                    <Terminal
+                      className={clsx(
+                        "h-8 w-8 animate-pulse",
+                        isCalmGreen ? (isLight ? "text-[#4D8A73]/70" : "text-[#7FAF9B]/60") : "text-indigo-400/60"
+                      )}
+                    />
+                    <p className={clsx("font-semibold", isCalmGreen ? (isLight ? "text-[#0E1411]" : "text-[#E7E9E5]") : "text-slate-400")}>
+                      Execution Telemetry Stream Idle
+                    </p>
+                    <p className={clsx("text-[9px] max-w-xs", isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#8D9691]") : "text-slate-500")}>
+                      Press{" "}
+                      <span className={clsx("font-bold", isCalmGreen ? (isLight ? "text-[#4D8A73]" : "text-[#7FAF9B]") : "text-emerald-400")}>
+                        [ RUN SIM ]
+                      </span>{" "}
+                      to trace real-time execution across the canvas.
                     </p>
                   </div>
                 ) : (
@@ -1373,12 +1609,19 @@ export function LiveAgentCanvasDemo() {
                       key={idx}
                       className={clsx(
                         "p-2.5 rounded border transition-all duration-150 space-y-1",
-                        step.cls
+                        isCalmGreen
+                          ? (isLight ? "border-[#D5DDD9] bg-white text-[#0E1411]" : "border-[#24332c] bg-[#000000] text-[#E7E9E5]")
+                          : step.cls
                       )}
                     >
                       <div className="flex items-center justify-between gap-2">
                         <span className="font-bold tracking-wider uppercase flex items-center gap-1.5">
-                          <span className="h-1.5 w-1.5 rounded-full bg-current inline-block" />
+                          <span
+                            className={clsx(
+                              "h-1.5 w-1.5 rounded-full inline-block",
+                              isCalmGreen ? (isLight ? "bg-[#4D8A73]" : "bg-[#7FAF9B]") : "bg-current"
+                            )}
+                          />
                           {step.stepName}
                         </span>
                         <span className="text-[9px] font-mono opacity-80 flex items-center gap-1">
@@ -1398,28 +1641,48 @@ export function LiveAgentCanvasDemo() {
               </div>
 
               {/* Execution Summary Metrics Strip */}
-              <div className="p-3 border-t border-slate-200 dark:border-indigo-950 bg-slate-50 dark:bg-[#0a0f1e]/80 grid grid-cols-4 gap-2 text-center text-[9px] font-mono">
+              <div
+                className={clsx(
+                  "p-3 border-t grid grid-cols-4 gap-2 text-center text-[9px] font-mono",
+                  isCalmGreen
+                    ? (isLight ? "border-[#D5DDD9] bg-[#EAEEEC]" : "border-[#24332c] bg-[#000000]")
+                    : "border-slate-200 dark:border-indigo-950 bg-slate-50 dark:bg-[#0a0f1e]/80"
+                )}
+              >
                 <div>
-                  <div className="text-slate-400 text-[8px]">TOTAL TIME</div>
-                  <div className="font-bold text-indigo-600 dark:text-indigo-400 font-mono">
+                  <div className={clsx("text-[8px]", isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#626B66]") : "text-slate-400")}>
+                    TOTAL TIME
+                  </div>
+                  <div
+                    className={clsx(
+                      "font-bold font-mono",
+                      isCalmGreen ? (isLight ? "text-[#4D8A73]" : "text-[#7FAF9B]") : "text-indigo-600 dark:text-indigo-400"
+                    )}
+                  >
                     {phase === "running" ? `${((currentStepIndex + 1) * 0.28).toFixed(1)}s` : phase === "done" ? "1.8s" : "0.0s"}
                   </div>
                 </div>
                 <div>
-                  <div className="text-slate-400 text-[8px]">STEPS RUN</div>
-                  <div className="font-bold text-slate-800 dark:text-slate-200">
+                  <div className={clsx("text-[8px]", isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#626B66]") : "text-slate-400")}>
+                    STEPS RUN
+                  </div>
+                  <div className={clsx("font-bold", isCalmGreen ? (isLight ? "text-[#0E1411]" : "text-[#E7E9E5]") : "text-slate-800 dark:text-slate-200")}>
                     {Math.max(0, currentStepIndex + 1)}/{currentPreset.traceSteps.length}
                   </div>
                 </div>
                 <div>
-                  <div className="text-slate-400 text-[8px]">ACTIVE NODES</div>
-                  <div className="font-bold text-amber-600 dark:text-amber-400">
+                  <div className={clsx("text-[8px]", isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#626B66]") : "text-slate-400")}>
+                    ACTIVE NODES
+                  </div>
+                  <div className={clsx("font-bold", isCalmGreen ? (isLight ? "text-[#9A7A3A]" : "text-[#C7A96B]") : "text-amber-600 dark:text-amber-400")}>
                     {nodes.length}
                   </div>
                 </div>
                 <div>
-                  <div className="text-slate-400 text-[8px]">TOTAL TOKENS</div>
-                  <div className="font-bold text-emerald-600 dark:text-emerald-400">
+                  <div className={clsx("text-[8px]", isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#626B66]") : "text-slate-400")}>
+                    TOTAL TOKENS
+                  </div>
+                  <div className={clsx("font-bold", isCalmGreen ? (isLight ? "text-[#4D8A73]" : "text-[#7FAF9B]") : "text-emerald-600 dark:text-emerald-400")}>
                     {logHistory.reduce((sum, s) => sum + s.tokens, 0)}
                   </div>
                 </div>
@@ -1430,33 +1693,79 @@ export function LiveAgentCanvasDemo() {
           {/* TAB 2: Selected Node Inspector */}
           {activeTab === "inspector" && (
             <div className="flex-1 p-4 overflow-y-auto space-y-4 font-mono text-xs">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-indigo-950">
+              <div
+                className={clsx(
+                  "flex items-center justify-between pb-2 border-b",
+                  isCalmGreen ? (isLight ? "border-[#D5DDD9]" : "border-[#252D2A]") : "border-slate-200 dark:border-indigo-950"
+                )}
+              >
                 <div className="flex items-center gap-2">
-                  <selectedNode.icon className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                  <span className="font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+                  <selectedNode.icon
+                    className={clsx(
+                      "h-4 w-4",
+                      isCalmGreen ? (isLight ? "text-[#4D8A73]" : "text-[#7FAF9B]") : "text-indigo-600 dark:text-indigo-400"
+                    )}
+                  />
+                  <span
+                    className={clsx(
+                      "font-bold uppercase tracking-wider",
+                      isCalmGreen ? (isLight ? "text-[#0E1411]" : "text-[#E7E9E5]") : "text-slate-900 dark:text-slate-100"
+                    )}
+                  >
                     {selectedNode.label}
                   </span>
                 </div>
-                <span className={clsx("px-2 py-0.5 rounded border text-[9px] font-bold uppercase", selectedNode.badgeClass)}>
+                <span
+                  className={clsx(
+                    "px-2 py-0.5 rounded border text-[9px] font-bold uppercase",
+                    isCalmGreen
+                      ? (isLight ? "border-[#D5DDD9] bg-[#EAEEEC] text-[#4D8A73]" : "border-[#24332c] bg-[#0a0e0c] text-[#7FAF9B]")
+                      : selectedNode.badgeClass
+                  )}
+                >
                   {selectedNode.badge}
                 </span>
               </div>
 
               <div className="space-y-1">
-                <div className="text-[9px] uppercase tracking-widest text-indigo-600 dark:text-indigo-400 font-bold">
+                <div
+                  className={clsx(
+                    "text-[9px] uppercase tracking-widest font-bold",
+                    isCalmGreen ? (isLight ? "text-[#4D8A73]" : "text-[#7FAF9B]") : "text-indigo-600 dark:text-indigo-400"
+                  )}
+                >
                   PROMPT / DIRECTIVE TEMPLATE
                 </div>
-                <div className="p-2.5 rounded border border-slate-200 dark:border-indigo-900/50 bg-slate-50 dark:bg-black/60 text-[10px] text-slate-700 dark:text-slate-300 leading-relaxed">
+                <div
+                  className={clsx(
+                    "p-2.5 rounded border text-[10px] leading-relaxed",
+                    isCalmGreen
+                      ? (isLight ? "border-[#D5DDD9] bg-[#F4F6F5] text-[#0E1411]" : "border-[#24332c] bg-[#000000] text-[#E7E9E5]")
+                      : "border-slate-200 dark:border-indigo-900/50 bg-slate-50 dark:bg-black/60 text-slate-700 dark:text-slate-300"
+                  )}
+                >
                   {selectedNode.prompt}
                 </div>
               </div>
 
               {selectedNode.tool && (
                 <div className="space-y-1">
-                  <div className="text-[9px] uppercase tracking-widest text-indigo-600 dark:text-indigo-400 font-bold">
+                  <div
+                    className={clsx(
+                      "text-[9px] uppercase tracking-widest font-bold",
+                      isCalmGreen ? (isLight ? "text-[#4D8A73]" : "text-[#7FAF9B]") : "text-indigo-600 dark:text-indigo-400"
+                    )}
+                  >
                     ATTACHED MICROSERVICE / TOOL
                   </div>
-                  <div className="p-2 rounded border border-cyan-200 dark:border-cyan-500/30 bg-cyan-50 dark:bg-cyan-950/20 text-[10px] text-cyan-800 dark:text-cyan-300 font-bold flex items-center gap-1.5">
+                  <div
+                    className={clsx(
+                      "p-2 rounded border text-[10px] font-bold flex items-center gap-1.5",
+                      isCalmGreen
+                        ? (isLight ? "border-[#D5DDD9] bg-[#EAEEEC] text-[#4D8A73]" : "border-[#24332c] bg-[#0a0e0c] text-[#7FAF9B]")
+                        : "border-cyan-200 dark:border-cyan-500/30 bg-cyan-50 dark:bg-cyan-950/20 text-cyan-800 dark:text-cyan-300"
+                    )}
+                  >
                     <Zap className="h-3.5 w-3.5" />
                     {selectedNode.tool}
                   </div>
@@ -1464,15 +1773,27 @@ export function LiveAgentCanvasDemo() {
               )}
 
               <div className="space-y-1">
-                <div className="text-[9px] uppercase tracking-widest text-indigo-600 dark:text-indigo-400 font-bold">
+                <div
+                  className={clsx(
+                    "text-[9px] uppercase tracking-widest font-bold",
+                    isCalmGreen ? (isLight ? "text-[#4D8A73]" : "text-[#7FAF9B]") : "text-indigo-600 dark:text-indigo-400"
+                  )}
+                >
                   LIVE OUTPUT JSON ARTIFACT
                 </div>
-                <pre className="p-2.5 rounded border border-slate-200 dark:border-indigo-900/50 bg-slate-900 text-slate-200 dark:bg-black text-[9px] overflow-x-auto whitespace-pre font-mono">
+                <pre
+                  className={clsx(
+                    "p-2.5 rounded border text-[9px] overflow-x-auto whitespace-pre font-mono",
+                    isCalmGreen
+                      ? (isLight ? "border-[#D5DDD9] bg-[#F4F6F5] text-[#0E1411]" : "border-[#24332c] bg-[#000000] text-[#E7E9E5]")
+                      : "border-slate-200 dark:border-indigo-900/50 bg-slate-900 text-slate-200 dark:bg-black"
+                  )}
+                >
                   {selectedNode.outputPreview}
                 </pre>
               </div>
 
-              <div className="pt-2 text-[9px] text-slate-500">
+              <div className={clsx("pt-2 text-[9px]", isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#626B66]") : "text-slate-500")}>
                 Click any node on the left canvas to inspect its configuration and runtime telemetry.
               </div>
             </div>
@@ -1481,15 +1802,39 @@ export function LiveAgentCanvasDemo() {
           {/* TAB 3: Blueprint Specifications */}
           {activeTab === "spec" && (
             <div className="flex-1 p-4 overflow-y-auto space-y-3 font-mono text-[11px] leading-relaxed">
-              <div className="text-[10px] font-mono uppercase tracking-widest text-indigo-700 dark:text-indigo-400 font-bold flex items-center gap-1.5 pb-2 border-b border-slate-200 dark:border-indigo-950">
+              <div
+                className={clsx(
+                  "text-[10px] font-mono uppercase tracking-widest font-bold flex items-center gap-1.5 pb-2 border-b",
+                  isCalmGreen
+                    ? (isLight ? "text-[#4D8A73] border-[#D5DDD9]" : "text-[#7FAF9B] border-[#252D2A]")
+                    : "text-indigo-700 dark:text-indigo-400 border-slate-200 dark:border-indigo-950"
+                )}
+              >
                 <MousePointerClick className="h-3.5 w-3.5" /> {currentPreset.name.toUpperCase()} SPEC
               </div>
-              <p className="text-slate-600 dark:text-slate-400 text-[10px]">
+              <p
+                className={clsx(
+                  "text-[10px]",
+                  isCalmGreen ? (isLight ? "text-[#3D4E47]" : "text-[#8D9691]") : "text-slate-600 dark:text-slate-400"
+                )}
+              >
                 {currentPreset.tagline}
               </p>
 
-              <div className="pt-2 border-t border-slate-200 dark:border-indigo-950">
-                <div className="text-[9px] uppercase tracking-wider text-slate-500 mb-2 font-bold">NODES IN THIS GRAPH:</div>
+              <div
+                className={clsx(
+                  "pt-2 border-t",
+                  isCalmGreen ? (isLight ? "border-[#D5DDD9]" : "border-[#252D2A]") : "border-slate-200 dark:border-indigo-950"
+                )}
+              >
+                <div
+                  className={clsx(
+                    "text-[9px] uppercase tracking-wider mb-2 font-bold",
+                    isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#8D9691]") : "text-slate-500"
+                  )}
+                >
+                  NODES IN THIS GRAPH:
+                </div>
                 <div className="flex flex-wrap gap-1.5">
                   {nodes.map((n) => (
                     <button
@@ -1502,7 +1847,13 @@ export function LiveAgentCanvasDemo() {
                       className={clsx(
                         "px-2 py-0.5 rounded border text-[8px] font-bold uppercase transition-all cursor-pointer",
                         selectedNodeId === n.id
-                          ? "border-indigo-500 bg-indigo-600 text-white"
+                          ? isCalmGreen
+                            ? (isLight ? "border-[#4D8A73] bg-[#4D8A73] text-white" : "border-[#7FAF9B] bg-[#7FAF9B] text-[#000000]")
+                            : "border-indigo-500 bg-indigo-600 text-white"
+                          : isCalmGreen
+                          ? (isLight
+                              ? "border-[#D5DDD9] bg-white text-[#3D4E47] hover:text-[#0E1411]"
+                              : "border-[#24332c] bg-[#000000] text-[#8D9691] hover:text-[#E7E9E5]")
                           : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 hover:border-indigo-400"
                       )}
                     >
@@ -1517,9 +1868,23 @@ export function LiveAgentCanvasDemo() {
       </div>
 
       {/* Bottom SSE Stream Status Strip */}
-      <div className="px-4 py-2 bg-slate-100 dark:bg-[#07070d] border-t border-slate-200 dark:border-indigo-950 flex flex-wrap items-center justify-between gap-2 text-[9px] text-slate-600 dark:text-slate-400 font-mono">
+      <div
+        className={clsx(
+          "px-4 py-2 border-t flex flex-wrap items-center justify-between gap-2 text-[9px] font-mono",
+          isCalmGreen
+            ? (isLight ? "border-[#D5DDD9] bg-[#EAEEEC] text-[#3D4E47]" : "border-[#24332c] bg-[#000000] text-[#8D9691]")
+            : "border-slate-200 dark:border-indigo-950 bg-slate-100 dark:bg-[#07070d] text-slate-600 dark:text-slate-400"
+        )}
+      >
         <span className="flex items-center gap-1.5">
-          <Radio className={clsx("h-3 w-3", phase === "running" ? "text-emerald-500 animate-pulse" : "text-slate-400")} />
+          <Radio
+            className={clsx(
+              "h-3 w-3",
+              phase === "running"
+                ? (isCalmGreen ? (isLight ? "text-[#4D8A73] animate-pulse" : "text-[#7FAF9B] animate-pulse") : "text-emerald-500 animate-pulse")
+                : "text-slate-400"
+            )}
+          />
           <span>SSE TRACE ENGINE: {phase === "running" ? "ACTIVE STREAM (120ms TICK)" : phase === "done" ? "COMPLETED" : "IDLE"}</span>
         </span>
         <span className="flex items-center gap-2">
@@ -1527,7 +1892,14 @@ export function LiveAgentCanvasDemo() {
           <span>·</span>
           <span>EDGES: {currentPreset.edges.length}</span>
           <span>·</span>
-          <span className="font-bold text-indigo-600 dark:text-indigo-400">ENGINE: V2 GRAPH RUNTIME</span>
+          <span
+            className={clsx(
+              "font-bold",
+              isCalmGreen ? (isLight ? "text-[#4D8A73]" : "text-[#7FAF9B]") : "text-indigo-600 dark:text-indigo-400"
+            )}
+          >
+            ENGINE: V2 GRAPH RUNTIME
+          </span>
         </span>
       </div>
     </div>

@@ -7,7 +7,7 @@ import { UserCheck, Sparkles, LogIn, MousePointerClick } from "lucide-react";
 
 /**
  * Client-side auth section for the landing page hero.
- * Styled to match the dark graphite developer infrastructure aesthetic.
+ * Uses semantic CTA and theme tokens that cleanly respond to Punk and Calm Green.
  */
 export function HeroAuthSection() {
   return (
@@ -28,10 +28,10 @@ export function HeroAuthSection() {
         style={{ animationDelay: "300ms" }}
       >
         <Show when="signed-out">
-          {/* Primary: indigo action button */}
+          {/* Primary CTA button — sage in Calm Green, indigo/purple in Punk */}
           <SignUpButton mode="modal">
-            <button className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm border border-indigo-400/40 shadow-sm hover:shadow-md transition-all cursor-pointer whitespace-nowrap font-sans">
-              <Sparkles className="h-4 w-4 text-cyan-300" />
+            <button className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] border border-[var(--cta-primary-border)] shadow-[var(--cta-primary-shadow)] font-medium text-sm transition-all cursor-pointer whitespace-nowrap font-sans">
+              <Sparkles className="h-4 w-4" style={{ color: "currentColor" }} />
               Get Started Free →
             </button>
           </SignUpButton>
@@ -39,7 +39,7 @@ export function HeroAuthSection() {
           {/* Secondary: outlined ghost button */}
           <SignInButton mode="modal">
             <button className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg border border-[var(--border-strong)] bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent-primary)] shadow-sm transition-all cursor-pointer text-sm font-medium whitespace-nowrap font-sans">
-              <LogIn className="h-4 w-4 text-cyan-400" />
+              <LogIn className="h-4 w-4 text-[var(--accent-primary)]" />
               Sign In
             </button>
           </SignInButton>
@@ -48,9 +48,9 @@ export function HeroAuthSection() {
         <Show when="signed-in">
           <Link
             href="/dashboard"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm border border-indigo-400/40 shadow-sm hover:shadow-md transition-all cursor-pointer whitespace-nowrap font-sans"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] border border-[var(--cta-primary-border)] shadow-[var(--cta-primary-shadow)] font-medium text-sm transition-all cursor-pointer whitespace-nowrap font-sans"
           >
-            <Sparkles className="h-4 w-4 text-cyan-300" />
+            <Sparkles className="h-4 w-4" style={{ color: "currentColor" }} />
             Open Studio Dashboard →
           </Link>
         </Show>
@@ -84,8 +84,8 @@ export function HeroAuthSection() {
 export function FooterAuthCTA() {
   return (
     <SignUpButton mode="modal">
-      <button className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm border border-indigo-400/40 shadow-sm hover:shadow-md transition-all cursor-pointer w-full sm:w-auto font-sans">
-        <Sparkles className="h-4 w-4 text-cyan-300" />
+      <button className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] border border-[var(--cta-primary-border)] shadow-[var(--cta-primary-shadow)] font-medium text-sm transition-all cursor-pointer w-full sm:w-auto font-sans">
+        <Sparkles className="h-4 w-4" style={{ color: "currentColor" }} />
         Get Started Free →
       </button>
     </SignUpButton>
