@@ -8,3 +8,6 @@ playwright-report/
 test-results/
 # clerk configuration (can include secrets)
 /.clerk/
+AGENTS.md
+CLAUDE.md
+CODEX.md
