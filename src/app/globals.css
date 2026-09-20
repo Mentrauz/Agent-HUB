@@ -1131,7 +1131,7 @@
 }
 
 /* =========================================================================
-   Clerk Auth Ã¢â‚¬â€ Clean Light Aesthetic
+   Clerk Auth — Theme Adaptive Styling (Light & Dark)
    ========================================================================= */
 
 .cl-rootBox {
@@ -1154,13 +1154,19 @@
   display: none !important;
 }
 
-/* Clerk Card & Popover Ã¢â‚¬â€ Adaptive Tokens */
+/* Modal Backdrop */
+.cl-modalBackdrop {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Clerk Card & Popover — Adaptive Surface */
 .cl-card,
 .cl-userProfile-root {
-  background-color: var(--surface-raised) !important;
-  border: 1px solid var(--border-subtle) !important;
+  background-color: var(--surface-elevated, var(--surface-raised)) !important;
+  border: 1px solid var(--border-strong, var(--border-subtle)) !important;
   border-radius: 16px !important;
-  box-shadow: var(--shadow-lg) !important;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--border-subtle) !important;
   color: var(--text-primary) !important;
   font-family: var(--font-inter), Inter, sans-serif !important;
 }
@@ -1178,8 +1184,84 @@
 .cl-breadcrumbsItem {
   color: var(--text-secondary) !important;
   font-family: var(--font-inter), Inter, sans-serif !important;
+  font-size: 0.85rem !important;
 }
 
+/* Modal Close Button */
+.cl-modalCloseButton {
+  color: var(--text-secondary) !important;
+  opacity: 0.7 !important;
+  transition: all 0.2s ease !important;
+}
+.cl-modalCloseButton:hover {
+  color: var(--text-primary) !important;
+  opacity: 1 !important;
+  background-color: var(--surface-sunken) !important;
+}
+
+/* Social Buttons (Google, GitHub, etc.) — Visible & High Contrast */
+.cl-socialButtonsBlockButton {
+  background-color: var(--surface-sunken) !important;
+  border: 1px solid var(--border-strong) !important;
+  border-radius: 10px !important;
+  color: var(--text-primary) !important;
+  padding: 0.625rem 1rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.cl-socialButtonsBlockButton:hover {
+  background-color: var(--surface-raised) !important;
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 12px rgba(127, 175, 155, 0.15) !important;
+}
+
+.cl-socialButtonsBlockButtonText {
+  color: var(--text-primary) !important;
+  font-family: var(--font-inter), Inter, sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  opacity: 1 !important;
+}
+
+.cl-socialButtonsBlockButtonArrow {
+  color: var(--text-secondary) !important;
+}
+
+/* Last Used Strategy Badge */
+.cl-lastAuthenticationStrategyBadge,
+.cl-badge {
+  background-color: var(--surface-raised) !important;
+  color: var(--accent-primary) !important;
+  border: 1px solid var(--border-subtle) !important;
+  font-family: var(--font-mono, monospace) !important;
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  border-radius: 999px !important;
+  padding: 2px 8px !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Divider ("or") */
+.cl-dividerRow {
+  margin: 1.25rem 0 !important;
+}
+
+.cl-dividerLine {
+  background-color: var(--border-subtle) !important;
+  height: 1px !important;
+  opacity: 0.8 !important;
+}
+
+.cl-dividerText {
+  color: var(--text-muted) !important;
+  font-family: var(--font-inter), Inter, sans-serif !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* Form Fields */
 .cl-profileSectionTitleText {
   color: var(--accent-primary) !important;
   font-family: var(--font-inter), Inter, sans-serif !important;
@@ -1187,41 +1269,97 @@
 }
 
 .cl-formFieldLabel {
-  color: var(--text-secondary) !important;
+  color: var(--text-primary) !important;
   font-family: var(--font-inter), Inter, sans-serif !important;
   font-weight: 500 !important;
+  font-size: 0.875rem !important;
 }
 
 .cl-formFieldInput {
   background-color: var(--surface-sunken) !important;
-  border: 1px solid var(--border-subtle) !important;
+  border: 1px solid var(--border-strong) !important;
   color: var(--text-primary) !important;
   font-family: var(--font-inter), Inter, sans-serif !important;
   border-radius: 10px !important;
   padding: 0.625rem 0.875rem !important;
+  font-size: 0.875rem !important;
+  transition: all 0.2s ease !important;
 }
 
+.cl-formFieldInput:focus {
+  border-color: var(--accent-primary) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(127, 175, 155, 0.25) !important;
+}
+
+.cl-formFieldInput::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.8 !important;
+}
+
+/* Primary Action Button ("Continue") */
 .cl-formButtonPrimary {
-  background-color: var(--text-primary) !important;
-  color: var(--surface-base) !important;
-  border: none !important;
+  background-color: var(--cta-primary-bg, var(--accent-primary)) !important;
+  color: var(--cta-primary-text, var(--accent-contrast)) !important;
+  border: 1px solid var(--cta-primary-border, transparent) !important;
   font-family: var(--font-inter), Inter, sans-serif !important;
   font-weight: 600 !important;
+  font-size: 0.875rem !important;
   border-radius: 999px !important;
-  letter-spacing: 0 !important;
+  padding: 0.625rem 1.25rem !important;
+  letter-spacing: 0.02em !important;
   text-transform: none !important;
+  box-shadow: var(--cta-primary-shadow, 0 2px 8px rgba(0, 0, 0, 0.2)) !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
 }
 
 .cl-formButtonPrimary:hover {
-  opacity: 0.9 !important;
+  background-color: var(--cta-primary-hover, var(--accent-primary)) !important;
+  opacity: 0.95 !important;
+  transform: translateY(-1px) !important;
 }
 
+.cl-formButtonPrimary:active {
+  transform: translateY(0) !important;
+}
+
+/* Links & Secondary Actions */
+.cl-footerAction,
+.cl-footerActionText {
+  color: var(--text-secondary) !important;
+  font-size: 0.8125rem !important;
+}
+
+.cl-footerActionLink,
+.cl-formFieldAction,
+.cl-formResendCodeLink,
+.cl-identityPreviewEditButton {
+  color: var(--accent-primary) !important;
+  font-weight: 500 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.cl-footerActionLink:hover,
+.cl-formFieldAction:hover,
+.cl-formResendCodeLink:hover,
+.cl-identityPreviewEditButton:hover {
+  opacity: 0.8 !important;
+  text-decoration: underline !important;
+}
+
+.cl-identityPreviewText {
+  color: var(--text-primary) !important;
+  font-weight: 500 !important;
+}
+
+/* Popovers & Menus */
 .cl-accordionTriggerButton { color: var(--text-primary) !important; }
 .cl-menuButton { color: var(--text-primary) !important; }
 
 .cl-userButtonPopoverCard {
-  background-color: var(--surface-raised) !important;
-  border: 1px solid var(--border-subtle) !important;
+  background-color: var(--surface-elevated, var(--surface-raised)) !important;
+  border: 1px solid var(--border-strong) !important;
   border-radius: 16px !important;
   box-shadow: var(--shadow-lg) !important;
   color: var(--text-primary) !important;

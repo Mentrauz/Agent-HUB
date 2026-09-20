@@ -3,7 +3,7 @@ import { createSkillSchema, skillListQuerySchema } from "@/validators/skillSchem
 import { auth } from "@clerk/nextjs/server";
 import { unauthorized, forbidden, badRequest, handleApiError } from "@/lib/api/handlers";
 import { apiServices } from "@/lib/api/services";
-import { rateLimit } from "@/lib/api/rate-limit";
+import { rateLimit } from "@/lib/api/rateLimit";
 import { parseJsonBody } from "@/lib/api/bodyLimit";
 
 const { skillService, rbacService, skillRepo } = apiServices();
@@ -13,11 +13,11 @@ const { skillService, rbacService, skillRepo } = apiServices();
  * Supports optional organization context via X-Organization-Id header
  */
 export async function GET(request: Request) {
-  const rl = await rateLimit(request);
-  if (rl) return rl;
-
   const { userId } = await auth();
   if (!userId) return unauthorized();
+
+  const rl = rateLimit(`skills:get:${userId}`);
+  if (rl) return rl;
 
   try {
     const { searchParams } = new URL(request.url);
@@ -56,11 +56,11 @@ export async function GET(request: Request) {
  * Supports optional organization context via X-Organization-Id header
  */
 export async function POST(request: Request) {
-  const rl = await rateLimit(request);
-  if (rl) return rl;
-
   const { userId } = await auth();
   if (!userId) return unauthorized();
+
+  const rl = rateLimit(`skills:post:${userId}`);
+  if (rl) return rl;
 
   try {
     const { data: body, error: bodyError } = await parseJsonBody<Record<string, unknown>>(request);

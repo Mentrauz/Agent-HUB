@@ -11,9 +11,9 @@
  *   - Markdown / Plain Text (passthrough)
  */
 
-import { PDFParse } from "pdf-parse";
-import mammoth from "mammoth";
-import TurndownService from "turndown";
+// Heavy native/WASM parse libraries are loaded lazily (dynamic import) to
+// avoid penalizing plain-text and JSON ingest routes with their cold-start cost.
+// Each parser function imports its own library on first call.
 
 // ────────────── Types ──────────────
 
@@ -120,6 +120,8 @@ export function getSupportedExtensions(): string[] {
 // ────────────── PDF Parser ──────────────
 
 async function parsePdf(buffer: Buffer, title: string): Promise<ParsedFile> {
+  // Lazy-load pdf-parse only when a PDF is actually being processed
+  const { PDFParse } = await import("pdf-parse");
   const parser = new PDFParse({ data: buffer });
   const result = await parser.getText();
   await parser.destroy();
@@ -144,6 +146,8 @@ async function parsePdf(buffer: Buffer, title: string): Promise<ParsedFile> {
 // ────────────── DOCX Parser ──────────────
 
 async function parseDocx(buffer: Buffer, title: string): Promise<ParsedFile> {
+  // Lazy-load mammoth only when a DOCX is actually being processed
+  const { default: mammoth } = await import("mammoth");
   const result = await mammoth.extractRawText({ buffer });
 
   const content = cleanText(result.value);
@@ -162,7 +166,9 @@ async function parseDocx(buffer: Buffer, title: string): Promise<ParsedFile> {
 
 // ────────────── HTML Parser ──────────────
 
-function parseHtml(buffer: Buffer, title: string): ParsedFile {
+async function parseHtml(buffer: Buffer, title: string): Promise<ParsedFile> {
+  // Lazy-load turndown only when HTML is actually being processed
+  const { default: TurndownService } = await import("turndown");
   const html = buffer.toString("utf-8");
 
   const turndown = new TurndownService({

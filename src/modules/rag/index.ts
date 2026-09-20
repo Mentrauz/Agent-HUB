@@ -352,42 +352,49 @@ export const defaultRAGPipeline = new RAGPipeline();
 export { pgVectorStore } from "./pgvectorStore";
 
 // ─── Advanced RAG Features ───
-export {
-  processMultiModal,
-  extractTables,
-  extractCodeBlocks,
-  extractImages,
-} from "./multiModalProcessor";
-export type { MultiModalChunk, MultiModalProcessOptions } from "./multiModalProcessor";
+// NOTE: The modules below (multiModalProcessor, knowledgeGraph, chunkOptimizer,
+// crossCollectionSearch, ragEvalPipeline) are implemented but not yet wired to
+// any API route or dashboard page. They are commented out here to prevent them
+// from being eagerly bundled into every RAG route cold-start.
+// Uncomment the relevant export when you wire a feature to a route.
+//
+// export {
+//   processMultiModal,
+//   extractTables,
+//   extractCodeBlocks,
+//   extractImages,
+// } from "./multiModalProcessor";
+// export type { MultiModalChunk, MultiModalProcessOptions } from "./multiModalProcessor";
+//
+// export { KnowledgeGraph, extractEntities } from "./knowledgeGraph";
+// export type {
+//   KGEntity,
+//   KGRelationship,
+//   KGCommunity,
+//   EntityType,
+//   RelationshipType,
+// } from "./knowledgeGraph";
+//
+// export { optimizeChunking, profileDocument, analyzeChunkQuality } from "./chunkOptimizer";
+// export type {
+//   DocumentProfile,
+//   ChunkQualityMetrics,
+//   OptimizationResult,
+// } from "./chunkOptimizer";
+//
+// export { CrossCollectionSearchEngine, crossCollectionSearch } from "./crossCollectionSearch";
+// export type {
+//   CollectionConfig,
+//   CrossCollectionResult,
+//   FederatedSearchResult,
+//   SearchAnalytics,
+// } from "./crossCollectionSearch";
+//
+// export { runComprehensiveRAGEval } from "./ragEvalPipeline";
+// export type {
+//   ComprehensiveRAGEvalReport,
+//   EvalInput,
+//   HallucinationReport,
+//   ChunkQualityScore,
+// } from "./ragEvalPipeline";
 
-export { KnowledgeGraph, extractEntities } from "./knowledgeGraph";
-export type {
-  KGEntity,
-  KGRelationship,
-  KGCommunity,
-  EntityType,
-  RelationshipType,
-} from "./knowledgeGraph";
-
-export { optimizeChunking, profileDocument, analyzeChunkQuality } from "./chunkOptimizer";
-export type {
-  DocumentProfile,
-  ChunkQualityMetrics,
-  OptimizationResult,
-} from "./chunkOptimizer";
-
-export { CrossCollectionSearchEngine, crossCollectionSearch } from "./crossCollectionSearch";
-export type {
-  CollectionConfig,
-  CrossCollectionResult,
-  FederatedSearchResult,
-  SearchAnalytics,
-} from "./crossCollectionSearch";
-
-export { runComprehensiveRAGEval } from "./ragEvalPipeline";
-export type {
-  ComprehensiveRAGEvalReport,
-  EvalInput,
-  HallucinationReport,
-  ChunkQualityScore,
-} from "./ragEvalPipeline";

@@ -2,6 +2,7 @@
   "name": "agent-studio",
   "version": "0.6",
   "private": true,
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/Mentrauz/Agent-HUB"
@@ -25,8 +26,7 @@
     "test:performance": "PERF_BASE_URL=http://localhost:3000 vitest run tests/performance/**",
     "test:all": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test",
-    "prepare": "husky"
+    "test:e2e": "playwright test"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -72,14 +72,20 @@
     "autoprefixer": "^10.5.5",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.4",
-    "husky": "^9.1.7",
     "jsdom": "^30.0.1",
-    "lint-staged": "^17.5.0",
     "postcss": "^8.5.28",
     "prisma": "^6.12.0",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.13",
     "typescript": "~5.9.3",
     "vitest": "^5.0.0"
+  },
+  "allowScripts": {
+    "@prisma/client@6.19.3": true,
+    "@prisma/engines@6.12.0": true,
+    "core-js@3.50.0": true,
+    "esbuild@0.28.2": true,
+    "prisma@6.12.0": true,
+    "unrs-resolver@1.12.2": true
   }
 }

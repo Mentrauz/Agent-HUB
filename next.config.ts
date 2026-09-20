@@ -1,4 +1,8 @@
 import type { NextConfig } from "next";
+import { EventEmitter } from "node:events";
+
+// Prevent MaxListenersExceededWarning when multiple streams / drain listeners attach in dev
+EventEmitter.defaultMaxListeners = 30;
 
 const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
@@ -13,6 +17,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  compress: false,
   experimental: {
     optimizePackageImports: [
       "lucide-react",

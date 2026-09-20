@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { TriggerService } from "@/services/TriggerService";
 import { unauthorized, handleApiError } from "@/lib/api/handlers";
-import { rateLimit } from "@/lib/api/rate-limit";
+import { rateLimit } from "@/lib/api/rateLimit";
 
 export async function GET(request: NextRequest) {
-  const rl = await rateLimit(request);
-  if (rl) return rl;
-
   const { userId } = await auth();
   if (!userId) return unauthorized();
+
+  const rl = rateLimit(`triggers:get:${userId}`);
+  if (rl) return rl;
 
   try {
     const organizationId =
@@ -36,11 +36,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const rl = await rateLimit(request);
-  if (rl) return rl;
-
   const { userId } = await auth();
   if (!userId) return unauthorized();
+
+  const rl = rateLimit(`triggers:post:${userId}`);
+  if (rl) return rl;
 
   try {
     const body = await request.json();
@@ -79,11 +79,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  const rl = await rateLimit(request);
-  if (rl) return rl;
-
   const { userId } = await auth();
   if (!userId) return unauthorized();
+
+  const rl = rateLimit(`triggers:delete:${userId}`);
+  if (rl) return rl;
 
   try {
     const { searchParams } = new URL(request.url);

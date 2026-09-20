@@ -622,12 +622,12 @@ export async function GET(req: Request) {
     const existingMcpSoIds = new Set(
       parsedPublicServers.filter((s) => s.source === "mcp.so").map((s) => s.id)
     );
-    mcpSoServers = mcpSoResult.value
+    mcpSoServers = (mcpSoResult.value as { slug: string }[])
       .filter((e) => !existingMcpSoIds.has(`mcpso-${e.slug}`))
       .map((entry) => ({
         id: `mcpso-${entry.slug}`,
         source: "mcp.so" as PublicMcpServer["source"],
-        name: entry.slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+        name: entry.slug.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase()),
         description: "MCP server from mcp.so registry",
         owner: entry.slug.split("/")[0] || "community",
         repoUrl: `https://github.com/${entry.slug}`,
@@ -647,7 +647,7 @@ export async function GET(req: Request) {
     const existingGlamaIds = new Set(
       parsedPublicServers.filter((s) => s.source === "glama").map((s) => s.id)
     );
-    glamaSitemapServers = glamaResult.value
+    glamaSitemapServers = (glamaResult.value as { slug: string }[])
       .filter((e) => !existingGlamaIds.has(`glama-${e.slug}`))
       .map((entry) => {
         const parts = entry.slug.split("/");
@@ -656,7 +656,7 @@ export async function GET(req: Request) {
         return {
           id: `glama-${entry.slug}`,
           source: "glama" as PublicMcpServer["source"],
-          name: repo.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+          name: repo.replace(/[-_]/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase()),
           description: "MCP server from Glama.ai registry",
           owner,
           repoUrl: `https://github.com/${entry.slug}`,
