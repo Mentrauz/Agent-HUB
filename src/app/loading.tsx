@@ -6,9 +6,9 @@ export default function RootLoading() {
     <AgentStudioPreloader
       fullscreen={true}
       className="min-h-screen"
-      title="Agent Hub"
-      subtitle="SYSTEM SUSPENSE // HYDRATING NODES"
-      allowSkip={false}
+      title="Agent Hub Linux Kernel"
+      subtitle="vmlinuz-6.12.8-agenthub"
+      allowSkip={true}
     />
   );
 }
