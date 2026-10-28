@@ -1246,7 +1246,7 @@ function CanvasInner({
                 isCalmGreen
                   ? (isDark
                       ? "!border-[#252D2A] !bg-[#000000] [&>button]:!border-[#252D2A] [&>button]:!text-[#8D9691] [&>button]:!bg-[#000000] [&>button:hover]:!bg-[#0a0e0c] [&>button:hover]:!text-[#E7E9E5]"
-                      : "!border-[#D5DDD9] !bg-white [&>button]:!border-[#D5DDD9] [&>button]:!text-[#3D4E47] [&>button]:!bg-white [&>button:hover]:!bg-slate-100")
+                      : "!border-[#D5DDD9] !bg-white [&>button]:!border-[#D5DDD9] [&>button]:!text-[#33433C] [&>button]:!bg-white [&>button:hover]:!bg-slate-100")
                   : (canvasTheme === "paper"
                       ? "!border-slate-200 !bg-white [&>button]:!border-slate-200 [&>button]:!text-slate-700 [&>button]:!bg-white [&>button:hover]:!bg-slate-100"
                       : canvasTheme === "graphite"
@@ -1763,7 +1763,7 @@ function CanvasInner({
               isCalmGreen
                 ? (isDark
                     ? "!border-[#252D2A] !bg-[#000000] !shadow-none [&>button]:!border-[#252D2A] [&>button]:!text-[#8D9691] [&>button]:!bg-[#000000] [&>button:hover]:!bg-[#0a0e0c] [&>button:hover]:!text-[#E7E9E5]"
-                    : "!border-[#D5DDD9] !bg-white !shadow-md [&>button]:!border-[#D5DDD9] [&>button]:!text-[#3D4E47] [&>button]:!bg-white [&>button:hover]:!bg-slate-100")
+                    : "!border-[#D5DDD9] !bg-white !shadow-md [&>button]:!border-[#D5DDD9] [&>button]:!text-[#33433C] [&>button]:!bg-white [&>button:hover]:!bg-slate-100")
                 : "!border-slate-200 dark:!border-slate-700 !bg-white dark:!bg-[#0b0b12] !shadow-md dark:!shadow-none [&>button]:!border-slate-200 dark:[&>button]:!border-slate-700 [&>button]:!text-slate-700 dark:[&>button]:!text-slate-300 [&>button]:!bg-white dark:[&>button]:!bg-[#0b0b12] [&>button:hover]:!bg-slate-100 dark:[&>button:hover]:!bg-slate-800"
             )} />
             <MiniMap

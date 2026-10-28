@@ -29,8 +29,8 @@
 
     /* Text */
     --text-primary:   #E7E9E5;   /* warm off-white — high contrast on pitch black */
-    --text-secondary: #93A49C;   /* sage graphite */
-    --text-muted:     #6B7C73;   /* subtle labels */
+    --text-secondary: #A7B5AE;   /* sage graphite */
+    --text-muted:     #8A9A92;   /* subtle labels */
 
     /* System / brand accents */
     --accent-primary:   #7FAF9B;  /* sage — primary CTA / active states */
@@ -143,7 +143,7 @@
     /* Punk Light — high-contrast text for proper readability */
     --text-primary: #0A0E14;     /* near-black — max contrast on white */
     --text-secondary: #3F4D5A;   /* dark slate — readable secondary */
-    --text-muted: #65737E;       /* slate muted */
+    --text-muted: #536170;       /* slate muted */
 
     --accent-primary: #0891B2;
     --accent-secondary: #2563EB;
@@ -234,8 +234,8 @@
     --border-strong: #30363d;
 
     --text-primary: #f0f6fc;
-    --text-secondary: #8b949e;
-    --text-muted: #6e7681;
+    --text-secondary: #a3acb6;
+    --text-muted: #8b949e;
 
     --accent-primary: #22D3EE;
     --accent-secondary: #60A5FA;
@@ -314,8 +314,8 @@
     --border-strong:   #24332c;
 
     --text-primary:   #E7E9E5;   /* warm off-white — high contrast on pitch black */
-    --text-secondary: #93A49C;   /* sage graphite */
-    --text-muted:     #6B7C73;   /* subtle labels */
+    --text-secondary: #A7B5AE;   /* sage graphite */
+    --text-muted:     #8A9A92;   /* subtle labels */
 
     --accent-primary:   #7FAF9B;  /* sage — primary CTA / active states */
     --accent-secondary: #718A96;  /* slate-blue secondary */
@@ -408,8 +408,8 @@
 
     /* High contrast text — essential for light mode readability */
     --text-primary:   #0E1411;   /* near-black */
-    --text-secondary: #3D4E47;   /* dark forest */
-    --text-muted:     #5E7269;   /* muted green-grey */
+    --text-secondary: #33433C;   /* dark forest */
+    --text-muted:     #4C5F56;   /* muted green-grey */
 
     --accent-primary:   #4D8A73;  /* darker sage — readable on white */
     --accent-secondary: #3D6472;
@@ -1228,6 +1228,14 @@
   color: var(--text-secondary) !important;
 }
 
+/* Clerk renders monochrome provider marks (GitHub, Apple, X) as a mask filled with near-black,
+   which vanishes on our dark buttons — fill them with the theme text colour instead */
+.cl-providerIcon__github,
+.cl-providerIcon__apple,
+.cl-providerIcon__x {
+  background-color: var(--text-primary) !important;
+}
+
 /* Last Used Strategy Badge */
 .cl-lastAuthenticationStrategyBadge,
 .cl-badge {
@@ -1795,13 +1803,15 @@ html[data-theme-identity="calm-green"] {
   & .hover\:text-blue-400:hover { color: #718A96 !important; }
   & .hover\:text-blue-300:hover { color: #8BA8B4 !important; }
 
-  /* slate text — keep neutral, just ensure dark: variants work */
-  & .dark\:text-slate-200 { color: #E7E9E5 !important; }
-  & .dark\:text-slate-300 { color: #D0D4D2 !important; }
-  & .dark\:text-slate-400 { color: #93A49C !important; }
-  & .dark\:text-slate-500 { color: #6B7C73 !important; }
-  & .dark\:hover\:text-slate-200:hover { color: #E7E9E5 !important; }
-  & .dark\:hover\:text-slate-100:hover { color: #F0F2F0 !important; }
+  /* slate text — this block also matches calm-green LIGHT (the selectors match the class name, not the mode),
+     so map to theme tokens rather than fixed light-on-dark hexes */
+  & .dark\:text-slate-200,
+  & .dark\:text-slate-300 { color: var(--text-primary) !important; }
+  & .dark\:text-slate-400 { color: var(--text-secondary) !important; }
+  & .dark\:text-slate-500,
+  & .dark\:text-slate-600 { color: var(--text-muted) !important; }
+  & .dark\:hover\:text-slate-200:hover,
+  & .dark\:hover\:text-slate-100:hover { color: var(--text-primary) !important; }
 
   /* ── Border colors ── */
   /* indigo borders → sage/green */
@@ -2015,4 +2025,29 @@ html[data-theme-identity="calm-green"][data-theme-appearance="light"] {
   & .text-violet-300 { color: #4D8A73 !important; }
   & .text-blue-400,
   & .text-blue-300 { color: #3D6472 !important; }
+}
+
+/* ── Dark appearances (all identities) — readable fallback for light-mode slate text ──────────
+   Hundreds of components set text-slate-500/600/700 with no dark: variant. On a black surface
+   those land at 4.4:1, 2.8:1 and 2.0:1. Lift them to theme tokens. Elements that set their own
+   bg-* are skipped: those are usually light chips/badges where the dark text is correct. */
+html[data-theme-appearance="dark"] {
+  & [class~="text-slate-500"]:not([class*="dark:text-"]):not([class*=" bg-"]):not([class^="bg-"]),
+  & [class~="text-slate-600"]:not([class*="dark:text-"]):not([class*=" bg-"]):not([class^="bg-"]),
+  & .dark\:text-slate-500,
+  & .dark\:text-slate-600,
+  & .dark\:text-slate-700 { color: var(--text-muted) !important; }
+
+  & [class~="text-slate-700"]:not([class*="dark:text-"]):not([class*=" bg-"]):not([class^="bg-"]) {
+    color: var(--text-secondary) !important;
+  }
+
+  /* hover:text-slate-600…900 darkens text on hover — the wrong direction on black */
+  & [class~="hover:text-slate-600"]:not([class*="dark:hover:text-"]):hover,
+  & [class~="hover:text-slate-700"]:not([class*="dark:hover:text-"]):hover,
+  & [class~="hover:text-slate-800"]:not([class*="dark:hover:text-"]):hover,
+  & [class~="hover:text-slate-900"]:not([class*="dark:hover:text-"]):hover { color: var(--text-primary) !important; }
+
+  & [class~="placeholder:text-slate-500"]::placeholder,
+  & [class~="placeholder:text-slate-600"]::placeholder { color: var(--text-muted) !important; }
 }

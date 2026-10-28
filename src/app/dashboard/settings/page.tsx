@@ -740,24 +740,25 @@ function AccountProfileCard({ theme }: { theme?: string }) {
             routing="hash"
             appearance={{
               variables: (
-                theme === "light"
+                theme === "light" || theme?.endsWith("-light")
                   ? {
                       colorPrimary: "#4f46e5",
                       colorBackground: "#ffffff",
-                      colorText: "#0f172a",
-                      colorTextSecondary: "#64748b",
-                      colorInputBackground: "#f8fafc",
-                      colorInputText: "#0f172a",
+                      colorForeground: "#0f172a",
+                      colorMutedForeground: "#64748b",
+                      colorInput: "#f8fafc",
+                      colorInputForeground: "#0f172a",
                       fontFamily: "JetBrains Mono, monospace",
                       borderRadius: "0.25rem",
                     }
                   : {
                       colorPrimary: "#818cf8",
                       colorBackground: "#000000",
-                      colorText: "#e2e8f0",
-                      colorTextSecondary: "#94a3b8",
-                      colorInputBackground: "#0a0a0a",
-                      colorInputText: "#ffffff",
+                      colorForeground: "#e2e8f0",
+                      colorMutedForeground: "#94a3b8",
+                      colorInput: "#0a0a0a",
+                      colorInputForeground: "#ffffff",
+                      colorNeutral: "#e2e8f0",
                       fontFamily: "JetBrains Mono, monospace",
                       borderRadius: "0.25rem",
                     }

@@ -18,10 +18,11 @@ function getClerkThemeConfig(theme: string | undefined) {
       variables: {
         colorPrimary: primaryColor,
         colorBackground: "#ffffff",
-        colorText: isPunk ? "#0A0E14" : "#0E1411",
-        colorTextSecondary: isPunk ? "#3F4D5A" : "#3D4E47",
-        colorInputBackground: inputBg,
-        colorInputText: isPunk ? "#0A0E14" : "#0E1411",
+        // Clerk v7 names — the old colorText / colorTextSecondary / colorInput* keys are silently ignored
+        colorForeground: isPunk ? "#0A0E14" : "#0E1411",
+        colorMutedForeground: isPunk ? "#3F4D5A" : "#33433C",
+        colorInput: inputBg,
+        colorInputForeground: isPunk ? "#0A0E14" : "#0E1411",
         fontFamily: "Inter, sans-serif",
         borderRadius: "0.625rem",
       },
@@ -74,16 +75,19 @@ function getClerkThemeConfig(theme: string | undefined) {
   const bgCard = isPunk ? "#0d1117" : "#0a0e0c";
   const inputBg = isPunk ? "#05070a" : "#000000";
   const textPrimary = isPunk ? "#f0f6fc" : "#E7E9E5";
-  const textSecondary = isPunk ? "#8b949e" : "#93A49C";
+  const textSecondary = isPunk ? "#a3acb6" : "#A7B5AE";
 
   return {
     variables: {
       colorPrimary: primaryAccent,
       colorBackground: bgCard,
-      colorText: textPrimary,
-      colorTextSecondary: textSecondary,
-      colorInputBackground: inputBg,
-      colorInputText: textPrimary,
+      // Clerk v7 names — the old colorText / colorTextSecondary / colorInput* keys are silently ignored
+      colorForeground: textPrimary,
+      colorMutedForeground: textSecondary,
+      colorInput: inputBg,
+      colorInputForeground: textPrimary,
+      // Neutral drives borders, dividers and hover fills; Clerk's default (black) disappears on a dark card
+      colorNeutral: textPrimary,
       fontFamily: "Inter, sans-serif",
       borderRadius: "0.625rem",
     },
@@ -112,7 +116,7 @@ function getClerkThemeConfig(theme: string | undefined) {
         : "border border-[#7FAF9B] bg-[#7FAF9B] font-sans text-xs font-semibold text-black hover:bg-[#9BC7B2] shadow-md shadow-[#7FAF9B]/20 uppercase tracking-wider rounded-full py-2.5",
       formFieldInput: isPunk
         ? "border border-slate-800 bg-[#05070a] font-sans text-xs text-slate-100 focus:border-cyan-400 rounded-lg placeholder:text-slate-500"
-        : "border border-[#24332c] bg-[#000000] font-sans text-xs text-[#E7E9E5] focus:border-[#7FAF9B] rounded-lg placeholder:text-[#6B7C73]",
+        : "border border-[#24332c] bg-[#000000] font-sans text-xs text-[#E7E9E5] focus:border-[#7FAF9B] rounded-lg placeholder:text-[#8A9A92]",
       formFieldLabel: "font-sans text-xs font-medium text-slate-300",
       footer: "hidden",
       footerAction: "font-sans text-xs text-slate-400 hover:text-slate-200",

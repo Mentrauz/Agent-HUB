@@ -120,7 +120,7 @@ export function FooterPortfolioWidget() {
             className={clsx(
               "text-[10px] font-mono font-medium",
               isCalmGreen
-                ? (isLight ? "text-[#5E7269]" : "text-[#8D9691]")
+                ? (isLight ? "text-[#4C5F56]" : "text-[#8D9691]")
                 : "text-indigo-100 dark:text-slate-300"
             )}
           >

@@ -279,7 +279,7 @@ export function AgentStudioPreloader({
               </span>
             </div>
             {showTelemetry && (
-              <div className="text-[10px] text-[#6e7681] truncate mt-0.5">
+              <div className="text-[10px] text-[#8b949e] truncate mt-0.5">
                 Arch: x86_64 &nbsp;│&nbsp; Mem: 64GB DDR5 &nbsp;│&nbsp; LangGraph 1.4 &nbsp;│&nbsp; MCP SSE v1.3
               </div>
             )}
@@ -287,14 +287,14 @@ export function AgentStudioPreloader({
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <span className="hidden lg:flex items-center gap-1.5 text-[10px] text-[#6e7681]">
+          <span className="hidden lg:flex items-center gap-1.5 text-[10px] text-[#8b949e]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#3fb950] inline-block" />
             RUNLEVEL 5 (graphical.target)
           </span>
           {allowSkip && (
             <button
               onClick={(e) => { e.stopPropagation(); handleSkip(); }}
-              className="text-[10px] px-2 py-0.5 sm:px-2.5 sm:py-1 rounded border border-[#30363d] bg-[#0d1117] text-[#6e7681] hover:text-[#e6edf3] hover:border-[#6e7681] transition-colors cursor-pointer"
+              className="text-[10px] px-2 py-0.5 sm:px-2.5 sm:py-1 rounded border border-[#30363d] bg-[#0d1117] text-[#8b949e] hover:text-[#e6edf3] hover:border-[#6e7681] transition-colors cursor-pointer"
             >
               [ESC] skip
             </button>
@@ -311,7 +311,7 @@ export function AgentStudioPreloader({
           if (entry.type === "kernel") {
             return (
               <div key={idx} className="flex gap-2 items-start">
-                <span className="text-[#444c56] shrink-0 tabular-nums">
+                <span className="text-[#6e7681] shrink-0 tabular-nums">
                   [{" "}{entry.time ?? "0.000000"}{" "}]
                 </span>
                 <span className="text-[#adbac7] break-all">{entry.text}</span>
@@ -360,8 +360,8 @@ export function AgentStudioPreloader({
 
         {/* Streaming cursor while still booting */}
         {visibleCount < totalLines && visibleCount > 0 && (
-          <div className="flex items-center gap-2 text-[#6e7681] mt-1">
-            <span className="text-[#444c56]">[ .... ]</span>
+          <div className="flex items-center gap-2 text-[#8b949e] mt-1">
+            <span className="text-[#6e7681]">[ .... ]</span>
             <span>Starting services...</span>
             <span
               className="inline-block w-[8px] h-[13px] bg-[#6e7681]"
@@ -381,14 +381,14 @@ export function AgentStudioPreloader({
         <div className="flex items-center justify-between gap-4">
           {/* ASCII progress bar */}
           <div className="flex items-center gap-2 tabular-nums font-mono min-w-0">
-            <span className="text-[#6e7681] shrink-0">Boot:</span>
+            <span className="text-[#8b949e] shrink-0">Boot:</span>
             <span className="text-[#3fb950] font-semibold tracking-tighter overflow-hidden">
               {bar}
             </span>
             <span className="text-white font-bold shrink-0">{progress}%</span>
           </div>
 
-          <div className="flex items-center gap-3 text-[#6e7681] shrink-0">
+          <div className="flex items-center gap-3 text-[#8b949e] shrink-0">
             <span className="hidden xs:inline">tty0: 1920×1080@60Hz</span>
             <span
               className="font-semibold"

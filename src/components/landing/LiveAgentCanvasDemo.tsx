@@ -973,7 +973,7 @@ export function LiveAgentCanvasDemo() {
           <span
             className={clsx(
               "text-[10px] font-bold uppercase mr-1 hidden sm:inline",
-              isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#8D9691]") : "text-slate-500"
+              isCalmGreen ? (isLight ? "text-[#4C5F56]" : "text-[#8D9691]") : "text-slate-500"
             )}
           >
             PRESET BLUEPRINTS:
@@ -993,7 +993,7 @@ export function LiveAgentCanvasDemo() {
                       : "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30 ring-1 ring-indigo-400/50"
                     : isCalmGreen
                     ? (isLight
-                        ? "border border-[#D5DDD9] bg-white text-[#3D4E47] hover:text-[#0E1411] hover:border-[#4D8A73]/40"
+                        ? "border border-[#D5DDD9] bg-white text-[#33433C] hover:text-[#0E1411] hover:border-[#4D8A73]/40"
                         : "border border-[#252D2A] bg-[#000000] text-[#8D9691] hover:text-[#E7E9E5] hover:border-[#7FAF9B]/40")
                     : "border border-slate-300 dark:border-indigo-950/80 bg-white dark:bg-black/40 text-slate-700 dark:text-slate-300 hover:border-indigo-400"
                 )}
@@ -1028,7 +1028,7 @@ export function LiveAgentCanvasDemo() {
                       ? (isLight ? "bg-[#4D8A73] text-white" : "bg-[#7FAF9B] text-[#000000]")
                       : "bg-indigo-600 text-white"
                     : isCalmGreen
-                    ? (isLight ? "text-[#5E7269] hover:text-[#0E1411]" : "text-[#8D9691] hover:text-[#E7E9E5]")
+                    ? (isLight ? "text-[#4C5F56] hover:text-[#0E1411]" : "text-[#8D9691] hover:text-[#E7E9E5]")
                     : "text-slate-500 hover:text-slate-300"
                 )}
               >
@@ -1048,7 +1048,7 @@ export function LiveAgentCanvasDemo() {
                 ? "border-amber-500 bg-amber-500/20 text-amber-300"
                 : isCalmGreen
                 ? (isLight
-                    ? "border-[#D5DDD9] bg-white text-[#5E7269] hover:text-[#0E1411]"
+                    ? "border-[#D5DDD9] bg-white text-[#4C5F56] hover:text-[#0E1411]"
                     : "border-[#252D2A] bg-[#000000] text-[#8D9691] hover:text-[#E7E9E5]")
                 : "border-slate-300 dark:border-indigo-950 bg-white dark:bg-black/40 text-slate-500 hover:text-slate-300"
             )}
@@ -1066,7 +1066,7 @@ export function LiveAgentCanvasDemo() {
               "px-2 py-1 rounded text-[9px] font-bold tracking-wider uppercase border transition-all cursor-pointer flex items-center gap-0.5",
               isCalmGreen
                 ? (isLight
-                    ? "border-[#D5DDD9] bg-white text-[#3D4E47] hover:text-[#0E1411] hover:border-[#4D8A73]/40"
+                    ? "border-[#D5DDD9] bg-white text-[#33433C] hover:text-[#0E1411] hover:border-[#4D8A73]/40"
                     : "border-[#252D2A] bg-[#000000] text-[#8D9691] hover:text-[#E7E9E5] hover:border-[#7FAF9B]/40")
                 : "border border-slate-300 dark:border-indigo-900 bg-slate-50 dark:bg-indigo-950/40 text-slate-700 dark:text-slate-300 hover:border-indigo-400"
             )}
@@ -1168,7 +1168,7 @@ export function LiveAgentCanvasDemo() {
               className={clsx(
                 "text-[9px] sm:text-[10px] font-mono px-2 py-0.5 rounded border",
                 isCalmGreen
-                  ? (isLight ? "border-[#D5DDD9] bg-white/80 text-[#5E7269]" : "border-[#252D2A] bg-[#000000]/80 text-[#8D9691]")
+                  ? (isLight ? "border-[#D5DDD9] bg-white/80 text-[#4C5F56]" : "border-[#252D2A] bg-[#000000]/80 text-[#8D9691]")
                   : "border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-black/60 text-slate-500 dark:text-slate-400"
               )}
             >
@@ -1419,7 +1419,7 @@ export function LiveAgentCanvasDemo() {
                         className={clsx(
                           "text-[8px] font-mono px-1.5 py-0.5 rounded truncate border",
                           isCalmGreen
-                            ? (isLight ? "text-[#3D4E47] bg-[#EAEEEC] border-[#D5DDD9]" : "text-[#8D9691] bg-[#000000] border-[#24332c]")
+                            ? (isLight ? "text-[#33433C] bg-[#EAEEEC] border-[#D5DDD9]" : "text-[#8D9691] bg-[#000000] border-[#24332c]")
                             : "text-indigo-600 dark:text-indigo-300 bg-indigo-50/70 dark:bg-indigo-950/40 border-indigo-200/50 dark:border-indigo-900/30"
                         )}
                       >
@@ -1431,7 +1431,7 @@ export function LiveAgentCanvasDemo() {
                     <p
                       className={clsx(
                         "text-[8px] leading-tight line-clamp-1",
-                        isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#8D9691]") : "text-slate-500 dark:text-slate-400"
+                        isCalmGreen ? (isLight ? "text-[#4C5F56]" : "text-[#8D9691]") : "text-slate-500 dark:text-slate-400"
                       )}
                     >
                       {node.sub}
@@ -1442,7 +1442,7 @@ export function LiveAgentCanvasDemo() {
                       className={clsx(
                         "pt-0.5 flex items-center justify-between text-[7.5px] border-t font-mono",
                         isCalmGreen
-                          ? (isLight ? "text-[#5E7269] border-[#D5DDD9]" : "text-[#626B66] border-[#252D2A]")
+                          ? (isLight ? "text-[#4C5F56] border-[#D5DDD9]" : "text-[#8A9A92] border-[#252D2A]")
                           : "text-slate-400 border-slate-200/60 dark:border-indigo-950/60"
                       )}
                     >
@@ -1471,7 +1471,7 @@ export function LiveAgentCanvasDemo() {
               className={clsx(
                 "flex h-7 w-7 items-center justify-center transition-colors cursor-pointer",
                 isCalmGreen
-                  ? (isLight ? "border-b border-[#D5DDD9] text-[#5E7269] hover:text-[#0E1411] hover:bg-[#EAEEEC]" : "border-b border-[#252D2A] text-[#8D9691] hover:text-[#E7E9E5] hover:bg-[#0a0e0c]")
+                  ? (isLight ? "border-b border-[#D5DDD9] text-[#4C5F56] hover:text-[#0E1411] hover:bg-[#EAEEEC]" : "border-b border-[#252D2A] text-[#8D9691] hover:text-[#E7E9E5] hover:bg-[#0a0e0c]")
                   : "border-b border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50"
               )}
             >
@@ -1484,7 +1484,7 @@ export function LiveAgentCanvasDemo() {
               className={clsx(
                 "flex h-7 w-7 items-center justify-center transition-colors cursor-pointer",
                 isCalmGreen
-                  ? (isLight ? "border-b border-[#D5DDD9] text-[#5E7269] hover:text-[#0E1411] hover:bg-[#EAEEEC]" : "border-b border-[#252D2A] text-[#8D9691] hover:text-[#E7E9E5] hover:bg-[#0a0e0c]")
+                  ? (isLight ? "border-b border-[#D5DDD9] text-[#4C5F56] hover:text-[#0E1411] hover:bg-[#EAEEEC]" : "border-b border-[#252D2A] text-[#8D9691] hover:text-[#E7E9E5] hover:bg-[#0a0e0c]")
                   : "border-b border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50"
               )}
             >
@@ -1500,7 +1500,7 @@ export function LiveAgentCanvasDemo() {
               className={clsx(
                 "flex h-7 w-7 items-center justify-center transition-colors cursor-pointer",
                 isCalmGreen
-                  ? (isLight ? "text-[#5E7269] hover:text-[#0E1411] hover:bg-[#EAEEEC]" : "text-[#8D9691] hover:text-[#E7E9E5] hover:bg-[#0a0e0c]")
+                  ? (isLight ? "text-[#4C5F56] hover:text-[#0E1411] hover:bg-[#EAEEEC]" : "text-[#8D9691] hover:text-[#E7E9E5] hover:bg-[#0a0e0c]")
                   : "text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50"
               )}
             >
@@ -1520,7 +1520,7 @@ export function LiveAgentCanvasDemo() {
             <div
               className={clsx(
                 "text-[7px] uppercase font-bold tracking-widest mb-1 flex items-center justify-between",
-                isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#8D9691]") : "text-slate-400"
+                isCalmGreen ? (isLight ? "text-[#4C5F56]" : "text-[#8D9691]") : "text-slate-400"
               )}
             >
               <span>MINIMAP</span>
@@ -1576,7 +1576,7 @@ export function LiveAgentCanvasDemo() {
                       ? (isLight ? "bg-[#4D8A73] text-white shadow-sm" : "bg-[#7FAF9B] text-[#000000] shadow-sm")
                       : "bg-indigo-600 text-white shadow-sm"
                     : isCalmGreen
-                    ? (isLight ? "text-[#5E7269] hover:text-[#0E1411]" : "text-[#8D9691] hover:text-[#E7E9E5]")
+                    ? (isLight ? "text-[#4C5F56] hover:text-[#0E1411]" : "text-[#8D9691] hover:text-[#E7E9E5]")
                     : "text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300"
                 )}
               >
@@ -1602,7 +1602,7 @@ export function LiveAgentCanvasDemo() {
                       ? (isLight ? "bg-[#4D8A73] text-white shadow-sm" : "bg-[#7FAF9B] text-[#000000] shadow-sm")
                       : "bg-indigo-600 text-white shadow-sm"
                     : isCalmGreen
-                    ? (isLight ? "text-[#5E7269] hover:text-[#0E1411]" : "text-[#8D9691] hover:text-[#E7E9E5]")
+                    ? (isLight ? "text-[#4C5F56] hover:text-[#0E1411]" : "text-[#8D9691] hover:text-[#E7E9E5]")
                     : "text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300"
                 )}
               >
@@ -1620,7 +1620,7 @@ export function LiveAgentCanvasDemo() {
                       ? (isLight ? "bg-[#4D8A73] text-white shadow-sm" : "bg-[#7FAF9B] text-[#000000] shadow-sm")
                       : "bg-indigo-600 text-white shadow-sm"
                     : isCalmGreen
-                    ? (isLight ? "text-[#5E7269] hover:text-[#0E1411]" : "text-[#8D9691] hover:text-[#E7E9E5]")
+                    ? (isLight ? "text-[#4C5F56] hover:text-[#0E1411]" : "text-[#8D9691] hover:text-[#E7E9E5]")
                     : "text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300"
                 )}
               >
@@ -1653,7 +1653,7 @@ export function LiveAgentCanvasDemo() {
                     <p className={clsx("font-semibold", isCalmGreen ? (isLight ? "text-[#0E1411]" : "text-[#E7E9E5]") : "text-slate-400")}>
                       Execution Telemetry Stream Idle
                     </p>
-                    <p className={clsx("text-[9px] max-w-xs", isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#8D9691]") : "text-slate-500")}>
+                    <p className={clsx("text-[9px] max-w-xs", isCalmGreen ? (isLight ? "text-[#4C5F56]" : "text-[#8D9691]") : "text-slate-500")}>
                       Press{" "}
                       <span className={clsx("font-bold", isCalmGreen ? (isLight ? "text-[#4D8A73]" : "text-[#7FAF9B]") : "text-emerald-400")}>
                         [ RUN SIM ]
@@ -1708,7 +1708,7 @@ export function LiveAgentCanvasDemo() {
                 )}
               >
                 <div>
-                  <div className={clsx("text-[8px]", isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#626B66]") : "text-slate-400")}>
+                  <div className={clsx("text-[8px]", isCalmGreen ? (isLight ? "text-[#4C5F56]" : "text-[#8A9A92]") : "text-slate-400")}>
                     TOTAL TIME
                   </div>
                   <div
@@ -1721,7 +1721,7 @@ export function LiveAgentCanvasDemo() {
                   </div>
                 </div>
                 <div>
-                  <div className={clsx("text-[8px]", isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#626B66]") : "text-slate-400")}>
+                  <div className={clsx("text-[8px]", isCalmGreen ? (isLight ? "text-[#4C5F56]" : "text-[#8A9A92]") : "text-slate-400")}>
                     STEPS RUN
                   </div>
                   <div className={clsx("font-bold", isCalmGreen ? (isLight ? "text-[#0E1411]" : "text-[#E7E9E5]") : "text-slate-800 dark:text-slate-200")}>
@@ -1729,7 +1729,7 @@ export function LiveAgentCanvasDemo() {
                   </div>
                 </div>
                 <div>
-                  <div className={clsx("text-[8px]", isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#626B66]") : "text-slate-400")}>
+                  <div className={clsx("text-[8px]", isCalmGreen ? (isLight ? "text-[#4C5F56]" : "text-[#8A9A92]") : "text-slate-400")}>
                     ACTIVE NODES
                   </div>
                   <div className={clsx("font-bold", isCalmGreen ? (isLight ? "text-[#9A7A3A]" : "text-[#C7A96B]") : "text-amber-600 dark:text-amber-400")}>
@@ -1737,7 +1737,7 @@ export function LiveAgentCanvasDemo() {
                   </div>
                 </div>
                 <div>
-                  <div className={clsx("text-[8px]", isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#626B66]") : "text-slate-400")}>
+                  <div className={clsx("text-[8px]", isCalmGreen ? (isLight ? "text-[#4C5F56]" : "text-[#8A9A92]") : "text-slate-400")}>
                     TOTAL TOKENS
                   </div>
                   <div className={clsx("font-bold", isCalmGreen ? (isLight ? "text-[#4D8A73]" : "text-[#7FAF9B]") : "text-emerald-600 dark:text-emerald-400")}>
@@ -1851,7 +1851,7 @@ export function LiveAgentCanvasDemo() {
                 </pre>
               </div>
 
-              <div className={clsx("pt-2 text-[9px]", isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#626B66]") : "text-slate-500")}>
+              <div className={clsx("pt-2 text-[9px]", isCalmGreen ? (isLight ? "text-[#4C5F56]" : "text-[#8A9A92]") : "text-slate-500")}>
                 Click any node on the left canvas to inspect its configuration and runtime telemetry.
               </div>
             </div>
@@ -1873,7 +1873,7 @@ export function LiveAgentCanvasDemo() {
               <p
                 className={clsx(
                   "text-[10px]",
-                  isCalmGreen ? (isLight ? "text-[#3D4E47]" : "text-[#8D9691]") : "text-slate-600 dark:text-slate-400"
+                  isCalmGreen ? (isLight ? "text-[#33433C]" : "text-[#8D9691]") : "text-slate-600 dark:text-slate-400"
                 )}
               >
                 {currentPreset.tagline}
@@ -1888,7 +1888,7 @@ export function LiveAgentCanvasDemo() {
                 <div
                   className={clsx(
                     "text-[9px] uppercase tracking-wider mb-2 font-bold",
-                    isCalmGreen ? (isLight ? "text-[#5E7269]" : "text-[#8D9691]") : "text-slate-500"
+                    isCalmGreen ? (isLight ? "text-[#4C5F56]" : "text-[#8D9691]") : "text-slate-500"
                   )}
                 >
                   NODES IN THIS GRAPH:
@@ -1910,7 +1910,7 @@ export function LiveAgentCanvasDemo() {
                             : "border-indigo-500 bg-indigo-600 text-white"
                           : isCalmGreen
                           ? (isLight
-                              ? "border-[#D5DDD9] bg-white text-[#3D4E47] hover:text-[#0E1411]"
+                              ? "border-[#D5DDD9] bg-white text-[#33433C] hover:text-[#0E1411]"
                               : "border-[#24332c] bg-[#000000] text-[#8D9691] hover:text-[#E7E9E5]")
                           : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 hover:border-indigo-400"
                       )}
@@ -1930,7 +1930,7 @@ export function LiveAgentCanvasDemo() {
         className={clsx(
           "px-4 py-2 border-t flex flex-wrap items-center justify-between gap-2 text-[9px] font-mono",
           isCalmGreen
-            ? (isLight ? "border-[#D5DDD9] bg-[#EAEEEC] text-[#3D4E47]" : "border-[#24332c] bg-[#000000] text-[#8D9691]")
+            ? (isLight ? "border-[#D5DDD9] bg-[#EAEEEC] text-[#33433C]" : "border-[#24332c] bg-[#000000] text-[#8D9691]")
             : "border-slate-200 dark:border-indigo-950 bg-slate-100 dark:bg-[#07070d] text-slate-600 dark:text-slate-400"
         )}
       >
