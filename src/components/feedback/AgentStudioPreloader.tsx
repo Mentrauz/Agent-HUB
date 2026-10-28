@@ -60,12 +60,12 @@ const DEFAULT_KERNEL_LINES: BootLogEntry[] = [
   { type: "systemd", status: "OK", text: "Mounted Cryptographic Approval Vault (Single-Use Tokens)." },
   { type: "systemd", status: "OK", text: "Initialized LangGraph 1.4 Finite State Engine." },
   { type: "systemd", status: "OK", text: "Reached target Multi-Agent Execution Environment." },
-  { type: "systemd", status: "OK", text: "Starting Agent Studio Web UI Daemon..." },
+  { type: "systemd", status: "OK", text: "Starting Agent Hub Web UI Daemon..." },
   { type: "systemd", status: "OK", text: "Reached target Graphical Interface." },
   { type: "info", text: "agent-hub-node01 tty1" },
   { type: "info", text: "agent-hub login: root (automatic login)" },
   { type: "info", text: "Last login: Sun Oct  4 19:48:12 2026 on tty1" },
-  { type: "banner", text: "Entering Agent Studio Workspace..." },
+  { type: "banner", text: "Entering Agent Hub Workspace..." },
 ];
 
 function TuxPenguinIcon({ className = "w-8 h-10" }: { className?: string }) {

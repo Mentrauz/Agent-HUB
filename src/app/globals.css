@@ -124,7 +124,7 @@
 
   /* =====================================================================
      PUNK LIGHT
-     Bold / energetic Ã¢â‚¬â€ light appearance
+     Bold / energetic — light appearance
      ===================================================================== */
   .punk-light,
   html.punk-light,
@@ -140,9 +140,9 @@
     --border-subtle: #D7DEE3;
     --border-strong: #C2CCD4;
 
-    /* Punk Light Ã¢â‚¬â€ high-contrast text for proper readability */
-    --text-primary: #0A0E14;     /* near-black Ã¢â‚¬â€ max contrast on white */
-    --text-secondary: #3F4D5A;   /* dark slate Ã¢â‚¬â€ readable secondary */
+    /* Punk Light — high-contrast text for proper readability */
+    --text-primary: #0A0E14;     /* near-black — max contrast on white */
+    --text-secondary: #3F4D5A;   /* dark slate — readable secondary */
     --text-muted: #65737E;       /* slate muted */
 
     --accent-primary: #0891B2;
@@ -217,7 +217,7 @@
 
   /* =====================================================================
      PUNK DARK override (matches :root)
-     Bold / energetic Ã¢â‚¬â€ dark appearance
+     Bold / energetic — dark appearance
      ===================================================================== */
   .punk-dark,
   html.punk-dark,
@@ -296,10 +296,10 @@
 
   /* =====================================================================
      CALM GREEN DARK
-     Calm / sophisticated / technical / mature Ã¢â‚¬â€  dark appearance
+     Calm / sophisticated / technical / mature — dark appearance
      Primary surfaces: layered deep graphite-green
-     Accent: sage (#7FAF9B) Ã¢â‚¬â€  used sparingly (CTA, active, selected)
-     80% neutral Ã‚Â· 15% sage Ã‚Â· 5% supporting
+     Accent: sage (#7FAF9B) — used sparingly (CTA, active, selected)
+     80% neutral · 15% sage · 5% supporting
      ===================================================================== */
   .calm-green-dark,
   html.calm-green-dark,
@@ -390,7 +390,7 @@
 
   /* =====================================================================
      CALM GREEN LIGHT
-     Calm / sophisticated Ã¢â‚¬â€ light appearance
+     Calm / sophisticated — light appearance
      Surfaces: warm off-white with sage accents
      Text: near-black for maximum readability
      ===================================================================== */
@@ -406,12 +406,12 @@
     --border-subtle: #D5DDD9;
     --border-strong: #BEC9C4;
 
-    /* High contrast text Ã¢â‚¬â€ essential for light mode readability */
+    /* High contrast text — essential for light mode readability */
     --text-primary:   #0E1411;   /* near-black */
     --text-secondary: #3D4E47;   /* dark forest */
     --text-muted:     #5E7269;   /* muted green-grey */
 
-    --accent-primary:   #4D8A73;  /* darker sage Ã¢â‚¬â€ readable on white */
+    --accent-primary:   #4D8A73;  /* darker sage — readable on white */
     --accent-secondary: #3D6472;
     --accent-contrast:  #FFFFFF;  /* white text on sage buttons */
 
@@ -439,7 +439,7 @@
     --glow-cyan: rgba(77,138,115,0.08);
     --glow-blue: rgba(61,100,114,0.06);
 
-    /* shadcn/Tailwind HSL tokens Ã¢â‚¬â€ Calm Green Light */
+    /* shadcn/Tailwind HSL tokens — Calm Green Light */
     --background: 150 10% 96%;         /* #F4F6F5 */
     --foreground: 150 20% 7%;          /* #0E1411 near-black */
 
@@ -774,7 +774,7 @@
 }
 
 /* =========================================================================
-   CALM GREEN Ã¢â‚¬â€  Utility Class Overrides
+   CALM GREEN — Utility Class Overrides
    Theme-aware overrides that use semantic tokens automatically;
    no additional overrides needed for components using var(--*) tokens.
    ========================================================================= */
@@ -856,7 +856,7 @@
 .animate-pulse-gentle { animation: pulse-gentle 2s ease-in-out infinite; }
 
 /* =========================================================================
-   Glitch Ã¢â‚¬â€ Kept for dark-mode canvas (opt-in only)
+   Glitch — Kept for dark-mode canvas (opt-in only)
    ========================================================================= */
 
 @keyframes glitch-shift-before {
@@ -921,7 +921,7 @@
   .glitch::before, .glitch::after { animation: none; }
 }
 
-/* CRT scanlines Ã¢â‚¬â€ dark-only, kept for canvas */
+/* CRT scanlines — dark-only, kept for canvas */
 .crt-lines {
   /* No-op in light mode */
 }
@@ -1001,10 +1001,10 @@
 }
 
 /* =========================================================================
-   React Flow Canvas Theme Ã¢â‚¬â€ Agent Infrastructure Palette
+   React Flow Canvas Theme — Agent Infrastructure Palette
    ========================================================================= */
 
-/* Canvas background Ã¢â‚¬â€ subtle dot grid on dark graphite base */
+/* Canvas background — subtle dot grid on dark graphite base */
 .react-flow {
   background-color: var(--surface-base);
   background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
@@ -1019,8 +1019,9 @@
 
 /* Edges */
 .react-flow__edge-path {
-  stroke: var(--border-strong);
-  stroke-width: 1.5;
+  /* --border-strong is near-invisible on the black canvas; tie idle edges to the accent instead */
+  stroke: color-mix(in srgb, var(--accent-primary) 45%, transparent);
+  stroke-width: 1.75;
   transition: stroke 0.2s ease;
 }
 
@@ -1099,7 +1100,7 @@
   border-radius: 8px;
 }
 
-/* Calm Green canvas overrides Ã¢â‚¬â€ all use semantic vars automatically,
+/* Calm Green canvas overrides — all use semantic vars automatically,
    but selection + minimap mask need explicit overrides */
 .calm-green-dark .react-flow__selection {
   background: rgba(127, 175, 155, 0.06);
@@ -1369,7 +1370,7 @@
 .cl-userButtonPopoverActionButtonIcon { color: var(--accent-primary) !important; }
 
 /* =========================================================================
-   Agent Hub Preloader Ã¢â‚¬â€ Kept Intact
+   Agent Hub Preloader — Kept Intact
    ========================================================================= */
 
 @keyframes preloader-radar-pulse {
@@ -1455,8 +1456,8 @@
 }
 
 /* =========================================================================
-   Canvas Execution Animations Ã¢â‚¬â€ Agent Graph Runtime
-   (These work on both light and dark canvas Ã¢â‚¬â€ box-shadows still visible)
+   Canvas Execution Animations — Agent Graph Runtime
+   (These work on both light and dark canvas — box-shadows still visible)
    ========================================================================= */
 
 @keyframes node-running {
@@ -1579,11 +1580,34 @@
   .canvas-node-awaiting, .canvas-edge-traversed, .canvas-edge-traveling { animation: none !important; }
 }
 
+/* Landing canvases (simulator + hero preview): slow dashes on idle edges so flow direction reads before a run */
+@keyframes edge-idle-flow {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
+}
+
+.edge-idle-flow {
+  stroke-dasharray: 2 10;
+  animation: edge-idle-flow 1.8s linear infinite;
+}
+
+/* Hero preview: running / awaiting node outline pulse */
+@keyframes hero-flow-pulse {
+  0%, 100% { stroke-opacity: 0.35; }
+  50% { stroke-opacity: 0.9; }
+}
+
+.hero-flow-pulse { animation: hero-flow-pulse 1.2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .edge-idle-flow, .hero-flow-pulse { animation: none; }
+}
+
 /* Dark mode logo inversion for light-on-dark SVG logos */
 .dark img[data-logo-invert] { filter: invert(1) brightness(2); }
 
 /* =========================================================================
-   Scrollbar Ã¢â‚¬â€ Clean & Minimal
+   Scrollbar — Clean & Minimal
    ========================================================================= */
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -1597,7 +1621,7 @@
 .dark ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.25); }
 .dark ::-webkit-scrollbar-thumb:hover { background: rgba(129, 140, 248, 0.5); }
 
-/* Calm Green Ã¢â‚¬â€ sage-tinted scrollbar */
+/* Calm Green — sage-tinted scrollbar */
 .calm-green-dark ::-webkit-scrollbar-thumb {
   background: rgba(127, 175, 155, 0.2);
 }

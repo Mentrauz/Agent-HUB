@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import {
   Play,
   RefreshCw,
@@ -32,6 +32,7 @@ import {
 import { clsx } from "clsx";
 import { useTheme } from "next-themes";
 import { parseThemeKey } from "@/components/providers/ThemeProvider";
+import { getEdgeGeometry, type EdgeGeometry, type PortSide } from "./edgeGeometry";
 
 type NodeStatus = "idle" | "running" | "done" | "awaiting";
 
@@ -264,7 +265,7 @@ const PRESET_SUPERVISOR_LOOP: BlueprintPreset = {
       sub: "feature: 'JWT Auth Guard'",
       snippet: 'repo: "agent-studio" · mode: "strict"',
       x: 30,
-      y: 50,
+      y: 90,
       width: 170,
       height: 88,
       accentClass: "border-emerald-500/70 text-emerald-600 dark:text-emerald-400 bg-emerald-50/70 dark:bg-black/60",
@@ -282,7 +283,7 @@ const PRESET_SUPERVISOR_LOOP: BlueprintPreset = {
       sub: "Plan & orchestrate specialist agents",
       snippet: "plan: coder ➔ approval ➔ critic",
       x: 230,
-      y: 50,
+      y: 90,
       width: 185,
       height: 94,
       accentClass: "border-violet-500/70 text-violet-600 dark:text-violet-400 bg-violet-50/70 dark:bg-black/60",
@@ -300,7 +301,7 @@ const PRESET_SUPERVISOR_LOOP: BlueprintPreset = {
       sub: "Generate clean TypeScript diff",
       snippet: "diff: export async function verifyToken...",
       x: 450,
-      y: 50,
+      y: 90,
       width: 185,
       height: 94,
       accentClass: "border-indigo-500/70 text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-black/60",
@@ -318,7 +319,7 @@ const PRESET_SUPERVISOR_LOOP: BlueprintPreset = {
       sub: "Single-use idempotency write token",
       snippet: "riskScore: 1.2 < 3.0 (AUTO_GRANTED)",
       x: 230,
-      y: 220,
+      y: 260,
       width: 185,
       height: 94,
       accentClass: "border-amber-500/70 text-amber-600 dark:text-amber-400 bg-amber-50/70 dark:bg-black/60",
@@ -336,7 +337,7 @@ const PRESET_SUPERVISOR_LOOP: BlueprintPreset = {
       sub: "Static analysis & quality loop back",
       snippet: "syntax: valid · testScan: PASS",
       x: 450,
-      y: 220,
+      y: 260,
       width: 185,
       height: 94,
       accentClass: "border-indigo-500/70 text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-black/60",
@@ -354,7 +355,7 @@ const PRESET_SUPERVISOR_LOOP: BlueprintPreset = {
       sub: "Synthesize final PR #412 artifact",
       snippet: "pullRequest: #412 Ready for merge",
       x: 670,
-      y: 220,
+      y: 260,
       width: 160,
       height: 88,
       accentClass: "border-emerald-500/70 text-emerald-600 dark:text-emerald-400 bg-emerald-50/70 dark:bg-black/60",
@@ -599,6 +600,13 @@ const PRESET_DOCLING_QDRANT: BlueprintPreset = {
   ],
 };
 
+const PORT_POSITION_CLASS: Record<PortSide, string> = {
+  left: "-left-[5px] top-1/2 -translate-y-1/2",
+  right: "-right-[5px] top-1/2 -translate-y-1/2",
+  top: "-top-[5px] left-1/2 -translate-x-1/2",
+  bottom: "-bottom-[5px] left-1/2 -translate-x-1/2",
+};
+
 const BLUEPRINT_PRESETS: BlueprintPreset[] = [
   PRESET_DEEP_RESEARCH,
   PRESET_SUPERVISOR_LOOP,
@@ -641,6 +649,36 @@ export function LiveAgentCanvasDemo() {
   const canvasRef = useRef<HTMLDivElement | null>(null);
   const terminalScrollRef = useRef<HTMLDivElement | null>(null);
   const simTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Rendered node heights — card content decides the real height, so edges and port dots follow it
+  const [measuredHeights, setMeasuredHeights] = useState<Record<string, number>>({});
+  const nodeObserverRef = useRef<ResizeObserver | null>(null);
+
+  const observeNode = useCallback((el: HTMLDivElement | null) => {
+    if (!el) return;
+    if (!nodeObserverRef.current) {
+      nodeObserverRef.current = new ResizeObserver((entries) => {
+        setMeasuredHeights((prev) => {
+          let next = prev;
+          for (const entry of entries) {
+            const target = entry.target as HTMLElement;
+            const id = target.dataset.nodeId;
+            const h = target.offsetHeight;
+            if (id && prev[id] !== h) {
+              if (next === prev) next = { ...prev };
+              next[id] = h;
+            }
+          }
+          return next;
+        });
+      });
+    }
+    const observer = nodeObserverRef.current;
+    observer.observe(el);
+    return () => observer.unobserve(el);
+  }, []);
+
+  useEffect(() => () => nodeObserverRef.current?.disconnect(), []);
 
   // Switch preset
   const handleSelectPreset = (idx: number) => {
@@ -855,6 +893,23 @@ export function LiveAgentCanvasDemo() {
 
   const selectedNode = nodes.find((n) => n.id === selectedNodeId) || nodes[0];
 
+  // Edge paths + which side of each node gets a port dot
+  const { edgeGeometries, portsByNode } = useMemo(() => {
+    const boxes = new Map(nodes.map((n) => [n.id, { ...n, height: measuredHeights[n.id] ?? n.height }]));
+    const geometries = new Map<string, EdgeGeometry>();
+    const ports: Record<string, Partial<Record<PortSide, "source" | "target">>> = {};
+    for (const edge of currentPreset.edges) {
+      const src = boxes.get(edge.source);
+      const tgt = boxes.get(edge.target);
+      if (!src || !tgt) continue;
+      const geo = getEdgeGeometry(src, tgt, { loop: edge.loop });
+      geometries.set(edge.id, geo);
+      (ports[edge.source] ??= {})[geo.sourceSide] = "source";
+      (ports[edge.target] ??= {})[geo.targetSide] = "target";
+    }
+    return { edgeGeometries: geometries, portsByNode: ports };
+  }, [nodes, measuredHeights, currentPreset]);
+
   return (
     <div
       className={clsx(
@@ -895,6 +950,13 @@ export function LiveAgentCanvasDemo() {
         }
         .edge-halo-anim {
           animation: edgePulseHalo 1.5s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .edge-flowing-stream,
+          .edge-loop-stream,
+          .edge-halo-anim {
+            animation: none;
+          }
         }
       `}</style>
 
@@ -1131,7 +1193,8 @@ export function LiveAgentCanvasDemo() {
               aria-hidden="true"
             >
               <defs>
-                <filter id="edge-neon-glow" x="-30%" y="-30%" width="160%" height="160%">
+                {/* userSpaceOnUse: vertically stacked nodes give a zero-width bbox that a bbox-relative filter would erase */}
+                <filter id="edge-neon-glow" filterUnits="userSpaceOnUse" x="-500" y="-500" width="1950" height="1600">
                   <feGaussianBlur stdDeviation="3.5" result="blur" />
                   <feComposite in="SourceGraphic" in2="blur" operator="over" />
                 </filter>
@@ -1166,30 +1229,16 @@ export function LiveAgentCanvasDemo() {
 
               {/* Render Smooth Bezier SVG Edges */}
               {currentPreset.edges.map((edge) => {
-                const src = nodes.find((n) => n.id === edge.source);
-                const tgt = nodes.find((n) => n.id === edge.target);
-                if (!src || !tgt) return null;
+                const geometry = edgeGeometries.get(edge.id);
+                if (!geometry) return null;
+                const pathD = geometry.d;
 
                 const active = isEdgeActive(edge);
                 const isCurrent = isEdgeCurrent(edge);
 
-                const sx = src.x + src.width;
-                const sy = src.y + src.height / 2;
-                const tx = tgt.x;
-                const ty = tgt.y + tgt.height / 2;
-
-                let pathD = "";
-                if (edge.loop) {
-                  // Upward return loop curve
-                  const loopPeakY = Math.min(sy, ty) - 50;
-                  pathD = `M ${sx} ${sy} C ${sx + 60} ${sy}, ${sx + 40} ${loopPeakY}, ${(sx + tx) / 2} ${loopPeakY} C ${tx - 40} ${loopPeakY}, ${tx - 60} ${ty}, ${tx} ${ty}`;
-                } else {
-                  // Standard smooth horizontal Bezier S-curve
-                  const dx = Math.max(30, (tx - sx) / 2);
-                  pathD = `M ${sx} ${sy} C ${sx + dx} ${sy}, ${tx - dx} ${ty}, ${tx} ${ty}`;
-                }
-
-                const baseColor = isCalmGreen ? (isLight ? "#D5DDD9" : "#252D2A") : "#475569";
+                // Idle edges must read clearly against the dot grid before a run starts
+                const baseColor = isCalmGreen ? (isLight ? "#5E7269" : "#7FAF9B") : (isLight ? "#64748b" : "#94a3b8");
+                const baseOpacity = isCalmGreen ? (isLight ? 0.6 : 0.45) : 0.6;
                 const activeColor = isCalmGreen
                   ? (edge.loop ? (isLight ? "#9A7A3A" : "#C7A96B") : (isLight ? "#4D8A73" : "#7FAF9B"))
                   : (edge.accept ? "#34d399" : edge.loop ? "#fbbf24" : "#818cf8");
@@ -1202,10 +1251,23 @@ export function LiveAgentCanvasDemo() {
                       d={pathD}
                       fill="none"
                       stroke={active ? activeColor : baseColor}
-                      strokeWidth={active ? 2.5 : 1.5}
-                      strokeOpacity={active ? 0.9 : 0.4}
+                      strokeWidth={active ? 2.5 : 1.75}
+                      strokeOpacity={active ? 0.9 : baseOpacity}
                       markerEnd={markerId}
                     />
+
+                    {/* Layer 1b: Slow idle flow so direction reads before a run */}
+                    {!active && (
+                      <path
+                        d={pathD}
+                        fill="none"
+                        stroke={baseColor}
+                        strokeWidth={1.75}
+                        strokeOpacity={0.85}
+                        strokeLinecap="round"
+                        className="edge-idle-flow"
+                      />
+                    )}
 
                     {/* Layer 2: Glowing Halo Aura on Active Traversal */}
                     {active && (
@@ -1233,7 +1295,7 @@ export function LiveAgentCanvasDemo() {
                     )}
 
                     {/* Layer 4: Realistic Traveling Energy Particle Packet */}
-                    {(active || isCurrent) && phase === "running" && (
+                    {active && phase === "running" && (
                       <g filter="url(#packet-glow)">
                         <circle r="5" fill={activeColor} opacity={0.4}>
                           <animateMotion
@@ -1262,8 +1324,7 @@ export function LiveAgentCanvasDemo() {
             {nodes.map((node) => {
               const status = getNodeStatus(node.id);
               const isSelected = selectedNodeId === node.id;
-              const showTarget = node.id !== "start";
-              const showSource = node.id !== "end" && node.id !== "gotenberg";
+              const ports = portsByNode[node.id] ?? {};
 
               // Heatmap class
               const heatmapColor =
@@ -1278,6 +1339,8 @@ export function LiveAgentCanvasDemo() {
               return (
                 <div
                   key={node.id}
+                  ref={observeNode}
+                  data-node-id={node.id}
                   onMouseDown={(e) => handleNodeMouseDown(e, node)}
                   style={{
                     left: `${node.x}px`,
@@ -1315,24 +1378,19 @@ export function LiveAgentCanvasDemo() {
                     status === "awaiting" && "border-amber-500 shadow-[0_0_18px_rgba(245,158,11,0.45)] animate-pulse"
                   )}
                 >
-                  {/* Left Target Connection Handle */}
-                  {showTarget && (
+                  {/* Connection handles — placed on whichever sides the edge routing uses */}
+                  {(Object.entries(ports) as [PortSide, "source" | "target"][]).map(([side, role]) => (
                     <span
+                      key={side}
                       className={clsx(
-                        "absolute -left-[5px] top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full border border-white dark:border-black shadow-sm",
-                        isCalmGreen ? (isLight ? "bg-[#3D6472]" : "bg-[#718A96]") : "bg-indigo-500 dark:bg-indigo-400"
+                        "absolute h-2.5 w-2.5 rounded-full border border-white dark:border-black shadow-sm",
+                        PORT_POSITION_CLASS[side],
+                        role === "target"
+                          ? (isCalmGreen ? (isLight ? "bg-[#3D6472]" : "bg-[#718A96]") : "bg-indigo-500 dark:bg-indigo-400")
+                          : (isCalmGreen ? (isLight ? "bg-[#4D8A73]" : "bg-[#7FAF9B]") : "bg-emerald-500 dark:bg-emerald-400")
                       )}
                     />
-                  )}
-                  {/* Right Source Connection Handle */}
-                  {showSource && (
-                    <span
-                      className={clsx(
-                        "absolute -right-[5px] top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full border border-white dark:border-black shadow-sm",
-                        isCalmGreen ? (isLight ? "bg-[#4D8A73]" : "bg-[#7FAF9B]") : "bg-emerald-500 dark:bg-emerald-400"
-                      )}
-                    />
-                  )}
+                  ))}
 
                   <div className="p-2.5 space-y-1.5">
                     {/* Header Row */}

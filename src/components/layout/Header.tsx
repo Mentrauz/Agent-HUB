@@ -37,11 +37,13 @@ export function Header() {
   useEffect(() => { setMounted(true); }, []);
   useEffect(() => { setLandingMenuOpen(false); }, [pathname]);
 
-  /* Scroll-shadow effect */
+  /* Scroll-shadow effect — the layout scrolls inside <main>, not the window */
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const scroller = document.getElementById("main-content");
+    if (!scroller) return;
+    const onScroll = () => setScrolled(scroller.scrollTop > 16);
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    return () => scroller.removeEventListener("scroll", onScroll);
   }, []);
 
   const currentThemeKey = theme || resolvedTheme || "calm-green-dark";
@@ -77,7 +79,7 @@ export function Header() {
               <span
                 className="font-pixel text-xl sm:text-2xl font-bold tracking-wider text-[var(--accent-primary)] group-hover:text-[var(--accent-hover,var(--accent-primary))] transition-colors uppercase"
               >
-                AGENT STUDIO
+                AGENT HUB
               </span>
             </Link>
           </div>
