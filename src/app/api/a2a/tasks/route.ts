@@ -1,11 +1,26 @@
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { env } from "@/lib/config/env";
+import { bearerTokenMatches } from "@/lib/api/bearer";
 import { A2ATaskRequest, A2ATaskResponse } from "@/types/a2a";
 import { getLLMProvider } from "@/providers/llm";
 import { logger } from "@/lib/logger";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * Inbound A2A task delegation. Public at the proxy so external agents can reach
+ * it; callers must present `Bearer <A2A_ACCESS_TOKEN>` or a Clerk session.
+ */
 export async function POST(request: Request) {
+  const { userId } = await auth();
+  if (!userId && !bearerTokenMatches(request, env.A2A_ACCESS_TOKEN)) {
+    return NextResponse.json(
+      { taskId: "error", status: "failed", error: "Unauthorized: provide Authorization: Bearer <A2A_ACCESS_TOKEN>" },
+      { status: 401, headers: { "Access-Control-Allow-Origin": "*" } }
+    );
+  }
+
   const url = new URL(request.url);
   const streamMode = url.searchParams.get("stream") === "true";
   const started = Date.now();

@@ -62,7 +62,7 @@ describe("CircuitBreaker", () => {
     const breaker = new CircuitBreaker("s1");
     breaker.trip();
     expect(breaker.state).toBe("OPEN");
-    expect(() => breaker.run(async () => 1)).rejects.toBeInstanceOf(CircuitOpenError);
+    await expect(breaker.run(async () => 1)).rejects.toBeInstanceOf(CircuitOpenError);
 
     breaker.reset();
     expect(breaker.state).toBe("CLOSED");

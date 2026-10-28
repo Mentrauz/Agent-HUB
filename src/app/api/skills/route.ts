@@ -1,20 +1,23 @@
 import { NextResponse } from "next/server";
 import { createSkillSchema, skillListQuerySchema } from "@/validators/skillSchema";
-import { auth } from "@clerk/nextjs/server";
 import { unauthorized, forbidden, badRequest, handleApiError } from "@/lib/api/handlers";
 import { apiServices } from "@/lib/api/services";
 import { rateLimit } from "@/lib/api/rateLimit";
 import { parseJsonBody } from "@/lib/api/bodyLimit";
+import { resolveRequestAuth, hasScope, resolveOrganizationId } from "@/lib/api/middleware/apiKeyAuth";
 
 const { skillService, rbacService, skillRepo } = apiServices();
 
 /**
  * GET /api/skills — List skills
- * Supports optional organization context via X-Organization-Id header
+ * Supports optional organization context via X-Organization-Id header.
+ * API keys (scope `skills:read`) always list their own organization's skills.
  */
 export async function GET(request: Request) {
-  const { userId } = await auth();
-  if (!userId) return unauthorized();
+  const ctx = await resolveRequestAuth(request);
+  if (!ctx) return unauthorized();
+  if (!hasScope(ctx, "skills:read")) return forbidden();
+  const { userId } = ctx;
 
   const rl = rateLimit(`skills:get:${userId}`);
   if (rl) return rl;
@@ -30,7 +33,11 @@ export async function GET(request: Request) {
     if (!parsed.success) return badRequest(parsed.error);
 
     // Get organization context if provided
-    const organizationId = request.headers.get("X-Organization-Id") || searchParams.get("organizationId") || undefined;
+    const { organizationId, mismatch } = resolveOrganizationId(
+      ctx,
+      request.headers.get("X-Organization-Id") || searchParams.get("organizationId") || undefined
+    );
+    if (mismatch) return forbidden();
 
     let result;
     if (organizationId) {
@@ -53,11 +60,14 @@ export async function GET(request: Request) {
 
 /**
  * POST /api/skills — Create skill
- * Supports optional organization context via X-Organization-Id header
+ * Supports optional organization context via X-Organization-Id header.
+ * API keys (scope `skills:create`) always create in their own organization.
  */
 export async function POST(request: Request) {
-  const { userId } = await auth();
-  if (!userId) return unauthorized();
+  const ctx = await resolveRequestAuth(request);
+  if (!ctx) return unauthorized();
+  if (!hasScope(ctx, "skills:create")) return forbidden();
+  const { userId } = ctx;
 
   const rl = rateLimit(`skills:post:${userId}`);
   if (rl) return rl;
@@ -67,7 +77,11 @@ export async function POST(request: Request) {
     if (bodyError) return bodyError;
     
     // Get organization context if provided
-    const organizationId = request.headers.get("X-Organization-Id") || (typeof body.organizationId === 'string' ? body.organizationId : undefined) || undefined;
+    const { organizationId, mismatch } = resolveOrganizationId(
+      ctx,
+      request.headers.get("X-Organization-Id") || (typeof body.organizationId === 'string' ? body.organizationId : undefined) || undefined
+    );
+    if (mismatch) return forbidden();
 
     // Check permission if organization context
     if (organizationId) {

@@ -1,204 +1,104 @@
 /**
- * API Key Authentication Middleware
+ * Request authentication: Clerk session or organization API key.
  *
- * Validates API keys and attaches organization context to requests.
- * Supports both API key and Clerk session authentication.
+ * An API key acts as the user who created it, but only inside the key's
+ * organization and only for the scopes granted to it. The creator's normal
+ * org RBAC still applies on top of the scopes, and a key stops working as soon
+ * as its creator leaves the organization.
+ *
+ * Keys are read from `X-API-Key` or `Authorization: Bearer as_…` (see
+ * `apiKeyHeader.ts`). A request that presents a key is never silently
+ * downgraded to the session: an invalid key is a 401.
  */
 
-import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { ApiKeyService } from "@/services/ApiKeyService";
+import { extractApiKey } from "@/lib/api/apiKeyHeader";
 import { logger } from "@/lib/logger";
 
-// ────────────── Types ──────────────
+export interface SessionAuth {
+  via: "session";
+  userId: string;
+}
 
-export interface ApiKeyContext {
-  type: "api_key";
-  keyId: string;
+export interface ApiKeyAuth {
+  via: "api_key";
+  userId: string;
   organizationId: string;
   scopes: string[];
+  keyId: string;
 }
 
-export interface SessionContext {
-  type: "session";
-  userId: string;
-  organizationId?: string;
-}
+export type RequestAuth = SessionAuth | ApiKeyAuth;
 
-export type AuthContext = ApiKeyContext | SessionContext;
+/** Resolves the caller, or returns null when the request is unauthenticated. */
+export async function resolveRequestAuth(request: Request): Promise<RequestAuth | null> {
+  const apiKey = extractApiKey(request.headers);
 
-export type AuthenticatedHandler = (
-  request: Request,
-  context: AuthContext & Record<string, unknown>
-) => Promise<Response>;
-
-// ────────────── Service ──────────────
-
-const apiKeyService = new ApiKeyService();
-
-// ────────────── Middleware ──────────────
-
-/**
- * Extract API key from request
- * Checks Authorization header (Bearer token) and X-API-Key header
- */
-function extractApiKey(request: Request): string | null {
-  // Check X-API-Key header
-  const xApiKey = request.headers.get("X-API-Key");
-  if (xApiKey) return xApiKey;
-
-  // Check Authorization header (Bearer token)
-  const authHeader = request.headers.get("Authorization");
-  if (authHeader?.startsWith("Bearer ")) {
-    return authHeader.substring(7);
-  }
-
-  // Check query parameter (for webhook callbacks)
-  const url = new URL(request.url);
-  const apiKeyParam = url.searchParams.get("api_key");
-  if (apiKeyParam) return apiKeyParam;
-
-  return null;
-}
-
-/**
- * Middleware that authenticates via API key or session
- * Priority: API key > Clerk session
- */
-export function withApiKeyAuth(handler: AuthenticatedHandler) {
-  return async (request: Request, context?: Record<string, unknown>) => {
-    // Try API key first
-    const apiKey = extractApiKey(request);
-    
-    if (apiKey) {
-      try {
-        const validation = await apiKeyService.validateKey(apiKey);
-        
-        if (!validation.valid) {
-          return NextResponse.json(
-            { error: "Invalid or expired API key" },
-            { status: 401 }
-          );
-        }
-
-        return handler(request, {
-          ...context,
-          type: "api_key",
-          keyId: validation.keyId!,
-          organizationId: validation.organizationId!,
-          scopes: validation.scopes!,
-        });
-      } catch (error) {
-        logger.error({ error }, "API key validation failed");
-        return NextResponse.json(
-          { error: "Authentication failed" },
-          { status: 401 }
-        );
-      }
-    }
-
-    // Fall back to Clerk session
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
-    }
-
-    return handler(request, {
-      ...context,
-      type: "session",
-      userId,
-    });
-  };
-}
-
-/**
- * Middleware that requires API key authentication (no session fallback)
- */
-export function requireApiKey(handler: AuthenticatedHandler) {
-  return async (request: Request, context?: Record<string, unknown>) => {
-    const apiKey = extractApiKey(request);
-    
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "API key required. Provide via X-API-Key header or Bearer token." },
-        { status: 401 }
-      );
-    }
-
+  if (apiKey) {
     try {
-      const validation = await apiKeyService.validateKey(apiKey);
-      
-      if (!validation.valid) {
-        return NextResponse.json(
-          { error: "Invalid or expired API key" },
-          { status: 401 }
-        );
+      // Loaded lazily so session-only requests never touch the key tables.
+      const [{ ApiKeyService }, { prisma }] = await Promise.all([
+        import("@/services/ApiKeyService"),
+        import("@/lib/prisma"),
+      ]);
+
+      const validation = await new ApiKeyService().validateKey(apiKey);
+      if (!validation.valid || !validation.userId || !validation.organizationId) return null;
+
+      const stillMember = await prisma.organizationMember.findFirst({
+        where: { organizationId: validation.organizationId, userId: validation.userId },
+        select: { id: true },
+      });
+      if (!stillMember) {
+        logger.warn({ keyId: validation.keyId }, "API key rejected: creator is no longer an org member");
+        return null;
       }
 
-      return handler(request, {
-        ...context,
-        type: "api_key",
+      return {
+        via: "api_key",
+        userId: validation.userId,
+        organizationId: validation.organizationId,
+        scopes: validation.scopes ?? [],
         keyId: validation.keyId!,
-        organizationId: validation.organizationId!,
-        scopes: validation.scopes!,
-      });
+      };
     } catch (error) {
-      logger.error({ error }, "API key validation failed");
-      return NextResponse.json(
-        { error: "Authentication failed" },
-        { status: 401 }
-      );
+      logger.error({ err: error }, "API key validation failed");
+      return null;
     }
-  };
+  }
+
+  const { userId } = await auth();
+  return userId ? { via: "session", userId } : null;
+}
+
+/** Sessions carry every scope; API keys need `*` or the exact scope. */
+export function hasScope(ctx: RequestAuth, scope: string): boolean {
+  if (ctx.via === "session") return true;
+  return ctx.scopes.includes("*") || ctx.scopes.includes(scope);
 }
 
 /**
- * Check if context has required scope
+ * Organization context for a request. API keys are pinned to their own org:
+ * asking for a different org is refused (`mismatch`), and omitting it uses the
+ * key's org, so a key can never reach its creator's personal resources.
  */
-export function hasScope(context: AuthContext, scope: string): boolean {
-  if (context.type === "session") {
-    // Session users have all scopes
-    return true;
+export function resolveOrganizationId(
+  ctx: RequestAuth,
+  requested: string | undefined
+): { organizationId: string | undefined; mismatch: boolean } {
+  if (ctx.via === "api_key") {
+    return {
+      organizationId: ctx.organizationId,
+      mismatch: Boolean(requested && requested !== ctx.organizationId),
+    };
   }
-
-  // API key users need explicit scopes
-  return context.scopes.includes("*") || context.scopes.includes(scope);
+  return { organizationId: requested, mismatch: false };
 }
 
-/**
- * Require specific scope or return 403
- */
-export function requireScope(context: AuthContext, scope: string): NextResponse | null {
-  if (!hasScope(context, scope)) {
-    return NextResponse.json(
-      { error: `Missing required scope: ${scope}` },
-      { status: 403 }
-    );
-  }
-  return null;
-}
-
-/**
- * Get organization ID from context
- * For API keys, it's required. For sessions, it's optional.
- */
-export function getOrganizationId(context: AuthContext): string | null {
-  if (context.type === "api_key") {
-    return context.organizationId;
-  }
-  return context.organizationId || null;
-}
-
-/**
- * Get user ID from context
- * Only available for session authentication
- */
-export function getUserId(context: AuthContext): string | null {
-  if (context.type === "session") {
-    return context.userId;
-  }
-  return null;
+/** True when an API key is used on a resource outside its organization. */
+export function isOutsideKeyOrganization(
+  ctx: RequestAuth,
+  resourceOrganizationId: string | null | undefined
+): boolean {
+  return ctx.via === "api_key" && resourceOrganizationId !== ctx.organizationId;
 }

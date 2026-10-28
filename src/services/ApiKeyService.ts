@@ -182,6 +182,8 @@ export class ApiKeyService {
     organizationId?: string;
     scopes?: string[];
     keyId?: string;
+    /** The user who created the key; requests made with it act as this user. */
+    userId?: string;
   }> {
     // Extract prefix for quick lookup
     const prefix = apiKey.substring(0, 8);
@@ -211,6 +213,7 @@ export class ApiKeyService {
           organizationId: storedKey.organizationId,
           scopes: storedKey.scopes as string[],
           keyId: storedKey.id,
+          userId: storedKey.createdBy,
         };
       }
     }

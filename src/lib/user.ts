@@ -7,8 +7,12 @@ const clerk = clerkSecretKey ? createClerkClient({ secretKey: clerkSecretKey }) 
 
 /**
  * Ensures a User record exists in the database for the given Clerk userId.
- * Automatically gives every new/existing user ADMIN role, synchronizes their
- * Clerk email & name, and provisions an Enterprise organization where they are OWNER.
+ * New users get the regular USER role, their Clerk email & name are kept in
+ * sync, and they get a personal Enterprise organization where they are OWNER.
+ *
+ * The global ADMIN role is a super-admin bypass for every RBAC and ownership
+ * check, so it is never granted or rewritten here — promote a user explicitly
+ * in the database (`UPDATE users SET role = 'ADMIN' WHERE id = '<clerk id>'`).
  */
 export async function ensureUserExists(
   userId: string,
@@ -33,17 +37,15 @@ export async function ensureUserExists(
     }
   }
 
-  // Every user who signs up or signs in is an ADMIN with full access
   await client.user.upsert({
     where: { id: userId },
     create: {
       id: userId,
       email,
       name,
-      role: "ADMIN",
+      role: "USER",
     },
     update: {
-      role: "ADMIN",
       ...(email !== `${userId}@agent-studio.internal` && { email }),
       ...(name && { name }),
     },

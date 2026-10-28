@@ -71,10 +71,11 @@ vi.mock("@/lib/logger", () => ({
 }));
 
 vi.mock("@/repositories/SkillRepository", () => ({
-  SkillRepository: vi.fn(() => fakeSkillRepo),
+  // `function` (not an arrow) so the mock can be called with `new`.
+  SkillRepository: vi.fn(function () { return fakeSkillRepo; }),
 }));
 vi.mock("@/repositories/AuditLogRepository", () => ({
-  AuditLogRepository: vi.fn(() => fakeAuditRepo),
+  AuditLogRepository: vi.fn(function () { return fakeAuditRepo; }),
 }));
 
 // --- import AFTER mocks ---------------------------------------------------

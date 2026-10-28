@@ -55,8 +55,10 @@ export async function GET(request: Request) {
         tags: ["mcp", "tools", "integrations"],
       },
     ],
+    // /api/a2a/tasks requires `Authorization: Bearer <A2A_ACCESS_TOKEN>`
+    // (or a signed-in Clerk session).
     auth: {
-      type: "none",
+      type: "bearer",
     },
     tags: ["visual-orchestration", "multi-agent", "a2a", "mcp"],
     metadata: {

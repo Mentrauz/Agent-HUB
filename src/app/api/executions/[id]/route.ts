@@ -1,30 +1,35 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
-import { unauthorized, handleApiError } from "@/lib/api/handlers";
+import { unauthorized, forbidden, handleApiError } from "@/lib/api/handlers";
 import { NotFoundError } from "@/services/RBACService";
 import { apiServices } from "@/lib/api/services";
+import { resolveRequestAuth, hasScope, isOutsideKeyOrganization } from "@/lib/api/middleware/apiKeyAuth";
 
 const { executionService, executionRepo, rbacService } = apiServices();
 
+/** GET /api/executions/[id] — session, or API key (scope `executions:read`) within its org. */
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { userId } = await auth();
-  if (!userId) return unauthorized();
+  const ctx = await resolveRequestAuth(request);
+  if (!ctx) return unauthorized();
+  if (!hasScope(ctx, "executions:read")) return forbidden();
+  const { userId } = ctx;
 
   try {
     const { id } = await params;
     
     // 1. Check if user is the direct owner
     const userExecution = await executionService.getExecutionForUser(id, userId);
-    if (userExecution) {
+    if (userExecution && !isOutsideKeyOrganization(ctx, userExecution.organizationId)) {
       return NextResponse.json({ success: true, data: userExecution });
     }
 
     // 2. If not direct owner, check if it's an organization execution
     const execution = await executionRepo.findById(id);
-    if (!execution) throw new NotFoundError("Execution not found");
+    if (!execution || isOutsideKeyOrganization(ctx, execution.organizationId)) {
+      throw new NotFoundError("Execution not found");
+    }
 
     if (execution.organizationId) {
       const hasAccess = await rbacService.canAccessResource(

@@ -26,6 +26,16 @@ const envSchema = z.object({
    */
   A2A_REGISTRY_URL: z.string().url().optional().or(z.literal("")),
   A2A_REGISTRY_TOKEN: z.string().optional(),
+  /**
+   * Bearer token external agents present when delegating tasks to
+   * /api/a2a/tasks. When unset, only Clerk-authenticated sessions may call it.
+   */
+  A2A_ACCESS_TOKEN: z.string().optional(),
+  /**
+   * Bearer secret required by /api/triggers/cron/[id] (Vercel Cron sends it
+   * automatically). When unset, cron triggers are rejected.
+   */
+  CRON_SECRET: z.string().optional(),
 });
 
 type Env = z.infer<typeof envSchema>;

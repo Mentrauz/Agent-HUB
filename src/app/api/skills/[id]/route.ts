@@ -1,22 +1,26 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { updateSkillSchema } from "@/validators/skillSchema";
-import { unauthorized, handleApiError } from "@/lib/api/handlers";
+import { unauthorized, forbidden, handleApiError } from "@/lib/api/handlers";
 import { NotFoundError } from "@/services/RBACService";
 import { apiServices } from "@/lib/api/services";
+import { resolveRequestAuth, hasScope, isOutsideKeyOrganization } from "@/lib/api/middleware/apiKeyAuth";
 
 const { skillService, rbacService } = apiServices();
 
 /**
  * GET /api/skills/[id] — Get skill details
- * Supports organization-level access control
+ * Supports organization-level access control. Also accepts API keys
+ * (scope `skills:read`) for skills in the key's organization.
  */
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { userId } = await auth();
-  if (!userId) return unauthorized();
+  const ctx = await resolveRequestAuth(request);
+  if (!ctx) return unauthorized();
+  if (!hasScope(ctx, "skills:read")) return forbidden();
+  const { userId } = ctx;
 
   try {
     const { id } = await params;
@@ -24,6 +28,7 @@ export async function GET(
     // Get skill to check organization context and return mapped DTO
     const skillData = await skillService.getSkill(id);
     if (!skillData) throw new NotFoundError("Skill not found");
+    if (isOutsideKeyOrganization(ctx, skillData.organizationId)) throw new NotFoundError("Skill not found");
 
     // Check access permission
     const hasAccess = await rbacService.canAccessResource(

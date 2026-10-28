@@ -17,6 +17,7 @@ import { defaultRAGPipeline } from "@/modules/rag";
 import { ensureUserExists } from "@/lib/user";
 import { logger } from "@/lib/logger";
 import TurndownService from "turndown";
+import { fetchPublicUrl, readTextWithLimit, UnsafeUrlError } from "@/lib/net/publicFetch";
 
 export const dynamic = "force-dynamic";
 
@@ -65,14 +66,14 @@ export async function POST(request: Request) {
 
     logger.info({ url, userId, collection }, "Fetching URL for RAG ingestion");
 
-    // Fetch the page
-    const res = await fetch(url, {
+    // Fetch the page. fetchPublicUrl refuses private/internal addresses on the
+    // initial URL and on every redirect hop (SSRF protection).
+    const res = await fetchPublicUrl(url, {
       headers: {
         "User-Agent": "Agent-Studio-RAG/1.0 (Knowledge Base Ingestion)",
         Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
       },
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-      redirect: "follow",
     });
 
     if (!res.ok) {
@@ -83,14 +84,7 @@ export async function POST(request: Request) {
     }
 
     const contentType = res.headers.get("content-type") || "";
-    const rawText = await res.text();
-
-    if (rawText.length > MAX_CONTENT_LENGTH) {
-      return NextResponse.json(
-        { error: `Page too large (${(rawText.length / 1024 / 1024).toFixed(1)}MB). Max: 5MB.` },
-        { status: 400 }
-      );
-    }
+    const rawText = await readTextWithLimit(res, MAX_CONTENT_LENGTH);
 
     // Extract title from the page
     const titleMatch = rawText.match(/<title[^>]*>([^<]+)<\/title>/i);
@@ -167,6 +161,9 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
+    if (error instanceof UnsafeUrlError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     logger.error({ err: error }, "URL fetch failed");
     return NextResponse.json(
       {

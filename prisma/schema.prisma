@@ -410,7 +410,9 @@ model DocumentChunk {
 
   @@index([documentId])
   @@index([chunkIndex])
-  @@index([embedding_vector])
+  // No @@index on embedding_vector: Prisma would create a btree index, which
+  // can't hold high-dimensional vectors and blocks the IVFFlat index that
+  // PgVectorStore creates at runtime under the same name.
   @@map("document_chunks")
 }
 

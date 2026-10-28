@@ -7,10 +7,8 @@ export default defineConfig({
     jsxImportSource: "react",
   },
   test: {
-    globals: true,
-    environment: "node",
-    include: ["tests/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
-    exclude: ["e2e/**", "node_modules/**", "dist/**", ".next/**", "coverage/**"],
+    // Keep include/exclude inside each project: root-level patterns are merged
+    // into inline projects, which made the jsdom project run every suite too.
     projects: [
       {
         test: {

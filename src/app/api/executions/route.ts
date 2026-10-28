@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { startExecutionSchema } from "@/validators/executionSchema";
-import { unauthorized, forbidden, badRequest, handleApiError, isValidIsoDate } from "@/lib/api/handlers";
+import { unauthorized, forbidden, badRequest, notFound, handleApiError, isValidIsoDate } from "@/lib/api/handlers";
 import { rateLimit } from "@/lib/api/rateLimit";
 import { ExecutionError } from "@/modules/execution/executor/errors";
 import { ExecutionQuery, ExecutionStatus } from "@/types/execution";
 import { apiServices } from "@/lib/api/services";
 import { prisma } from "@/lib/prisma";
+import { resolveRequestAuth, hasScope, resolveOrganizationId } from "@/lib/api/middleware/apiKeyAuth";
 
 const VALID_STATUSES = new Set<ExecutionStatus>([
   "PENDING",
@@ -25,11 +25,14 @@ const { executionService, historyService, rbacService } = apiServices();
 
 /**
  * GET /api/executions — List executions
- * Supports optional organization context via X-Organization-Id header
+ * Supports optional organization context via X-Organization-Id header.
+ * API keys (scope `executions:read`) always list their own organization's runs.
  */
 export async function GET(request: Request) {
-  const { userId } = await auth();
-  if (!userId) return unauthorized();
+  const ctx = await resolveRequestAuth(request);
+  if (!ctx) return unauthorized();
+  if (!hasScope(ctx, "executions:read")) return forbidden();
+  const { userId } = ctx;
 
   try {
     const url = new URL(request.url);
@@ -54,7 +57,11 @@ export async function GET(request: Request) {
     }
 
     // Get organization context if provided
-    const organizationId = request.headers.get("X-Organization-Id") || url.searchParams.get("organizationId") || undefined;
+    const { organizationId, mismatch } = resolveOrganizationId(
+      ctx,
+      request.headers.get("X-Organization-Id") || url.searchParams.get("organizationId") || undefined
+    );
+    if (mismatch) return forbidden();
 
     const query: ExecutionQuery = {
       search: url.searchParams.get("search") ?? undefined,
@@ -105,11 +112,14 @@ export async function GET(request: Request) {
 
 /**
  * POST /api/executions — Start execution
- * Requires SKILL_EXECUTOR permission on the skill
+ * Requires SKILL_EXECUTOR permission on the skill.
+ * API keys (scope `executions:create`) always run in their own organization.
  */
 export async function POST(request: Request) {
-  const { userId } = await auth();
-  if (!userId) return unauthorized();
+  const ctx = await resolveRequestAuth(request);
+  if (!ctx) return unauthorized();
+  if (!hasScope(ctx, "executions:create")) return forbidden();
+  const { userId } = ctx;
 
   const limited = rateLimit(`exec:start:${userId}`);
   if (limited) return limited;
@@ -118,7 +128,11 @@ export async function POST(request: Request) {
     const body = await request.json();
     
     // Get organization context if provided
-    const organizationId = request.headers.get("X-Organization-Id") || body.organizationId || undefined;
+    const { organizationId, mismatch } = resolveOrganizationId(
+      ctx,
+      request.headers.get("X-Organization-Id") || body.organizationId || undefined
+    );
+    if (mismatch) return forbidden();
 
     // Check execution permission if organization context
     if (organizationId && body.skillVersionId) {
@@ -132,7 +146,18 @@ export async function POST(request: Request) {
     }
 
     const validated = startExecutionSchema.parse({ ...body, userId });
-    
+
+    // An API key may only run skills that belong to its organization.
+    if (ctx.via === "api_key") {
+      const version = await prisma.skillVersion.findUnique({
+        where: { id: validated.skillVersionId },
+        select: { skill: { select: { organizationId: true } } },
+      });
+      if (version?.skill.organizationId !== ctx.organizationId) {
+        return notFound("Skill version not found");
+      }
+    }
+
     // Add organizationId if provided
     const executionData = organizationId
       ? { ...validated, organizationId }

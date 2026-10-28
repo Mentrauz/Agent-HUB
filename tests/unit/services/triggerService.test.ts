@@ -63,7 +63,7 @@ describe("TriggerService Unit Tests", () => {
       const mapped = TriggerService.mapPayloadToInput(payload, mappingRules);
 
       expect(mapped).toEqual({
-        customerName: "Soumya",
+        customerName: "Soumya Singh",
         customerEmail: "Soumya@example.com",
         eventType: "USER_SIGNUP",
         campaign: "campaign_1",

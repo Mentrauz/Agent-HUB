@@ -1,13 +1,23 @@
 import { clerkMiddleware } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
+import { extractApiKey } from '@/lib/api/apiKeyHeader'
 
-// Public routes that bypass Clerk middleware entirely:
-// - /api/health: health check probe
-// - /api/mcp/sse & /api/mcp/messages: external MCP clients with bearer tokens
+// Routes that skip the session requirement because external callers use them.
+// Every one of these handlers authenticates the caller itself:
+// - /api/health: health check probe (no data)
+// - /api/mcp/sse & /api/mcp/messages: Clerk session or MCP_ACCESS_TOKEN
+// - /api/triggers/webhook/[token]: secret webhook token + optional HMAC signature
+// - /api/triggers/cron/[id]: CRON_SECRET bearer (rejected when unset)
+// - /api/a2a/manifest: public A2A agent card (no data)
+// - /api/a2a/tasks: Clerk session or A2A_ACCESS_TOKEN
 const isPublicRoute = (pathname: string) =>
   pathname === '/api/health' ||
   pathname.startsWith('/api/mcp/sse') ||
-  pathname.startsWith('/api/mcp/messages');
+  pathname.startsWith('/api/mcp/messages') ||
+  pathname.startsWith('/api/triggers/webhook/') ||
+  pathname.startsWith('/api/triggers/cron/') ||
+  pathname === '/api/a2a/manifest' ||
+  pathname === '/api/a2a/tasks';
 
 const protectedPrefixes = [
   '/dashboard',
@@ -22,6 +32,13 @@ const isProtectedRoute = (pathname: string) =>
 
 export default clerkMiddleware(async (auth, req) => {
   if (isPublicRoute(req.nextUrl.pathname)) {
+    return NextResponse.next();
+  }
+
+  // Requests carrying an org API key have no Clerk session. Let them reach the
+  // handler, which validates the key; routes that don't accept keys still call
+  // auth() and answer 401, so this fails closed.
+  if (req.nextUrl.pathname.startsWith('/api/') && extractApiKey(req.headers)) {
     return NextResponse.next();
   }
 

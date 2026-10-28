@@ -126,7 +126,7 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
     const timer = setTimeout(async () => {
       setSyncStatus("saving");
       try {
-        await skillsApi.update(id, { graphDefinition: graph, instructions: "Visual multi-agent graph." });
+        await skillsApi.update(id, { graphDefinition: graph });
         setIsDirty(false);
         setSyncStatus("synced");
         queryClient.invalidateQueries({ queryKey: ["skill", id] });
@@ -143,7 +143,7 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
     mutationFn: () => {
       if (!graph) throw new Error("Nothing to save");
       setSyncStatus("saving");
-      return skillsApi.update(id, { graphDefinition: graph, instructions: "Visual multi-agent graph." });
+      return skillsApi.update(id, { graphDefinition: graph });
     },
     onSuccess: () => {
       setIsDirty(false);
@@ -224,7 +224,7 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
 
     // Flush dirty changes quietly in background so latest graph runs
     if (isDirty && graph) {
-      skillsApi.update(id, { graphDefinition: graph, instructions: "Visual multi-agent graph." })
+      skillsApi.update(id, { graphDefinition: graph })
         .then(() => {
           setIsDirty(false);
           setSyncStatus("synced");
