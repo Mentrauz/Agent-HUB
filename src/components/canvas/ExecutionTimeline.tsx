@@ -31,6 +31,8 @@ import { GraphNodeType } from "@/types/graph";
 
 // ─── Timeline Step: one node execution lifecycle ───
 interface TimelineStep {
+  /** Stable per-execution id (a node can run many times, e.g. in loops). */
+  key: string;
   nodeId: string;
   nodeLabel: string;
   nodeType: string;
@@ -61,6 +63,7 @@ function buildTimeline(events: ExecutionEvent[]): TimelineStep[] {
     switch (ev.type) {
       case "node:start": {
         const step: TimelineStep = {
+          key: `${ev.nodeId}#${ordered.length}`,
           nodeId: ev.nodeId,
           nodeLabel: ev.nodeLabel,
           nodeType: ev.nodeType,
@@ -642,7 +645,7 @@ export function ExecutionTimeline({
   // Auto-expand running steps
   useEffect(() => {
     if (!isRunning) return;
-    const runningIds = steps.filter((s) => s.status === "RUNNING").map((s) => s.nodeId);
+    const runningIds = steps.filter((s) => s.status === "RUNNING").map((s) => s.key);
     if (runningIds.length > 0) {
       setExpandedSteps((prev) => {
         const next = new Set(prev);
@@ -659,16 +662,16 @@ export function ExecutionTimeline({
     containerRef.current.scrollTop = containerRef.current.scrollHeight;
   }, [steps, autoScroll, hasActiveFilters]);
 
-  const toggleExpand = (nodeId: string) => {
+  const toggleExpand = (stepKey: string) => {
     setExpandedSteps((prev) => {
       const next = new Set(prev);
-      if (next.has(nodeId)) next.delete(nodeId);
-      else next.add(nodeId);
+      if (next.has(stepKey)) next.delete(stepKey);
+      else next.add(stepKey);
       return next;
     });
   };
 
-  const expandAll = () => setExpandedSteps(new Set(filteredSteps.map((s) => s.nodeId)));
+  const expandAll = () => setExpandedSteps(new Set(filteredSteps.map((s) => s.key)));
   const collapseAll = () => setExpandedSteps(new Set());
   const [showExportMenu, setShowExportMenu] = useState(false);
   const exportMenuRef = useRef<HTMLDivElement>(null);
@@ -914,14 +917,14 @@ export function ExecutionTimeline({
             {/* Vertical connector line */}
             <div className="absolute left-[7px] top-2 bottom-2 w-px bg-slate-200 dark:bg-slate-700/60" />
 
-            {filteredSteps.map((step, idx) => {
-              const isExpanded = expandedSteps.has(step.nodeId);
+            {filteredSteps.map((step) => {
+              const isExpanded = expandedSteps.has(step.key);
               const meta = CANVAS_NODE_TYPE_MAP[step.nodeType as GraphNodeType];
               const NodeIcon = meta?.icon;
               const isCurrentlyRunning = step.status === "RUNNING";
 
               return (
-                <div key={`${step.nodeId}-${idx}`} className="relative pl-5 pb-1">
+                <div key={step.key} className="relative pl-5 pb-1">
                   {/* Status dot on the timeline */}
                   <div className={clsx(
                     "absolute left-0 top-2.5 w-[15px] h-[15px] rounded-full border-2 flex items-center justify-center z-10",
@@ -934,7 +937,7 @@ export function ExecutionTimeline({
                   {/* Step Card */}
                   <button
                     type="button"
-                    onClick={() => toggleExpand(step.nodeId)}
+                    onClick={() => toggleExpand(step.key)}
                     className={clsx(
                       "w-full text-left rounded-lg border px-2.5 py-2 transition-all cursor-pointer",
                       statusColor(step.status),

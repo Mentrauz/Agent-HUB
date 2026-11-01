@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { Handle, Position } from "@xyflow/react";
 import {
   CircleDot,
@@ -1109,10 +1109,13 @@ const NOTE_COLORS: Record<string, string> = {
 function StickyNoteNode({ data, selected }: NodePropsShape) {
   const color = (data.noteColor as string) ?? "yellow";
   const content = (data.noteContent as string) ?? "# Notes\nAdd documentation here...";
+  const [expanded, setExpanded] = useState(false);
+  // Roughly more than the 6 clamped lines at this width.
+  const isLong = content.split("\n").length > 6 || content.length > 240;
   return (
     <div
       className={clsx(
-        "relative w-[260px] max-w-[320px] rounded-xl border backdrop-blur-md font-mono shadow-md p-3.5 min-h-[100px] transition-all",
+        "relative w-fit min-w-[260px] max-w-[320px] rounded-xl border backdrop-blur-md font-mono shadow-md p-3.5 min-h-[100px] transition-all",
         NOTE_COLORS[color] || NOTE_COLORS.yellow,
         selected && "ring-2 ring-indigo-500/80 dark:ring-indigo-400/80"
       )}
@@ -1123,9 +1126,21 @@ function StickyNoteNode({ data, selected }: NodePropsShape) {
           {data.label || "NOTE"}
         </span>
       </div>
-      <div className="text-[10px] opacity-90 whitespace-pre-wrap leading-relaxed line-clamp-6">
+      <div className={clsx("text-[10px] opacity-90 whitespace-pre-wrap break-words leading-relaxed", !expanded && "line-clamp-6")}>
         {content}
       </div>
+      {isLong && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setExpanded((x) => !x);
+          }}
+          className="nodrag mt-1.5 text-[9px] font-bold uppercase tracking-wider opacity-70 hover:opacity-100 hover:underline cursor-pointer"
+        >
+          {expanded ? "Show less" : "Show more"}
+        </button>
+      )}
     </div>
   );
 }
@@ -1224,7 +1239,8 @@ function A2AChannelNode({ data, selected }: NodePropsShape) {
           </div>
           <div className="max-h-16 overflow-y-auto text-[7px] text-slate-300 space-y-0.5 bg-cyan-950/20 p-1 rounded border border-cyan-500/20">
             {messages.slice(-3).map((m, idx) => (
-              <div key={idx} className="truncate">
+              // Messages only append, so the absolute index is a stable key for the sliding window.
+              <div key={Math.max(0, messages.length - 3) + idx} className="truncate">
                 <span className="font-semibold text-cyan-400">{m.sender}:</span> {m.content}
               </div>
             ))}

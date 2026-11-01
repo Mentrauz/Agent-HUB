@@ -88,6 +88,15 @@ export interface AuditLogItemDTO {
   timestamp: string;
 }
 
+export interface CanvasBlueprintDTO {
+  id: string;
+  badge: string;
+  category: string;
+  name: string;
+  description: string;
+  nodeCount: number;
+}
+
 export interface DashboardStatsDTO {
   timeRange: TimeRangeFilter;
   systemHealth: SystemHealthDTO;
@@ -98,6 +107,7 @@ export interface DashboardStatsDTO {
   toolLeaderboard: ToolLeaderboardItemDTO[];
   ragInsights: RagInsightsDTO;
   pendingApprovals: ApprovalRequestDTO[];
+  pendingApprovalsCount: number;
   recentExecutions: ExecutionDTO[];
   recentActivity: AuditLogItemDTO[];
   totalSkillsCount: number;

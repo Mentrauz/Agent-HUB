@@ -9,14 +9,14 @@ import {
   ArrowRight,
   ArrowUpRight,
 } from "lucide-react";
-import { AgentGraphCardDTO } from "@/types/dashboard";
-import { CANVAS_TEMPLATES } from "@/components/canvas/AgentGraphTemplates";
+import { AgentGraphCardDTO, CanvasBlueprintDTO } from "@/types/dashboard";
 
 interface MultiAgentCanvasShowcaseProps {
   agentGraphs: AgentGraphCardDTO[];
+  blueprints: CanvasBlueprintDTO[];
 }
 
-export function MultiAgentCanvasShowcase({ agentGraphs }: MultiAgentCanvasShowcaseProps) {
+export function MultiAgentCanvasShowcase({ agentGraphs, blueprints }: MultiAgentCanvasShowcaseProps) {
   return (
     <div className="space-y-4 font-mono">
       <div className="flex items-center justify-between border-b border-slate-200 dark:border-indigo-950/80 pb-2.5">
@@ -36,7 +36,7 @@ export function MultiAgentCanvasShowcase({ agentGraphs }: MultiAgentCanvasShowca
 
       {/* Blueprints / Starters Strip */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {CANVAS_TEMPLATES.slice(0, 3).map((bp) => (
+        {blueprints.map((bp) => (
           <div
             key={bp.id}
             className="p-3.5 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/70 dark:bg-[#070709]/70 space-y-2 hover:border-violet-400 dark:hover:border-violet-500/50 hover:shadow-md transition-all flex flex-col justify-between"
@@ -58,7 +58,7 @@ export function MultiAgentCanvasShowcase({ agentGraphs }: MultiAgentCanvasShowca
 
             <div className="pt-2 flex items-center justify-between border-t border-slate-100 dark:border-indigo-950/50 text-[10px]">
               <span className="text-slate-400 flex items-center gap-1">
-                <GitBranch className="h-3 w-3 text-indigo-400" /> {bp.graph.nodes.length} Nodes
+                <GitBranch className="h-3 w-3 text-indigo-400" /> {bp.nodeCount} Nodes
               </span>
               <Link
                 href={`/dashboard/canvas/new?template=${bp.id}`}

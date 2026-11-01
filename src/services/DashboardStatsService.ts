@@ -41,9 +41,10 @@ export class DashboardStatsService {
       durationAgg,
       providerGroups,
       // Tool Calls
-      rangeToolCalls,
+      toolCallGroups,
       // Approvals
       pendingApprovalsRaw,
+      pendingApprovalsCount,
       // Audit Logs
       recentAuditLogs,
       // RAG Documents
@@ -56,30 +57,46 @@ export class DashboardStatsService {
       prisma.document.count({ where: { userId } }),
       prisma.documentChunk.count({ where: { document: { userId } } }),
       prisma.vaultEntry.count({ where: { userId } }),
-      prisma.toolDefinition.findMany({}),
+      prisma.toolDefinition.findMany({
+        select: { name: true, displayName: true, category: true, type: true },
+      }),
 
       prisma.skill.findMany({
         where: { userId },
         include: {
           versions: {
             orderBy: { versionNumber: "desc" },
-            take: 2,
+            take: 1,
           },
         },
         orderBy: { updatedAt: "desc" },
       }),
 
+      // Only feeds the "Recent Executions" card (5 rows) — scalar columns only,
+      // no steps/toolCalls, since this query reruns on every 12s dashboard poll.
       prisma.execution.findMany({
         where: {
           userId,
           ...(rangeDate ? { startedAt: { gte: rangeDate } } : {}),
         },
-        include: {
-          steps: { orderBy: { stepNumber: "asc" } },
-          toolCalls: { orderBy: { executedAt: "asc" } },
+        select: {
+          id: true,
+          userId: true,
+          skillVersionId: true,
+          skillName: true,
+          replayedFromExecutionId: true,
+          status: true,
+          inputData: true,
+          provider: true,
+          durationMs: true,
+          stepCount: true,
+          maxSteps: true,
+          errorMessage: true,
+          startedAt: true,
+          completedAt: true,
         },
         orderBy: { startedAt: "desc" },
-        take: 100,
+        take: 5,
       }),
 
       prisma.execution.findMany({
@@ -88,7 +105,6 @@ export class DashboardStatsService {
           status: { in: ["RUNNING", "PAUSED_FOR_APPROVAL", "PENDING"] },
         },
         include: {
-          steps: { orderBy: { stepNumber: "desc" }, take: 1 },
           toolCalls: { orderBy: { executedAt: "desc" }, take: 1 },
         },
         orderBy: { startedAt: "desc" },
@@ -103,10 +119,9 @@ export class DashboardStatsService {
       }),
 
       // Real status breakdown across every execution in range, not just the
-      // 100 most recent (rangeExecutions above is capped for the "recent
-      // activity" feed) — otherwise successRate/statusBreakdown silently
-      // reflected only the latest 100 runs while totalExecutions showed the
-      // true count, making the two disagree for any user past 100 runs.
+      // few most recent (rangeExecutions above is capped for the "recent
+      // executions" feed) — otherwise successRate/statusBreakdown would
+      // disagree with totalExecutions.
       prisma.execution.groupBy({
         by: ["status"],
         where: {
@@ -137,24 +152,26 @@ export class DashboardStatsService {
         take: 5,
       }),
 
-      prisma.toolCall.findMany({
+      prisma.toolCall.groupBy({
+        by: ["toolName", "status"],
         where: {
           execution: {
             userId,
             ...(rangeDate ? { startedAt: { gte: rangeDate } } : {}),
           },
         },
-        select: {
-          toolName: true,
-          status: true,
-          durationMs: true,
-        },
+        _count: { _all: true, durationMs: true },
+        _sum: { durationMs: true },
       }),
 
       prisma.approvalRequest.findMany({
         where: { userId, status: "PENDING" },
         orderBy: { requestedAt: "desc" },
-        take: 10,
+        take: 3,
+      }),
+
+      prisma.approvalRequest.count({
+        where: { userId, status: "PENDING" },
       }),
 
       prisma.auditLog.findMany({
@@ -306,22 +323,20 @@ export class DashboardStatsService {
       { count: number; durationSum: number; durationCount: number; errorCount: number }
     >();
 
-    for (const tc of rangeToolCalls) {
-      const existing = toolStatsMap.get(tc.toolName) ?? {
+    for (const g of toolCallGroups) {
+      const existing = toolStatsMap.get(g.toolName) ?? {
         count: 0,
         durationSum: 0,
         durationCount: 0,
         errorCount: 0,
       };
-      existing.count++;
-      if (tc.durationMs != null && tc.durationMs > 0) {
-        existing.durationSum += tc.durationMs;
-        existing.durationCount++;
+      existing.count += g._count._all;
+      existing.durationSum += g._sum.durationMs ?? 0;
+      existing.durationCount += g._count.durationMs;
+      if (g.status === "ERROR" || g.status === "BLOCKED" || g.status === "REJECTED") {
+        existing.errorCount += g._count._all;
       }
-      if (tc.status === "ERROR" || tc.status === "BLOCKED" || tc.status === "REJECTED") {
-        existing.errorCount++;
-      }
-      toolStatsMap.set(tc.toolName, existing);
+      toolStatsMap.set(g.toolName, existing);
     }
 
     const toolDefMap = new Map(toolDefs.map((t) => [t.name, t]));
@@ -400,7 +415,7 @@ export class DashboardStatsService {
     }));
 
     // 8. Recent Executions (mapped to ExecutionDTO)
-    const recentExecutions: ExecutionDTO[] = rangeExecutions.slice(0, 6).map((e) => ({
+    const recentExecutions: ExecutionDTO[] = rangeExecutions.map((e) => ({
       id: e.id,
       userId: e.userId,
       skillVersionId: e.skillVersionId,
@@ -408,8 +423,6 @@ export class DashboardStatsService {
       replayedFromExecutionId: e.replayedFromExecutionId,
       status: e.status,
       inputData: e.inputData as Record<string, unknown>,
-      finalOutput: e.finalOutput as Record<string, unknown> | null,
-      plannerOutput: e.plannerOutput as Record<string, unknown> | null,
       provider: e.provider,
       durationMs: e.durationMs,
       stepCount: e.stepCount,
@@ -417,29 +430,6 @@ export class DashboardStatsService {
       errorMessage: e.errorMessage,
       startedAt: e.startedAt,
       completedAt: e.completedAt,
-      steps: (e.steps || []).map((s) => ({
-        id: s.id,
-        executionId: s.executionId,
-        stepNumber: s.stepNumber,
-        nodeName: s.nodeName,
-        stateSnapshot: s.stateSnapshot as Record<string, unknown>,
-        status: s.status,
-        startedAt: s.startedAt,
-        completedAt: s.completedAt,
-      })),
-      toolCalls: (e.toolCalls || []).map((t) => ({
-        id: t.id,
-        executionId: t.executionId,
-        stepId: t.stepId,
-        toolName: t.toolName,
-        action: t.action,
-        inputArgs: t.inputArgs as Record<string, unknown>,
-        outputResult: t.outputResult as Record<string, unknown> | null,
-        status: t.status as "SUCCESS" | "ERROR" | "BLOCKED" | "REJECTED",
-        errorMessage: t.errorMessage,
-        durationMs: t.durationMs,
-        executedAt: t.executedAt,
-      })),
     }));
 
     // 9. Recent Activity
@@ -460,6 +450,7 @@ export class DashboardStatsService {
       toolLeaderboard,
       ragInsights,
       pendingApprovals,
+      pendingApprovalsCount,
       recentExecutions,
       recentActivity,
       totalSkillsCount: activeSkills.length,
@@ -519,6 +510,7 @@ export class DashboardStatsService {
         recentDocuments: [],
       },
       pendingApprovals: [],
+      pendingApprovalsCount: 0,
       recentExecutions: [],
       recentActivity: [],
       totalSkillsCount: 0,

@@ -8,6 +8,7 @@ import {
   Play,
   TrendingUp,
   TrendingDown,
+  Minus,
   Timer,
   Shield,
   ArrowUpRight,
@@ -32,13 +33,15 @@ export function TelemetryMetricsGrid({
   pendingApprovalsCount,
 }: TelemetryMetricsGridProps) {
   const avgSec = (telemetry.avgDurationMs / 1000).toFixed(2);
+  // Success rate is meaningless (server defaults it to 100) until a run has completed or failed
+  const hasFinishedRuns = telemetry.completed + telemetry.failed > 0;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6 gap-4 font-mono">
       {/* 1. Active Skills */}
       <Link
         href="/dashboard/skills"
-        className="group p-5 rounded-lg border border-slate-200 dark:border-indigo-900/50 bg-white/80 dark:bg-[#0a0a0a]/80 space-y-2 hover:border-indigo-400 dark:hover:border-indigo-500/50 shadow-sm hover:shadow-xl transition-all h-full"
+        className="group p-4 rounded-lg border border-slate-200 dark:border-indigo-900/50 bg-white/80 dark:bg-[#0a0a0a]/80 space-y-2 hover:border-indigo-400 dark:hover:border-indigo-500/50 shadow-sm hover:shadow-xl transition-all h-full"
       >
         <div className="flex items-center justify-between text-indigo-700 dark:text-indigo-400 text-xs tracking-wider uppercase font-semibold">
           <span>ACTIVE SKILLS</span>
@@ -58,7 +61,7 @@ export function TelemetryMetricsGrid({
       {/* 2. Multi-Agent Graphs */}
       <Link
         href="/dashboard/canvas"
-        className="group p-5 rounded-lg border border-slate-200 dark:border-indigo-900/50 bg-white/80 dark:bg-[#0a0a0a]/80 space-y-2 hover:border-violet-400 dark:hover:border-violet-500/50 shadow-sm hover:shadow-xl transition-all h-full"
+        className="group p-4 rounded-lg border border-slate-200 dark:border-indigo-900/50 bg-white/80 dark:bg-[#0a0a0a]/80 space-y-2 hover:border-violet-400 dark:hover:border-violet-500/50 shadow-sm hover:shadow-xl transition-all h-full"
       >
         <div className="flex items-center justify-between text-violet-700 dark:text-violet-400 text-xs tracking-wider uppercase font-semibold">
           <span>AGENT CANVASES</span>
@@ -78,7 +81,7 @@ export function TelemetryMetricsGrid({
       {/* 3. Total Executions */}
       <Link
         href="/dashboard/executions"
-        className="group p-5 rounded-lg border border-slate-200 dark:border-indigo-900/50 bg-white/80 dark:bg-[#0a0a0a]/80 space-y-2 hover:border-emerald-400 dark:hover:border-emerald-500/50 shadow-sm hover:shadow-xl transition-all h-full"
+        className="group p-4 rounded-lg border border-slate-200 dark:border-indigo-900/50 bg-white/80 dark:bg-[#0a0a0a]/80 space-y-2 hover:border-emerald-400 dark:hover:border-emerald-500/50 shadow-sm hover:shadow-xl transition-all h-full"
       >
         <div className="flex items-center justify-between text-emerald-700 dark:text-emerald-400 text-xs tracking-wider uppercase font-semibold">
           <span>EXECUTIONS</span>
@@ -100,34 +103,38 @@ export function TelemetryMetricsGrid({
       </Link>
 
       {/* 4. Success Rate */}
-      <div className="p-5 rounded-lg border border-slate-200 dark:border-indigo-900/50 bg-white/80 dark:bg-[#0a0a0a]/80 space-y-2 hover:border-cyan-400 dark:hover:border-cyan-500/50 shadow-sm hover:shadow-xl transition-all h-full">
+      <div className="p-4 rounded-lg border border-slate-200 dark:border-indigo-900/50 bg-white/80 dark:bg-[#0a0a0a]/80 space-y-2 hover:border-cyan-400 dark:hover:border-cyan-500/50 shadow-sm hover:shadow-xl transition-all h-full">
         <div className="flex items-center justify-between text-cyan-700 dark:text-cyan-400 text-xs tracking-wider uppercase font-semibold">
           <span>SUCCESS RATE</span>
-          {telemetry.successRate >= 80 ? (
+          {!hasFinishedRuns ? (
+            <Minus className="h-4 w-4 text-slate-400" />
+          ) : telemetry.successRate >= 80 ? (
             <TrendingUp className="h-4 w-4 text-emerald-500" />
           ) : (
             <TrendingDown className="h-4 w-4 text-red-500" />
           )}
         </div>
         <div className="text-3xl font-pixel text-slate-900 dark:text-slate-100">
-          {telemetry.successRate}%
+          {hasFinishedRuns ? `${telemetry.successRate}%` : "—"}
         </div>
         <div className="w-full bg-slate-200 dark:bg-indigo-950 rounded-full h-1.5 overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all duration-500 ${
-              telemetry.successRate >= 90
-                ? "bg-emerald-500"
-                : telemetry.successRate >= 70
-                ? "bg-amber-500"
-                : "bg-red-500"
-            }`}
-            style={{ width: `${Math.min(Math.max(telemetry.successRate, 5), 100)}%` }}
-          />
+          {hasFinishedRuns && (
+            <div
+              className={`h-full rounded-full transition-all duration-500 ${
+                telemetry.successRate >= 90
+                  ? "bg-emerald-500"
+                  : telemetry.successRate >= 70
+                  ? "bg-amber-500"
+                  : "bg-red-500"
+              }`}
+              style={{ width: `${Math.min(Math.max(telemetry.successRate, 5), 100)}%` }}
+            />
+          )}
         </div>
       </div>
 
       {/* 5. Avg Latency */}
-      <div className="p-5 rounded-lg border border-slate-200 dark:border-indigo-900/50 bg-white/80 dark:bg-[#0a0a0a]/80 space-y-2 hover:border-indigo-400 dark:hover:border-indigo-500/50 shadow-sm hover:shadow-xl transition-all h-full">
+      <div className="p-4 rounded-lg border border-slate-200 dark:border-indigo-900/50 bg-white/80 dark:bg-[#0a0a0a]/80 space-y-2 hover:border-indigo-400 dark:hover:border-indigo-500/50 shadow-sm hover:shadow-xl transition-all h-full">
         <div className="flex items-center justify-between text-indigo-700 dark:text-indigo-400 text-xs tracking-wider uppercase font-semibold">
           <span>AVG LATENCY</span>
           <Timer className="h-4 w-4" />
@@ -143,7 +150,7 @@ export function TelemetryMetricsGrid({
       {/* 6. Human Review Queue */}
       <Link
         href="/dashboard/review"
-        className={`group p-5 rounded-lg border space-y-2 shadow-sm hover:shadow-xl transition-all h-full ${
+        className={`group p-4 rounded-lg border space-y-2 shadow-sm hover:shadow-xl transition-all h-full ${
           pendingApprovalsCount > 0
             ? "border-amber-400/80 dark:border-amber-500/50 bg-amber-50/50 dark:bg-[#0a0a0a]/80 hover:border-amber-400"
             : "border-slate-200 dark:border-indigo-900/50 bg-white/80 dark:bg-[#0a0a0a]/80 hover:border-indigo-400"

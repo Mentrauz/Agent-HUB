@@ -63,7 +63,7 @@ export function A2ADirectoryModal({ isOpen, onClose, onSelectAgent }: A2ADirecto
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 font-mono animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 font-mono animate-in fade-in duration-150">
       <div className="relative w-full max-w-3xl rounded-2xl border border-indigo-500/30 bg-[#0c0d18] shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
         {/* Modal Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-indigo-500/20 bg-indigo-950/20">

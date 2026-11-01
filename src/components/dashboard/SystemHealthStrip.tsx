@@ -7,21 +7,36 @@ import { SystemHealthDTO } from "@/types/dashboard";
 
 interface SystemHealthStripProps {
   health: SystemHealthDTO;
+  liveCount: number;
 }
 
-export function SystemHealthStrip({ health }: SystemHealthStripProps) {
+export function SystemHealthStrip({ health, liveCount }: SystemHealthStripProps) {
   const mcpAllConnected = health.mcpServersTotal > 0 && health.mcpServersConnected === health.mcpServersTotal;
+  const isIdle = liveCount === 0;
 
   return (
     <div className="rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/70 dark:bg-[#070709]/80 backdrop-blur-md px-4 py-3 shadow-sm font-mono transition-all">
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3">
-        {/* Left Label */}
+        {/* Left Label: Agent Runtime Status */}
         <div className="flex items-center gap-2 text-[11px] font-semibold tracking-wider text-slate-700 dark:text-slate-300 uppercase shrink-0">
           <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+            <span
+              className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                isIdle ? "bg-emerald-400" : "bg-amber-400"
+              }`}
+            />
+            <span
+              className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isIdle ? "bg-emerald-500" : "bg-amber-500"}`}
+            />
           </span>
-          <span>SYSTEM RUNTIME & INTEGRATIONS</span>
+          <span>
+            AGENT RUNTIME:{" "}
+            {isIdle ? (
+              <span className="text-emerald-600 dark:text-emerald-400">READY & IDLE</span>
+            ) : (
+              <span className="text-amber-600 dark:text-amber-400">{liveCount} IN-FLIGHT</span>
+            )}
+          </span>
         </div>
 
         {/* Integration Badges */}

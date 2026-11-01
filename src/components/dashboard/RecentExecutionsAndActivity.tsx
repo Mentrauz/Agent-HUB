@@ -17,7 +17,7 @@ function formatTime(d: Date | string): string {
 
 export function RecentExecutionsCard({ executions }: { executions: ExecutionDTO[] }) {
   return (
-    <div className="p-6 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-4 h-full shadow-sm font-mono flex flex-col justify-between">
+    <div className="p-5 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-4 h-full shadow-sm font-mono flex flex-col justify-between">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-xs font-bold text-slate-900 dark:text-slate-200 flex items-center gap-2 uppercase tracking-wider">
@@ -44,12 +44,14 @@ export function RecentExecutionsCard({ executions }: { executions: ExecutionDTO[
                   <div className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
                     {e.skillName ?? "Agent Workflow"}
                   </div>
-                  <div className="text-[10px] text-slate-500 flex items-center gap-1.5 font-medium">
-                    <span>{e.provider ?? "Standard"}</span>
+                  <div className="text-[10px] text-slate-500 flex items-center gap-1.5 font-medium min-w-0">
+                    <span className="truncate">{e.provider ?? "Standard"}</span>
                     <span>·</span>
-                    <span>{e.durationMs ? `${(e.durationMs / 1000).toFixed(1)}s` : "—"}</span>
+                    <span className="shrink-0">{e.durationMs ? `${(e.durationMs / 1000).toFixed(1)}s` : "—"}</span>
                     <span>·</span>
-                    <span>{formatTime(e.startedAt)}</span>
+                    <span className="shrink-0">
+                      {formatDate(e.startedAt)} · {formatTime(e.startedAt)}
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
@@ -81,7 +83,7 @@ export function RecentExecutionsCard({ executions }: { executions: ExecutionDTO[
 
 export function SystemAuditActivityCard({ activity }: { activity: AuditLogItemDTO[] }) {
   return (
-    <div className="p-6 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-4 h-full shadow-sm font-mono flex flex-col justify-between">
+    <div className="p-5 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-4 h-full shadow-sm font-mono flex flex-col justify-between">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-xs font-bold text-slate-900 dark:text-slate-200 flex items-center gap-2 uppercase tracking-wider">

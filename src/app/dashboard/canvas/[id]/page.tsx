@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect, useMemo, useState, useCallback } from "react";
+import React, { use, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -15,9 +15,9 @@ import {
   Ghost,
   History,
   Share2,
-  Activity,
   GitBranch,
   Check,
+  MoreHorizontal,
 } from "lucide-react";
 import { skillsApi } from "@/lib/api/skills";
 import { executionsApi } from "@/lib/api/executions";
@@ -34,6 +34,9 @@ import { clsx } from "clsx";
 import { getPrefilledExecutionInput } from "@/lib/execution/inputHelper";
 import { JsonEditorModal } from "@/components/common/JsonEditorModal";
 import { Maximize2, ChevronDown, ChevronUp } from "lucide-react";
+
+const menuItemClass =
+  "w-full inline-flex items-center gap-2 px-3 py-1.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-indigo-950/50 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed text-left";
 
 export default function CanvasEditorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -94,9 +97,15 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
   const [activeExecutionId, setActiveExecutionId] = useState<string | null>(null);
   const [activePreviewId, setActivePreviewId] = useState<string | null>(null);
   const [showDiff, setShowDiff] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+  const moreRef = useRef<HTMLDivElement | null>(null);
   const [editingSubgraph, setEditingSubgraph] = useState(false);
   const [syncStatus, setSyncStatus] = useState<"synced" | "saving" | "unsaved">("synced");
   const [isDirty, setIsDirty] = useState(false);
+  // Bumped on every edit — a save only marks the graph clean if no edit landed while it was in flight.
+  const editSeqRef = useRef(0);
+  // Serialises saves so an older graph can never land after a newer one.
+  const saveQueueRef = useRef<Promise<unknown>>(Promise.resolve());
 
   // Version diff: working graph vs the last published version.
   const publishedGraph = skill?.publishedVersion?.graphDefinition ?? null;
@@ -115,52 +124,104 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
   }, [draft, skill?.name, initialized]);
 
   const handleGraphChange = useCallback((newGraph: AgentGraphDefinition) => {
+    editSeqRef.current += 1;
     setGraph(newGraph);
     setIsDirty(true);
     setSyncStatus("unsaved");
   }, []);
 
+  /** Persist a graph to the draft. Shared by auto-sync, manual save and run. Throws on failure. */
+  const flushSave = useCallback(
+    async (graphToSave: AgentGraphDefinition) => {
+      const seq = editSeqRef.current;
+      setSyncStatus("saving");
+      const save = saveQueueRef.current
+        .catch(() => { })
+        .then(() => skillsApi.update(id, { graphDefinition: graphToSave }));
+      saveQueueRef.current = save;
+      try {
+        await save;
+      } catch (e) {
+        setSyncStatus("unsaved");
+        throw e;
+      }
+      if (editSeqRef.current === seq) {
+        setIsDirty(false);
+        setSyncStatus("synced");
+      } else {
+        setSyncStatus("unsaved");
+      }
+      queryClient.invalidateQueries({ queryKey: ["skill", id] });
+    },
+    [id, queryClient]
+  );
+
   // Debounced Auto-Sync effect
   useEffect(() => {
     if (!isDirty || !graph || !draft) return;
-    const timer = setTimeout(async () => {
-      setSyncStatus("saving");
-      try {
-        await skillsApi.update(id, { graphDefinition: graph });
-        setIsDirty(false);
-        setSyncStatus("synced");
-        queryClient.invalidateQueries({ queryKey: ["skill", id] });
-      } catch {
-        setSyncStatus("unsaved");
-      }
+    const timer = setTimeout(() => {
+      flushSave(graph).catch(() => { });
     }, 1200);
     return () => clearTimeout(timer);
-  }, [graph, isDirty, draft, id, queryClient]);
+  }, [graph, isDirty, draft, flushSave]);
+
+  // Don't lose pending edits: warn on tab close, and flush on in-app navigation (unmount).
+  const pendingRef = useRef<AgentGraphDefinition | null>(null);
+  useEffect(() => {
+    pendingRef.current = isDirty ? graph : null;
+  }, [isDirty, graph]);
+  useEffect(() => {
+    if (syncStatus === "synced") return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [syncStatus]);
+  useEffect(() => {
+    return () => {
+      if (pendingRef.current) skillsApi.update(id, { graphDefinition: pendingRef.current }).catch(() => { });
+    };
+  }, [id]);
+
+  // Close the "More" menu on outside click / Escape.
+  useEffect(() => {
+    if (!showMore) return;
+    const onClick = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setShowMore(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setShowMore(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [showMore]);
 
   const hasGraph = graph !== null && graph.nodes.length > 0;
 
   const saveMutation = useMutation({
     mutationFn: () => {
       if (!graph) throw new Error("Nothing to save");
-      setSyncStatus("saving");
-      return skillsApi.update(id, { graphDefinition: graph });
+      return flushSave(graph);
     },
     onSuccess: () => {
-      setIsDirty(false);
-      setSyncStatus("synced");
       toast.success("Graph synced", "All changes saved to draft.");
-      queryClient.invalidateQueries({ queryKey: ["skill", id] });
       queryClient.invalidateQueries({ queryKey: ["skills"] });
     },
-    onError: (e) => {
-      setSyncStatus("unsaved");
-      toast.error("Save failed", e instanceof Error ? e.message : undefined);
-    },
+    onError: (e) => toast.error("Save failed", e instanceof Error ? e.message : undefined),
   });
 
   const runMutation = useMutation({
-    mutationFn: ({ versionId, inputData }: { versionId: string; inputData: Record<string, unknown> }) =>
-      executionsApi.start(versionId, inputData),
+    mutationFn: async ({ versionId, inputData }: { versionId: string; inputData: Record<string, unknown> }) => {
+      // Persist pending edits first so the run executes the graph on screen.
+      if (isDirty && graph) await flushSave(graph);
+      return executionsApi.start(versionId, inputData);
+    },
     onSuccess: (execution) => {
       toast.success("Execution started", "Tracing the graph live…");
       setActiveExecutionId(execution.id);
@@ -221,19 +282,6 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
     }
     const inputData = parseInput();
     if (!inputData) return;
-
-    // Flush dirty changes quietly in background so latest graph runs
-    if (isDirty && graph) {
-      skillsApi.update(id, { graphDefinition: graph })
-        .then(() => {
-          setIsDirty(false);
-          setSyncStatus("synced");
-          queryClient.invalidateQueries({ queryKey: ["skill", id] });
-        })
-        .catch(() => { });
-    }
-
-    // Directly trigger execution without blocking on manual save
     runMutation.mutate({ versionId: draft.id, inputData });
   };
 
@@ -249,7 +297,6 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
   };
 
   const tracing = Boolean(activeExecutionId) || Boolean(activePreviewId);
-  const running = runMutation.isPending || previewMutation.isPending || tracing;
 
   if (isLoading) return <SkeletonSkillDetail />;
   if (isError || !skill || !draft) {
@@ -269,10 +316,12 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
     );
   }
 
+  const canDiff = Boolean(publishedGraph && graphDiff && !tracing);
+
   return (
-    <div className="space-y-4 h-full flex flex-col">
+    <div className="h-full flex flex-col gap-2">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 border-b border-slate-200 dark:border-indigo-950/80 pb-4 shrink-0">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 border-b border-slate-200 dark:border-indigo-950/80 pb-2 shrink-0">
         <div className="flex items-center gap-3 min-w-0">
           <Link
             href="/dashboard/canvas"
@@ -308,21 +357,29 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
                 </span>
               )}
             </div>
+            {/* Subtitle: graph shape + run analytics for this version */}
             <p className="text-[10px] text-slate-600 dark:text-slate-400 mt-0.5 truncate font-mono">
               draft v{draft.versionNumber} · {graph?.nodes.length ?? 0} nodes · {graph?.edges.length ?? 0} edges
+              {analytics.runs > 0 && (
+                <>
+                  {" · "}runs <b className="text-slate-900 dark:text-slate-100">{analytics.runs}</b>
+                  {" · "}success{" "}
+                  <b className={clsx(analytics.successRate !== null && analytics.successRate >= 70 ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400")}>
+                    {analytics.successRate === null ? "—" : `${analytics.successRate}%`}
+                  </b>
+                  {" · "}avg{" "}
+                  <b className="text-slate-900 dark:text-slate-100">
+                    {analytics.avgDurationMs >= 1000 ? `${(analytics.avgDurationMs / 1000).toFixed(1)}s` : `${Math.round(analytics.avgDurationMs)}ms`}
+                  </b>
+                  {" · "}failures{" "}
+                  <b className={analytics.failures > 0 ? "text-red-600 dark:text-red-400" : "text-slate-900 dark:text-slate-100"}>{analytics.failures}</b>
+                </>
+              )}
             </p>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5 text-xs font-mono w-full lg:w-auto justify-start lg:justify-end">
-          <Link
-            href={`/dashboard/skills/${skill.id}/edit`}
-            className="inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded border border-slate-300 dark:border-indigo-900/50 bg-slate-50 dark:bg-indigo-950/30 text-slate-700 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-700 transition-all text-[11px] font-semibold"
-            title="Open the classic form editor for this skill"
-          >
-            <Pencil className="h-3 w-3" /> Form Editor
-          </Link>
-
           <button
             type="button"
             onClick={() => saveMutation.mutate()}
@@ -357,27 +414,6 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
             Ghost Preview
           </button>
 
-          {publishedGraph && graphDiff && !tracing && (
-            <button
-              type="button"
-              onClick={() => setShowDiff(true)}
-              className="inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded border border-slate-300 dark:border-indigo-900/50 bg-slate-50 dark:bg-indigo-950/30 text-slate-700 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-700 transition-all text-[11px] font-semibold cursor-pointer"
-              title="Visual diff against the published version"
-            >
-              <GitBranch className="h-3 w-3" /> Diff
-            </button>
-          )}
-
-          <button
-            type="button"
-            onClick={shareSnapshot}
-            disabled={!hasGraph || tracing}
-            className="inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded border border-slate-300 dark:border-indigo-900/50 bg-slate-50 dark:bg-indigo-950/30 text-slate-700 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-700 transition-all text-[11px] font-semibold cursor-pointer disabled:opacity-40"
-            title="Copy a read-only snapshot link"
-          >
-            <Share2 className="h-3 w-3" /> Snapshot
-          </button>
-
           <button
             type="button"
             onClick={handleRun}
@@ -396,94 +432,120 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
               <ExternalLink className="h-3 w-3" /> Full Trace
             </Link>
           )}
+
+          {/* Secondary actions */}
+          <div ref={moreRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setShowMore((s) => !s)}
+              className="inline-flex items-center justify-center px-2 py-1.5 rounded border border-slate-300 dark:border-indigo-900/50 bg-slate-50 dark:bg-indigo-950/30 text-slate-700 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-700 transition-all cursor-pointer"
+              title="More actions"
+              aria-haspopup="menu"
+              aria-expanded={showMore}
+            >
+              <MoreHorizontal className="h-3.5 w-3.5" />
+            </button>
+            {showMore && (
+              <div role="menu" className="absolute right-0 top-9 z-50 w-48 py-1 rounded-lg border border-slate-200 dark:border-indigo-900/60 bg-white dark:bg-[#0c0d18] shadow-xl">
+                <Link
+                  href={`/dashboard/skills/${skill.id}/edit`}
+                  role="menuitem"
+                  className={menuItemClass}
+                  title="Open the classic form editor for this skill"
+                  onClick={() => setShowMore(false)}
+                >
+                  <Pencil className="h-3 w-3" /> Form Editor
+                </Link>
+                {canDiff && (
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setShowDiff(true);
+                      setShowMore(false);
+                    }}
+                    className={menuItemClass}
+                    title="Visual diff against the published version"
+                  >
+                    <GitBranch className="h-3 w-3" /> Diff vs published
+                  </button>
+                )}
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    shareSnapshot();
+                    setShowMore(false);
+                  }}
+                  disabled={!hasGraph || tracing}
+                  className={menuItemClass}
+                  title="Copy a read-only snapshot link"
+                >
+                  <Share2 className="h-3 w-3" /> Copy snapshot link
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Analytics strip */}
-      {!tracing && analytics.runs > 0 && (
-        <div className="shrink-0 flex flex-wrap items-center gap-x-4 gap-y-1 rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 px-3 py-2 text-[10px] font-mono">
-          <span className="inline-flex items-center gap-1.5 font-bold uppercase tracking-widest text-indigo-700 dark:text-indigo-400/80">
-            <Activity className="h-3 w-3 text-emerald-600 dark:text-emerald-400" /> Analytics
-          </span>
-          <span className="text-slate-600 dark:text-slate-400">runs <b className="text-slate-900 dark:text-slate-100">{analytics.runs}</b></span>
-          <span className="text-slate-600 dark:text-slate-400">success{" "}
-            <b className={clsx(analytics.successRate !== null && analytics.successRate >= 70 ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400")}>
-              {analytics.successRate === null ? "—" : `${analytics.successRate}%`}
-            </b>
-          </span>
-          <span className="text-slate-600 dark:text-slate-400">avg{" "}
-            <b className="text-slate-900 dark:text-slate-100">
-              {analytics.avgDurationMs >= 1000 ? `${(analytics.avgDurationMs / 1000).toFixed(1)}s` : `${Math.round(analytics.avgDurationMs)}ms`}
-            </b>
-          </span>
-          <span className="text-slate-600 dark:text-slate-400">failures <b className={analytics.failures > 0 ? "text-red-600 dark:text-red-400" : "text-slate-900 dark:text-slate-100"}>{analytics.failures}</b></span>
-        </div>
-      )}
-
-      {/* Sleek Execution Input Action Bar */}
+      {/* Execution input bar */}
       {!tracing && (
-        <div className="shrink-0 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/95 dark:bg-[#0c0d16]/90 p-2.5 space-y-2 shadow-xs backdrop-blur-xs font-mono">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5 shrink-0">
-                <Play className="h-3 w-3 text-emerald-500 fill-emerald-500/20" /> INPUT:
-              </span>
-              <div
-                onClick={() => setIsJsonModalOpen(true)}
-                className="flex-1 min-w-0 px-3 py-1 rounded bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-indigo-950/60 text-[11px] text-slate-700 dark:text-slate-300 truncate cursor-pointer hover:border-indigo-400 transition-colors"
-                title="Click to expand full JSON editor"
-              >
-                {runInput.replace(/\s+/g, " ").slice(0, 120) || "{ }"}
-              </div>
+        <div className="shrink-0 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/95 dark:bg-[#0c0d16]/90 px-2.5 py-1.5 space-y-1.5 shadow-xs backdrop-blur-xs font-mono">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5 shrink-0">
+              <Play className="h-3 w-3 text-emerald-500 fill-emerald-500/20" /> INPUT:
+            </span>
+            <div
+              onClick={() => setIsJsonModalOpen(true)}
+              className="flex-1 min-w-0 px-3 py-1 rounded bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-indigo-950/60 text-[11px] text-slate-700 dark:text-slate-300 truncate cursor-pointer hover:border-indigo-400 transition-colors"
+              title="Click to expand full JSON editor"
+            >
+              {runInput.replace(/\s+/g, " ").slice(0, 120) || "{ }"}
             </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={() => setIsJsonModalOpen(true)}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/80 dark:bg-indigo-950/50 text-[10px] text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 transition-all cursor-pointer font-bold shadow-xs"
-                title="Expand fullscreen JSON editor"
-              >
-                <Maximize2 className="h-3 w-3" /> Expand JSON
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowInputBox((p) => !p)}
-                className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-200 dark:border-slate-800 text-[10px] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors cursor-pointer"
-                title={showInputBox ? "Hide raw text box" : "Show inline text box"}
-              >
-                {showInputBox ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                {showInputBox ? "Hide" : "Raw"}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setRunInput(getPrefilledExecutionInput(draft));
-                  if (runInputError) setRunInputError(null);
-                  toast.info("Input reloaded from schema sample");
-                }}
-                className="text-[10px] text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer flex items-center gap-1"
-              >
-                ↻ Sample
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setIsJsonModalOpen(true)}
+              className="shrink-0 p-1.5 rounded border border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/80 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 transition-all cursor-pointer"
+              title="Expand fullscreen JSON editor"
+            >
+              <Maximize2 className="h-3 w-3" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowInputBox((p) => !p)}
+              className="shrink-0 p-1.5 rounded border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors cursor-pointer"
+              title={showInputBox ? "Hide raw text box" : "Show inline raw text box"}
+            >
+              {showInputBox ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setRunInput(getPrefilledExecutionInput(draft));
+                if (runInputError) setRunInputError(null);
+                toast.info("Input reloaded from schema sample");
+              }}
+              className="shrink-0 px-1.5 py-1 text-[10px] text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+              title="Reload input from the schema sample"
+            >
+              ↻ Sample
+            </button>
           </div>
 
           {showInputBox && (
-            <div className="pt-1">
-              <textarea
-                value={runInput}
-                onChange={(e) => {
-                  setRunInput(e.target.value);
-                  if (runInputError) setRunInputError(null);
-                }}
-                rows={3}
-                spellCheck={false}
-                placeholder="{ }"
-                className={`w-full rounded border bg-white dark:bg-black/60 px-3 py-2 text-[11px] text-slate-900 dark:text-slate-300 placeholder:text-slate-400 focus:outline-none transition-colors resize-y shadow-inner ${runInputError ? "border-red-500" : "border-slate-300 dark:border-indigo-900/50 focus:border-indigo-500"
-                  }`}
-              />
-            </div>
+            <textarea
+              value={runInput}
+              onChange={(e) => {
+                setRunInput(e.target.value);
+                if (runInputError) setRunInputError(null);
+              }}
+              rows={3}
+              spellCheck={false}
+              placeholder="{ }"
+              className={`w-full rounded border bg-white dark:bg-black/60 px-3 py-2 text-[11px] text-slate-900 dark:text-slate-300 placeholder:text-slate-400 focus:outline-none transition-colors resize-y shadow-inner ${runInputError ? "border-red-500" : "border-slate-300 dark:border-indigo-900/50 focus:border-indigo-500"
+                }`}
+            />
           )}
           {runInputError && (
             <p className="text-[10px] text-red-600 dark:text-red-400 font-semibold">[ JSON ERROR ] {runInputError}</p>
@@ -492,7 +554,7 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
       )}
 
       {/* Canvas */}
-      <div className={clsx("flex-1 min-h-0", running ? "opacity-100" : "")}>
+      <div className="flex-1 min-h-[420px]">
         <AgentGraphCanvas
           graph={graph}
           onChange={handleGraphChange}

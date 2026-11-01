@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Play, PauseCircle, Activity, ArrowRight, ShieldAlert, Cpu } from "lucide-react";
+import { Play, PauseCircle, ArrowRight, ShieldAlert, Cpu } from "lucide-react";
 import { LiveExecutionItemDTO } from "@/types/dashboard";
 
 interface LiveExecutionTrackerProps {
@@ -10,23 +10,8 @@ interface LiveExecutionTrackerProps {
 }
 
 export function LiveExecutionTracker({ liveExecutions }: LiveExecutionTrackerProps) {
-  if (liveExecutions.length === 0) {
-    return (
-      <div className="rounded-lg border border-slate-200/80 dark:border-indigo-950/60 bg-white/40 dark:bg-[#070709]/40 px-4 py-2.5 flex items-center justify-between text-xs font-mono text-slate-500 shadow-sm">
-        <div className="flex items-center gap-2">
-          <Activity className="h-4 w-4 text-emerald-500/70" />
-          <span>AGENT RUNTIME: <span className="text-emerald-600 dark:text-emerald-400 font-semibold">READY & IDLE</span></span>
-          <span className="text-[10px] text-slate-400">· Standing by for triggers</span>
-        </div>
-        <Link
-          href="/dashboard/skills"
-          className="text-[10px] text-indigo-700 dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 font-semibold flex items-center gap-1"
-        >
-          [ RUN A SKILL ] <ArrowRight className="h-3 w-3" />
-        </Link>
-      </div>
-    );
-  }
+  // Idle state is shown in SystemHealthStrip's runtime label
+  if (liveExecutions.length === 0) return null;
 
   return (
     <div className="space-y-2 font-mono">

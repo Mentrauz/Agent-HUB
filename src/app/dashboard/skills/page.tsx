@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import {
   Plus,
@@ -19,6 +20,7 @@ import {
   Wand2,
   Network,
   RotateCcw,
+  ChevronDown,
 } from "lucide-react";
 import { skillsApi } from "@/lib/api/skills";
 import { SkillDTO, SkillStatus } from "@/types/skill";
@@ -31,12 +33,14 @@ import { EmptyState } from "@/components/feedback/EmptyState";
 import { toast } from "@/stores/toastStore";
 import { clsx } from "clsx";
 import { ItemIcon } from "@/components/common/ItemIcon";
-import { SkillsMarketplace } from "./marketplace/SkillsMarketplace";
-import { UnifiedWorkflowsMarketplace } from "./marketplace/UnifiedWorkflowsMarketplace";
-import { N8nWorkflowsMarketplace } from "./marketplace/N8nWorkflowsMarketplace";
-import { DifyWorkflowsMarketplace } from "./marketplace/DifyWorkflowsMarketplace";
-import { SkillPackMarketplace } from "./packs/SkillPackMarketplace";
-import { SkillSynthesizer } from "./synthesizer/SkillSynthesizer";
+// Secondary views are code-split so the studio tab doesn't ship every marketplace bundle
+const viewLoading = () => <SkeletonGrid cards={6} />;
+const SkillsMarketplace = dynamic(() => import("./marketplace/SkillsMarketplace").then((m) => m.SkillsMarketplace), { loading: viewLoading });
+const UnifiedWorkflowsMarketplace = dynamic(() => import("./marketplace/UnifiedWorkflowsMarketplace").then((m) => m.UnifiedWorkflowsMarketplace), { loading: viewLoading });
+const N8nWorkflowsMarketplace = dynamic(() => import("./marketplace/N8nWorkflowsMarketplace").then((m) => m.N8nWorkflowsMarketplace), { loading: viewLoading });
+const DifyWorkflowsMarketplace = dynamic(() => import("./marketplace/DifyWorkflowsMarketplace").then((m) => m.DifyWorkflowsMarketplace), { loading: viewLoading });
+const SkillPackMarketplace = dynamic(() => import("./packs/SkillPackMarketplace").then((m) => m.SkillPackMarketplace), { loading: viewLoading });
+const SkillSynthesizer = dynamic(() => import("./synthesizer/SkillSynthesizer").then((m) => m.SkillSynthesizer), { loading: viewLoading });
 
 const sortOptions = [
   { value: "updatedAt-desc", label: "UPDATED · NEWEST" },
@@ -54,6 +58,7 @@ export default function SkillsDashboardPage() {
   const [typeFilter, setTypeFilter] = useState<"ALL" | "WORKFLOWS" | "PROMPT">("ALL");
   const [sort, setSort] = useState("updatedAt-desc");
   const [viewMode, setViewMode] = useState<"studio" | "workflows" | "marketplace" | "n8n" | "dify" | "packs" | "synthesize">("studio");
+  const [showAllBlueprints, setShowAllBlueprints] = useState(false);
   const debounceTimer = useRef<number | null>(null);
 
   useEffect(() => {
@@ -126,15 +131,21 @@ export default function SkillsDashboardPage() {
     try {
       if (target.action === "archive") await archiveMutation.mutateAsync(target.skill.id);
       else await deleteMutation.mutateAsync(target.skill.id);
+    } catch {
+      // Already surfaced by the mutation's onError toast
     } finally {
       setIsActionPending(false);
     }
   };
 
   const allSkills = data?.items ?? [];
+  const isArchiveView = status === "ARCHIVED";
+  const hasActiveFilters = Boolean(debouncedSearch || status || typeFilter !== "ALL");
 
   // Filter based on typeFilter
   const filteredSkills = allSkills.filter((skill) => {
+    // The API includes archived items when no status is set; they belong in the Archive view only
+    if (!status && skill.status === "ARCHIVED") return false;
     const version = skill.publishedVersion ?? skill.currentDraft;
     const isMultiStep = (version?.allowedTools?.length ?? 0) > 1;
     if (typeFilter === "WORKFLOWS") return isMultiStep;
@@ -143,117 +154,119 @@ export default function SkillsDashboardPage() {
   });
 
   return (
-    <div className="space-y-8 w-full">
+    <div className="space-y-6 w-full">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-indigo-950/80 pb-5">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <h1 className="text-lg sm:text-2xl font-pixel text-pixel-glow uppercase tracking-wide">
-              WORKFLOW & SKILLS STUDIO
-            </h1>
+      <div className="border-b border-slate-200 dark:border-indigo-950/80 pb-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <h1 className="text-lg sm:text-2xl font-pixel text-pixel-glow uppercase tracking-wide">
+                WORKFLOW & SKILLS STUDIO
+              </h1>
+            </div>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-mono">
+              Define, validate, version, and execute bounded multi-step workflows & AI skills.
+            </p>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-mono">
-            Define, validate, version, and execute bounded multi-step workflows & AI skills.
-          </p>
-
-          {/* View Mode Tabs */}
-          <div className="flex items-center gap-2 mt-3 flex-wrap">
-            <button
-              type="button"
-              onClick={() => {
-                setViewMode("studio");
-                if (status === "ARCHIVED") setStatus("");
-              }}
-              className={clsx(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
-                viewMode === "studio" && status !== "ARCHIVED"
-                  ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
-              )}
-            >
-              <Workflow className="h-3.5 w-3.5" /> MY STUDIO
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("marketplace")}
-              className={clsx(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer relative",
-                viewMode === "marketplace"
-                  ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
-              )}
-            >
-              <Package className="h-3.5 w-3.5 text-amber-400" />
-              SKILLS MARKETPLACE
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("workflows")}
-              className={clsx(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer relative",
-                viewMode === "workflows"
-                  ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
-              )}
-            >
-              <Workflow className="h-3.5 w-3.5 text-indigo-400" />
-              WORKFLOWS MARKETPLACE
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[7px] bg-gradient-to-r from-rose-500 via-blue-500 to-indigo-500 text-white font-extrabold uppercase shadow-xs">
-                11.9K+
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("packs")}
-              className={clsx(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
-                viewMode === "packs"
-                  ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
-              )}
-            >
-              <Package className="h-3.5 w-3.5" />
-              1-CLICK PACKS
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("synthesize")}
-              className={clsx(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
-                viewMode === "synthesize"
-                  ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
-              )}
-            >
-              <Wand2 className="h-3.5 w-3.5" />
-              SYNTHESIZE
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setViewMode("studio");
-                setStatus("ARCHIVED");
-              }}
-              className={clsx(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
-                viewMode === "studio" && status === "ARCHIVED"
-                  ? "bg-amber-600 text-white shadow-sm shadow-amber-500/30"
-                  : "text-slate-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/40"
-              )}
-            >
-              <Archive className="h-3.5 w-3.5 text-amber-500" />
-              ARCHIVE
-            </button>
-          </div>
+          <Link
+            href="/dashboard/skills/new"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded border border-indigo-400 bg-indigo-600 text-white font-semibold hover:bg-indigo-500 shadow-md shadow-indigo-500/30 transition-all text-xs font-mono cursor-pointer w-full sm:w-auto shrink-0"
+          >
+            <Plus className="h-4 w-4" />
+            CREATE WORKFLOW / SKILL
+          </Link>
         </div>
-        <Link
-          href="/dashboard/skills/new"
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded border border-indigo-400 bg-indigo-600 text-white font-semibold hover:bg-indigo-500 shadow-md shadow-indigo-500/30 transition-all text-xs font-mono cursor-pointer w-full sm:w-auto"
-        >
-          <Plus className="h-4 w-4" />
-          CREATE WORKFLOW / SKILL
-        </Link>
+
+        {/* View Mode Tabs */}
+        <div className="flex items-center gap-2 mt-4 flex-wrap">
+          <button
+            type="button"
+            onClick={() => {
+              setViewMode("studio");
+              if (status === "ARCHIVED") setStatus("");
+            }}
+            className={clsx(
+              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
+              viewMode === "studio" && status !== "ARCHIVED"
+                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
+            )}
+          >
+            <Workflow className="h-3.5 w-3.5" /> MY STUDIO
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("marketplace")}
+            className={clsx(
+              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer relative",
+              viewMode === "marketplace"
+                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
+            )}
+          >
+            <Package className="h-3.5 w-3.5 text-amber-400" />
+            SKILLS MARKETPLACE
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("workflows")}
+            className={clsx(
+              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer relative",
+              viewMode === "workflows"
+                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
+            )}
+          >
+            <Workflow className="h-3.5 w-3.5 text-indigo-400" />
+            WORKFLOWS MARKETPLACE
+            <span className="ml-1 px-1.5 py-px rounded-full text-[7px] bg-gradient-to-r from-rose-500 via-blue-500 to-indigo-500 text-white font-extrabold uppercase shadow-xs">
+              11.9K+
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("packs")}
+            className={clsx(
+              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
+              viewMode === "packs"
+                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
+            )}
+          >
+            <Package className="h-3.5 w-3.5" />
+            1-CLICK PACKS
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("synthesize")}
+            className={clsx(
+              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
+              viewMode === "synthesize"
+                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
+            )}
+          >
+            <Wand2 className="h-3.5 w-3.5" />
+            SYNTHESIZE
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setViewMode("studio");
+              setStatus("ARCHIVED");
+            }}
+            className={clsx(
+              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
+              viewMode === "studio" && status === "ARCHIVED"
+                ? "bg-amber-600 text-white shadow-sm shadow-amber-500/30"
+                : "text-slate-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/40"
+            )}
+          >
+            <Archive className="h-3.5 w-3.5 text-amber-500" />
+            ARCHIVE
+          </button>
+        </div>
       </div>
 
       {/* Marketplace View */}
@@ -272,131 +285,149 @@ export default function SkillsDashboardPage() {
       ) : (
         <>
           {/* ENTERPRISE BLUEPRINTS & TEMPLATES */}
-          <div className="space-y-3 font-mono">
-            <div className="flex items-center justify-between text-xs text-indigo-700 dark:text-indigo-400/80 uppercase tracking-widest font-semibold">
-              <span className="flex items-center gap-1.5">
-                <Zap className="h-3.5 w-3.5 text-amber-500" />
-                ENTERPRISE WORKFLOW BLUEPRINTS
-              </span>
-              <span className="text-[10px] text-slate-500">1-CLICK STARTERS</span>
-            </div>
+          {!isArchiveView && (
+            <div className="space-y-3 font-mono">
+              <div className="flex items-center justify-between gap-3 text-xs text-indigo-700 dark:text-indigo-400/80 uppercase tracking-widest font-semibold">
+                <span className="flex items-center gap-1.5">
+                  <Zap className="h-3.5 w-3.5 text-amber-500" />
+                  ENTERPRISE WORKFLOW BLUEPRINTS
+                </span>
+                <span className="flex items-center gap-3 text-[10px]">
+                  <span className="hidden sm:inline text-slate-500">1-CLICK STARTERS</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowAllBlueprints((v) => !v)}
+                    aria-expanded={showAllBlueprints}
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-200 dark:border-indigo-900/40 text-indigo-700 dark:text-indigo-400 hover:border-indigo-400 transition-colors cursor-pointer"
+                  >
+                    {showAllBlueprints ? "SHOW LESS" : `SHOW ALL (${WORKFLOW_TEMPLATES.length})`}
+                    <ChevronDown className={clsx("h-3 w-3 transition-transform", showAllBlueprints && "rotate-180")} />
+                  </button>
+                </span>
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {WORKFLOW_TEMPLATES.map((tmpl) => (
-                <div
-                  key={tmpl.id}
-                  className="p-4 rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/80 space-y-3 hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:shadow-lg transition-all flex flex-col justify-between"
-                >
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[9px] px-2 py-0.5 rounded border border-indigo-300 dark:border-indigo-700/50 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold">
-                        {tmpl.badge}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {WORKFLOW_TEMPLATES.map((tmpl, i) => (
+                  <div
+                    key={tmpl.id}
+                    className={clsx(
+                      "p-4 rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/80 space-y-3 hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:shadow-lg transition-all flex-col justify-between",
+                      // Collapsed: one row — 2 cards on mobile, 3 from md up
+                      showAllBlueprints || i < 2 ? "flex" : i === 2 ? "hidden md:flex" : "hidden"
+                    )}
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[9px] px-2 py-0.5 rounded border border-indigo-300 dark:border-indigo-700/50 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold">
+                          {tmpl.badge}
+                        </span>
+                        <span className="text-[9px] text-slate-500 uppercase">{tmpl.category}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <ItemIcon
+                          name={tmpl.name}
+                          category={tmpl.category}
+                          size="xs"
+                        />
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">{tmpl.name}</h3>
+                      </div>
+                      <p className="text-[11px] text-slate-600 dark:text-slate-400 font-serif leading-relaxed line-clamp-2">
+                        {tmpl.purpose}
+                      </p>
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-100 dark:border-indigo-950/60 flex items-center justify-between">
+                      <span className="text-[10px] text-slate-500 font-mono">
+                        {tmpl.allowedTools.length + 1} steps
                       </span>
-                      <span className="text-[9px] text-slate-500 uppercase">{tmpl.category}</span>
+                      <Link
+                        href={`/dashboard/skills/new?template=${tmpl.id}`}
+                        className="inline-flex items-center gap-1 text-xs font-bold text-indigo-700 dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors"
+                      >
+                        USE BLUEPRINT <ArrowRight className="h-3 w-3" />
+                      </Link>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <ItemIcon
-                        name={tmpl.name}
-                        category={tmpl.category}
-                        size="xs"
-                      />
-                      <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">{tmpl.name}</h3>
-                    </div>
-                    <p className="text-[11px] text-slate-600 dark:text-slate-400 font-serif leading-relaxed line-clamp-2">
-                      {tmpl.purpose}
-                    </p>
                   </div>
-
-                  <div className="pt-2 border-t border-slate-100 dark:border-indigo-950/60 flex items-center justify-between">
-                    <span className="text-[10px] text-slate-500 font-mono">
-                      {tmpl.allowedTools.length + 1} steps
-                    </span>
-                    <Link
-                      href={`/dashboard/skills/new?template=${tmpl.id}`}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-indigo-700 dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors"
-                    >
-                      USE BLUEPRINT <ArrowRight className="h-3 w-3" />
-                    </Link>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Toolbar: Filter Pills, Search, Status & Sort */}
           <div className="space-y-3 font-mono">
-            <div className="flex flex-wrap items-center gap-2">
-              {[
-                { id: "ALL", label: "ALL CAPABILITIES" },
-                { id: "WORKFLOWS", label: "BOUNDED WORKFLOWS" },
-                { id: "PROMPT", label: "PROMPT SKILLS" },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => {
-                    setTypeFilter(tab.id as typeof typeFilter);
-                    if (status === "ARCHIVED") setStatus("");
-                  }}
-                  className={clsx(
-                    "px-3 py-1.5 rounded text-xs font-mono transition-colors cursor-pointer border",
-                    typeFilter === tab.id && status !== "ARCHIVED"
-                      ? "border-indigo-400 bg-indigo-100 dark:bg-indigo-950/80 text-indigo-900 dark:text-indigo-200 font-bold shadow-sm"
-                      : "border-slate-200 dark:border-indigo-900/30 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-indigo-800"
-                  )}
-                >
-                  {tab.label}
-                </button>
-              ))}
-
-              <button
-                type="button"
-                onClick={() => setStatus(status === "ARCHIVED" ? "" : "ARCHIVED")}
-                className={clsx(
-                  "px-3 py-1.5 rounded text-xs font-mono transition-colors cursor-pointer border inline-flex items-center gap-1.5",
-                  status === "ARCHIVED"
-                    ? "border-amber-400 bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 font-bold shadow-sm"
-                    : "border-slate-200 dark:border-indigo-900/30 text-slate-600 dark:text-slate-400 hover:border-amber-300 dark:hover:border-amber-800"
+            <div className="flex items-center justify-between text-xs text-indigo-700 dark:text-indigo-400/80 uppercase tracking-widest font-semibold">
+              <span className="flex items-center gap-1.5">
+                {isArchiveView ? (
+                  <Archive className="h-3.5 w-3.5 text-amber-500" />
+                ) : (
+                  <Workflow className="h-3.5 w-3.5" />
                 )}
-              >
-                <Archive className="h-3.5 w-3.5 text-amber-500" />
-                ARCHIVED
-              </button>
+                {isArchiveView ? "ARCHIVED WORKFLOWS & SKILLS" : "YOUR WORKFLOWS & SKILLS"}
+              </span>
+              {!isLoading && !isError && (
+                <span className="text-[10px] text-slate-500">{filteredSkills.length} ITEMS</span>
+              )}
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-indigo-600 dark:text-indigo-400/60" />
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="[ SEARCH WORKFLOWS & SKILLS ]"
-                  className="w-full rounded border border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a] pl-9 pr-3 py-2 text-xs text-slate-900 dark:text-slate-100 font-mono placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none transition-colors shadow-sm"
-                />
+            <div className="flex flex-col xl:flex-row xl:items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2">
+                {[
+                  { id: "ALL", label: "ALL CAPABILITIES" },
+                  { id: "WORKFLOWS", label: "BOUNDED WORKFLOWS" },
+                  { id: "PROMPT", label: "PROMPT SKILLS" },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setTypeFilter(tab.id as typeof typeFilter)}
+                    className={clsx(
+                      "px-3 py-1.5 rounded text-xs font-mono transition-colors cursor-pointer border",
+                      typeFilter === tab.id
+                        ? "border-indigo-400 bg-indigo-100 dark:bg-indigo-950/80 text-indigo-900 dark:text-indigo-200 font-bold shadow-sm"
+                        : "border-slate-200 dark:border-indigo-900/30 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-indigo-800"
+                    )}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
               </div>
 
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value as SkillStatus | "")}
-                className="rounded border border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a] px-3 py-2 text-xs text-slate-900 dark:text-slate-100 font-mono focus:border-indigo-500 focus:outline-none transition-colors cursor-pointer shadow-sm"
-              >
-                <option value="">ALL STATUSES</option>
-                <option value="DRAFT">DRAFT</option>
-                <option value="PUBLISHED">PUBLISHED</option>
-                <option value="ARCHIVED">ARCHIVED</option>
-              </select>
+              <div className="flex flex-col sm:flex-row gap-3 flex-1">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-indigo-600 dark:text-indigo-400/60" />
+                  <input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="[ SEARCH WORKFLOWS & SKILLS ]"
+                    className="w-full rounded border border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a] pl-9 pr-3 py-2 text-xs text-slate-900 dark:text-slate-100 font-mono placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none transition-colors shadow-sm"
+                  />
+                </div>
 
-              <select
-                value={sort}
-                onChange={(e) => setSort(e.target.value)}
-                className="rounded border border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a] px-3 py-2 text-xs text-slate-900 dark:text-slate-100 font-mono focus:border-indigo-500 focus:outline-none transition-colors cursor-pointer shadow-sm"
-              >
-                {sortOptions.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
+                {/* Archived items have their own tab, so the status filter only covers active ones */}
+                {!isArchiveView && (
+                  <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value as SkillStatus | "")}
+                    className="rounded border border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a] px-3 py-2 text-xs text-slate-900 dark:text-slate-100 font-mono focus:border-indigo-500 focus:outline-none transition-colors cursor-pointer shadow-sm"
+                  >
+                    <option value="">ALL STATUSES</option>
+                    <option value="DRAFT">DRAFT</option>
+                    <option value="PUBLISHED">PUBLISHED</option>
+                  </select>
+                )}
+
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
+                  className="rounded border border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a] px-3 py-2 text-xs text-slate-900 dark:text-slate-100 font-mono focus:border-indigo-500 focus:outline-none transition-colors cursor-pointer shadow-sm"
+                >
+                  {sortOptions.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -422,14 +453,14 @@ export default function SkillsDashboardPage() {
               title={
                 status === "ARCHIVED"
                   ? "No archived items"
-                  : debouncedSearch || status
+                  : hasActiveFilters
                   ? "No matching items"
                   : "No items yet"
               }
               description={
                 status === "ARCHIVED"
                   ? "Archived workflows and skills will appear here. You can restore them anytime."
-                  : debouncedSearch || status
+                  : hasActiveFilters
                   ? "No workflows or skills match your active filter criteria."
                   : "Create your first bounded multi-step workflow or start from a pre-built blueprint."
               }
@@ -442,7 +473,7 @@ export default function SkillsDashboardPage() {
                   >
                     [ VIEW ACTIVE SKILLS ]
                   </button>
-                ) : !debouncedSearch && !status ? (
+                ) : !hasActiveFilters ? (
                   <Link
                     href="/dashboard/skills/new"
                     className="px-4 py-2 rounded border border-indigo-400 bg-indigo-600 text-white text-xs font-mono font-semibold hover:bg-indigo-500 transition-all cursor-pointer"
@@ -453,7 +484,7 @@ export default function SkillsDashboardPage() {
               }
             />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6 font-mono">
+            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4 font-mono">
               {filteredSkills.map((skill) => {
                 const version = skill.publishedVersion ?? skill.currentDraft;
                 const allowedTools = version?.allowedTools ?? [];
@@ -531,7 +562,7 @@ export default function SkillsDashboardPage() {
                           <button
                             type="button"
                             onClick={() => restoreMutation.mutate(skill.id)}
-                            disabled={restoreMutation.isPending}
+                            disabled={restoreMutation.isPending && restoreMutation.variables === skill.id}
                             className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-amber-400/80 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-sm transition-all cursor-pointer disabled:opacity-50"
                             title="Restore this archived skill"
                           >
@@ -564,7 +595,7 @@ export default function SkillsDashboardPage() {
                         <button
                           type="button"
                           onClick={() => duplicateMutation.mutate(skill.id)}
-                          disabled={duplicateMutation.isPending}
+                          disabled={duplicateMutation.isPending && duplicateMutation.variables === skill.id}
                           title="Duplicate"
                           className="p-1.5 rounded border border-slate-200 dark:border-indigo-900/40 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:border-indigo-400 transition-colors cursor-pointer disabled:opacity-50"
                         >

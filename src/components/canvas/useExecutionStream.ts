@@ -63,6 +63,8 @@ const initialTrace: TraceState = {
   a2aMessages: {},
 };
 
+const TERMINAL_STATUSES = ["COMPLETED", "FAILED", "CANCELLED", "STEP_LIMIT_EXCEEDED"];
+
 /** Replay a prefix of the event log into the derived trace state (time-scrub). */
 export function replayEvents(events: ExecutionEvent[]): {
   nodeStatuses: TraceState["nodeStatuses"];
@@ -263,20 +265,31 @@ export function useExecutionStream(
     sourceRef.current = source;
 
     const applyEvent = (event: ExecutionEvent) => {
+      // The server closes the stream once a run is terminal; close our side too
+      // so EventSource doesn't reconnect and append the whole replay again.
+      if (event.type === "execution:status" && TERMINAL_STATUSES.includes(event.status)) {
+        source.close();
+      }
       setTrace((prev) => {
         const next: TraceState = {
           ...prev,
-          events: prev.events.length > 500 ? [...prev.events.slice(-499), event] : [...prev.events, event],
+          // Token chunks only feed tokenStreams — logging them would evict real events from the capped log.
+          events:
+            event.type === "node:token_chunk"
+              ? prev.events
+              : prev.events.length > 500 ? [...prev.events.slice(-499), event] : [...prev.events, event],
         };
 
         switch (event.type) {
           case "node:start": {
             next.nodeStatuses = { ...prev.nodeStatuses, [event.nodeId]: "RUNNING" };
             next.nodeDetails = { ...prev.nodeDetails, [event.nodeId]: "executing…" };
-            next.tokenStreams = {
-              ...prev.tokenStreams,
-              [event.nodeId]: { text: "", active: true },
-            };
+            // Clear the previous iteration's text. The stream panel is (re)created by an
+            // LLM call or the first token chunk, so non-LLM nodes never show one.
+            if (prev.tokenStreams[event.nodeId]) {
+              next.tokenStreams = { ...prev.tokenStreams };
+              delete next.tokenStreams[event.nodeId];
+            }
             break;
           }
           case "node:end": {
@@ -365,6 +378,9 @@ export function useExecutionStream(
               ...prev.llmCalls,
               [event.nodeId]: { model: event.model },
             };
+            if (!prev.tokenStreams[event.nodeId]) {
+              next.tokenStreams = { ...prev.tokenStreams, [event.nodeId]: { text: "", active: true } };
+            }
             break;
           }
           case "llm:call:end": {
@@ -473,7 +489,13 @@ export function useExecutionStream(
       "approval:requested", "approval:resolved",
     ] as const;
     for (const type of eventTypes) {
-      handlers[type] = (e: MessageEvent) => applyEvent(JSON.parse(e.data) as ExecutionEvent);
+      handlers[type] = (e: MessageEvent) => {
+        try {
+          applyEvent(JSON.parse(e.data) as ExecutionEvent);
+        } catch {
+          // Ignore malformed frames.
+        }
+      };
       source.addEventListener(type, handlers[type]);
     }
     // Fallback listener for any untyped event frames (defensive).
@@ -485,9 +507,16 @@ export function useExecutionStream(
       }
     };
 
-    source.onopen = () => setTrace((prev) => ({ ...prev, connected: true }));
+    let reconnecting = false;
+    source.onopen = () => {
+      // On reconnect the server replays the run from the start — reset so events aren't duplicated.
+      const isReconnect = reconnecting;
+      reconnecting = false;
+      setTrace((prev) => (isReconnect ? { ...initialTrace, connected: true } : { ...prev, connected: true }));
+    };
     source.onerror = () => {
       // EventSource auto-reconnects; surface the state so the UI can hint.
+      reconnecting = true;
       setTrace((prev) => ({ ...prev, connected: false }));
     };
 

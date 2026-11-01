@@ -29,17 +29,19 @@ export function PinnedSkillsLaunchpad({ skills, onQuickRun }: PinnedSkillsLaunch
       </div>
 
       {skills.length === 0 ? (
-        <div className="p-6 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/60 dark:bg-[#0a0a0a]/60 text-center space-y-3">
-          <Sparkles className="h-6 w-6 text-indigo-500 mx-auto" />
-          <div className="space-y-1">
-            <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">No skills created yet</h4>
-            <p className="text-[11px] text-slate-500">
-              Create your first AI skill with JSON schemas and permitted tools to run agent tasks.
-            </p>
+        <div className="px-4 py-3.5 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/60 dark:bg-[#0a0a0a]/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <Sparkles className="h-5 w-5 text-indigo-500 shrink-0" />
+            <div className="space-y-0.5">
+              <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">No skills created yet</h4>
+              <p className="text-[11px] text-slate-500">
+                Create your first AI skill with JSON schemas and permitted tools to run agent tasks.
+              </p>
+            </div>
           </div>
           <Link
             href="/dashboard/skills/new"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-indigo-400 bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 transition-all shadow-sm"
+            className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-indigo-400 bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 transition-all shadow-sm"
           >
             <Plus className="h-3.5 w-3.5" /> CREATE NEW SKILL
           </Link>

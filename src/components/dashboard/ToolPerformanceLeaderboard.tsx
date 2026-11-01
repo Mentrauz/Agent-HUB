@@ -50,7 +50,7 @@ export function ToolPerformanceLeaderboard({ tools }: ToolPerformanceLeaderboard
                     <td className="py-2 pr-2">
                       <div className="min-w-0">
                         <Link
-                          href={`/dashboard/tools/${t.toolName}`}
+                          href={`/dashboard/tools/${encodeURIComponent(t.toolName)}`}
                           className="font-bold text-slate-900 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 truncate block max-w-[140px]"
                           title={t.toolName}
                         >
@@ -77,7 +77,9 @@ export function ToolPerformanceLeaderboard({ tools }: ToolPerformanceLeaderboard
                       {t.avgDurationMs > 0 ? `${t.avgDurationMs}ms` : "—"}
                     </td>
                     <td className="py-2 text-right">
-                      {t.errorRate === 0 ? (
+                      {t.callCount === 0 ? (
+                        <span className="text-slate-400 text-[10px]">—</span>
+                      ) : t.errorRate === 0 ? (
                         <span className="inline-flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 font-bold text-[10px]">
                           <CheckCircle2 className="h-3 w-3" /> 100%
                         </span>

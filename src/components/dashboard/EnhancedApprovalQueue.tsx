@@ -10,13 +10,15 @@ import { toast } from "@/stores/toastStore";
 
 interface EnhancedApprovalQueueProps {
   approvals: ApprovalRequestDTO[];
+  /** Total pending approvals; `approvals` holds only the few most recent. */
+  totalCount: number;
 }
 
 function formatDate(d: Date | string): string {
   return new Date(d).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 }
 
-export function EnhancedApprovalQueue({ approvals }: EnhancedApprovalQueueProps) {
+export function EnhancedApprovalQueue({ approvals, totalCount }: EnhancedApprovalQueueProps) {
   const queryClient = useQueryClient();
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState("");
@@ -70,14 +72,14 @@ export function EnhancedApprovalQueue({ approvals }: EnhancedApprovalQueueProps)
   const isBusy = approveMutation.isPending || rejectMutation.isPending;
 
   return (
-    <div className="p-6 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-4 h-full shadow-sm font-mono flex flex-col justify-between">
+    <div className="p-5 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-4 h-full shadow-sm font-mono flex flex-col justify-between">
       <div className="space-y-3">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Shield className="h-4 w-4 text-amber-600 dark:text-amber-400" />
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
-              HUMAN REVIEW QUEUE ({approvals.length})
+              HUMAN REVIEW QUEUE ({totalCount})
             </h3>
           </div>
           <Link
@@ -147,7 +149,10 @@ export function EnhancedApprovalQueue({ approvals }: EnhancedApprovalQueueProps)
                       </button>
                       <button
                         type="button"
-                        onClick={() => setRejectingId(null)}
+                        onClick={() => {
+                          setRejectingId(null);
+                          setRejectReason("");
+                        }}
                         className="text-[10px] text-slate-500 hover:underline"
                       >
                         Cancel
@@ -170,7 +175,10 @@ export function EnhancedApprovalQueue({ approvals }: EnhancedApprovalQueueProps)
                       </button>
                       <button
                         type="button"
-                        onClick={() => setRejectingId(req.id)}
+                        onClick={() => {
+                          setRejectingId(req.id);
+                          setRejectReason("");
+                        }}
                         disabled={isBusy}
                         className="inline-flex items-center gap-1 px-2 py-1 rounded border border-red-300 dark:border-red-500/40 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 text-[10px] font-bold uppercase hover:bg-red-100 transition-all disabled:opacity-50 cursor-pointer"
                       >

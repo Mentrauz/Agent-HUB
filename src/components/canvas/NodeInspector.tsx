@@ -64,6 +64,71 @@ function Field({ label, children, hint }: { label: string; children: React.React
   );
 }
 
+/**
+ * Number input that can be cleared while typing (no snap-back to a default). An empty
+ * field commits `undefined`, so the node uses `fallback` (shown as the placeholder);
+ * min/max are enforced on blur rather than mid-typing.
+ */
+function NumberInput({
+  value,
+  fallback,
+  onCommit,
+  min,
+  max,
+  step,
+  integer = false,
+  placeholder,
+}: {
+  value: number | undefined;
+  /** The value the node uses when the field is empty (shown as the placeholder). */
+  fallback?: number;
+  onCommit: (value: number | undefined) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+  integer?: boolean;
+  placeholder?: string;
+}) {
+  const [raw, setRaw] = useState(value === undefined ? "" : String(value));
+  const parse = (text: string) => {
+    const n = integer ? parseInt(text, 10) : parseFloat(text);
+    return Number.isNaN(n) ? null : n;
+  };
+
+  return (
+    <input
+      type="number"
+      min={min}
+      max={max}
+      step={step}
+      value={raw}
+      placeholder={placeholder ?? (fallback !== undefined ? String(fallback) : undefined)}
+      onChange={(e) => {
+        const text = e.target.value;
+        setRaw(text);
+        if (text.trim() === "") {
+          onCommit(undefined);
+          return;
+        }
+        const n = parse(text);
+        if (n !== null) onCommit(n);
+      }}
+      onBlur={() => {
+        if (raw.trim() === "") return;
+        const n = parse(raw);
+        if (n === null) {
+          setRaw(value === undefined ? "" : String(value));
+          return;
+        }
+        const clamped = Math.min(max ?? Infinity, Math.max(min ?? -Infinity, n));
+        if (clamped !== n) onCommit(clamped);
+        setRaw(String(clamped));
+      }}
+      className={inputClass}
+    />
+  );
+}
+
 interface ModelSelectFieldProps {
   value?: string;
   customApiKey?: string;
@@ -93,18 +158,19 @@ function ModelSelectField({
   customApiProvider,
   onUpdate,
 }: ModelSelectFieldProps) {
-  const { allModels } = useModels();
+  const { allModels, isLoading: modelsLoading } = useModels();
 
-  const [isCustom, setIsCustom] = useState(() => {
-    if (customApiBaseUrl || customApiKey) return true;
-    if (!value || value === "openrouter/free" || value === "") return false;
-    const isKnown =
-      allModels.some((m) => m.model === value) ||
-      GROQ_FREE_MODELS.some((m) => m.model === value) ||
-      GROQ_SAFETY_MODELS.some((m) => m.model === value) ||
-      OPENROUTER_CHAT_MODELS.some((m) => m.model === value);
-    return !isKnown;
-  });
+  // Derived from the catalog on every render (it loads async), unless the user explicitly
+  // picked custom or a catalog model in this session.
+  const [customOverride, setIsCustom] = useState<boolean | null>(null);
+  const isKnownModel =
+    !value ||
+    value === "openrouter/free" ||
+    allModels.some((m) => m.model === value) ||
+    GROQ_FREE_MODELS.some((m) => m.model === value) ||
+    GROQ_SAFETY_MODELS.some((m) => m.model === value) ||
+    OPENROUTER_CHAT_MODELS.some((m) => m.model === value);
+  const isCustom = customOverride ?? (Boolean(customApiBaseUrl || customApiKey) || (!modelsLoading && !isKnownModel));
 
   const [showApiConfig, setShowApiConfig] = useState(() => Boolean(customApiKey || customApiBaseUrl));
   const [showKey, setShowKey] = useState(false);
@@ -400,25 +466,24 @@ function HyperparametersField({
       {open && (
         <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-200 dark:border-indigo-950/50">
           <Field label="Temperature" hint="0 = deterministic, 1 = creative">
-            <input
-              type="number"
+            <NumberInput
               step={0.05}
               min={0}
               max={2}
-              value={temperature ?? 0.2}
-              onChange={(e) => onChange({ temperature: parseFloat(e.target.value) || 0 })}
-              className={inputClass}
+              value={temperature}
+              fallback={0.2}
+              onCommit={(v) => onChange({ temperature: v })}
             />
           </Field>
           <Field label="Max Output Tokens" hint="Cap response length">
-            <input
-              type="number"
+            <NumberInput
               step={100}
               min={50}
               max={8192}
-              value={maxTokens ?? 800}
-              onChange={(e) => onChange({ maxTokens: parseInt(e.target.value, 10) || 800 })}
-              className={inputClass}
+              integer
+              value={maxTokens}
+              fallback={800}
+              onCommit={(v) => onChange({ maxTokens: v })}
             />
           </Field>
         </div>
@@ -426,6 +491,8 @@ function HyperparametersField({
     </div>
   );
 }
+
+const MAX_VISIBLE_REFS = 8;
 
 /** Rough token estimate — prompts are prose, ~4 chars/token is a decent proxy. */
 function estimateTokens(text: string): number {
@@ -455,12 +522,16 @@ function PromptField({
   showItem?: boolean;
 }) {
   const ref = useRef<HTMLTextAreaElement | null>(null);
+  const [showAllRefs, setShowAllRefs] = useState(false);
 
-  const references = [
+  const allReferences = [
     ...(showItem ? ["item"] : []),
     "input",
     ...(allNodeIds ?? []).map((id) => `results.${id}`),
   ];
+  // Large graphs would otherwise fill the narrow inspector with buttons.
+  const hiddenRefCount = showAllRefs ? 0 : Math.max(0, allReferences.length - MAX_VISIBLE_REFS);
+  const references = hiddenRefCount > 0 ? allReferences.slice(0, MAX_VISIBLE_REFS) : allReferences;
 
   const insertReference = (path: string) => {
     const el = ref.current;
@@ -509,6 +580,15 @@ function PromptField({
               {path}
             </button>
           ))}
+          {allReferences.length > MAX_VISIBLE_REFS && (
+            <button
+              type="button"
+              onClick={() => setShowAllRefs((s) => !s)}
+              className="px-1 py-0.5 text-[8px] font-mono text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-300 hover:underline cursor-pointer"
+            >
+              {showAllRefs ? "show less" : `+${hiddenRefCount} more`}
+            </button>
+          )}
         </div>
       )}
       <div className="text-[8px] text-slate-500 text-right">
@@ -551,7 +631,69 @@ function useJsonField(
   return { raw, setRaw, error, handle };
 }
 
+/**
+ * Textarea bound to a JSON-valued node field. Keeps the raw text locally so partial
+ * input (e.g. a lone `{`) isn't wiped on re-render; commits only when it parses.
+ */
+function JsonTextarea({
+  node,
+  field,
+  onUpdate,
+  emptyValue,
+  defaultText = "",
+  rows,
+  placeholder,
+  className,
+}: {
+  node: CanvasNode;
+  field: keyof CanvasNodeData;
+  onUpdate: (patch: Partial<CanvasNodeData>) => void;
+  /** Committed when the textarea is cleared. */
+  emptyValue: unknown;
+  /** Shown (not committed) when the field is unset. */
+  defaultText?: string;
+  rows: number;
+  placeholder?: string;
+  className: string;
+}) {
+  const initial = node.data[field];
+  const [raw, setRaw] = useState(() => (initial === undefined || initial === null ? defaultText : JSON.stringify(initial, null, 2)));
+  const [error, setError] = useState<string | null>(null);
+
+  const handle = (text: string) => {
+    setRaw(text);
+    if (!text.trim()) {
+      setError(null);
+      onUpdate({ [field]: emptyValue } as Partial<CanvasNodeData>);
+      return;
+    }
+    try {
+      const parsed = JSON.parse(text) as unknown;
+      setError(null);
+      onUpdate({ [field]: parsed } as Partial<CanvasNodeData>);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Invalid JSON");
+    }
+  };
+
+  return (
+    <>
+      <textarea
+        value={raw}
+        onChange={(e) => handle(e.target.value)}
+        rows={rows}
+        spellCheck={false}
+        placeholder={placeholder}
+        className={clsx(className, error && "!border-red-500")}
+      />
+      {error && <p className="text-[8px] text-red-500 leading-tight">{error}</p>}
+    </>
+  );
+}
+
 export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubgraph, onToggleBreakpoint }: NodeInspectorProps) {
+  // A node can't reference its own result in its prompt.
+  const otherNodeIds = allNodeIds?.filter((id) => id !== node.id);
   // Prompt optimizer state
   const [optimizing, setOptimizing] = useState(false);
   const [optimizeError, setOptimizeError] = useState<string | null>(null);
@@ -763,7 +905,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             value={node.data.prompt ?? ""}
             onChange={(v) => onUpdate({ prompt: v })}
             rows={6}
-            allNodeIds={allNodeIds}
+            allNodeIds={otherNodeIds}
           />
           {/* Optimize Prompt Button */}
           {node.data.prompt && node.data.prompt.trim().length > 20 && (
@@ -817,7 +959,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             value={node.data.prompt ?? ""}
             onChange={(v) => onUpdate({ prompt: v })}
             rows={5}
-            allNodeIds={allNodeIds}
+            allNodeIds={otherNodeIds}
           />
           {/* Optimize Prompt Button */}
           {node.data.prompt && node.data.prompt.trim().length > 20 && (
@@ -955,14 +1097,13 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             />
           </Field>
           <Field label="Escalate After (minutes, optional)" hint="A pending request auto-escalates (leaves the review queue) after this long.">
-            <input
-              type="number"
+            <NumberInput
               min={1}
               max={10080}
-              value={node.data.escalateAfterMin ?? ""}
-              onChange={(e) => onUpdate({ escalateAfterMin: e.target.value ? Math.max(1, Math.min(10080, Number(e.target.value) || 1)) : undefined })}
+              integer
+              value={node.data.escalateAfterMin}
               placeholder="e.g. 60"
-              className={inputClass}
+              onCommit={(v) => onUpdate({ escalateAfterMin: v })}
             />
           </Field>
         </>
@@ -970,13 +1111,13 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
 
       {type === "loop" && (
         <Field label="Max Iterations" hint="The body edge (labelled body or first edge) repeats up to N times; the exit edge (labelled exit or last edge) continues after.">
-          <input
-            type="number"
+          <NumberInput
             min={1}
             max={100}
-            value={node.data.maxIterations ?? 3}
-            onChange={(e) => onUpdate({ maxIterations: Math.max(1, Math.min(100, Number(e.target.value) || 1)) })}
-            className={inputClass}
+            integer
+            value={node.data.maxIterations}
+            fallback={3}
+            onCommit={(v) => onUpdate({ maxIterations: v })}
           />
         </Field>
       )}
@@ -1164,13 +1305,12 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             )}
           </Field>
           <Field label="Input Parameters (JSON)">
-            <textarea
-              value={node.data.mcpToolParams ? JSON.stringify(node.data.mcpToolParams, null, 2) : ""}
-              onChange={(e) => {
-                try { onUpdate({ mcpToolParams: e.target.value ? JSON.parse(e.target.value) : {} }); } catch {}
-              }}
+            <JsonTextarea
+              node={node}
+              field="mcpToolParams"
+              onUpdate={onUpdate}
+              emptyValue={{}}
               rows={4}
-              spellCheck={false}
               placeholder="{ }"
               className={`${inputClass} resize-y text-[9px] leading-relaxed`}
             />
@@ -1190,13 +1330,12 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             <p className="text-[8px] text-slate-500 leading-tight">Find skills in the Skills Marketplace tab</p>
           </Field>
           <Field label="Skill Input (JSON)">
-            <textarea
-              value={node.data.skillInput ? JSON.stringify(node.data.skillInput, null, 2) : ""}
-              onChange={(e) => {
-                try { onUpdate({ skillInput: e.target.value ? JSON.parse(e.target.value) : {} }); } catch {}
-              }}
+            <JsonTextarea
+              node={node}
+              field="skillInput"
+              onUpdate={onUpdate}
+              emptyValue={{}}
               rows={4}
-              spellCheck={false}
               placeholder="{ }"
               className={`${inputClass} resize-y text-[9px] leading-relaxed`}
             />
@@ -1228,25 +1367,23 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             />
           </Field>
           <Field label="Headers (JSON)">
-            <textarea
-              value={node.data.httpHeaders ? JSON.stringify(node.data.httpHeaders, null, 2) : ""}
-              onChange={(e) => {
-                try { onUpdate({ httpHeaders: e.target.value ? JSON.parse(e.target.value) : {} }); } catch {}
-              }}
+            <JsonTextarea
+              node={node}
+              field="httpHeaders"
+              onUpdate={onUpdate}
+              emptyValue={{}}
               rows={3}
-              spellCheck={false}
               placeholder={'{ "Authorization": "Bearer {{ input.token }}" }'}
               className={`${inputClass} resize-y text-[9px] leading-relaxed`}
             />
           </Field>
           <Field label="Body (JSON)">
-            <textarea
-              value={node.data.httpBody ? JSON.stringify(node.data.httpBody, null, 2) : ""}
-              onChange={(e) => {
-                try { onUpdate({ httpBody: e.target.value ? JSON.parse(e.target.value) : {} }); } catch {}
-              }}
+            <JsonTextarea
+              node={node}
+              field="httpBody"
+              onUpdate={onUpdate}
+              emptyValue={{}}
               rows={4}
-              spellCheck={false}
               placeholder="{ }"
               className={`${inputClass} resize-y text-[9px] leading-relaxed`}
             />
@@ -1299,11 +1436,12 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
 
       {type === "delay" && (
         <Field label="Delay (milliseconds)">
-          <input
-            type="number"
-            value={node.data.delayMs ?? 1000}
-            onChange={(e) => onUpdate({ delayMs: parseInt(e.target.value, 10) || 0 })}
-            className={inputClass}
+          <NumberInput
+            min={0}
+            integer
+            value={node.data.delayMs}
+            fallback={1000}
+            onCommit={(v) => onUpdate({ delayMs: v })}
           />
         </Field>
       )}
@@ -1364,13 +1502,12 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
           </Field>
           {node.data.varOp === "set" && (
             <Field label="Value (JSON)">
-              <textarea
-                value={node.data.varValue ? JSON.stringify(node.data.varValue, null, 2) : ""}
-                onChange={(e) => {
-                  try { onUpdate({ varValue: e.target.value ? JSON.parse(e.target.value) : undefined }); } catch {}
-                }}
+              <JsonTextarea
+                node={node}
+                field="varValue"
+                onUpdate={onUpdate}
+                emptyValue={undefined}
                 rows={3}
-                spellCheck={false}
                 placeholder="{{ results.agent_1.content }}"
                 className={`${inputClass} resize-y text-[9px] leading-relaxed`}
               />
@@ -1393,13 +1530,12 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             <p className="text-[8px] text-slate-500 leading-tight">{`Template for the final output. Use {{ results }} for all node results.`}</p>
           </Field>
           <Field label="Field Mappings (JSON)">
-            <textarea
-              value={node.data.outputFields ? JSON.stringify(node.data.outputFields, null, 2) : ""}
-              onChange={(e) => {
-                try { onUpdate({ outputFields: e.target.value ? JSON.parse(e.target.value) : {} }); } catch {}
-              }}
+            <JsonTextarea
+              node={node}
+              field="outputFields"
+              onUpdate={onUpdate}
+              emptyValue={{}}
               rows={4}
-              spellCheck={false}
               placeholder='{ "summary": "{{ results.agent_1.content }}", "data": "{{ results.tool_1.output }}" }'
               className={`${inputClass} resize-y text-[9px] leading-relaxed`}
             />
@@ -1517,13 +1653,13 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             </div>
           </Field>
           <Field label="Max Items to Ingest">
-            <input
-              type="number"
+            <NumberInput
               min={1}
               max={50}
-              value={node.data.rssMaxItems ?? 10}
-              onChange={(e) => onUpdate({ rssMaxItems: parseInt(e.target.value, 10) || 10 })}
-              className={inputClass}
+              integer
+              value={node.data.rssMaxItems}
+              fallback={10}
+              onCommit={(v) => onUpdate({ rssMaxItems: v })}
             />
           </Field>
         </>
@@ -1627,13 +1763,12 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
       {type === "data_mapper" && (
         <>
           <Field label="Schema Mappings (JSON)" hint="Maps output fields to dot-paths or expressions">
-            <textarea
-              value={node.data.mapperSchema ? JSON.stringify(node.data.mapperSchema, null, 2) : ""}
-              onChange={(e) => {
-                try { onUpdate({ mapperSchema: e.target.value ? JSON.parse(e.target.value) : {} }); } catch {}
-              }}
+            <JsonTextarea
+              node={node}
+              field="mapperSchema"
+              onUpdate={onUpdate}
+              emptyValue={{}}
               rows={5}
-              spellCheck={false}
               placeholder='{\n  "title": "item.title",\n  "url": "item.link",\n  "score": "item.score"\n}'
               className={`${inputClass} resize-y text-[9px] leading-relaxed font-mono`}
             />
@@ -1669,13 +1804,13 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             />
           </Field>
           <Field label="Max Results Limit">
-            <input
-              type="number"
+            <NumberInput
               min={1}
               max={20}
-              value={node.data.searxngLimit ?? 5}
-              onChange={(e) => onUpdate({ searxngLimit: parseInt(e.target.value, 10) || 5 })}
-              className={inputClass}
+              integer
+              value={node.data.searxngLimit}
+              fallback={5}
+              onCommit={(v) => onUpdate({ searxngLimit: v })}
             />
           </Field>
         </>
@@ -1826,13 +1961,13 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             </select>
           </Field>
           <Field label="Record Payload / Query Data (JSON)" hint="Row values to insert or query filters">
-            <textarea
-              value={node.data.nocodbData ? JSON.stringify(node.data.nocodbData, null, 2) : "{}"}
-              onChange={(e) => {
-                try { onUpdate({ nocodbData: e.target.value ? JSON.parse(e.target.value) : {} }); } catch {}
-              }}
+            <JsonTextarea
+              node={node}
+              field="nocodbData"
+              onUpdate={onUpdate}
+              emptyValue={{}}
+              defaultText="{}"
               rows={4}
-              spellCheck={false}
               placeholder='{\n  "title": "{{ results.agent.title }}",\n  "status": "APPROVED"\n}'
               className={`${inputClass} resize-y text-[9px] leading-relaxed font-mono`}
             />
@@ -1915,13 +2050,13 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             />
           </Field>
           <Field label="Top K Nearest Neighbors">
-            <input
-              type="number"
+            <NumberInput
               min={1}
               max={20}
-              value={node.data.qdrantTopK ?? 3}
-              onChange={(e) => onUpdate({ qdrantTopK: parseInt(e.target.value, 10) || 3 })}
-              className={inputClass}
+              integer
+              value={node.data.qdrantTopK}
+              fallback={3}
+              onCommit={(v) => onUpdate({ qdrantTopK: v })}
             />
           </Field>
           <Field label="API Key (Optional)" hint="Qdrant API key if QDRANT__SERVICE__API_KEY is set on the server">
@@ -2032,11 +2167,12 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
           </Field>
           <div className="grid grid-cols-2 gap-2">
             <Field label="SLA Timeout (ms)">
-              <input
-                type="number"
-                value={node.data.a2aTimeoutMs ?? 60000}
-                onChange={(e) => onUpdate({ a2aTimeoutMs: Number(e.target.value) })}
-                className={inputClass}
+              <NumberInput
+                min={0}
+                integer
+                value={node.data.a2aTimeoutMs}
+                fallback={60000}
+                onCommit={(v) => onUpdate({ a2aTimeoutMs: v })}
               />
             </Field>
             <Field label="Fallback Strategy">
@@ -2080,13 +2216,13 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             />
           </Field>
           <Field label="Max Dialogue Turns">
-            <input
-              type="number"
+            <NumberInput
               min={1}
               max={10}
-              value={node.data.a2aMaxTurns ?? 2}
-              onChange={(e) => onUpdate({ a2aMaxTurns: Number(e.target.value) })}
-              className={inputClass}
+              integer
+              value={node.data.a2aMaxTurns}
+              fallback={2}
+              onCommit={(v) => onUpdate({ a2aMaxTurns: v })}
             />
           </Field>
         </>
@@ -2150,17 +2286,12 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             label="Candidate Swarm Models (JSON Array)"
             hint="Models polled concurrently during consensus election"
           >
-            <textarea
-              value={
-                node.data.consensusModels
-                  ? JSON.stringify(node.data.consensusModels, null, 2)
-                  : '[\n  "groq/compound",\n  "google/gemma-4-26b-a4b-it:free",\n  "cohere/north-mini-code:free"\n]'
-              }
-              onChange={(e) => {
-                try {
-                  onUpdate({ consensusModels: JSON.parse(e.target.value) });
-                } catch {}
-              }}
+            <JsonTextarea
+              node={node}
+              field="consensusModels"
+              onUpdate={onUpdate}
+              emptyValue={undefined}
+              defaultText={'[\n  "groq/compound",\n  "google/gemma-4-26b-a4b-it:free",\n  "cohere/north-mini-code:free"\n]'}
               rows={4}
               className={`${inputClass} resize-y text-[9px] font-mono leading-relaxed`}
             />
@@ -2182,23 +2313,23 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
           </Field>
           <div className="grid grid-cols-2 gap-2">
             <Field label="Pass Score (0-100)">
-              <input
-                type="number"
+              <NumberInput
                 min={50}
                 max={100}
-                value={node.data.criticPassScore ?? 80}
-                onChange={(e) => onUpdate({ criticPassScore: Number(e.target.value) })}
-                className={inputClass}
+                integer
+                value={node.data.criticPassScore}
+                fallback={80}
+                onCommit={(v) => onUpdate({ criticPassScore: v })}
               />
             </Field>
             <Field label="Max Refine Turns">
-              <input
-                type="number"
+              <NumberInput
                 min={1}
                 max={5}
-                value={node.data.criticMaxTurns ?? 2}
-                onChange={(e) => onUpdate({ criticMaxTurns: Number(e.target.value) })}
-                className={inputClass}
+                integer
+                value={node.data.criticMaxTurns}
+                fallback={2}
+                onCommit={(v) => onUpdate({ criticMaxTurns: v })}
               />
             </Field>
           </div>

@@ -58,7 +58,10 @@ export function QuickRunSkillModal({
       }
       setJsonError(null);
     }
-  }, [currentSkill]);
+    // Keyed on the skill id, not the object: the dashboard refetches every 12s, which
+    // recreates currentSkill and would otherwise wipe the user's in-progress JSON edits.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSkill?.id]);
 
   if (!isOpen) return null;
 
