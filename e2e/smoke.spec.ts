@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Agent Hub smoke tests", () => {
   test("landing page renders the hero", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("AI SKILLS");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("ORCHESTRATION HUB");
     await expect(page.getByText("GET STARTED FREE").first()).toBeVisible();
   });
 

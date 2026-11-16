@@ -9,7 +9,7 @@
 >
 > This document covers everything in the browser: pages, components, hooks, stores, styling and frontend tests. API routes, services, runtime, database and configuration are in **[backend.md](backend.md)**. Setup and contribution workflow are in **[README.md](README.md)**.
 
-Every file listed here was checked against the source on 2026-10-28. Where the code and older docs disagreed, this file follows the code.
+Every file listed here was checked against the source on 2026-10-28, and everything changed since then was re-checked on 2026-11-16. Where the code and older docs disagreed, this file follows the code.
 
 ## Contents
 1. [Stack](#stack)
@@ -127,6 +127,7 @@ These come from the old CONTRIBUTING guide and were re-checked against the code.
   - React Flow overrides;
   - canvas execution animations;
   - preloader and 404 keyframes;
+  - landing hero effects (`edge-idle-flow`, `hero-flow-pulse`, `.hero-ambient-blob`);
   - reduced-motion guards.
 - **Fonts.** VT323 is loaded three times: by `next/font`, by a `<link>` in the layout, and by `@import` in the CSS.
 
@@ -159,7 +160,7 @@ These were found while verifying, and are worth fixing or knowing about:
 | `/invitations/[token]` | [`src/app/invitations/[token]/page.tsx`](src/app/invitations/[token]/page.tsx) | Accept an org invitation |
 | `/loading` | [`src/app/loading/page.tsx`](src/app/loading/page.tsx) | Preloader for 3.2s, then `/dashboard` |
 | `/approvals`, `/versions` | redirects | → `/dashboard/review`, → `/dashboard/compare` |
-| `/dashboard` | [`src/app/dashboard/page.tsx`](src/app/dashboard/page.tsx) | Cockpit with server-fetched 7-day stats |
+| `/dashboard` | [`src/app/dashboard/page.tsx`](src/app/dashboard/page.tsx) | Cockpit: 7-day stats rendered on the server, then a 24H/7D/30D/ALL filter and a 12s poll on the client |
 | `/dashboard/canvas` | [`canvas/page.tsx`](src/app/dashboard/canvas/page.tsx) | Template gallery and the user's graph skills |
 | `/dashboard/canvas/new` | [`canvas/new/page.tsx`](src/app/dashboard/canvas/new/page.tsx) | New graph: blank, `?template=`, `?n8nId=` or `?difyId=` |
 | `/dashboard/canvas/[id]` | [`canvas/[id]/page.tsx`](src/app/dashboard/canvas/[id]/page.tsx) | Graph editor: autosave, run, replay, ghost preview, diff |
@@ -192,7 +193,7 @@ These were found while verifying, and are worth fixing or knowing about:
 | [`src/app/layout.tsx`](src/app/layout.tsx) | Root server layout. Loads Geist, Geist Mono and VT323 (`--font-geist`, `--font-mono`, `--font-vt323`), adds a skip link, and wraps every route in `Providers` with the global Header, Sidebar, main and Toaster. Theme color is `#000`. |
 | [`src/app/providers.tsx`](src/app/providers.tsx) | Client provider tree: Theme → PixelThemeTransition → Clerk → Query → Sidebar. |
 | [`src/app/globals.css`](src/app/globals.css) | Tailwind v4 entry: theme tokens, pixel and glow utilities, effects, React Flow overrides, animations, reduced-motion guards. |
-| [`src/app/page.tsx`](src/app/page.tsx) | Public landing page (server). Static marketing sections, plus `LiveAgentCanvasDemo`, `HeroAuthSection`, `FooterAuthCTA` and `FooterPortfolioWidget`, loaded with `next/dynamic`. |
+| [`src/app/page.tsx`](src/app/page.tsx) | Public landing page (server). Static marketing sections, plus `HeroFlowPreview` and `canvasNodeCategories` (static imports). `LiveAgentCanvasDemo`, `HeroAuthSection`, `FooterAuthCTA` and `FooterPortfolioWidget` are loaded with `next/dynamic`. |
 | [`src/app/loading.tsx`](src/app/loading.tsx) | Root loading boundary that renders `AgentStudioPreloader`. |
 | [`src/app/loading/page.tsx`](src/app/loading/page.tsx) | `/loading`: plays the preloader for 3.2s, then `router.replace("/dashboard")`. Nothing links here. |
 | [`src/app/not-found.tsx`](src/app/not-found.tsx) | Animated 404 radar screen that plays a fake "self-healing" sequence and then sends the user to `/`. Has nav links and a sign-in button. |
@@ -213,7 +214,7 @@ These were found while verifying, and are worth fixing or knowing about:
 | File | Purpose |
 |---|---|
 | [`src/app/dashboard/layout.tsx`](src/app/dashboard/layout.tsx) | Server layout that only calls `ensureUserExists` for the Clerk user. |
-| [`src/app/dashboard/page.tsx`](src/app/dashboard/page.tsx) | Server page: `DashboardStatsService.getDashboardStats(userId, "7d")` → `DashboardClientView`. |
+| [`src/app/dashboard/page.tsx`](src/app/dashboard/page.tsx) | Server page: `DashboardStatsService.getDashboardStats(userId, "7d")` → `DashboardClientView`. Also passes the first 3 `CANVAS_TEMPLATES` as `blueprints`. |
 | [`src/app/dashboard/loading.tsx`](src/app/dashboard/loading.tsx) | Full-screen preloader; the fallback for dashboard routes that have no `loading.tsx`. |
 | [`src/app/dashboard/error.tsx`](src/app/dashboard/error.tsx) | Error boundary that shows the message, with no retry. |
 
@@ -222,13 +223,13 @@ These were found while verifying, and are worth fixing or knowing about:
 |---|---|
 | [`src/app/dashboard/canvas/page.tsx`](src/app/dashboard/canvas/page.tsx) | Gallery of `CANVAS_TEMPLATES` and the user's skills that have a `graphDefinition`. |
 | [`src/app/dashboard/canvas/new/page.tsx`](src/app/dashboard/canvas/new/page.tsx) | New-graph form. Can prefill from a template, an n8n template or a Dify template, then creates the skill and opens the editor. |
-| [`src/app/dashboard/canvas/[id]/page.tsx`](src/app/dashboard/canvas/[id]/page.tsx) | Graph editor on `AgentGraphCanvas`. Features:<br>• autosave 1.2s after an edit, plus manual save<br>• run<br>• deterministic replay<br>• ghost preview (`POST /api/canvas/preview`)<br>• diff against the published version<br>• coverage and analytics from the last 50 runs<br>• a snapshot link |
+| [`src/app/dashboard/canvas/[id]/page.tsx`](src/app/dashboard/canvas/[id]/page.tsx) | Graph editor on `AgentGraphCanvas`. Features:<br>• autosave 1.2s after an edit, plus manual save<br>• run, with a JSON input modal<br>• deterministic replay of the last run<br>• ghost preview (`POST /api/canvas/preview`)<br>• diff against the published version<br>• coverage and analytics from the last 50 runs<br>• a snapshot link<br>• UNSAVED / AUTO-SYNCED badges and a `beforeunload` guard for unsaved changes<br><br>Save, run, replay and preview are disabled while a subgraph is open. |
 | [`src/app/dashboard/canvas/[id]/snapshot/page.tsx`](src/app/dashboard/canvas/[id]/snapshot/page.tsx) | Read-only canvas showing the published, draft or first version, with the latest run and edge coverage. |
 
 ### dashboard/skills
 | File | Purpose |
 |---|---|
-| [`src/app/dashboard/skills/page.tsx`](src/app/dashboard/skills/page.tsx) | Studio registry: filters, lifecycle mutations with `ConfirmDialog`, workflow blueprints, and sub-views (Marketplace, Workflows, Packs, Synthesize). |
+| [`src/app/dashboard/skills/page.tsx`](src/app/dashboard/skills/page.tsx) | Studio registry: filters, an Archive tab, lifecycle mutations (archive and delete go through `ConfirmDialog`; restore and duplicate run immediately), a Canvas link on each card, workflow blueprints, and sub-views (Marketplace, Workflows, Packs, Synthesize). |
 | [`src/app/dashboard/skills/loading.tsx`](src/app/dashboard/skills/loading.tsx) | `SkeletonSkills`. |
 | [`src/app/dashboard/skills/new/page.tsx`](src/app/dashboard/skills/new/page.tsx) | `SkillForm` in create mode, optionally prefilled from `WORKFLOW_TEMPLATES`. |
 | [`src/app/dashboard/skills/new/loading.tsx`](src/app/dashboard/skills/new/loading.tsx) | `SkeletonSkillForm`. |
@@ -299,8 +300,7 @@ These were found while verifying, and are worth fixing or knowing about:
   - left: NodePalette
   - right: NodeInspector, which uses ConditionalBranchEditor → ConditionExpressionEditor
   - in-canvas: QuickConnectSearch, AlignmentBar
-  - fullscreen only: CanvasCopilot
-  - normal layout only: A2ADirectoryModal
+  - both layouts: CanvasCopilot (hidden in trace mode and when read-only), A2ADirectoryModal
   - other panels and modals: ExportDialog, MacroLibrary, DebuggerPanel, MarketplacePanel, CollaborationOverlay, ExecutionTimeline, ExecutionProgressOverlay
 - **Trace mode.** When the canvas has an `executionId`, [`useExecutionStream`](src/components/canvas/useExecutionStream.ts) opens SSE and builds a `TraceState`, which drives node status, edge traversal, the heatmap and token streams. `replayEvents` powers the time scrubber.
 - **Export formats.** [`exportUtils`](src/components/canvas/exportUtils.ts) exports PNG, SVG, PDF, Mermaid, LangGraph Python, LangGraph TS and JSON.
@@ -335,7 +335,7 @@ These were found while verifying, and are worth fixing or knowing about:
 | [`src/components/canvas/graphValidation.ts`](src/components/canvas/graphValidation.ts) | `validateGraph` reports errors and warnings, recursing into macros. It checks for:<br>• a missing START or END<br>• nodes that can't be reached, or can't reach END<br>• missing node config<br>• approvals inside subgraphs or parallel branches |
 | [`src/components/canvas/nodeTypes.ts`](src/components/canvas/nodeTypes.ts) | `CANVAS_NODE_TYPES` (41 entries, each with label, category, icon, accent and defaults) and `CANVAS_NODE_TYPE_MAP`. |
 | [`src/components/canvas/subgraphUtils.ts`](src/components/canvas/subgraphUtils.ts) | `collapseSelection`: wraps the selected nodes in a subgraph node, mapping inputs and rewriting `results.*` references. |
-| [`src/components/canvas/useExecutionStream.ts`](src/components/canvas/useExecutionStream.ts) | `EventSource` hook (execution or preview stream) that builds a `TraceState` and keeps the last ~500 events. Also `replayEvents`. |
+| [`src/components/canvas/useExecutionStream.ts`](src/components/canvas/useExecutionStream.ts) | `EventSource` hook (execution or preview stream) that builds a `TraceState` and keeps the last ~500 events (`node:token_chunk` events update the state but are not stored, so the scrubber never replays them). It closes on a terminal status and resets the trace on reconnect. Also `replayEvents`. |
 
 ### dashboard
 | File | Purpose |
@@ -343,15 +343,15 @@ These were found while verifying, and are worth fixing or knowing about:
 | [`src/components/dashboard/DashboardClientView.tsx`](src/components/dashboard/DashboardClientView.tsx) | Dashboard cockpit. Starts from the server's stats, then polls every 12s. Has range filter and refresh controls, lays out all the widgets, and owns `QuickRunSkillModal`. |
 | [`src/components/dashboard/EnhancedApprovalQueue.tsx`](src/components/dashboard/EnhancedApprovalQueue.tsx) | First 3 pending approvals, with inline approve (then resume) and reject. |
 | [`src/components/dashboard/KnowledgeBaseCard.tsx`](src/components/dashboard/KnowledgeBaseCard.tsx) | RAG summary: document and chunk totals, top collections, recent documents. |
-| [`src/components/dashboard/LiveExecutionTracker.tsx`](src/components/dashboard/LiveExecutionTracker.tsx) | Runs in progress (RUNNING or PAUSED_FOR_APPROVAL), linking to their trace or to review. |
-| [`src/components/dashboard/MultiAgentCanvasShowcase.tsx`](src/components/dashboard/MultiAgentCanvasShowcase.tsx) | Links to 3 templates and up to 3 of the user's graphs. |
-| [`src/components/dashboard/PinnedSkillsLaunchpad.tsx`](src/components/dashboard/PinnedSkillsLaunchpad.tsx) | Pinned skills grid with Quick Run and edit links. |
+| [`src/components/dashboard/LiveExecutionTracker.tsx`](src/components/dashboard/LiveExecutionTracker.tsx) | Up to 5 runs in progress (PENDING, RUNNING or PAUSED_FOR_APPROVAL), linking to their trace or to review. Renders nothing when there are none. |
+| [`src/components/dashboard/MultiAgentCanvasShowcase.tsx`](src/components/dashboard/MultiAgentCanvasShowcase.tsx) | Links to the 3 template `blueprints` passed in by the dashboard page and up to 3 of the user's graphs. |
+| [`src/components/dashboard/PinnedSkillsLaunchpad.tsx`](src/components/dashboard/PinnedSkillsLaunchpad.tsx) | Skills grid with Quick Run and edit links. There is no real pinning: it shows the 4 most recently updated active skills. |
 | [`src/components/dashboard/QuickActionHub.tsx`](src/components/dashboard/QuickActionHub.tsx) | Quick Run, New Canvas and New Skill, plus a dropdown of shortcuts. |
 | [`src/components/dashboard/QuickRunSkillModal.tsx`](src/components/dashboard/QuickRunSkillModal.tsx) | Pick a skill, edit the prefilled input JSON, start the run, and go to the execution. |
 | [`src/components/dashboard/RecentExecutionsAndActivity.tsx`](src/components/dashboard/RecentExecutionsAndActivity.tsx) | `RecentExecutionsCard` (last 5 runs) and `SystemAuditActivityCard`. |
 | [`src/components/dashboard/SystemHealthStrip.tsx`](src/components/dashboard/SystemHealthStrip.tsx) | Badges for MCP servers connected, RAG chunks, A2A agents, vault keys and permitted tools. |
 | [`src/components/dashboard/TelemetryMetricsGrid.tsx`](src/components/dashboard/TelemetryMetricsGrid.tsx) | Six KPI tiles: skills, graphs, executions, success rate, average latency, pending approvals. |
-| [`src/components/dashboard/ToolPerformanceLeaderboard.tsx`](src/components/dashboard/ToolPerformanceLeaderboard.tsx) | Tool table: READ/WRITE type, calls, average latency and error-rate status. |
+| [`src/components/dashboard/ToolPerformanceLeaderboard.tsx`](src/components/dashboard/ToolPerformanceLeaderboard.tsx) | Tool table (top 6 by calls): READ/WRITE type, calls, average latency and error-rate status. With no calls yet, it lists up to 5 tool definitions at 0 calls. |
 
 ### benchmarks, evals, executions
 | File | Purpose |
@@ -387,8 +387,10 @@ These were found while verifying, and are worth fixing or knowing about:
 ### landing, layout
 | File | Purpose |
 |---|---|
-| [`src/components/landing/FooterPortfolioWidget.tsx`](src/components/landing/FooterPortfolioWidget.tsx) | Fixed pill linking to the author's portfolio, shown at the bottom of the page. |
-| [`src/components/landing/HeroAuthSection.tsx`](src/components/landing/HeroAuthSection.tsx) | Hero calls to action using Clerk `<Show>`: sign up / sign in, or open the dashboard. Also exports `FooterAuthCTA`. |
+| [`src/components/landing/FooterPortfolioWidget.tsx`](src/components/landing/FooterPortfolioWidget.tsx) | Fixed pill linking to the author's portfolio. It only appears once the user has scrolled near the bottom of the page. |
+| [`src/components/landing/HeroAuthSection.tsx`](src/components/landing/HeroAuthSection.tsx) | Hero calls to action using Clerk `<Show>`: "Get Started Free" (sign-up) when signed out, or "Open Studio Dashboard" when signed in, plus a live-demo anchor and a GitHub link. Sign-in lives in the `Header`. Also exports `FooterAuthCTA` (sign-up only). |
+| [`src/components/landing/HeroFlowPreview.tsx`](src/components/landing/HeroFlowPreview.tsx) | Self-running SVG run of an example flow (trigger → search and crawl → researcher → human approval → PDF) in the landing hero. Pauses off-screen and in background tabs; shows the finished run under reduced motion. |
+| [`src/components/landing/edgeGeometry.ts`](src/components/landing/edgeGeometry.ts) | `getEdgeGeometry`: the SVG path and port sides for an edge between two node boxes (horizontal, vertical or looped). Shared by `HeroFlowPreview` and `LiveAgentCanvasDemo`. |
 | [`src/components/landing/LiveAgentCanvasDemo.tsx`](src/components/landing/LiveAgentCanvasDemo.tsx) | Standalone landing demo with no backend: 3 preset graphs, simulated runs at 1/2/4× speed, a heatmap, zoom and pan, and inspector tabs. |
 | [`src/components/landing/data/canvasNodes.ts`](src/components/landing/data/canvasNodes.ts) | `canvasNodeCategories`: the node catalog cards shown on the landing page. |
 | [`src/components/layout/Header.tsx`](src/components/layout/Header.tsx) | Sticky header: pixel wordmark, landing anchors, mobile sidebar toggle, `ThemePicker`, and Clerk sign-in or `UserButton`. |
@@ -413,7 +415,7 @@ These were found while verifying, and are worth fixing or knowing about:
 | [`src/components/providers/QueryProvider.tsx`](src/components/providers/QueryProvider.tsx) | TanStack `QueryClient` with `staleTime` 60s and no refetch on window focus. |
 | [`src/components/providers/SidebarContext.tsx`](src/components/providers/SidebarContext.tsx) | `useSidebar()`: whether the mobile drawer is open, plus the desktop collapsed state, persisted in localStorage. |
 | [`src/components/providers/ThemeProvider.tsx`](src/components/providers/ThemeProvider.tsx) | next-themes wrapper: the 4 compound themes, `parseThemeKey`, syncing to `<html>` attributes, and legacy migration. |
-| [`src/components/skills/ApprovalActionMarketplace.tsx`](src/components/skills/ApprovalActionMarketplace.tsx) | Picker for `actionsRequiringApproval`: 34 preset write actions with risk levels, plus actions discovered from tools, OpenAPI and MCP. |
+| [`src/components/skills/ApprovalActionMarketplace.tsx`](src/components/skills/ApprovalActionMarketplace.tsx) | Picker for `actionsRequiringApproval`: 27 preset write actions with risk levels, plus actions discovered from tools, OpenAPI and MCP. |
 | [`src/components/skills/AvailableMcpTools.tsx`](src/components/skills/AvailableMcpTools.tsx) | Adds discovered MCP tools to a skill as `mcp_<serverId>_<tool>`. |
 | [`src/components/skills/AvailableOpenApiTools.tsx`](src/components/skills/AvailableOpenApiTools.tsx) | Adds OpenAPI endpoints to a skill as `openapi_<id>_<opId>`. |
 | [`src/components/skills/QuickConnectToolModal.tsx`](src/components/skills/QuickConnectToolModal.tsx) | Skill-editor modal with two tabs: OpenAPI presets and built-in tools. |

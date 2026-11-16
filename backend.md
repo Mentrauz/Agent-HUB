@@ -10,7 +10,7 @@
 >
 > This document covers everything server-side: the API routes, services, runtime modules, LLM providers, database, configuration and backend tests. UI pages, components and styling are in **[frontend.md](frontend.md)**. Setup and contribution workflow are in **[README.md](README.md)**.
 
-Every file listed here was checked against the source on 2026-10-28. Where the code and older docs disagreed, this file follows the code.
+Every file listed here was checked against the source on 2026-10-28, and everything changed since then was re-checked on 2026-11-16. Where the code and older docs disagreed, this file follows the code.
 
 ## Contents
 1. [Stack](#stack)
@@ -151,7 +151,7 @@ These rules came from the old CONTRIBUTING guide and were re-checked against the
 9. **Env vars.** Add new variables to `.env.example` and to the Zod schema in [`src/lib/config/env.ts`](src/lib/config/env.ts), then read them through `env`.
    - **Bearer secrets** (`CRON_SECRET`, `A2A_ACCESS_TOKEN`) are checked with [`bearerTokenMatches`](src/lib/api/bearer.ts): constant-time, and rejecting everything when the secret is unset.
    - **User-supplied URLs** fetched by the server should go through [`fetchPublicUrl`](src/lib/net/publicFetch.ts).
-   - *Deviation:* 18 files read `process.env` directly. The `VAULT_*`, `*_HOST`, `SMITHERY_API_KEY` and `GITHUB_TOKEN` variables are not in `env.ts`.
+   - *Deviation:* 17 files read `process.env` directly. The `VAULT_*`, `*_HOST`, `SMITHERY_API_KEY` and `GITHUB_TOKEN` variables are not in `env.ts`.
 10. **TypeScript.**
     - Strict mode; avoid `any` (ESLint warns on it).
     - Use the `@/` alias for imports from `src`.
@@ -828,7 +828,7 @@ A success clears the model's cooldown. A stream fails over only if it errors bef
 | [`src/services/ApprovalService.ts`](src/services/ApprovalService.ts) | Owner-scoped approval lookup and respond. Only tests use it; live approvals go through `ApprovalEngine`. |
 | [`src/services/AuditService.ts`](src/services/AuditService.ts) | Writes typed security and org audit events straight to `prisma.auditLog`, with helpers for member, role and key events. |
 | [`src/services/CustomRoleService.ts`](src/services/CustomRoleService.ts) | Custom-role CRUD that protects the system roles and validates against `AVAILABLE_PERMISSIONS`. |
-| [`src/services/DashboardStatsService.ts`](src/services/DashboardStatsService.ts) | Builds `DashboardStatsDTO` for a user and time range from Prisma aggregates. |
+| [`src/services/DashboardStatsService.ts`](src/services/DashboardStatsService.ts) | Builds `DashboardStatsDTO` for a user and time range from Prisma aggregates and `groupBy` queries, plus capped row lists (5 live runs, 5 recent runs, 3 approvals, 4 skills, top 6 tools). The A2A agent count comes from `a2aClientService.listPresets()`, not the database. |
 | [`src/services/ExecutionService.ts`](src/services/ExecutionService.ts) | Execution lifecycle: start (GraphInterpreter or ExecutionEngine), cancel, resume after approval, retry. Dependencies are injectable. |
 | [`src/services/InvitationEmailService.ts`](src/services/InvitationEmailService.ts) | Builds invitation and reminder emails but only **logs** them; no email provider is wired up yet. |
 | [`src/services/McpClientService.ts`](src/services/McpClientService.ts) | MCP client hub: server CRUD, connect/disconnect, discovery and tool diffs, health, resources, prompts and metrics. Registers `mcp_*` tools. Connections and breakers are cached in-process. |
@@ -925,7 +925,7 @@ Shared TypeScript types live in `src/types/` and are imported by both the fronte
 | [`src/types/agent-studio-registry.ts`](src/types/agent-studio-registry.ts) | Marketplace types: `AgentSkill`, categories, quality grades and badges, server-composition graph. |
 | [`src/types/approval.ts`](src/types/approval.ts) | Approval DTOs, history and timeline entries, `RespondApprovalInput`, `ApprovalPolicy`. |
 | [`src/types/benchmark.ts`](src/types/benchmark.ts) | Benchmark suites, cases, assertions, results and scorecards. |
-| [`src/types/dashboard.ts`](src/types/dashboard.ts) | `DashboardStatsDTO` and its parts, plus `TimeRangeFilter`. |
+| [`src/types/dashboard.ts`](src/types/dashboard.ts) | `DashboardStatsDTO` and its parts (including `pendingApprovalsCount`), `TimeRangeFilter`, and `CanvasBlueprintDTO` for the dashboard's template links. |
 | [`src/types/declarations.d.ts`](src/types/declarations.d.ts) | Ambient module declarations for `turndown`, `pdf-parse` and `mammoth`. |
 | [`src/types/evals.ts`](src/types/evals.ts) | Eval datasets, metrics, verdicts, run reports and comparisons. |
 | [`src/types/execution.ts`](src/types/execution.ts) | Execution, step, tool-call and log DTOs; `ExecutionQuery`; `StartExecutionInput`. |

@@ -4,7 +4,7 @@ test.describe("Navigation & page rendering", () => {
   test("landing page has expected navigation links", async ({ page }) => {
     await page.goto("/");
     // The hero section should be visible
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("AI SKILLS");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("ORCHESTRATION HUB");
     // The page should have a meaningful title
     await expect(page).toHaveTitle(/Agent Hub/);
   });
