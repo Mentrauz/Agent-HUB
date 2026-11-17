@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, VT323 } from "next/font/google";
 import "./globals.css";
@@ -49,21 +50,23 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
       </head>
       <body className={`${geistSans.className} ${geistSans.variable} ${geistMono.variable} ${vt323.variable} bg-[var(--surface-base)] text-[var(--text-primary)] min-h-screen transition-colors duration-200`}>
-        <a href="#main-content" className="skip-to-content-link">
+        <ClerkProvider>
+          <a href="#main-content" className="skip-to-content-link">
           Skip to main content
-        </a>
-        <Providers>
+          </a>
+          <Providers>
           <div className="h-screen flex flex-col bg-[var(--surface-base)] text-[var(--text-primary)] overflow-hidden">
-            <Header />
-            <div className="flex flex-1 min-h-0 overflow-hidden w-full bg-[var(--surface-base)]">
-              <Sidebar />
-              <main id="main-content" className="flex-1 p-3 sm:p-4 md:p-6 overflow-y-auto min-h-0 w-full transition-all duration-300 bg-[var(--surface-base)]">
-                {children}
-              </main>
-            </div>
-            <Toaster />
+          <Header />
+          <div className="flex flex-1 min-h-0 overflow-hidden w-full bg-[var(--surface-base)]">
+          <Sidebar />
+          <main id="main-content" className="flex-1 p-3 sm:p-4 md:p-6 overflow-y-auto min-h-0 w-full transition-all duration-300 bg-[var(--surface-base)]">
+          {children}
+          </main>
           </div>
-        </Providers>
+          <Toaster />
+          </div>
+          </Providers>
+        </ClerkProvider>
       </body>
     </html>
   );

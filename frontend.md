@@ -193,7 +193,7 @@ These were found while verifying, and are worth fixing or knowing about:
 | [`src/app/layout.tsx`](src/app/layout.tsx) | Root server layout. Loads Geist, Geist Mono and VT323 (`--font-geist`, `--font-mono`, `--font-vt323`), adds a skip link, and wraps every route in `Providers` with the global Header, Sidebar, main and Toaster. Theme color is `#000`. |
 | [`src/app/providers.tsx`](src/app/providers.tsx) | Client provider tree: Theme → PixelThemeTransition → Clerk → Query → Sidebar. |
 | [`src/app/globals.css`](src/app/globals.css) | Tailwind v4 entry: theme tokens, pixel and glow utilities, effects, React Flow overrides, animations, reduced-motion guards. |
-| [`src/app/page.tsx`](src/app/page.tsx) | Public landing page (server). Static marketing sections, plus `HeroFlowPreview` and `canvasNodeCategories` (static imports). `LiveAgentCanvasDemo`, `HeroAuthSection`, `FooterAuthCTA` and `FooterPortfolioWidget` are loaded with `next/dynamic`. |
+| [`src/app/page.tsx`](src/app/page.tsx) | Public landing page (server). Static marketing sections (hero with stat band, canvas demo and node catalog, open-source stack, marketplace, models, comparison, observability, tooling, guardrails, FAQ, final CTA, footer), plus `HeroFlowPreview` and `canvasNodeCategories` (static imports). Copy is sentence case with no emoji, glows or per-card colours; `font-pixel` is used only for the h1, section headings and large figures. `LiveAgentCanvasDemo`, `HeroAuthSection`, `FooterAuthCTA` and `FooterPortfolioWidget` are loaded with `next/dynamic`. |
 | [`src/app/loading.tsx`](src/app/loading.tsx) | Root loading boundary that renders `AgentStudioPreloader`. |
 | [`src/app/loading/page.tsx`](src/app/loading/page.tsx) | `/loading`: plays the preloader for 3.2s, then `router.replace("/dashboard")`. Nothing links here. |
 | [`src/app/not-found.tsx`](src/app/not-found.tsx) | Animated 404 radar screen that plays a fake "self-healing" sequence and then sends the user to `/`. Has nav links and a sign-in button. |
@@ -388,11 +388,11 @@ These were found while verifying, and are worth fixing or knowing about:
 | File | Purpose |
 |---|---|
 | [`src/components/landing/FooterPortfolioWidget.tsx`](src/components/landing/FooterPortfolioWidget.tsx) | Fixed pill linking to the author's portfolio. It only appears once the user has scrolled near the bottom of the page. |
-| [`src/components/landing/HeroAuthSection.tsx`](src/components/landing/HeroAuthSection.tsx) | Hero calls to action using Clerk `<Show>`: "Get Started Free" (sign-up) when signed out, or "Open Studio Dashboard" when signed in, plus a live-demo anchor and a GitHub link. Sign-in lives in the `Header`. Also exports `FooterAuthCTA` (sign-up only). |
+| [`src/components/landing/HeroAuthSection.tsx`](src/components/landing/HeroAuthSection.tsx) | Hero calls to action using Clerk `<Show>`: "Get started free" (sign-up) when signed out, or "Open studio dashboard" when signed in, plus one secondary "Try the live demo" anchor. Sign-in lives in the `Header`. Also exports `FooterAuthCTA` (sign-up only). |
 | [`src/components/landing/HeroFlowPreview.tsx`](src/components/landing/HeroFlowPreview.tsx) | Self-running SVG run of an example flow (trigger → search and crawl → researcher → human approval → PDF) in the landing hero. Pauses off-screen and in background tabs; shows the finished run under reduced motion. |
 | [`src/components/landing/edgeGeometry.ts`](src/components/landing/edgeGeometry.ts) | `getEdgeGeometry`: the SVG path and port sides for an edge between two node boxes (horizontal, vertical or looped). Shared by `HeroFlowPreview` and `LiveAgentCanvasDemo`. |
 | [`src/components/landing/LiveAgentCanvasDemo.tsx`](src/components/landing/LiveAgentCanvasDemo.tsx) | Standalone landing demo with no backend: 3 preset graphs, simulated runs at 1/2/4× speed, a heatmap, zoom and pan, and inspector tabs. |
-| [`src/components/landing/data/canvasNodes.ts`](src/components/landing/data/canvasNodes.ts) | `canvasNodeCategories`: the node catalog cards shown on the landing page. |
+| [`src/components/landing/data/canvasNodes.ts`](src/components/landing/data/canvasNodes.ts) | `canvasNodeCategories`: the node catalog shown on the landing page (category, then name, icon and description per node). |
 | [`src/components/layout/Header.tsx`](src/components/layout/Header.tsx) | Sticky header: pixel wordmark, landing anchors, mobile sidebar toggle, `ThemePicker`, and Clerk sign-in or `UserButton`. |
 | [`src/components/layout/Sidebar.tsx`](src/components/layout/Sidebar.tsx) | 15 app links in a sidebar that collapses on desktop and becomes a drawer on mobile, plus sign-out. Renders only for signed-in users on app routes. |
 
@@ -425,8 +425,7 @@ These were found while verifying, and are worth fixing or knowing about:
 | [`src/components/ui/Badge.tsx`](src/components/ui/Badge.tsx) | Pill badge with 8 variants. *Unused.* |
 | [`src/components/ui/Button.tsx`](src/components/ui/Button.tsx) | Button with primary, secondary, ghost and tertiary variants, sizes and a loading state. `asChild` is not implemented. *Unused.* |
 | [`src/components/ui/Card.tsx`](src/components/ui/Card.tsx) | `Card` and `FeatureCard`. *Unused.* |
-| [`src/components/ui/SectionHeader.tsx`](src/components/ui/SectionHeader.tsx) | Pixel-font section heading in two styles: terminal banner, or eyebrow + heading. |
-| [`src/components/ui/StatTile.tsx`](src/components/ui/StatTile.tsx) | Metric tile: icon, large pixel value, label, detail and badge. |
+| [`src/components/ui/SectionHeader.tsx`](src/components/ui/SectionHeader.tsx) | Landing section heading: sentence-case title, optional subhead, and a mono readout with a status dot on the right. |
 | [`src/components/ui/ThemePicker.tsx`](src/components/ui/ThemePicker.tsx) | Header popover with Mode and Color tabs; switches theme through the pixel transition. |
 | [`src/components/Reveal.tsx`](src/components/Reveal.tsx) | Plays a fade-in-up animation when the content scrolls into view (via `IntersectionObserver`), and respects reduced motion. |
 
@@ -457,7 +456,7 @@ The e2e suite covers the landing page, health and 404 pages only; it has no dash
 | [`tests/components/Pagination.test.tsx`](tests/components/Pagination.test.tsx) | Hidden when there is ≤ 1 page, page buttons, prev/next, disabled at the bounds, ellipsis, and loading state. |
 | [`tests/components/Skeleton.test.tsx`](tests/components/Skeleton.test.tsx) | Skeleton variants and counts, plus status roles and labels on the page skeletons. |
 | [`tests/components/Toaster.test.tsx`](tests/components/Toaster.test.tsx) | Toast rendering per type, close, and actions. The auto-dismiss timer is not tested. |
-| [`e2e/smoke.spec.ts`](e2e/smoke.spec.ts) | Landing headline and call to action, the `/api/health` payload, and the 404 page. |
+| [`e2e/smoke.spec.ts`](e2e/smoke.spec.ts) | Landing headline ("multi-agent workflows") and the "Get started free" call to action, the `/api/health` payload, and the 404 page. |
 | [`e2e/navigation.spec.ts`](e2e/navigation.spec.ts) | Landing title, health JSON shape and content type, unknown API returns ≥ 400, 404 page, no JS errors, `/api/skills` rejects unauthenticated calls, and no failed assets. |
 
 ## Frontend Root Files

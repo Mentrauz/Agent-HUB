@@ -150,16 +150,16 @@ export function HeroFlowPreview() {
       ref={rootRef}
       role="img"
       aria-label="Animated example run: a trigger fans out to SearXNG search and Crawl4AI scraping, a research agent synthesizes the results, a human approves the write, and Gotenberg renders a PDF report."
-      className="relative overflow-hidden rounded-xl border border-[var(--border-strong)] bg-[var(--surface-base)] font-mono shadow-[0_30px_90px_-40px_color-mix(in_srgb,var(--accent-primary)_45%,transparent)]"
+      className="relative overflow-hidden rounded-xl border border-[var(--border-strong)] bg-[var(--surface-base)] font-mono shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
     >
       {/* Run status bar */}
-      <div className="flex items-center justify-between gap-3 border-b border-[var(--border-subtle)] px-4 py-2.5 text-[10px] uppercase tracking-wider">
+      <div className="flex items-center justify-between gap-3 border-b border-[var(--border-subtle)] px-4 py-2.5 text-xs">
         <div className="flex min-w-0 items-center gap-2">
           <span
             className={`inline-block h-2 w-2 shrink-0 rounded-full ${shown >= 0 && shown < LAST_STEP ? "animate-pulse" : ""}`}
             style={{ background: shown < 0 ? "var(--text-muted)" : statusColor }}
           />
-          <span className="font-bold" style={{ color: shown < 0 ? "var(--text-secondary)" : statusColor }}>
+          <span className="font-medium" style={{ color: shown < 0 ? "var(--text-secondary)" : statusColor }}>
             {statusLabel}
           </span>
           <span className="truncate text-[var(--text-muted)]">· deep-research.flow</span>
