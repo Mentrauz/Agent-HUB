@@ -4,24 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import {
-  Plus,
-  Search,
-  Copy,
-  Archive,
-  Trash2,
-  GitCompare,
-  ArrowRight,
-  Workflow,
-  Zap,
-  Play,
-  Package,
-  Layers,
-  Wand2,
-  Network,
-  RotateCcw,
-  ChevronDown,
-} from "lucide-react";
 import { skillsApi } from "@/lib/api/skills";
 import { SkillDTO, SkillStatus } from "@/types/skill";
 import { StatusBadge } from "@/components/skills/StatusBadge";
@@ -32,7 +14,20 @@ import { SkeletonGrid } from "@/components/feedback/Skeleton";
 import { EmptyState } from "@/components/feedback/EmptyState";
 import { toast } from "@/stores/toastStore";
 import { clsx } from "clsx";
-import { ItemIcon } from "@/components/common/ItemIcon";
+import {
+  BTN_PRIMARY,
+  BTN_SECONDARY_SM,
+  CARD,
+  FIELD,
+  INPUT,
+  META,
+  PageHeader,
+  ROW_HOVER,
+  SECTION_TITLE,
+  Segmented,
+  plural,
+} from "@/components/ui/surfaces";
+
 // Secondary views are code-split so the studio tab doesn't ship every marketplace bundle
 const viewLoading = () => <SkeletonGrid cards={6} />;
 const SkillsMarketplace = dynamic(() => import("./marketplace/SkillsMarketplace").then((m) => m.SkillsMarketplace), { loading: viewLoading });
@@ -43,12 +38,17 @@ const SkillPackMarketplace = dynamic(() => import("./packs/SkillPackMarketplace"
 const SkillSynthesizer = dynamic(() => import("./synthesizer/SkillSynthesizer").then((m) => m.SkillSynthesizer), { loading: viewLoading });
 
 const sortOptions = [
-  { value: "updatedAt-desc", label: "UPDATED · NEWEST" },
-  { value: "updatedAt-asc", label: "UPDATED · OLDEST" },
-  { value: "name-asc", label: "NAME · A-Z" },
-  { value: "name-desc", label: "NAME · Z-A" },
-  { value: "createdAt-desc", label: "CREATED · NEWEST" },
+  { value: "updatedAt-desc", label: "Recently updated" },
+  { value: "updatedAt-asc", label: "Least recently updated" },
+  { value: "name-asc", label: "Name, A to Z" },
+  { value: "name-desc", label: "Name, Z to A" },
+  { value: "createdAt-desc", label: "Newest" },
 ];
+
+type ViewMode = "studio" | "workflows" | "marketplace" | "n8n" | "dify" | "packs" | "synthesize";
+
+const TEXT_ACTION =
+  "h-8 cursor-pointer rounded-[8px] px-2 font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] disabled:opacity-50 inline-flex items-center";
 
 export default function SkillsDashboardPage() {
   const queryClient = useQueryClient();
@@ -57,7 +57,7 @@ export default function SkillsDashboardPage() {
   const [status, setStatus] = useState<SkillStatus | "">("");
   const [typeFilter, setTypeFilter] = useState<"ALL" | "WORKFLOWS" | "PROMPT">("ALL");
   const [sort, setSort] = useState("updatedAt-desc");
-  const [viewMode, setViewMode] = useState<"studio" | "workflows" | "marketplace" | "n8n" | "dify" | "packs" | "synthesize">("studio");
+  const [viewMode, setViewMode] = useState<ViewMode>("studio");
   const [showAllBlueprints, setShowAllBlueprints] = useState(false);
   const debounceTimer = useRef<number | null>(null);
 
@@ -153,123 +153,69 @@ export default function SkillsDashboardPage() {
     return true;
   });
 
-  return (
-    <div className="space-y-6 w-full">
-      {/* Header */}
-      <div className="border-b border-slate-200 dark:border-indigo-950/80 pb-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <h1 className="text-lg sm:text-2xl font-pixel text-pixel-glow uppercase tracking-wide">
-                WORKFLOW & SKILLS STUDIO
-              </h1>
-            </div>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-mono">
-              Define, validate, version, and execute bounded multi-step workflows & AI skills.
-            </p>
-          </div>
-          <Link
-            href="/dashboard/skills/new"
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded border border-indigo-400 bg-indigo-600 text-white font-semibold hover:bg-indigo-500 shadow-md shadow-indigo-500/30 transition-all text-xs font-mono cursor-pointer w-full sm:w-auto shrink-0"
-          >
-            <Plus className="h-4 w-4" />
-            CREATE WORKFLOW / SKILL
-          </Link>
-        </div>
+  const tabs: { id: string; label: string; meta?: string; active: boolean; onSelect: () => void }[] = [
+    {
+      id: "studio",
+      label: "My studio",
+      active: viewMode === "studio" && status !== "ARCHIVED",
+      onSelect: () => {
+        setViewMode("studio");
+        if (status === "ARCHIVED") setStatus("");
+      },
+    },
+    { id: "marketplace", label: "Skills marketplace", active: viewMode === "marketplace", onSelect: () => setViewMode("marketplace") },
+    { id: "workflows", label: "Workflows marketplace", meta: "11.9k+", active: viewMode === "workflows", onSelect: () => setViewMode("workflows") },
+    { id: "packs", label: "Packs", active: viewMode === "packs", onSelect: () => setViewMode("packs") },
+    { id: "synthesize", label: "Synthesize", active: viewMode === "synthesize", onSelect: () => setViewMode("synthesize") },
+    {
+      id: "archive",
+      label: "Archive",
+      active: viewMode === "studio" && status === "ARCHIVED",
+      onSelect: () => {
+        setViewMode("studio");
+        setStatus("ARCHIVED");
+      },
+    },
+  ];
 
-        {/* View Mode Tabs */}
-        <div className="flex items-center gap-2 mt-4 flex-wrap">
+  const visibleTemplates = WORKFLOW_TEMPLATES.filter(
+    // Collapsed: one row, 2 on mobile and 3 from md up
+    (_, i) => showAllBlueprints || i < 3
+  );
+
+  return (
+    <div className="w-full space-y-6">
+      <PageHeader
+        title="Studio"
+        meta="Define, validate, version and run bounded multi-step workflows and AI skills"
+        action={
+          <Link href="/dashboard/skills/new" className={BTN_PRIMARY}>
+            New workflow or skill
+          </Link>
+        }
+      />
+
+      <div role="tablist" className="flex items-center gap-6 overflow-x-auto border-b border-[var(--border-subtle)]">
+        {tabs.map((t) => (
           <button
+            key={t.id}
             type="button"
-            onClick={() => {
-              setViewMode("studio");
-              if (status === "ARCHIVED") setStatus("");
-            }}
+            role="tab"
+            aria-selected={t.active}
+            onClick={t.onSelect}
             className={clsx(
-              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
-              viewMode === "studio" && status !== "ARCHIVED"
-                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
+              "-mb-px flex h-10 shrink-0 cursor-pointer items-center gap-2 border-b-2 font-sans text-sm whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
+              t.active
+                ? "border-[var(--text-primary)] text-[var(--text-primary)]"
+                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
             )}
           >
-            <Workflow className="h-3.5 w-3.5" /> MY STUDIO
+            {t.label}
+            {t.meta && <span className={META}>{t.meta}</span>}
           </button>
-          <button
-            type="button"
-            onClick={() => setViewMode("marketplace")}
-            className={clsx(
-              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer relative",
-              viewMode === "marketplace"
-                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
-            )}
-          >
-            <Package className="h-3.5 w-3.5 text-amber-400" />
-            SKILLS MARKETPLACE
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode("workflows")}
-            className={clsx(
-              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer relative",
-              viewMode === "workflows"
-                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
-            )}
-          >
-            <Workflow className="h-3.5 w-3.5 text-indigo-400" />
-            WORKFLOWS MARKETPLACE
-            <span className="ml-1 px-1.5 py-px rounded-full text-[7px] bg-gradient-to-r from-rose-500 via-blue-500 to-indigo-500 text-white font-extrabold uppercase shadow-xs">
-              11.9K+
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode("packs")}
-            className={clsx(
-              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
-              viewMode === "packs"
-                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
-            )}
-          >
-            <Package className="h-3.5 w-3.5" />
-            1-CLICK PACKS
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode("synthesize")}
-            className={clsx(
-              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
-              viewMode === "synthesize"
-                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
-            )}
-          >
-            <Wand2 className="h-3.5 w-3.5" />
-            SYNTHESIZE
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setViewMode("studio");
-              setStatus("ARCHIVED");
-            }}
-            className={clsx(
-              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
-              viewMode === "studio" && status === "ARCHIVED"
-                ? "bg-amber-600 text-white shadow-sm shadow-amber-500/30"
-                : "text-slate-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/40"
-            )}
-          >
-            <Archive className="h-3.5 w-3.5 text-amber-500" />
-            ARCHIVE
-          </button>
-        </div>
+        ))}
       </div>
 
-      {/* Marketplace View */}
       {viewMode === "synthesize" ? (
         <SkillSynthesizer />
       ) : viewMode === "packs" ? (
@@ -284,142 +230,97 @@ export default function SkillsDashboardPage() {
         <DifyWorkflowsMarketplace />
       ) : (
         <>
-          {/* ENTERPRISE BLUEPRINTS & TEMPLATES */}
+          {/* Blueprints */}
           {!isArchiveView && (
-            <div className="space-y-3 font-mono">
-              <div className="flex items-center justify-between gap-3 text-xs text-indigo-700 dark:text-indigo-400/80 uppercase tracking-widest font-semibold">
-                <span className="flex items-center gap-1.5">
-                  <Zap className="h-3.5 w-3.5 text-amber-500" />
-                  ENTERPRISE WORKFLOW BLUEPRINTS
-                </span>
-                <span className="flex items-center gap-3 text-[10px]">
-                  <span className="hidden sm:inline text-slate-500">1-CLICK STARTERS</span>
-                  <button
-                    type="button"
-                    onClick={() => setShowAllBlueprints((v) => !v)}
-                    aria-expanded={showAllBlueprints}
-                    className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-200 dark:border-indigo-900/40 text-indigo-700 dark:text-indigo-400 hover:border-indigo-400 transition-colors cursor-pointer"
-                  >
-                    {showAllBlueprints ? "SHOW LESS" : `SHOW ALL (${WORKFLOW_TEMPLATES.length})`}
-                    <ChevronDown className={clsx("h-3 w-3 transition-transform", showAllBlueprints && "rotate-180")} />
-                  </button>
-                </span>
+            <section className="space-y-3">
+              <div className="flex items-baseline justify-between gap-3">
+                <div className="flex items-baseline gap-3">
+                  <h2 className={SECTION_TITLE}>Blueprints</h2>
+                  <span className={META}>one-click starters</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowAllBlueprints((v) => !v)}
+                  aria-expanded={showAllBlueprints}
+                  className="cursor-pointer font-sans text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
+                >
+                  {showAllBlueprints ? "Show fewer" : `Show all ${WORKFLOW_TEMPLATES.length}`}
+                </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {WORKFLOW_TEMPLATES.map((tmpl, i) => (
-                  <div
-                    key={tmpl.id}
-                    className={clsx(
-                      "p-4 rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/80 space-y-3 hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:shadow-lg transition-all flex-col justify-between",
-                      // Collapsed: one row — 2 cards on mobile, 3 from md up
-                      showAllBlueprints || i < 2 ? "flex" : i === 2 ? "hidden md:flex" : "hidden"
-                    )}
-                  >
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                {visibleTemplates.map((tmpl) => (
+                  <div key={tmpl.id} className={clsx(CARD, "flex flex-col justify-between gap-4 p-5")}>
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[9px] px-2 py-0.5 rounded border border-indigo-300 dark:border-indigo-700/50 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold">
-                          {tmpl.badge}
-                        </span>
-                        <span className="text-[9px] text-slate-500 uppercase">{tmpl.category}</span>
+                      <div className={clsx(META, "flex items-center justify-between gap-3")}>
+                        <span className="truncate">{tmpl.badge.toLowerCase()}</span>
+                        <span className="shrink-0">{tmpl.category.toLowerCase()}</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <ItemIcon
-                          name={tmpl.name}
-                          category={tmpl.category}
-                          size="xs"
-                        />
-                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">{tmpl.name}</h3>
-                      </div>
-                      <p className="text-[11px] text-slate-600 dark:text-slate-400 font-serif leading-relaxed line-clamp-2">
-                        {tmpl.purpose}
-                      </p>
+                      <h3 className="font-sans text-sm font-medium text-[var(--text-primary)]">{tmpl.name}</h3>
+                      <p className="line-clamp-2 font-sans text-[13px] leading-5 text-[var(--text-secondary)]">{tmpl.purpose}</p>
                     </div>
-
-                    <div className="pt-2 border-t border-slate-100 dark:border-indigo-950/60 flex items-center justify-between">
-                      <span className="text-[10px] text-slate-500 font-mono">
-                        {tmpl.allowedTools.length + 1} steps
-                      </span>
-                      <Link
-                        href={`/dashboard/skills/new?template=${tmpl.id}`}
-                        className="inline-flex items-center gap-1 text-xs font-bold text-indigo-700 dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors"
-                      >
-                        USE BLUEPRINT <ArrowRight className="h-3 w-3" />
+                    <div className="flex items-center justify-between gap-3">
+                      <span className={META}>{plural(tmpl.allowedTools.length + 1, "step")}</span>
+                      <Link href={`/dashboard/skills/new?template=${tmpl.id}`} className={BTN_SECONDARY_SM}>
+                        Use blueprint
                       </Link>
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
+            </section>
           )}
 
-          {/* Toolbar: Filter Pills, Search, Status & Sort */}
-          <div className="space-y-3 font-mono">
-            <div className="flex items-center justify-between text-xs text-indigo-700 dark:text-indigo-400/80 uppercase tracking-widest font-semibold">
-              <span className="flex items-center gap-1.5">
-                {isArchiveView ? (
-                  <Archive className="h-3.5 w-3.5 text-amber-500" />
-                ) : (
-                  <Workflow className="h-3.5 w-3.5" />
-                )}
-                {isArchiveView ? "ARCHIVED WORKFLOWS & SKILLS" : "YOUR WORKFLOWS & SKILLS"}
-              </span>
-              {!isLoading && !isError && (
-                <span className="text-[10px] text-slate-500">{filteredSkills.length} ITEMS</span>
-              )}
+          {/* Your items */}
+          <section className="space-y-3">
+            <div className="flex items-baseline justify-between gap-3">
+              <h2 className={SECTION_TITLE}>{isArchiveView ? "Archived" : "Your workflows and skills"}</h2>
+              {!isLoading && !isError && <span className={META}>{filteredSkills.length}</span>}
             </div>
 
-            <div className="flex flex-col xl:flex-row xl:items-center gap-3">
-              <div className="flex flex-wrap items-center gap-2">
-                {[
-                  { id: "ALL", label: "ALL CAPABILITIES" },
-                  { id: "WORKFLOWS", label: "BOUNDED WORKFLOWS" },
-                  { id: "PROMPT", label: "PROMPT SKILLS" },
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    onClick={() => setTypeFilter(tab.id as typeof typeFilter)}
-                    className={clsx(
-                      "px-3 py-1.5 rounded text-xs font-mono transition-colors cursor-pointer border",
-                      typeFilter === tab.id
-                        ? "border-indigo-400 bg-indigo-100 dark:bg-indigo-950/80 text-indigo-900 dark:text-indigo-200 font-bold shadow-sm"
-                        : "border-slate-200 dark:border-indigo-900/30 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-indigo-800"
-                    )}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+              <Segmented
+                label="Type"
+                hideLabel
+                value={typeFilter}
+                onChange={setTypeFilter}
+                options={[
+                  { id: "ALL", label: "All" },
+                  { id: "WORKFLOWS", label: "Workflows" },
+                  { id: "PROMPT", label: "Prompt skills" },
+                ]}
+              />
 
-              <div className="flex flex-col sm:flex-row gap-3 flex-1">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-indigo-600 dark:text-indigo-400/60" />
+              <div className="flex flex-1 flex-col gap-3 sm:flex-row">
+                <label className="flex-1">
+                  <span className="sr-only">Search workflows and skills</span>
                   <input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="[ SEARCH WORKFLOWS & SKILLS ]"
-                    className="w-full rounded border border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a] pl-9 pr-3 py-2 text-xs text-slate-900 dark:text-slate-100 font-mono placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none transition-colors shadow-sm"
+                    placeholder="Search"
+                    className={clsx(INPUT, "w-full")}
                   />
-                </div>
+                </label>
 
                 {/* Archived items have their own tab, so the status filter only covers active ones */}
                 {!isArchiveView && (
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value as SkillStatus | "")}
-                    className="rounded border border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a] px-3 py-2 text-xs text-slate-900 dark:text-slate-100 font-mono focus:border-indigo-500 focus:outline-none transition-colors cursor-pointer shadow-sm"
+                    aria-label="Filter by status"
+                    className={clsx(FIELD, "h-9 cursor-pointer px-3")}
                   >
-                    <option value="">ALL STATUSES</option>
-                    <option value="DRAFT">DRAFT</option>
-                    <option value="PUBLISHED">PUBLISHED</option>
+                    <option value="">All statuses</option>
+                    <option value="DRAFT">Draft</option>
+                    <option value="PUBLISHED">Published</option>
                   </select>
                 )}
 
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value)}
-                  className="rounded border border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a] px-3 py-2 text-xs text-slate-900 dark:text-slate-100 font-mono focus:border-indigo-500 focus:outline-none transition-colors cursor-pointer shadow-sm"
+                  aria-label="Sort"
+                  className={clsx(FIELD, "h-9 cursor-pointer px-3")}
                 >
                   {sortOptions.map((o) => (
                     <option key={o.value} value={o.value}>
@@ -429,113 +330,121 @@ export default function SkillsDashboardPage() {
                 </select>
               </div>
             </div>
-          </div>
 
-          {/* Results Grid */}
-          {isLoading ? (
-            <SkeletonGrid cards={6} />
-          ) : isError ? (
-            <EmptyState
-              title="Failed to load studio items"
-              description="There was an error fetching your workflows and skills. Please try again."
-              action={
-                <button
-                  onClick={() => refetch()}
-                  className="px-4 py-2 rounded border border-indigo-400 bg-indigo-600 text-white text-xs font-mono font-semibold hover:bg-indigo-500 cursor-pointer"
-                >
-                  [ RETRY ]
-                </button>
-              }
-            />
-          ) : filteredSkills.length === 0 ? (
-            <EmptyState
-              icon={status === "ARCHIVED" ? <Archive className="h-6 w-6 text-amber-500" /> : <Workflow className="h-6 w-6" />}
-              title={
-                status === "ARCHIVED"
-                  ? "No archived items"
-                  : hasActiveFilters
-                  ? "No matching items"
-                  : "No items yet"
-              }
-              description={
-                status === "ARCHIVED"
-                  ? "Archived workflows and skills will appear here. You can restore them anytime."
-                  : hasActiveFilters
-                  ? "No workflows or skills match your active filter criteria."
-                  : "Create your first bounded multi-step workflow or start from a pre-built blueprint."
-              }
-              action={
-                status === "ARCHIVED" ? (
-                  <button
-                    type="button"
-                    onClick={() => setStatus("")}
-                    className="px-4 py-2 rounded border border-indigo-400 bg-indigo-600 text-white text-xs font-mono font-semibold hover:bg-indigo-500 transition-all cursor-pointer"
-                  >
-                    [ VIEW ACTIVE SKILLS ]
+            {isLoading ? (
+              <SkeletonGrid cards={6} />
+            ) : isError ? (
+              <EmptyState
+                title="Couldn't load studio items"
+                description="There was an error fetching your workflows and skills."
+                action={
+                  <button onClick={() => refetch()} className={BTN_SECONDARY_SM}>
+                    Retry
                   </button>
-                ) : !hasActiveFilters ? (
-                  <Link
-                    href="/dashboard/skills/new"
-                    className="px-4 py-2 rounded border border-indigo-400 bg-indigo-600 text-white text-xs font-mono font-semibold hover:bg-indigo-500 transition-all cursor-pointer"
-                  >
-                    [ CREATE FIRST ITEM ]
-                  </Link>
-                ) : undefined
-              }
-            />
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4 font-mono">
-              {filteredSkills.map((skill) => {
-                const version = skill.publishedVersion ?? skill.currentDraft;
-                const allowedTools = version?.allowedTools ?? [];
-                const actionsRequiringApproval = version?.actionsRequiringApproval ?? [];
-                const isWorkflow = allowedTools.length > 1;
-                const isArchived = skill.status === "ARCHIVED";
+                }
+              />
+            ) : filteredSkills.length === 0 ? (
+              <EmptyState
+                title={status === "ARCHIVED" ? "No archived items" : hasActiveFilters ? "No matching items" : "Nothing here yet"}
+                description={
+                  status === "ARCHIVED"
+                    ? "Archived workflows and skills appear here. You can restore them at any time."
+                    : hasActiveFilters
+                    ? "No workflows or skills match the current filters."
+                    : "Create your first bounded multi-step workflow or start from a blueprint."
+                }
+                action={
+                  status === "ARCHIVED" ? (
+                    <button type="button" onClick={() => setStatus("")} className={BTN_SECONDARY_SM}>
+                      View active items
+                    </button>
+                  ) : !hasActiveFilters ? (
+                    <Link href="/dashboard/skills/new" className={BTN_SECONDARY_SM}>
+                      Create the first one
+                    </Link>
+                  ) : undefined
+                }
+              />
+            ) : (
+              <ul className={clsx(CARD, "divide-y divide-[var(--border-subtle)] overflow-hidden")}>
+                {filteredSkills.map((skill) => {
+                  const version = skill.publishedVersion ?? skill.currentDraft;
+                  const allowedTools = version?.allowedTools ?? [];
+                  const actionsRequiringApproval = version?.actionsRequiringApproval ?? [];
+                  const isWorkflow = allowedTools.length > 1;
+                  const isArchived = skill.status === "ARCHIVED";
 
-                return (
-                  <div
-                    key={skill.id}
-                    className={clsx(
-                      "rounded border p-5 space-y-4 transition-all duration-300 flex flex-col justify-between shadow-sm",
-                      isArchived
-                        ? "border-amber-400/40 dark:border-amber-800/40 bg-amber-50/30 dark:bg-amber-950/10 hover:border-amber-400 hover:shadow-amber-500/10"
-                        : "border-slate-200 dark:border-indigo-900/50 bg-white/90 dark:bg-[#0a0a0a]/90 hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/10"
-                    )}
-                  >
-                    <div className="space-y-3">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="space-y-1 min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
-                            <ItemIcon
-                              name={skill.name}
-                              size="xs"
-                            />
-                            {isWorkflow ? (
-                              <span className="text-[9px] px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-200 dark:border-indigo-900/40">
-                                WORKFLOW
-                              </span>
-                            ) : (
-                              <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 font-medium">
-                                SKILL
-                              </span>
-                            )}
-                            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
-                              {skill.name}
-                            </h3>
+                  return (
+                    <li key={skill.id} className={clsx(ROW_HOVER, "space-y-3 px-5 py-4")}>
+                      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
+                        <div className="min-w-0 space-y-1">
+                          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                            <h3 className="truncate font-sans text-sm font-medium text-[var(--text-primary)]">{skill.name}</h3>
+                            <StatusBadge status={skill.status} />
+                            <span className={META}>{isWorkflow ? "workflow" : "skill"}</span>
+                            <span className={META}>
+                              v{skill.currentDraft?.versionNumber ?? skill.publishedVersion?.versionNumber ?? 1} ·{" "}
+                              {plural(skill.versions?.length ?? 0, "version")}
+                            </span>
                           </div>
-                          <p className="text-xs text-slate-600 dark:text-slate-400 font-serif line-clamp-2 leading-relaxed">
+                          <p className="line-clamp-2 max-w-3xl font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
                             {skill.purpose}
                           </p>
                         </div>
-                        <StatusBadge status={skill.status} />
+
+                        <div className="flex flex-wrap items-center gap-1">
+                          {isArchived ? (
+                            <button
+                              type="button"
+                              onClick={() => restoreMutation.mutate(skill.id)}
+                              disabled={restoreMutation.isPending && restoreMutation.variables === skill.id}
+                              className={BTN_SECONDARY_SM}
+                              title="Restore this archived skill"
+                            >
+                              Restore
+                            </button>
+                          ) : (
+                            <Link href={`/dashboard/skills/${skill.id}`} className={BTN_SECONDARY_SM}>
+                              Run
+                            </Link>
+                          )}
+                          <Link href={`/dashboard/canvas/${skill.id}`} className={TEXT_ACTION} title="Open on the Agent canvas">
+                            Canvas
+                          </Link>
+                          <Link
+                            href={isArchived ? `/dashboard/skills/${skill.id}` : `/dashboard/skills/${skill.id}/edit`}
+                            className={TEXT_ACTION}
+                          >
+                            {isArchived ? "Details" : "Edit"}
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => duplicateMutation.mutate(skill.id)}
+                            disabled={duplicateMutation.isPending && duplicateMutation.variables === skill.id}
+                            className={TEXT_ACTION}
+                          >
+                            Duplicate
+                          </button>
+                          {!isArchived && (
+                            <button type="button" onClick={() => setTarget({ skill, action: "archive" })} className={TEXT_ACTION}>
+                              Archive
+                            </button>
+                          )}
+                          {skill.status !== "PUBLISHED" && !isArchived && (
+                            <button
+                              type="button"
+                              onClick={() => setTarget({ skill, action: "delete" })}
+                              className={clsx(TEXT_ACTION, "hover:!text-[var(--state-error)]")}
+                            >
+                              Delete
+                            </button>
+                          )}
+                        </div>
                       </div>
 
-                      {/* Visual Step Chain */}
                       {allowedTools.length > 0 && (
-                        <div className="pt-2 border-t border-slate-100 dark:border-indigo-950/60 space-y-1">
-                          <div className="text-[9px] uppercase tracking-wider text-indigo-700 dark:text-indigo-400/80 font-bold">
-                            STEP PIPELINE ({allowedTools.length + 1} steps)
-                          </div>
+                        <div className="space-y-1">
+                          <div className={META}>pipeline · {plural(allowedTools.length + 1, "step")}</div>
                           <WorkflowStepChain
                             allowedTools={allowedTools}
                             actionsRequiringApproval={actionsRequiringApproval}
@@ -543,103 +452,24 @@ export default function SkillsDashboardPage() {
                           />
                         </div>
                       )}
-
-                      <div className="flex items-center gap-3 text-[10px] text-slate-500 pt-1">
-                        <span className="flex items-center gap-1 font-medium">
-                          <GitCompare className="h-3 w-3 text-indigo-600 dark:text-indigo-400/70" />
-                          v{skill.currentDraft?.versionNumber ?? skill.publishedVersion?.versionNumber ?? 1}
-                        </span>
-                        <span className="flex items-center gap-1 font-medium">
-                          <Layers className="h-3 w-3 text-indigo-600 dark:text-indigo-400/70" />
-                          {skill.versions?.length ?? 0} versions
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between gap-1.5 pt-3 border-t border-slate-100 dark:border-indigo-950/60 mt-auto">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        {isArchived ? (
-                          <button
-                            type="button"
-                            onClick={() => restoreMutation.mutate(skill.id)}
-                            disabled={restoreMutation.isPending && restoreMutation.variables === skill.id}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-amber-400/80 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-sm transition-all cursor-pointer disabled:opacity-50"
-                            title="Restore this archived skill"
-                          >
-                            <RotateCcw className="h-3 w-3" /> [ RESTORE ]
-                          </button>
-                        ) : (
-                          <Link
-                            href={`/dashboard/skills/${skill.id}`}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-indigo-400/80 bg-indigo-600 text-white text-xs hover:bg-indigo-500 font-bold shadow-sm transition-all"
-                          >
-                            <Play className="h-3 w-3" /> [ RUN ]
-                          </Link>
-                        )}
-                        <Link
-                          href={`/dashboard/canvas/${skill.id}`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded border border-violet-300 dark:border-violet-900/60 bg-violet-50 dark:bg-violet-950/30 text-xs text-violet-700 dark:text-violet-300 hover:border-violet-400 hover:text-violet-900 dark:hover:text-violet-100 transition-all font-semibold"
-                          title="Open on visual Agent Canvas"
-                        >
-                          <Network className="h-3 w-3" /> CANVAS
-                        </Link>
-                        <Link
-                          href={isArchived ? `/dashboard/skills/${skill.id}` : `/dashboard/skills/${skill.id}/edit`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded border border-slate-200 dark:border-indigo-900/60 bg-slate-50 dark:bg-indigo-950/30 text-xs text-slate-700 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-all"
-                        >
-                          {isArchived ? "DETAILS" : "EDIT"}
-                        </Link>
-                      </div>
-
-                      <div className="flex items-center gap-1">
-                        <button
-                          type="button"
-                          onClick={() => duplicateMutation.mutate(skill.id)}
-                          disabled={duplicateMutation.isPending && duplicateMutation.variables === skill.id}
-                          title="Duplicate"
-                          className="p-1.5 rounded border border-slate-200 dark:border-indigo-900/40 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:border-indigo-400 transition-colors cursor-pointer disabled:opacity-50"
-                        >
-                          <Copy className="h-3.5 w-3.5" />
-                        </button>
-                        {!isArchived && (
-                          <button
-                            type="button"
-                            onClick={() => setTarget({ skill, action: "archive" })}
-                            title="Archive"
-                            className="p-1.5 rounded border border-slate-200 dark:border-indigo-900/40 text-slate-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-300 hover:border-amber-400 transition-colors cursor-pointer"
-                          >
-                            <Archive className="h-3.5 w-3.5" />
-                          </button>
-                        )}
-                        {skill.status !== "PUBLISHED" && !isArchived && (
-                          <button
-                            type="button"
-                            onClick={() => setTarget({ skill, action: "delete" })}
-                            title="Delete"
-                            className="p-1.5 rounded border border-slate-200 dark:border-red-900/40 text-slate-600 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 hover:border-red-400 transition-colors cursor-pointer"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </section>
         </>
       )}
 
       <ConfirmDialog
         isOpen={target !== null}
-        title={target?.action === "archive" ? "ARCHIVE SKILL" : "DELETE SKILL"}
+        title={target?.action === "archive" ? "Archive skill" : "Delete skill"}
         description={
           target?.action === "archive"
             ? `Archive "${target?.skill.name}"? It will be hidden from active lists but preserved.`
             : `Delete "${target?.skill.name}"? This permanently removes the draft and cannot be undone.`
         }
-        confirmLabel={target?.action === "archive" ? "ARCHIVE" : "DELETE"}
+        confirmLabel={target?.action === "archive" ? "Archive" : "Delete"}
         variant={target?.action === "archive" ? "warning" : "danger"}
         isPending={isActionPending}
         onConfirm={confirmAction}

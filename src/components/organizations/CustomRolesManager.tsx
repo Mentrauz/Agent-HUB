@@ -1,18 +1,20 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { clsx } from "clsx";
 import {
-  Shield,
-  Plus,
-  Trash2,
-  Edit3,
-  X,
-  ChevronDown,
-  ChevronUp,
-  Users,
-  Loader2,
-  Search,
-} from "lucide-react";
+  BTN_PRIMARY,
+  BTN_SECONDARY,
+  BTN_SECONDARY_SM,
+  CARD_HEAD,
+  CARD_TITLE,
+  FIELD,
+  INPUT,
+  LABEL,
+  META,
+  ROW_HOVER,
+  plural,
+} from "@/components/ui/surfaces";
 import { toast } from "@/stores/toastStore";
 import { ConfirmDialog } from "@/components/feedback/ConfirmDialog";
 
@@ -323,331 +325,234 @@ export function CustomRolesManager({
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
+      <div role="status" className="px-5 py-8 text-center font-sans text-sm text-[var(--text-muted)]">
+        Loading roles
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-mono font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-          <Shield className="h-4 w-4 text-violet-500" />
-          CUSTOM ROLES
-          <span className="text-[9px] px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 font-bold border border-violet-200 dark:border-violet-500/40">
-            {roles.length}
-          </span>
-        </h3>
-        <button
-          type="button"
-          onClick={() => openCreate()}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono font-bold bg-violet-600 text-white hover:bg-violet-500 shadow-sm transition-all cursor-pointer"
-        >
-          <Plus className="h-3 w-3" /> NEW ROLE
+    <div>
+      <div className={CARD_HEAD}>
+        <div className="flex items-baseline gap-3">
+          <h2 className={CARD_TITLE}>Custom roles</h2>
+          <span className={META}>{roles.length}</span>
+        </div>
+        <button type="button" onClick={() => openCreate()} className={BTN_SECONDARY_SM}>
+          New role
         </button>
       </div>
 
       {/* Presets */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-[var(--border-subtle)] px-5 py-3 font-sans text-[13px] text-[var(--text-muted)]">
+        <span>Start from</span>
         {ROLE_PRESETS.map((preset) => (
           <button
             key={preset.name}
             type="button"
             onClick={() => openCreate(preset)}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[10px] font-mono text-slate-600 dark:text-slate-400 hover:border-violet-400 hover:text-violet-600 dark:hover:text-violet-400 transition-all cursor-pointer"
             title={preset.description}
+            className="cursor-pointer text-[var(--text-secondary)] underline decoration-[var(--border-strong)] underline-offset-4 transition-colors hover:text-[var(--text-primary)]"
           >
-            <Plus className="h-2.5 w-2.5" /> {preset.name}
+            {preset.name}
           </button>
         ))}
       </div>
 
-      {/* Roles List */}
+      {/* Roles list */}
       {roles.length === 0 ? (
-        <div className="text-center py-8 rounded border border-dashed border-slate-300 dark:border-slate-700">
-          <Shield className="h-6 w-6 text-slate-400 mx-auto mb-2" />
-          <p className="text-xs font-mono text-slate-500">
-            No custom roles yet. Create one to define granular permissions.
-          </p>
-        </div>
+        <p className="px-5 py-8 text-center font-sans text-sm text-[var(--text-muted)]">
+          No custom roles yet. Create one to define finer permissions.
+        </p>
       ) : (
-        <div className="space-y-2">
+        <ul className="divide-y divide-[var(--border-subtle)]">
           {roles.map((role) => (
-            <div
-              key={role.id}
-              className="rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 hover:border-violet-400 dark:hover:border-violet-500/40 transition-colors"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-mono font-bold text-slate-900 dark:text-slate-100">
-                      {role.name}
-                    </span>
-                    {role.isSystem && (
-                      <span className="text-[8px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold border border-slate-200 dark:border-slate-700">
-                        SYSTEM
-                      </span>
-                    )}
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono inline-flex items-center gap-1">
-                      <Users className="h-2.5 w-2.5" />
-                      {role.memberCount}
-                    </span>
-                  </div>
-                  {role.description && (
-                    <p className="text-[10px] font-mono text-slate-500 mt-0.5">
-                      {role.description}
-                    </p>
-                  )}
-                  <div className="flex flex-wrap gap-1 mt-1.5">
-                    {role.permissions.slice(0, 6).map((p) => (
-                      <span
-                        key={p}
-                        className="text-[8px] px-1 py-0.5 rounded bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 font-mono border border-violet-100 dark:border-violet-800/40"
-                      >
-                        {p}
-                      </span>
-                    ))}
-                    {role.permissions.length > 6 && (
-                      <span className="text-[8px] px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 font-mono">
-                        +{role.permissions.length - 6} more
-                      </span>
-                    )}
-                  </div>
+            <li key={role.id} className={clsx(ROW_HOVER, "flex items-start justify-between gap-4 px-5 py-4")}>
+              <div className="min-w-0 space-y-2">
+                <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                  <span className="font-sans text-sm font-medium text-[var(--text-primary)]">{role.name}</span>
+                  {role.isSystem && <span className={META}>system</span>}
+                  <span className={META}>{plural(role.memberCount, "member")}</span>
                 </div>
-                {!role.isSystem && (
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => openEdit(role)}
-                      className="p-1.5 rounded text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors cursor-pointer"
-                      title="Edit role"
-                    >
-                      <Edit3 className="h-3 w-3" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDeletingRole(role)}
-                      className="p-1.5 rounded text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
-                      title="Delete role"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </button>
-                  </div>
+                {role.description && (
+                  <p className="font-sans text-[13px] leading-5 text-[var(--text-secondary)]">{role.description}</p>
                 )}
+                <p className="font-mono text-xs leading-5 text-[var(--text-muted)]">
+                  {role.permissions.slice(0, 6).join(" · ")}
+                  {role.permissions.length > 6 && ` · +${role.permissions.length - 6} more`}
+                </p>
               </div>
-            </div>
+              {!role.isSystem && (
+                <div className="flex shrink-0 items-center gap-2">
+                  <button type="button" onClick={() => openEdit(role)} className={BTN_SECONDARY_SM}>
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeletingRole(role)}
+                    className="h-8 cursor-pointer rounded-[8px] px-2 font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--state-error)]"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+            </li>
           ))}
-        </div>
+        </ul>
       )}
 
-      {/* Create / Edit Modal */}
+      {/* Create / edit modal */}
       {showCreateModal && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setShowCreateModal(false)} aria-hidden="true" />
           <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={() => setShowCreateModal(false)}
-            aria-hidden="true"
-          />
-          <div className="relative w-full max-w-lg max-h-[85vh] flex flex-col rounded border border-slate-200 dark:border-indigo-900/50 bg-white dark:bg-black font-mono shadow-2xl dark:shadow-indigo-950/80 animate-fadeInUp">
-            {/* Modal header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide flex items-center gap-2">
-                <Shield className="h-4 w-4 text-violet-500" />
-                {editingRole ? "Edit Role" : "Create Role"}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="role-modal-title"
+            className="relative flex max-h-[85vh] w-full max-w-lg animate-fadeInUp flex-col overflow-hidden rounded-[16px] border border-[var(--border-subtle)] bg-[var(--surface-elevated)] shadow-[0_8px_24px_rgba(0,0,0,0.24)]"
+          >
+            <div className="flex shrink-0 items-center justify-between border-b border-[var(--border-subtle)] px-5 py-4">
+              <h3 id="role-modal-title" className="font-sans text-base font-medium text-[var(--text-primary)]">
+                {editingRole ? "Edit role" : "New role"}
               </h3>
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="p-1 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                className="h-8 cursor-pointer rounded-[8px] px-2 font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
               >
-                <X className="h-4 w-4" />
+                Close
               </button>
             </div>
 
-            {/* Modal body */}
-            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-              {/* Name */}
-              <div>
-                <label className="block text-[10px] font-mono font-bold text-slate-500 mb-1 uppercase tracking-wider">
-                  Role Name
+            <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
+              <div className="space-y-2">
+                <label htmlFor="role-name" className={LABEL}>
+                  Name
                 </label>
                 <input
+                  id="role-name"
                   type="text"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  placeholder="e.g. Deploy Manager"
+                  placeholder="Deploy manager"
                   maxLength={50}
-                  className="w-full px-3 py-2 rounded border border-slate-300 dark:border-indigo-900/50 bg-slate-50 dark:bg-slate-900 text-xs font-mono text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-violet-500 transition-colors"
+                  className={clsx(INPUT, "w-full")}
                 />
               </div>
 
-              {/* Description */}
-              <div>
-                <label className="block text-[10px] font-mono font-bold text-slate-500 mb-1 uppercase tracking-wider">
+              <div className="space-y-2">
+                <label htmlFor="role-desc" className={LABEL}>
                   Description (optional)
                 </label>
                 <input
+                  id="role-desc"
                   type="text"
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
                   placeholder="What can holders of this role do?"
                   maxLength={500}
-                  className="w-full px-3 py-2 rounded border border-slate-300 dark:border-indigo-900/50 bg-slate-50 dark:bg-slate-900 text-xs font-mono text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-violet-500 transition-colors"
+                  className={clsx(INPUT, "w-full")}
                 />
               </div>
 
-              {/* Permission search */}
-              <div>
-                <div className="relative">
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-slate-400" />
-                  <input
-                    type="text"
-                    value={permissionSearch}
-                    onChange={(e) => setPermissionSearch(e.target.value)}
-                    placeholder="Search permissions..."
-                    className="w-full pl-8 pr-3 py-1.5 rounded border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[10px] font-mono text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-violet-500 transition-colors"
-                  />
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <label htmlFor="role-search" className={LABEL}>
+                    Permissions
+                  </label>
+                  <span className={META}>{formPermissions.length} selected</span>
                 </div>
-              </div>
+                <input
+                  id="role-search"
+                  type="text"
+                  value={permissionSearch}
+                  onChange={(e) => setPermissionSearch(e.target.value)}
+                  placeholder="Filter permissions"
+                  className={clsx(FIELD, "h-8 w-full px-3 text-[13px]")}
+                />
 
-              {/* Selected count */}
-              <div className="text-[10px] font-mono text-violet-600 dark:text-violet-400 font-bold">
-                {formPermissions.length} permission{formPermissions.length !== 1 ? "s" : ""} selected
-              </div>
+                <div className="divide-y divide-[var(--border-subtle)] rounded-[10px] border border-[var(--border-subtle)]">
+                  {filteredGroups.map((group) => {
+                    const allSelected = group.permissions.every((p) => formPermissions.includes(p));
+                    const someSelected = group.permissions.some((p) => formPermissions.includes(p));
+                    const isExpanded = expandedGroups.has(group.label);
+                    const selectedCount = group.permissions.filter((p) => formPermissions.includes(p)).length;
 
-              {/* Permission Groups */}
-              <div className="space-y-2">
-                {filteredGroups.map((group) => {
-                  const allSelected = group.permissions.every((p) =>
-                    formPermissions.includes(p)
-                  );
-                  const someSelected = group.permissions.some((p) =>
-                    formPermissions.includes(p)
-                  );
-                  const isExpanded = expandedGroups.has(group.label);
-
-                  return (
-                    <div
-                      key={group.label}
-                      className="rounded border border-slate-200 dark:border-slate-700 overflow-hidden"
-                    >
-                      {/* Group header */}
-                      <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800/50">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            toggleGroup(group.permissions)
-                          }
-                          className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors shrink-0 ${
-                            allSelected
-                              ? "bg-violet-600 border-violet-600"
-                              : someSelected
-                              ? "bg-violet-200 dark:bg-violet-800 border-violet-400"
-                              : "border-slate-300 dark:border-slate-600"
-                          }`}
-                        >
-                          {(allSelected || someSelected) && (
-                            <svg
-                              className="w-2.5 h-2.5 text-white"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={3}
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                          )}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => toggleGroupExpand(group.label)}
-                          className="flex items-center gap-1.5 flex-1 text-left"
-                        >
-                          <span className="text-[10px] font-mono font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                            {group.label}
-                          </span>
-                          <span className="text-[8px] font-mono text-slate-400">
-                            {group.permissions.filter((p) =>
-                              formPermissions.includes(p)
-                            ).length}/{group.permissions.length}
-                          </span>
-                          {isExpanded ? (
-                            <ChevronUp className="h-3 w-3 text-slate-400" />
-                          ) : (
-                            <ChevronDown className="h-3 w-3 text-slate-400" />
-                          )}
-                        </button>
-                      </div>
-
-                      {/* Permissions list */}
-                      {isExpanded && (
-                        <div className="px-3 py-2 space-y-1 border-t border-slate-100 dark:border-slate-800">
-                          {group.permissions.map((perm) => (
-                            <label
-                              key={perm}
-                              className="flex items-center gap-2 cursor-pointer group/perm"
-                            >
-                              <input
-                                type="checkbox"
-                                checked={formPermissions.includes(perm)}
-                                onChange={() => togglePermission(perm)}
-                                className="w-3 h-3 rounded border-slate-300 dark:border-slate-600 text-violet-600 focus:ring-violet-500"
-                              />
-                              <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 group-hover/perm:text-slate-900 dark:group-hover/perm:text-slate-100 transition-colors">
-                                {perm}
-                              </span>
-                            </label>
-                          ))}
+                    return (
+                      <div key={group.label}>
+                        <div className="flex items-center gap-3 px-3 py-2">
+                          <input
+                            type="checkbox"
+                            aria-label={`Select all ${group.label} permissions`}
+                            checked={allSelected}
+                            ref={(el) => {
+                              if (el) el.indeterminate = !allSelected && someSelected;
+                            }}
+                            onChange={() => toggleGroup(group.permissions)}
+                            className="h-4 w-4 accent-[var(--accent-primary)]"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => toggleGroupExpand(group.label)}
+                            aria-expanded={isExpanded}
+                            className="flex flex-1 cursor-pointer items-baseline justify-between text-left"
+                          >
+                            <span className="font-sans text-sm text-[var(--text-primary)]">{group.label}</span>
+                            <span className={META}>
+                              {selectedCount}/{group.permissions.length}
+                            </span>
+                          </button>
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
+
+                        {isExpanded && (
+                          <div className="space-y-1 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)] px-3 py-2 pl-10">
+                            {group.permissions.map((perm) => (
+                              <label key={perm} className="flex cursor-pointer items-center gap-2 py-0.5">
+                                <input
+                                  type="checkbox"
+                                  checked={formPermissions.includes(perm)}
+                                  onChange={() => togglePermission(perm)}
+                                  className="h-3.5 w-3.5 accent-[var(--accent-primary)]"
+                                />
+                                <span className="font-mono text-xs text-[var(--text-secondary)]">{perm}</span>
+                              </label>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
-            {/* Modal footer */}
-            <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-slate-200 dark:border-slate-800 shrink-0">
-              <button
-                type="button"
-                onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2 rounded border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 text-xs font-mono font-semibold text-slate-700 dark:text-slate-300 hover:border-slate-400 transition-all cursor-pointer"
-              >
-                CANCEL
+            <div className="flex shrink-0 items-center justify-end gap-2 border-t border-[var(--border-subtle)] px-5 py-4">
+              <button type="button" onClick={() => setShowCreateModal(false)} className={BTN_SECONDARY}>
+                Cancel
               </button>
               <button
                 type="button"
                 onClick={handleSave}
                 disabled={saving || !formName.trim() || formPermissions.length === 0}
-                className="px-4 py-2 rounded border border-violet-400 bg-violet-600 text-xs font-mono font-semibold text-white hover:bg-violet-500 shadow-sm transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                className={BTN_PRIMARY}
               >
-                {saving
-                  ? "SAVING..."
-                  : editingRole
-                  ? "UPDATE ROLE"
-                  : "CREATE ROLE"}
+                {saving ? "Saving" : editingRole ? "Update role" : "Create role"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Delete Confirm */}
+      {/* Delete confirm */}
       <ConfirmDialog
         isOpen={deletingRole !== null}
-        title="Delete Custom Role"
+        title="Delete custom role"
         description={
           deletingRole
-            ? `Delete "${deletingRole.name}"? ${deletingRole.memberCount > 0 ? `${deletingRole.memberCount} member(s) are using this role — reassign them first.` : "No members are using this role."}`
+            ? `Delete "${deletingRole.name}"? ${deletingRole.memberCount > 0 ? `${deletingRole.memberCount} member(s) are using this role, so reassign them first.` : "No members are using this role."}`
             : ""
         }
-        confirmLabel="DELETE"
+        confirmLabel="Delete"
         variant="danger"
         onConfirm={handleDelete}
         onClose={() => setDeletingRole(null)}

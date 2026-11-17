@@ -27,15 +27,15 @@ import { Pagination } from "@/components/common/Pagination";
 import { DifyOfficialLogo } from "@/components/common/BrandLogos";
 
 const DIFY_CATEGORIES = [
-  { id: "ALL", label: "ALL CATEGORIES" },
-  { id: "marketing", label: "MARKETING" },
-  { id: "sales", label: "SALES" },
-  { id: "support", label: "SUPPORT" },
-  { id: "operations", label: "OPERATIONS" },
-  { id: "it", label: "IT & DEV" },
-  { id: "knowledge", label: "KNOWLEDGE" },
-  { id: "design", label: "DESIGN" },
-  { id: "others", label: "OTHERS" },
+  { id: "ALL", label: "All categories" },
+  { id: "marketing", label: "Marketing" },
+  { id: "sales", label: "Sales" },
+  { id: "support", label: "Support" },
+  { id: "operations", label: "Operations" },
+  { id: "it", label: "IT & dev" },
+  { id: "knowledge", label: "Knowledge" },
+  { id: "design", label: "Design" },
+  { id: "others", label: "Others" },
 ];
 
 const POPULAR_PLUGIN_TAGS = [
@@ -52,14 +52,14 @@ const POPULAR_PLUGIN_TAGS = [
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
-  marketing: "border-purple-300 dark:border-purple-500/40 bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300",
-  sales: "border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300",
-  support: "border-blue-300 dark:border-blue-500/40 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300",
-  operations: "border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300",
-  it: "border-cyan-300 dark:border-cyan-500/40 bg-cyan-50 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-300",
-  knowledge: "border-indigo-300 dark:border-indigo-500/40 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300",
-  design: "border-pink-300 dark:border-pink-500/40 bg-pink-50 dark:bg-pink-950/40 text-pink-700 dark:text-pink-300",
-  others: "border-slate-300 dark:border-slate-500/40 bg-slate-50 dark:bg-slate-950/40 text-slate-700 dark:text-slate-300",
+  marketing: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  sales: "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]",
+  support: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  operations: "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
+  it: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  knowledge: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  design: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  others: "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
 };
 
 const PAGE_SIZE = 18;
@@ -236,26 +236,26 @@ export function DifyWorkflowsMarketplace() {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-xl border border-blue-500/30 bg-gradient-to-r from-blue-950/40 via-indigo-950/30 to-purple-950/20 p-5 sm:p-6 backdrop-blur-md shadow-xl shadow-blue-500/5">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 h-48 w-48 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
+      <div className="bg-[var(--surface-raised)] relative overflow-hidden rounded-xl border border-[var(--accent-primary)]/40 p-5 sm:p-6">
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 h-48 w-48 rounded-full bg-[var(--cta-primary-bg)]/10 blur-3xl pointer-events-none" />
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
           <div className="space-y-1.5 max-w-2xl">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-blue-500/40 bg-blue-500/10 text-blue-300 text-[10px] font-mono font-bold tracking-wide">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)] text-xs font-sans font-medium">
                 <DifyOfficialLogo className="h-3.5 w-3.5" />
-                DIFY.AI WORKFLOW TEMPLATE REGISTRY
+                Dify.ai workflow template registry
               </span>
-              <span className="text-[10px] font-mono text-slate-400 flex items-center gap-1">
+              <span className="text-xs font-sans text-[var(--text-muted)] flex items-center gap-1">
                 <Globe className="h-3 w-3" /> marketplace.dify.ai
               </span>
             </div>
             <div className="flex items-center gap-3">
               <DifyOfficialLogo className="h-7 w-7" />
-              <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-medium tracking-tight text-[var(--text-primary)] flex items-center gap-2">
                 Dify AI Workflow Templates
               </h2>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
               Explore {totalWorkflows > 0 ? `${totalWorkflows.toLocaleString()}+ ` : ""}production-grade AI workflows, RAG agents, chatflows, and multi-model pipelines created by the Dify community. Import and run directly on Agent Hub Canvas with zero friction.
             </p>
           </div>
@@ -265,21 +265,21 @@ export function DifyWorkflowsMarketplace() {
               href="https://marketplace.dify.ai/templates"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded text-[11px] font-mono font-semibold border border-blue-500/40 bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 transition-all cursor-pointer w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded text-xs font-sans font-medium border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 hover:bg-[var(--cta-primary-hover)]/20 text-[var(--accent-primary)] transition-colors cursor-pointer w-full sm:w-auto"
             >
               <ExternalLink className="h-3.5 w-3.5" />
-              VISIT DIFY MARKETPLACE
+              Visit dify marketplace
             </a>
           </div>
         </div>
       </div>
 
       {/* Controls: Search, View Mode & Filters */}
-      <div className="space-y-3 font-mono">
+      <div className="space-y-3 font-sans">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           {/* Search Input */}
           <div className="relative flex-1 max-w-lg">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--text-muted)]" />
             <input
               type="text"
               placeholder="Search Dify workflows (e.g. RAG, Customer Support, OpenAI, Scraping)..."
@@ -288,13 +288,13 @@ export function DifyWorkflowsMarketplace() {
                 setSearch(e.target.value);
                 setActiveTag(null);
               }}
-              className="w-full pl-9 pr-8 py-2 rounded border border-slate-300 dark:border-indigo-950/80 bg-white/90 dark:bg-[#0c0d12]/90 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 transition-all shadow-inner"
+              className="w-full pl-9 pr-8 py-2 rounded border border-[var(--border-strong)] bg-[var(--surface-raised)]/90 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)]/40 focus:ring-1 focus:ring-[var(--accent-primary)]/40 transition-colors"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-muted)]"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -303,27 +303,27 @@ export function DifyWorkflowsMarketplace() {
 
           {/* View Mode & Count */}
           <div className="flex items-center justify-between sm:justify-end gap-3 text-xs">
-            <span className="text-[11px] text-slate-500">
+            <span className="text-xs text-[var(--text-muted)]">
               {loading ? (
                 <span className="flex items-center gap-1.5">
-                  <Loader2 className="h-3 w-3 animate-spin text-blue-400" /> Loading...
+                  <Loader2 className="h-3 w-3 animate-spin text-[var(--accent-primary)]" /> Loading...
                 </span>
               ) : (
                 <>
-                  <strong className="text-slate-200 font-bold">{totalWorkflows.toLocaleString()}</strong> templates
+                  <strong className="text-[var(--text-muted)] font-medium">{totalWorkflows.toLocaleString()}</strong> templates
                 </>
               )}
             </span>
 
-            <div className="flex items-center border border-slate-300 dark:border-indigo-950/80 rounded bg-white/70 dark:bg-black/40 p-0.5">
+            <div className="flex items-center border border-[var(--border-strong)] rounded bg-[var(--surface-raised)]/70 p-0.5">
               <button
                 type="button"
                 onClick={() => setViewMode("grid")}
                 className={clsx(
-                  "p-1.5 rounded transition-all cursor-pointer",
+                  "p-1.5 rounded transition-colors cursor-pointer",
                   viewMode === "grid"
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "text-slate-400 hover:text-slate-200"
+                    ? "bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
+                    : "text-[var(--text-muted)] hover:text-[var(--text-muted)]"
                 )}
                 title="Grid View"
               >
@@ -333,10 +333,10 @@ export function DifyWorkflowsMarketplace() {
                 type="button"
                 onClick={() => setViewMode("list")}
                 className={clsx(
-                  "p-1.5 rounded transition-all cursor-pointer",
+                  "p-1.5 rounded transition-colors cursor-pointer",
                   viewMode === "list"
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "text-slate-400 hover:text-slate-200"
+                    ? "bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
+                    : "text-[var(--text-muted)] hover:text-[var(--text-muted)]"
                 )}
                 title="List View"
               >
@@ -359,10 +359,10 @@ export function DifyWorkflowsMarketplace() {
                   setActiveTag(null);
                 }}
                 className={clsx(
-                  "px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider border transition-all cursor-pointer",
+                  "px-2.5 py-1 rounded text-xs font-medium border transition-colors cursor-pointer",
                   isActive
-                    ? "border-blue-500 bg-blue-600 text-white shadow-sm shadow-blue-500/25"
-                    : "border-slate-200 dark:border-indigo-950/70 bg-white/60 dark:bg-[#0c0d12]/70 text-slate-600 dark:text-slate-400 hover:border-blue-400 hover:text-blue-300"
+                    ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)]"
+                    : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/60 text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)]"
                 )}
               >
                 {cat.label}
@@ -372,8 +372,8 @@ export function DifyWorkflowsMarketplace() {
         </div>
 
         {/* Popular Plugin Tags */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[10px]">
-          <span className="text-slate-500 font-semibold text-[9px] uppercase tracking-wider mr-1 flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-xs">
+          <span className="text-[var(--text-muted)] font-medium text-xs mr-1 flex items-center gap-1">
             <Tag className="h-2.5 w-2.5" /> Plugins:
           </span>
           {POPULAR_PLUGIN_TAGS.map((tag) => {
@@ -387,10 +387,10 @@ export function DifyWorkflowsMarketplace() {
                   if (!isTagActive) setSearch("");
                 }}
                 className={clsx(
-                  "px-2 py-0.5 rounded text-[9px] border transition-all cursor-pointer",
+                  "px-2 py-0.5 rounded text-xs border transition-colors cursor-pointer",
                   isTagActive
-                    ? "border-blue-400 bg-blue-500/20 text-blue-200 font-bold"
-                    : "border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400 hover:border-slate-600"
+                    ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/20 text-[var(--accent-primary)] font-medium"
+                    : "border-[var(--border-subtle)] bg-[var(--surface-sunken)]/70 text-[var(--text-muted)] hover:border-[var(--border-strong)]"
                 )}
               >
                 #{tag}
@@ -402,15 +402,15 @@ export function DifyWorkflowsMarketplace() {
 
       {/* Main Grid / List Views */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 space-y-3 font-mono">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-          <span className="text-xs text-slate-400">Fetching Dify workflow templates...</span>
+        <div className="flex flex-col items-center justify-center py-20 space-y-3 font-sans">
+          <Loader2 className="h-8 w-8 animate-spin text-[var(--accent-primary)]" />
+          <span className="text-xs text-[var(--text-muted)]">Fetching Dify workflow templates...</span>
         </div>
       ) : workflows.length === 0 ? (
-        <div className="text-center py-16 font-mono space-y-3 rounded-xl border border-dashed border-slate-300 dark:border-slate-800 bg-slate-50/50 dark:bg-black/20">
-          <Sparkles className="h-8 w-8 text-blue-400 mx-auto opacity-70" />
-          <p className="text-sm font-bold text-slate-300">No Dify workflows found</p>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+        <div className="text-center py-16 font-sans space-y-3 rounded-xl border border-dashed border-[var(--border-strong)] bg-[var(--surface-sunken)]/50">
+          <Sparkles className="h-8 w-8 text-[var(--accent-primary)] mx-auto opacity-70" />
+          <p className="text-sm font-medium text-[var(--text-muted)]">No Dify workflows found</p>
+          <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto">
             Try adjusting your search query or category filter to discover more templates.
           </p>
           <button
@@ -420,13 +420,13 @@ export function DifyWorkflowsMarketplace() {
               setActiveCategory("ALL");
               setActiveTag(null);
             }}
-            className="px-3 py-1.5 rounded border border-blue-500/40 bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 text-xs font-bold uppercase transition-all cursor-pointer"
+            className="px-3 py-1.5 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 hover:bg-[var(--cta-primary-hover)]/20 text-[var(--accent-primary)] text-xs font-medium transition-colors cursor-pointer"
           >
             Reset Filters
           </button>
         </div>
       ) : (
-        <div className="space-y-6 font-mono">
+        <div className="space-y-6 font-sans">
           {viewMode === "grid" ? (
             /* Grid View (18 cards) */
             <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -441,39 +441,39 @@ export function DifyWorkflowsMarketplace() {
                       setDetailWorkflow(wf);
                       loadWorkflowDetails(wf.id);
                     }}
-                    className="group rounded-xl border border-slate-200 dark:border-indigo-950/80 bg-white/80 dark:bg-[#0c0d12]/90 hover:border-blue-500/60 dark:hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/5 transition-all p-4 flex flex-col justify-between space-y-3 cursor-pointer relative overflow-hidden"
+                    className="group rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 hover:shadow-blue-500/5 transition-colors p-4 flex flex-col justify-between space-y-3 cursor-pointer relative overflow-hidden"
                   >
                     {/* Top Row: Author & Badges */}
                     <div className="space-y-2.5">
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0 flex-1">
-                          <span className="text-[9px] text-slate-500 block truncate">
-                            by <span className="font-semibold text-slate-700 dark:text-slate-300">@{wf.author}</span>
+                          <span className="text-xs text-[var(--text-muted)] block truncate">
+                            by <span className="font-medium text-[var(--text-secondary)]">@{wf.author}</span>
                           </span>
-                          <span className="text-[8px] text-slate-400 block font-sans">
+                          <span className="text-xs text-[var(--text-muted)] block font-sans">
                             v{wf.version}
                           </span>
                         </div>
 
                         <div className="flex items-center gap-1 shrink-0">
                           {wf.badges?.includes("partner") && (
-                            <span className="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase bg-blue-500/10 text-blue-400 border border-blue-500/30">
-                              PARTNER
+                            <span className="px-1.5 py-0.5 rounded text-xs font-medium bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/40">
+                              Partner
                             </span>
                           )}
-                          <span className={clsx("px-1.5 py-0.5 rounded text-[8px] font-bold uppercase border", catColor)}>
+                          <span className={clsx("px-1.5 py-0.5 rounded text-xs font-medium border", catColor)}>
                             {primaryCat}
                           </span>
                         </div>
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
+                      <h3 className="text-xs font-medium text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors line-clamp-1">
                         {wf.name}
                       </h3>
 
                       {/* Description */}
-                      <p className="text-[11px] text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed font-sans">
+                      <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed font-sans">
                         {wf.description?.replace(/#+\s*/g, "")?.slice(0, 160) || "Dify workflow template ready to deploy."}
                       </p>
 
@@ -482,7 +482,7 @@ export function DifyWorkflowsMarketplace() {
                         {wf.pluginTags?.slice(0, 3).map((p: string, i: number) => (
                           <span
                             key={i}
-                            className="px-1.5 py-0.5 rounded text-[8px] bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-900/50"
+                            className="px-1.5 py-0.5 rounded text-xs bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25"
                           >
                             +{p}
                           </span>
@@ -490,7 +490,7 @@ export function DifyWorkflowsMarketplace() {
                         {wf.categories?.slice(1, 3).map((c: string, i: number) => (
                           <span
                             key={i}
-                            className="px-1.5 py-0.5 rounded text-[8px] bg-slate-100 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800"
+                            className="px-1.5 py-0.5 rounded text-xs bg-[var(--surface-sunken)] text-[var(--text-muted)] border border-[var(--border-subtle)]"
                           >
                             #{c}
                           </span>
@@ -499,11 +499,11 @@ export function DifyWorkflowsMarketplace() {
                     </div>
 
                     {/* Stats & Actions */}
-                    <div className="pt-3 border-t border-slate-100 dark:border-indigo-950/60 flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2.5 text-[9px] text-slate-500">
+                    <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5 text-xs text-[var(--text-muted)]">
                         {Boolean(wf.usageCount && wf.usageCount > 0) && (
-                          <span className="flex items-center gap-1 text-amber-500 font-semibold">
-                            <Flame className="h-3 w-3 fill-amber-400" />
+                          <span className="flex items-center gap-1 text-[var(--state-warning)] font-medium">
+                            <Flame className="h-3 w-3 fill-[var(--text-muted)]" />
                             {Number(wf.usageCount).toLocaleString()} uses
                           </span>
                         )}
@@ -513,10 +513,10 @@ export function DifyWorkflowsMarketplace() {
                         <Link
                           href={`/dashboard/canvas/new?difyId=${wf.id}`}
                           onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider border border-blue-500 bg-blue-600 hover:bg-blue-500 text-white shadow-sm shadow-blue-500/20 transition-all cursor-pointer"
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] transition-colors cursor-pointer"
                         >
                           <GitBranch className="h-3 w-3" />
-                          CANVAS
+                          Canvas
                         </Link>
 
                         <button
@@ -526,7 +526,7 @@ export function DifyWorkflowsMarketplace() {
                             setDetailWorkflow(wf);
                             loadWorkflowDetails(wf.id);
                           }}
-                          className="px-2.5 py-1.5 rounded text-[10px] font-semibold border border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
+                          className="px-2.5 py-1.5 rounded text-xs font-medium border border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                           title="View Details"
                         >
                           <ArrowRight className="h-3 w-3" />
@@ -547,35 +547,35 @@ export function DifyWorkflowsMarketplace() {
                     setDetailWorkflow(wf);
                     loadWorkflowDetails(wf.id);
                   }}
-                  className="group rounded-lg border border-slate-200 dark:border-indigo-950/80 bg-white/80 dark:bg-[#0c0d12]/90 hover:border-blue-500/50 transition-all p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
+                  className="group rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 transition-colors p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
                 >
                   <div className="min-w-0 flex-1 space-y-0.5">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                      <h3 className="text-xs font-medium text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors truncate">
                         {wf.name}
                       </h3>
-                      <span className="px-1.5 py-0.2 rounded text-[8px] font-bold border border-blue-500/30 bg-blue-500/10 text-blue-300 shrink-0">
+                      <span className="px-1.5 py-0.2 rounded text-xs font-medium border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)] shrink-0">
                         @{wf.author}
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-600 dark:text-slate-400 line-clamp-1 font-sans">
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-1 font-sans">
                       {wf.description?.replace(/#+\s*/g, "")?.slice(0, 140)}
                     </p>
                   </div>
 
                   <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
                     {Boolean(wf.usageCount && wf.usageCount > 0) && (
-                      <span className="flex items-center gap-1 text-[9px] text-amber-500 font-semibold">
-                        <Flame className="h-3 w-3 fill-amber-400" />
+                      <span className="flex items-center gap-1 text-xs text-[var(--state-warning)] font-medium">
+                        <Flame className="h-3 w-3 fill-[var(--text-muted)]" />
                         {Number(wf.usageCount).toLocaleString()}
                       </span>
                     )}
                     <Link
                       href={`/dashboard/canvas/new?difyId=${wf.id}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded text-[10px] font-bold border border-blue-500 bg-blue-600 hover:bg-blue-500 text-white"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded text-xs font-medium border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)]"
                     >
-                      <GitBranch className="h-3 w-3" /> CANVAS
+                      <GitBranch className="h-3 w-3" /> Canvas
                     </Link>
                   </div>
                 </div>
@@ -600,27 +600,27 @@ export function DifyWorkflowsMarketplace() {
       {/* Workflow Detail Modal */}
       {detailWorkflow && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 animate-fadeIn"
           onClick={() => setDetailWorkflow(null)}
         >
           <div
-            className="relative w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-xl border border-blue-500/40 bg-white dark:bg-[#0c0d12] shadow-2xl font-mono text-xs flex flex-col justify-between"
+            className="relative w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-xl border border-[var(--accent-primary)]/40 bg-[var(--surface-raised)] font-sans text-xs flex flex-col justify-between"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-indigo-950 bg-white/95 dark:bg-[#0c0d12]/95 backdrop-blur-md">
+            <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 border-b border-[var(--border-subtle)] bg-[var(--surface-raised)]/95">
               <div className="flex items-center gap-3 min-w-0">
                 <div
-                  className="h-10 w-10 rounded-lg border border-slate-200 dark:border-slate-800 flex items-center justify-center text-xl shrink-0"
+                  className="h-10 w-10 rounded-lg border border-[var(--border-subtle)] flex items-center justify-center text-xl shrink-0"
                   style={{ backgroundColor: detailWorkflow.iconBackground || "#EFF1F5" }}
                 >
                   <DifyOfficialLogo className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
+                  <h3 className="text-sm font-medium text-[var(--text-primary)] truncate">
                     {detailWorkflow.name}
                   </h3>
-                  <div className="flex items-center gap-2 text-[10px] text-slate-400">
+                  <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
                     <span>by @{detailWorkflow.author}</span>
                     <span>•</span>
                     <span>v{detailWorkflow.version || "1.0.0"}</span>
@@ -631,7 +631,7 @@ export function DifyWorkflowsMarketplace() {
               <button
                 type="button"
                 onClick={() => setDetailWorkflow(null)}
-                className="p-1 rounded text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all"
+                className="p-1 rounded text-[var(--text-muted)] hover:text-[var(--text-muted)] hover:bg-[var(--surface-elevated)] transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -640,7 +640,7 @@ export function DifyWorkflowsMarketplace() {
             {/* Modal Body */}
             <div className="p-5 space-y-5 flex-1 overflow-y-auto">
               {detailLoading && (
-                <div className="flex items-center gap-2 text-blue-400 p-2 bg-blue-500/10 rounded border border-blue-500/20">
+                <div className="flex items-center gap-2 text-[var(--accent-primary)] p-2 bg-[var(--cta-primary-bg)]/10 rounded border border-[var(--accent-primary)]/40">
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   <span>Loading full workflow graph and setup instructions...</span>
                 </div>
@@ -648,8 +648,8 @@ export function DifyWorkflowsMarketplace() {
 
               {/* Overview */}
               <div className="space-y-1.5">
-                <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Overview</h4>
-                <p className="text-slate-700 dark:text-slate-300 leading-relaxed font-sans text-xs bg-slate-50 dark:bg-black/30 p-3 rounded border border-slate-200 dark:border-slate-800/80">
+                <h4 className="text-xs font-medium text-[var(--text-muted)]">Overview</h4>
+                <p className="text-[var(--text-secondary)] leading-relaxed font-sans text-xs bg-[var(--surface-sunken)] p-3 rounded border border-[var(--border-subtle)]">
                   {detailWorkflow.description || "No overview provided for this workflow."}
                 </p>
               </div>
@@ -657,12 +657,12 @@ export function DifyWorkflowsMarketplace() {
               {/* Categories & Dependent Plugins */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                    <Tag className="h-3 w-3 text-indigo-400" /> Categories
+                  <h4 className="text-xs font-medium text-[var(--text-muted)] flex items-center gap-1">
+                    <Tag className="h-3 w-3 text-[var(--accent-primary)]" /> Categories
                   </h4>
                   <div className="flex flex-wrap gap-1">
                     {(detailWorkflow.categories || []).map((c: string, idx: number) => (
-                      <span key={idx} className="px-2 py-0.5 rounded text-[9px] font-bold uppercase bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">
+                      <span key={idx} className="px-2 py-0.5 rounded text-xs font-medium bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/40">
                         {c}
                       </span>
                     ))}
@@ -670,18 +670,18 @@ export function DifyWorkflowsMarketplace() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                    <Puzzle className="h-3 w-3 text-blue-400" /> Dependencies &amp; Tools
+                  <h4 className="text-xs font-medium text-[var(--text-muted)] flex items-center gap-1">
+                    <Puzzle className="h-3 w-3 text-[var(--accent-primary)]" /> Dependencies &amp; Tools
                   </h4>
                   <div className="flex flex-wrap gap-1">
                     {detailWorkflow.depsPlugins && detailWorkflow.depsPlugins.length > 0 ? (
                       detailWorkflow.depsPlugins.map((p: string, idx: number) => (
-                        <span key={idx} className="px-2 py-0.5 rounded text-[9px] bg-blue-500/10 text-blue-300 border border-blue-500/30">
+                        <span key={idx} className="px-2 py-0.5 rounded text-xs bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/40">
                           {p}
                         </span>
                       ))
                     ) : (
-                      <span className="text-[10px] text-slate-500">None required</span>
+                      <span className="text-xs text-[var(--text-muted)]">None required</span>
                     )}
                   </div>
                 </div>
@@ -690,11 +690,11 @@ export function DifyWorkflowsMarketplace() {
               {/* Setup Guide (Readme) */}
               {detailWorkflow.readme && (
                 <div className="space-y-1.5">
-                  <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <BookOpen className="h-3.5 w-3.5 text-amber-400" />
+                  <h4 className="text-xs font-medium text-[var(--text-muted)] flex items-center gap-1.5">
+                    <BookOpen className="h-3.5 w-3.5 text-[var(--state-warning)]" />
                     Setup Instructions
                   </h4>
-                  <div className="p-3.5 rounded bg-slate-50 dark:bg-black/50 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-700 dark:text-slate-300 font-sans whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed">
+                  <div className="p-3.5 rounded bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs text-[var(--text-secondary)] font-sans whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed">
                     {detailWorkflow.readme}
                   </div>
                 </div>
@@ -703,15 +703,15 @@ export function DifyWorkflowsMarketplace() {
               {/* Converted Canvas Graph Info */}
               {detailWorkflow.convertedGraph && (
                 <div className="space-y-1.5">
-                  <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <Layers className="h-3.5 w-3.5 text-blue-400" />
+                  <h4 className="text-xs font-medium text-[var(--text-muted)] flex items-center gap-1.5">
+                    <Layers className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
                     Canvas Graph Nodes ({detailWorkflow.nodeCount || detailWorkflow.convertedGraph.nodes?.length || 0})
                   </h4>
                   <div className="flex flex-wrap gap-1.5">
                     {(detailWorkflow.convertedGraph.nodes || []).map((n, idx: number) => (
                       <span
                         key={idx}
-                        className="px-2 py-1 rounded text-[10px] bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-300"
+                        className="px-2 py-1 rounded text-xs bg-[var(--surface-sunken)] border border-[var(--border-strong)] text-[var(--text-muted)]"
                       >
                         {n.label || n.id}
                       </span>
@@ -722,12 +722,12 @@ export function DifyWorkflowsMarketplace() {
             </div>
 
             {/* Modal Footer */}
-            <div className="sticky bottom-0 flex items-center justify-between gap-3 px-5 py-3.5 border-t border-slate-200 dark:border-indigo-950 bg-slate-50/90 dark:bg-[#0c0d12]/90 backdrop-blur-sm rounded-b-xl">
+            <div className="sticky bottom-0 flex items-center justify-between gap-3 px-5 py-3.5 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)]/90 rounded-b-xl">
               <a
                 href={detailWorkflow.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-blue-400 transition-colors"
+                className="inline-flex items-center gap-1 text-xs text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors"
               >
                 <ExternalLink className="h-3 w-3" /> View on Dify
               </a>
@@ -737,15 +737,15 @@ export function DifyWorkflowsMarketplace() {
                   <button
                     type="button"
                     onClick={() => copyDslToClipboard(detailWorkflow.rawDsl!, detailWorkflow.id)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-slate-300 dark:border-slate-800 text-slate-300 hover:bg-slate-800 transition-all cursor-pointer text-[10px] font-bold uppercase"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-[var(--border-strong)] text-[var(--text-muted)] hover:bg-[var(--surface-elevated)] transition-colors cursor-pointer text-xs font-medium"
                   >
                     {copiedId === detailWorkflow.id ? (
                       <>
-                        <Check className="h-3 w-3 text-emerald-400" /> COPIED DSL
+                        <Check className="h-3 w-3 text-[var(--state-success)]" /> Copied DSL
                       </>
                     ) : (
                       <>
-                        <Copy className="h-3 w-3" /> COPY DSL
+                        <Copy className="h-3 w-3" /> Copy DSL
                       </>
                     )}
                   </button>
@@ -753,9 +753,9 @@ export function DifyWorkflowsMarketplace() {
 
                 <Link
                   href={`/dashboard/canvas/new?difyId=${detailWorkflow.id}`}
-                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded border border-blue-500 bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] uppercase tracking-wider shadow-md shadow-blue-500/20 transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] font-medium text-xs transition-colors cursor-pointer"
                 >
-                  <GitBranch className="h-3.5 w-3.5" /> OPEN IN CANVAS
+                  <GitBranch className="h-3.5 w-3.5" /> Open in canvas
                 </Link>
               </div>
             </div>

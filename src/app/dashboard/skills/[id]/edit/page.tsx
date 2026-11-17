@@ -4,12 +4,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, GitBranch } from "lucide-react";
 import { SkillForm } from "@/components/skills/SkillForm";
 import { skillsApi } from "@/lib/api/skills";
 import { SkeletonSkillForm } from "@/components/feedback/Skeleton";
 import { EmptyState } from "@/components/feedback/EmptyState";
 import { toast } from "@/stores/toastStore";
+import { BTN_SECONDARY_SM, META, PageHeader } from "@/components/ui/surfaces";
 
 export default function EditSkillPage() {
   const params = useParams<{ id: string }>();
@@ -29,11 +29,8 @@ export default function EditSkillPage() {
         title="Skill not found"
         description="This skill does not exist or you do not have access to it."
         action={
-          <Link
-            href="/dashboard/skills"
-            className="px-4 py-2 rounded border border-indigo-400 bg-indigo-600 text-white text-xs font-mono font-semibold hover:bg-indigo-500 transition-all"
-          >
-            [ BACK TO REGISTRY ]
+          <Link href="/dashboard/skills" className={BTN_SECONDARY_SM}>
+            Back to Studio
           </Link>
         }
       />
@@ -41,24 +38,24 @@ export default function EditSkillPage() {
   }
 
   return (
-    <div className="space-y-6 w-full max-w-5xl mx-auto">
-      <div className="border-b border-indigo-950/80 pb-5">
-        <Link
-          href={`/dashboard/skills/${id}`}
-          className="inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-widest text-indigo-400 hover:text-indigo-300 transition-colors mb-2"
-        >
-          <ChevronLeft className="h-3 w-3" /> BACK TO SKILL
-        </Link>
-        <h1 className="text-xl sm:text-2xl font-pixel text-pixel-glow uppercase tracking-wide">EDIT DRAFT</h1>
-        <p className="text-xs text-slate-400 mt-1 font-mono flex items-center gap-1.5">
-          <GitBranch className="h-3.5 w-3.5 text-indigo-400" />
-          {skill.name}
-          {skill.currentDraft && (
-            <span className="text-slate-500">· Draft v{skill.currentDraft.versionNumber} ({skill.currentDraft.status})</span>
-          )}
-          {skill.status === "PUBLISHED" && <span className="text-amber-700 dark:text-amber-300 font-semibold">· editing creates a new draft version</span>}
-        </p>
-      </div>
+    <div className="mx-auto w-full max-w-5xl space-y-6">
+      <Link
+        href={`/dashboard/skills/${id}`}
+        className="inline-flex rounded-[6px] font-sans text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+      >
+        {skill.name}
+      </Link>
+
+      <PageHeader
+        title="Edit draft"
+        meta={
+          <span className={META}>
+            {skill.name}
+            {skill.currentDraft && <> · draft v{skill.currentDraft.versionNumber} ({skill.currentDraft.status.toLowerCase()})</>}
+            {skill.status === "PUBLISHED" && <> · editing creates a new draft version</>}
+          </span>
+        }
+      />
 
       <SkillForm
         mode="edit"

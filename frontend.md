@@ -133,7 +133,7 @@ These come from the old CONTRIBUTING guide and were re-checked against the code.
 
 ## Known Gaps
 These were found while verifying, and are worth fixing or knowing about:
-1. **Settings page theme picker.** It sets `"dark"`/`"light"`, which are not valid theme names, so its active state never matches `calm-green-dark`. Use the header `ThemePicker` instead.
+1. **Settings page theme picker.** Fixed: it now sets the real theme names (`calm-green-dark`, `calm-green-light`, `punk-dark`, `punk-light`), so the active state matches.
 2. **Unreachable views.** `skills/page.tsx` has `"n8n"` and `"dify"` view modes that no button sets, so `N8nWorkflowsMarketplace` and `DifyWorkflowsMarketplace` are never shown.
 3. **Unused code:** `usePermissions`, `OrganizationSwitcher`, `ParallelBranchProgress`, `ui/Button`, `ui/Card`, `ui/Badge`.
 4. **Placeholder invitation page.** `invitations/[token]` shows hard-coded invitation details.
@@ -229,7 +229,7 @@ These were found while verifying, and are worth fixing or knowing about:
 ### dashboard/skills
 | File | Purpose |
 |---|---|
-| [`src/app/dashboard/skills/page.tsx`](src/app/dashboard/skills/page.tsx) | Studio registry: filters, an Archive tab, lifecycle mutations (archive and delete go through `ConfirmDialog`; restore and duplicate run immediately), a Canvas link on each card, workflow blueprints, and sub-views (Marketplace, Workflows, Packs, Synthesize). |
+| [`src/app/dashboard/skills/page.tsx`](src/app/dashboard/skills/page.tsx) | Studio registry: `PageHeader`, underline tabs (My studio, Skills marketplace, Workflows marketplace, Packs, Synthesize, Archive), blueprint cards, a type switch, search, status and sort, and a divided list with the step chain under each item. Archive and delete go through `ConfirmDialog`; restore and duplicate run immediately. The sub-views were moved to theme tokens and sentence case mechanically; their inner layouts are still the older card style. |
 | [`src/app/dashboard/skills/loading.tsx`](src/app/dashboard/skills/loading.tsx) | `SkeletonSkills`. |
 | [`src/app/dashboard/skills/new/page.tsx`](src/app/dashboard/skills/new/page.tsx) | `SkillForm` in create mode, optionally prefilled from `WORKFLOW_TEMPLATES`. |
 | [`src/app/dashboard/skills/new/loading.tsx`](src/app/dashboard/skills/new/loading.tsx) | `SkeletonSkillForm`. |
@@ -251,7 +251,7 @@ These were found while verifying, and are worth fixing or knowing about:
 |---|---|
 | [`src/app/dashboard/executions/page.tsx`](src/app/dashboard/executions/page.tsx) | Run list (one hairline-divided panel): debounced search, status filter, sort, and per-row Replay and Export JSON buttons, always visible. |
 | [`src/app/dashboard/executions/loading.tsx`](src/app/dashboard/executions/loading.tsx) | `SkeletonExecutions`. |
-| [`src/app/dashboard/executions/[id]/page.tsx`](src/app/dashboard/executions/[id]/page.tsx) | Run detail: timeline, steps, tool calls, logs and input/output JSON. Actions: cancel, retry, replay, export. Refresh is manual. |
+| [`src/app/dashboard/executions/[id]/page.tsx`](src/app/dashboard/executions/[id]/page.tsx) | Run detail: header with status dot and mono meta line, error rule, input and output JSON, trace, then Nodes, Tool calls, Approvals and Logs as divided lists. Actions: Retry from failed step (primary, only when recoverable), Cancel run, Replay, Export JSON, Refresh. Refresh is manual. |
 | [`src/app/dashboard/executions/[id]/loading.tsx`](src/app/dashboard/executions/[id]/loading.tsx) | `SkeletonExecutionDetail`. |
 | [`src/app/dashboard/history/page.tsx`](src/app/dashboard/history/page.tsx) | "Observability": four key numbers (`executionsApi.metrics`), a one-line status breakdown, ranked lists of most used skills and tools, and a searchable table of the last 50 runs. |
 | [`src/app/dashboard/history/loading.tsx`](src/app/dashboard/history/loading.tsx) | `SkeletonHistory`. |
@@ -265,9 +265,9 @@ These were found while verifying, and are worth fixing or knowing about:
 ### dashboard/tools
 | File | Purpose |
 |---|---|
-| [`src/app/dashboard/tools/page.tsx`](src/app/dashboard/tools/page.tsx) | Server page with three tabs selected by `?tab=`:<br>• **default:** the built-in tool matrix, with a health probe for each tool and call counts<br>• **`mcp`:** `McpServerHub`<br>• **`openapi`:** `OpenApiHub` |
+| [`src/app/dashboard/tools/page.tsx`](src/app/dashboard/tools/page.tsx) | Server page with underline link tabs selected by `?tab=` (`PageHeader`, no per-card animation):<br>• **default:** "Built-in tools": category filter links, then one divided list per category (name, id, description, read or write, approval, health dot, call count)<br>• **`mcp`:** `McpServerHub`<br>• **`openapi`:** `OpenApiHub` |
 | [`src/app/dashboard/tools/loading.tsx`](src/app/dashboard/tools/loading.tsx) | `SkeletonToolRegistry`. |
-| [`src/app/dashboard/tools/[name]/page.tsx`](src/app/dashboard/tools/[name]/page.tsx) | Server tool detail: schema JSON, health, and the user's usage and last 10 calls. |
+| [`src/app/dashboard/tools/[name]/page.tsx`](src/app/dashboard/tools/[name]/page.tsx) | Server tool detail: header with a mono meta line (id, category, read or write, approval, health, calls), input and output schema panels, and the user's last 10 calls as a divided list. |
 | [`src/app/dashboard/tools/[name]/loading.tsx`](src/app/dashboard/tools/[name]/loading.tsx) | `SkeletonToolDetail`. |
 | [`src/app/dashboard/tools/mcp/McpServerHub.tsx`](src/app/dashboard/tools/mcp/McpServerHub.tsx) | MCP manager (about 2,650 lines):<br>• server CRUD, import and batch actions<br>• connect, discover and health checks<br>• presets<br>• tool-update diffs<br>• an inspector with tabs for tools, resources, prompts, sampling and progress (SSE)<br>• embeds the directory browser |
 | [`src/app/dashboard/tools/mcp/McpDirectoryBrowser.tsx`](src/app/dashboard/tools/mcp/McpDirectoryBrowser.tsx) | Public MCP directory search across Glama, mcp.so, Smithery, Composio, Arcade and mcpservers.org, with quality grades, GitHub README and changelog, health check and mount. |
@@ -283,7 +283,7 @@ These were found while verifying, and are worth fixing or knowing about:
 | [`src/app/dashboard/evals/page.tsx`](src/app/dashboard/evals/page.tsx) | "Evals": key-number panel, then Runs (one divided list), Datasets and Regression compare tabs over `/api/evals/*`, falling back to the built-in datasets. |
 | [`src/app/dashboard/benchmarks/page.tsx`](src/app/dashboard/benchmarks/page.tsx) | "Benchmarks": key-number panel, latest scorecard, suite cards, run modal. "Model comparison" runs 4 hard-coded Groq models. |
 | [`src/app/dashboard/knowledge/page.tsx`](src/app/dashboard/knowledge/page.tsx) | RAG workbench (`PageHeader`, underline tabs, shared `surfaces.tsx` styles, a local `Segmented` control) with 5 tabs:<br>• **Ingest:** text, file or URL, with chunk preview<br>• **Search:** search and QA, plus triad evaluation<br>• **Cluster map**<br>• **Documents**<br>• **Architecture:** an explainer |
-| [`src/app/dashboard/settings/page.tsx`](src/app/dashboard/settings/page.tsx) | Theme toggle, provider status and model rosters, custom OpenAI-compatible model test, Clerk `UserProfile`, and `SecretVault`. |
+| [`src/app/dashboard/settings/page.tsx`](src/app/dashboard/settings/page.tsx) | Appearance (the four real themes: Calm Green and Punk, each light and dark, with palette swatches), AI providers (collapsible Groq and OpenRouter rosters with search, pricing filter and copy), a custom OpenAI-compatible endpoint test, the Clerk `UserProfile` (inherits the app's Clerk appearance), and `SecretVault`. |
 | [`src/app/dashboard/settings/loading.tsx`](src/app/dashboard/settings/loading.tsx) | `SkeletonSettings`. |
 | [`src/app/dashboard/workflows/page.tsx`](src/app/dashboard/workflows/page.tsx) | Redirects to `/dashboard/skills`. |
 | [`src/app/dashboard/workflows/[id]/page.tsx`](src/app/dashboard/workflows/[id]/page.tsx) | Redirects to `/dashboard/skills/{id}`. |
@@ -364,8 +364,7 @@ These were found while verifying, and are worth fixing or knowing about:
 | [`src/components/evals/EvalDatasetsTab.tsx`](src/components/evals/EvalDatasetsTab.tsx) | Dataset list with expandable items, and a modal to create a dataset from JSON. |
 | [`src/components/evals/EvalRunDetailsDrawer.tsx`](src/components/evals/EvalRunDetailsDrawer.tsx) | Run report: summary, quality alerts (amber rule), metric bars with the weakest in amber, and verdicts you can filter (`Segmented`) and expand to see the judge's reasoning. |
 | [`src/components/evals/EvalRunModal.tsx`](src/components/evals/EvalRunModal.tsx) | Configure a run (dataset, target MODEL/SKILL/GRAPH, judge, metrics), then call `POST /api/evals/run`. |
-| [`src/components/executions/ExecutionStatusBadge.tsx`](src/components/executions/ExecutionStatusBadge.tsx) | Colored badge for each `ExecutionStatus` (RUNNING pulses; PAUSED_FOR_APPROVAL shows as "AWAITING APPROVAL"). |
-| [`src/components/executions/ExecutionTimeline.tsx`](src/components/executions/ExecutionTimeline.tsx) | Static vertical list of `TimelineEvent`s for the execution detail page. Not the same component as the canvas timeline. |
+| [`src/components/executions/ExecutionTimeline.tsx`](src/components/executions/ExecutionTimeline.tsx) | Static vertical trace of `TimelineEvent`s for the execution detail page: one hairline, a dot per event (accent for the run, amber for approvals, neutral otherwise), and a matching `TimelineLegend`. Not the same component as the canvas timeline. |
 
 ### common, effects, feedback
 | File | Purpose |
@@ -377,7 +376,7 @@ These were found while verifying, and are worth fixing or knowing about:
 | [`src/components/common/Pagination.tsx`](src/components/common/Pagination.tsx) | Previous/next pager with up to 7 page numbers and ellipses. |
 | [`src/components/effects/PixelThemeTransition.tsx`](src/components/effects/PixelThemeTransition.tsx) | `PixelThemeTransitionProvider` and `usePixelThemeTransition()`: a canvas pixel-dissolve that plays when the theme changes. |
 | [`src/components/feedback/AgentStudioPreloader.tsx`](src/components/feedback/AgentStudioPreloader.tsx) | Full-screen fake Linux boot log with an ASCII progress bar. It either runs on a timer (3200 ms by default) or is controlled by the `isLoading` prop, and can be skipped with Esc or Space. |
-| [`src/components/feedback/ConfirmDialog.tsx`](src/components/feedback/ConfirmDialog.tsx) | Confirm modal with danger and warning variants and a pending state. |
+| [`src/components/feedback/ConfirmDialog.tsx`](src/components/feedback/ConfirmDialog.tsx) | Confirm modal with danger (red text on a secondary button) and warning (primary button) variants and a pending state. Callers pass sentence-case labels such as "Delete". |
 | [`src/components/feedback/EmptyState.tsx`](src/components/feedback/EmptyState.tsx) | Dashed empty-state box with an optional icon (none by default), title, description and an action slot. Neutral tokens only. |
 | [`src/components/feedback/ErrorBoundary.tsx`](src/components/feedback/ErrorBoundary.tsx) | Class error boundary with an optional fallback and a "Try Again" reset. |
 | [`src/components/feedback/SignOutModal.tsx`](src/components/feedback/SignOutModal.tsx) | Sign-out confirmation; the Sidebar performs the actual Clerk `signOut`. |
@@ -401,10 +400,10 @@ These were found while verifying, and are worth fixing or knowing about:
 |---|---|
 | [`src/components/mcp/LiveSandbox.tsx`](src/components/mcp/LiveSandbox.tsx) | Runs a proposed skill as a temporary sandbox skill (`/api/skills/sandbox`) and streams the preview over SSE with auto-approve. Cleans up afterwards. |
 | [`src/components/mcp/ToolUpdateDiffViewer.tsx`](src/components/mcp/ToolUpdateDiffViewer.tsx) | Shows MCP tool changes with side-by-side schema diffs and the affected skills, then applies the ones you select. |
-| [`src/components/organizations/CustomRolesManager.tsx`](src/components/organizations/CustomRolesManager.tsx) | Custom-role CRUD with grouped permission checkboxes and 3 presets. |
-| [`src/components/organizations/OrganizationSettings.tsx`](src/components/organizations/OrganizationSettings.tsx) | Org members, invites, role and custom-role changes, removal, and org deletion behind a typed confirmation. |
+| [`src/components/organizations/CustomRolesManager.tsx`](src/components/organizations/CustomRolesManager.tsx) | Custom-role CRUD: a divided list of roles, "Start from" presets as text links, and a modal with grouped permission checkboxes (group checkbox shows an indeterminate state). |
+| [`src/components/organizations/OrganizationSettings.tsx`](src/components/organizations/OrganizationSettings.tsx) | Org members (divided list with role and custom-role selects), invites, removal, the custom-roles panel, and org deletion behind a typed confirmation. The org name and plan are shown by the page header, not repeated here. |
 | [`src/components/organizations/OrganizationSwitcher.tsx`](src/components/organizations/OrganizationSwitcher.tsx) | Org dropdown fed by `/api/organizations`. *Unused.* |
-| [`src/components/vault/SecretVault.tsx`](src/components/vault/SecretVault.tsx) | Secret manager on `/api/vault`: search, category filter, create, edit, delete, and reveal or copy. |
+| [`src/components/vault/SecretVault.tsx`](src/components/vault/SecretVault.tsx) | Secret manager on `/api/vault`: a search and category toolbar, a divided list (name, category, key, masked value, text actions) and an add/edit modal. The section title lives on the settings page. |
 | [`src/components/workflows/WorkflowStepChain.tsx`](src/components/workflows/WorkflowStepChain.tsx) | Shows `allowedTools` and the approvals as a linear chain of chips: input → tools → approval → output. |
 | [`src/components/workflows/WorkflowTemplates.ts`](src/components/workflows/WorkflowTemplates.ts) | `WORKFLOW_TEMPLATES`: 15 skill templates (refund automation, invoice risk, support triage, CVE watcher, FX monitor, …). Also used by the workflow search API and the converters. |
 
@@ -420,7 +419,7 @@ These were found while verifying, and are worth fixing or knowing about:
 | [`src/components/skills/AvailableOpenApiTools.tsx`](src/components/skills/AvailableOpenApiTools.tsx) | Adds OpenAPI endpoints to a skill as `openapi_<id>_<opId>`. |
 | [`src/components/skills/QuickConnectToolModal.tsx`](src/components/skills/QuickConnectToolModal.tsx) | Skill-editor modal with two tabs: OpenAPI presets and built-in tools. |
 | [`src/components/skills/SkillForm.tsx`](src/components/skills/SkillForm.tsx) | Single-page skill form (react-hook-form + `createSkillSchema`). Covers metadata, JSON schemas, examples, tools, approvals, policy and limits, with a `WorkflowStepChain` preview. |
-| [`src/components/skills/StatusBadge.tsx`](src/components/skills/StatusBadge.tsx) | DRAFT/PUBLISHED/ARCHIVED badge. |
+| [`src/components/skills/StatusBadge.tsx`](src/components/skills/StatusBadge.tsx) | Draft, Published or Archived as a dot plus word (built on `Tag`). |
 | [`src/components/ui/Accordion.tsx`](src/components/ui/Accordion.tsx) | Q&A accordion that allows one or several items open at once. |
 | [`src/components/ui/Badge.tsx`](src/components/ui/Badge.tsx) | Pill badge with 8 variants. *Unused.* |
 | [`src/components/ui/Button.tsx`](src/components/ui/Button.tsx) | Button with primary, secondary, ghost and tertiary variants, sizes and a loading state. `asChild` is not implemented. *Unused.* |

@@ -31,13 +31,13 @@ import { Pagination } from "@/components/common/Pagination";
 import { N8nOfficialLogo } from "@/components/common/BrandLogos";
 
 const N8N_CATEGORIES = [
-  { id: "ALL", label: "ALL WORKFLOWS", icon: Layers },
-  { id: "AI", label: "AI & AGENTS", icon: Bot },
-  { id: "Langchain", label: "LANGCHAIN / RAG", icon: Sparkles },
-  { id: "Communication", label: "COMMUNICATION", icon: Globe },
-  { id: "Data & Storage", label: "DATA & STORAGE", icon: Zap },
-  { id: "Development", label: "DEV & CODE", icon: GitBranch },
-  { id: "Productivity", label: "PRODUCTIVITY", icon: Workflow },
+  { id: "ALL", label: "All workflows", icon: Layers },
+  { id: "AI", label: "AI & agents", icon: Bot },
+  { id: "Langchain", label: "LangChain / RAG", icon: Sparkles },
+  { id: "Communication", label: "Communication", icon: Globe },
+  { id: "Data & Storage", label: "Data & storage", icon: Zap },
+  { id: "Development", label: "Dev & code", icon: GitBranch },
+  { id: "Productivity", label: "Productivity", icon: Workflow },
 ];
 
 const POPULAR_TAGS = [
@@ -282,25 +282,25 @@ export function N8nWorkflowsMarketplace() {
   };
 
   return (
-    <div className="space-y-6 w-full font-mono">
+    <div className="space-y-6 w-full font-sans">
       {/* Top Banner / Hero */}
-      <div className="relative overflow-hidden rounded-xl border border-indigo-500/30 bg-gradient-to-br from-indigo-950/40 via-slate-900/60 to-black p-6 backdrop-blur-md shadow-xl">
-        <div className="absolute -top-12 -right-12 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-[var(--surface-raised)] relative overflow-hidden rounded-xl border border-[var(--accent-primary)]/40 p-6">
+        <div className="absolute -top-12 -right-12 w-64 h-64 bg-[var(--state-error)]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-[var(--cta-primary-bg)]/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-rose-500/30 bg-rose-500/10 text-rose-300 text-[10px] font-bold tracking-wider">
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-[var(--state-error)]/40 bg-[var(--state-error)]/10 text-[var(--state-error)] text-xs font-medium">
               <N8nOfficialLogo className="h-3.5 w-3.5" />
               N8N COMMUNITY WORKFLOW REPOSITORY{totalWorkflows > 0 ? ` · ${totalWorkflows.toLocaleString()} WORKFLOWS` : ""}
             </div>
             <div className="flex items-center gap-3">
               <N8nOfficialLogo className="h-7 w-7" />
-              <h2 className="text-xl sm:text-2xl font-pixel text-slate-100 tracking-wide">
-                N8N WORKFLOWS MARKETPLACE
+              <h2 className="text-xl sm:text-2xl font-pixel text-[var(--text-muted)]">
+                n8n workflows marketplace
               </h2>
             </div>
-            <p className="text-xs text-slate-400 max-w-2xl leading-relaxed">
+            <p className="text-xs text-[var(--text-muted)] max-w-2xl leading-relaxed">
               Browse, inspect, and 1-click import production automations and AI agent architectures
               from the global n8n community directly into Agent Hub Canvas and Workflow Studio.
             </p>
@@ -311,11 +311,11 @@ export function N8nWorkflowsMarketplace() {
               href="https://n8n.io/workflows/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded border border-slate-700 bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 text-xs transition-all"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded border border-[var(--border-strong)] bg-[var(--surface-elevated)]/80 hover:bg-[var(--surface-elevated)]/80 text-[var(--text-muted)] text-xs transition-colors"
             >
-              <Globe className="h-3.5 w-3.5 text-rose-400" />
+              <Globe className="h-3.5 w-3.5 text-[var(--state-error)]" />
               n8n.io Library
-              <ExternalLink className="h-3 w-3 ml-0.5 text-slate-400" />
+              <ExternalLink className="h-3 w-3 ml-0.5 text-[var(--text-muted)]" />
             </a>
           </div>
         </div>
@@ -326,7 +326,7 @@ export function N8nWorkflowsMarketplace() {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           {/* Search Input */}
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
             <input
               type="text"
               value={search}
@@ -335,13 +335,13 @@ export function N8nWorkflowsMarketplace() {
                 if (activeTag) setActiveTag(null);
               }}
               placeholder={`Search ${totalWorkflows > 0 ? `${totalWorkflows.toLocaleString()}+ ` : ""}workflows by keywords, node types, tools...`}
-              className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-slate-200 dark:border-indigo-950/80 bg-white/80 dark:bg-black/50 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-colors"
+              className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)]/40 transition-colors"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-muted)]"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -349,15 +349,15 @@ export function N8nWorkflowsMarketplace() {
           </div>
 
           {/* View Switcher */}
-          <div className="flex items-center gap-1.5 self-end sm:self-auto border border-slate-200 dark:border-indigo-950 p-1 rounded-lg bg-white/50 dark:bg-black/40">
+          <div className="flex items-center gap-1.5 self-end sm:self-auto border border-[var(--border-subtle)] p-1 rounded-lg bg-[var(--surface-raised)]/50">
             <button
               type="button"
               onClick={() => setViewMode("grid")}
               className={clsx(
-                "p-1.5 rounded transition-all",
+                "p-1.5 rounded transition-colors",
                 viewMode === "grid"
-                  ? "bg-indigo-600 text-white"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)]"
+                  : "text-[var(--text-muted)] hover:text-[var(--text-muted)]"
               )}
               title="Grid View"
             >
@@ -367,10 +367,10 @@ export function N8nWorkflowsMarketplace() {
               type="button"
               onClick={() => setViewMode("list")}
               className={clsx(
-                "p-1.5 rounded transition-all",
+                "p-1.5 rounded transition-colors",
                 viewMode === "list"
-                  ? "bg-indigo-600 text-white"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)]"
+                  : "text-[var(--text-muted)] hover:text-[var(--text-muted)]"
               )}
               title="List View"
             >
@@ -393,10 +393,10 @@ export function N8nWorkflowsMarketplace() {
                   setActiveTag(null);
                 }}
                 className={clsx(
-                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer",
+                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors whitespace-nowrap cursor-pointer",
                   active
-                    ? "bg-rose-600 text-white shadow-sm shadow-rose-500/30"
-                    : "border border-slate-200 dark:border-indigo-950 bg-white/70 dark:bg-black/40 text-slate-500 dark:text-slate-400 hover:border-rose-400/50"
+                    ? "bg-[var(--state-error)] text-[var(--cta-primary-text)]"
+                    : "border border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-muted)] hover:border-[var(--state-error)]/40"
                 )}
               >
                 <Icon className="h-3 w-3" />
@@ -407,9 +407,9 @@ export function N8nWorkflowsMarketplace() {
         </div>
 
         {/* Popular Tags */}
-        <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
-          <span className="text-slate-500 font-semibold uppercase tracking-wider text-[9px] mr-1">
-            TRENDING:
+        <div className="flex items-center gap-1.5 flex-wrap text-xs">
+          <span className="text-[var(--text-muted)] font-medium text-xs mr-1">
+            Trending
           </span>
           {POPULAR_TAGS.map((tag) => {
             const isSelected = activeTag === tag;
@@ -426,10 +426,10 @@ export function N8nWorkflowsMarketplace() {
                   }
                 }}
                 className={clsx(
-                  "px-2 py-0.5 rounded border transition-all cursor-pointer",
+                  "px-2 py-0.5 rounded border transition-colors cursor-pointer",
                   isSelected
-                    ? "border-indigo-500 bg-indigo-600 text-white"
-                    : "border-slate-200 dark:border-indigo-950/60 bg-slate-100/70 dark:bg-black/30 text-slate-500 dark:text-slate-400 hover:border-indigo-400"
+                    ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)]"
+                    : "border-[var(--border-subtle)] bg-[var(--surface-sunken)]/70 text-[var(--text-muted)] hover:border-[var(--accent-primary)]/40"
                 )}
               >
                 #{tag}
@@ -442,8 +442,8 @@ export function N8nWorkflowsMarketplace() {
       {/* Loading State */}
       {loading && (
         <div className="flex flex-col items-center justify-center py-20 space-y-3">
-          <Loader2 className="h-7 w-7 animate-spin text-rose-500" />
-          <p className="text-xs text-slate-400">Loading n8n community workflows...</p>
+          <Loader2 className="h-7 w-7 animate-spin text-[var(--state-error)]" />
+          <p className="text-xs text-[var(--text-muted)]">Loading n8n community workflows...</p>
         </div>
       )}
 
@@ -451,10 +451,10 @@ export function N8nWorkflowsMarketplace() {
       {!loading && (
         <div ref={gridRef} className="space-y-6">
           {workflows.length === 0 ? (
-            <div className="rounded-xl border border-slate-200 dark:border-indigo-950/80 bg-white/50 dark:bg-black/30 p-12 text-center space-y-3">
-              <Bot className="h-8 w-8 text-slate-400 mx-auto" />
-              <h3 className="text-sm font-bold text-slate-200">No workflows found</h3>
-              <p className="text-xs text-slate-400 max-w-md mx-auto">
+            <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]/50 p-12 text-center space-y-3">
+              <Bot className="h-8 w-8 text-[var(--text-muted)] mx-auto" />
+              <h3 className="text-sm font-medium text-[var(--text-muted)]">No workflows found</h3>
+              <p className="text-xs text-[var(--text-muted)] max-w-md mx-auto">
                 Try searching for different keywords, such as &quot;RAG&quot;, &quot;Slack&quot;, &quot;Support&quot;, or &quot;OpenAI&quot;.
               </p>
             </div>
@@ -468,44 +468,44 @@ export function N8nWorkflowsMarketplace() {
                     setDetailWorkflow(wf);
                     loadWorkflowDetails(wf.id);
                   }}
-                  className="group rounded-xl border border-slate-200 dark:border-indigo-950/80 bg-white/80 dark:bg-[#0c0d12]/90 hover:border-rose-500/50 hover:shadow-xl hover:shadow-rose-950/10 transition-all p-4 flex flex-col justify-between space-y-4 cursor-pointer relative"
+                  className="group rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--state-error)]/40 hover:shadow-rose-950/10 transition-colors p-4 flex flex-col justify-between space-y-4 cursor-pointer relative"
                 >
                   <div className="space-y-2.5">
                     {/* Author & Views Header */}
-                    <div className="flex items-center justify-between gap-2 text-[10px] text-slate-400">
+                    <div className="flex items-center justify-between gap-2 text-xs text-[var(--text-muted)]">
                       <div className="flex items-center gap-1.5 min-w-0">
                         {wf.user?.avatar ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={wf.user.avatar}
                             alt={wf.user.name}
-                            className="w-4 h-4 rounded-full border border-slate-700 object-cover"
+                            className="w-4 h-4 rounded-full border border-[var(--border-strong)] object-cover"
                           />
                         ) : (
-                          <div className="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center text-[8px] text-slate-300">
+                          <div className="w-4 h-4 rounded-full bg-[var(--surface-elevated)] flex items-center justify-center text-xs text-[var(--text-muted)]">
                             {wf.user?.name?.charAt(0) || "U"}
                           </div>
                         )}
-                        <span className="truncate max-w-[120px] font-medium text-slate-300">
+                        <span className="truncate max-w-[120px] font-medium text-[var(--text-muted)]">
                           {wf.user?.name || "Community"}
                         </span>
                         {wf.user?.verified && (
-                          <ShieldCheck className="h-3 w-3 text-emerald-400 shrink-0" />
+                          <ShieldCheck className="h-3 w-3 text-[var(--state-success)] shrink-0" />
                         )}
                       </div>
-                      <span className="flex items-center gap-1 text-[9px] text-slate-500 shrink-0">
-                        <Eye className="h-3 w-3 text-slate-400" />
+                      <span className="flex items-center gap-1 text-xs text-[var(--text-muted)] shrink-0">
+                        <Eye className="h-3 w-3 text-[var(--text-muted)]" />
                         {Number(wf.totalViews || 0).toLocaleString()}
                       </span>
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-xs font-bold text-slate-100 group-hover:text-rose-300 transition-colors line-clamp-2 leading-snug">
+                    <h3 className="text-xs font-medium text-[var(--text-muted)] group-hover:text-[var(--state-error)] transition-colors line-clamp-2 leading-snug">
                       {wf.name}
                     </h3>
 
                     {/* Description preview */}
-                    <p className="text-[11px] text-slate-400 line-clamp-3 leading-relaxed font-sans font-normal">
+                    <p className="text-xs text-[var(--text-muted)] line-clamp-3 leading-relaxed font-sans font-normal">
                       {wf.description
                         ?.replace(/#+\s*/g, "")
                         ?.replace(/\n+/g, " ")
@@ -514,13 +514,13 @@ export function N8nWorkflowsMarketplace() {
 
                     {/* Nodes Breakdown / Badges */}
                     <div className="flex items-center gap-1.5 flex-wrap pt-1">
-                      <span className="px-1.5 py-0.5 rounded text-[8px] font-bold border border-rose-500/30 bg-rose-500/10 text-rose-300">
+                      <span className="px-1.5 py-0.5 rounded text-xs font-medium border border-[var(--state-error)]/40 bg-[var(--state-error)]/10 text-[var(--state-error)]">
                         {wf.nodeCount} NODES
                       </span>
                       {wf.nodeTypes?.slice(0, 3).map((nt: string, idx: number) => (
                         <span
                           key={idx}
-                          className="px-1.5 py-0.5 rounded text-[8px] bg-slate-100 dark:bg-black/50 text-slate-400 border border-slate-200 dark:border-indigo-950"
+                          className="px-1.5 py-0.5 rounded text-xs bg-[var(--surface-sunken)] text-[var(--text-muted)] border border-[var(--border-subtle)]"
                         >
                           {nt.replace(/^n8n-nodes-base\./, "")}
                         </span>
@@ -529,14 +529,14 @@ export function N8nWorkflowsMarketplace() {
                   </div>
 
                   {/* Actions */}
-                  <div className="pt-3 border-t border-slate-100 dark:border-indigo-950/60 flex items-center justify-between gap-2">
+                  <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between gap-2">
                     <Link
                       href={`/dashboard/canvas/new?n8nId=${wf.id}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-wider border border-rose-500 bg-rose-600 hover:bg-rose-500 text-white shadow-sm shadow-rose-500/20 transition-all cursor-pointer"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium border border-[var(--state-error)]/40 bg-[var(--state-error)] hover:bg-[var(--state-error)] text-[var(--cta-primary-text)] transition-colors cursor-pointer"
                     >
                       <GitBranch className="h-3 w-3" />
-                      OPEN IN CANVAS
+                      Open in canvas
                     </Link>
 
                     <button
@@ -546,7 +546,7 @@ export function N8nWorkflowsMarketplace() {
                         setDetailWorkflow(wf);
                         loadWorkflowDetails(wf.id);
                       }}
-                      className="px-2.5 py-1.5 rounded text-[10px] font-semibold border border-slate-300 dark:border-slate-800 text-slate-300 hover:bg-slate-800 transition-all cursor-pointer"
+                      className="px-2.5 py-1.5 rounded text-xs font-medium border border-[var(--border-strong)] text-[var(--text-muted)] hover:bg-[var(--surface-elevated)] transition-colors cursor-pointer"
                       title="View Details"
                     >
                       <ArrowRight className="h-3 w-3" />
@@ -565,33 +565,33 @@ export function N8nWorkflowsMarketplace() {
                     setDetailWorkflow(wf);
                     loadWorkflowDetails(wf.id);
                   }}
-                  className="group rounded-lg border border-slate-200 dark:border-indigo-950/80 bg-white/80 dark:bg-[#0c0d12]/90 hover:border-rose-500/50 transition-all p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
+                  className="group rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--state-error)]/40 transition-colors p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
                 >
                   <div className="min-w-0 flex-1 space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="px-1.5 py-0.5 rounded text-[8px] font-bold border border-rose-500/30 bg-rose-500/10 text-rose-300">
+                      <span className="px-1.5 py-0.5 rounded text-xs font-medium border border-[var(--state-error)]/40 bg-[var(--state-error)]/10 text-[var(--state-error)]">
                         {wf.nodeCount} NODES
                       </span>
-                      <h3 className="text-xs font-bold text-slate-100 group-hover:text-rose-300 transition-colors truncate">
+                      <h3 className="text-xs font-medium text-[var(--text-muted)] group-hover:text-[var(--state-error)] transition-colors truncate">
                         {wf.name}
                       </h3>
                     </div>
-                    <p className="text-[11px] text-slate-400 line-clamp-1 font-sans">
+                    <p className="text-xs text-[var(--text-muted)] line-clamp-1 font-sans">
                       {wf.description?.replace(/#+\s*/g, "")?.slice(0, 140)}
                     </p>
                   </div>
 
                   <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
-                    <span className="flex items-center gap-1 text-[9px] text-slate-500">
-                      <Eye className="h-3 w-3 text-slate-400" />
+                    <span className="flex items-center gap-1 text-xs text-[var(--text-muted)]">
+                      <Eye className="h-3 w-3 text-[var(--text-muted)]" />
                       {Number(wf.totalViews || 0).toLocaleString()}
                     </span>
                     <Link
                       href={`/dashboard/canvas/new?n8nId=${wf.id}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded text-[10px] font-bold border border-rose-500 bg-rose-600 hover:bg-rose-500 text-white"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded text-xs font-medium border border-[var(--state-error)]/40 bg-[var(--state-error)] hover:bg-[var(--state-error)] text-[var(--cta-primary-text)]"
                     >
-                      <GitBranch className="h-3 w-3" /> CANVAS
+                      <GitBranch className="h-3 w-3" /> Canvas
                     </Link>
                   </div>
                 </div>
@@ -616,35 +616,35 @@ export function N8nWorkflowsMarketplace() {
       {/* Deep Detail Modal */}
       {detailWorkflow && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 overflow-y-auto"
           onClick={() => setDetailWorkflow(null)}
         >
           <div
-            className="relative w-full max-w-3xl rounded-2xl border border-indigo-500/40 bg-slate-950 p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-3xl rounded-2xl border border-[var(--accent-primary)]/40 bg-[var(--surface-elevated)] p-6 space-y-5 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-start justify-between gap-4 border-b border-slate-800 pb-4">
+            <div className="flex items-start justify-between gap-4 border-b border-[var(--border-strong)] pb-4">
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded text-[9px] font-bold border border-rose-500/40 bg-rose-500/10 text-rose-300">
+                  <span className="px-2 py-0.5 rounded text-xs font-medium border border-[var(--state-error)]/40 bg-[var(--state-error)]/10 text-[var(--state-error)]">
                     N8N TEMPLATE #{detailWorkflow.id}
                   </span>
-                  <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                    <Eye className="h-3 w-3 text-slate-500" />
+                  <span className="text-xs text-[var(--text-muted)] flex items-center gap-1">
+                    <Eye className="h-3 w-3 text-[var(--text-muted)]" />
                     {Number(detailWorkflow.views || detailWorkflow.totalViews || 0).toLocaleString()} views
                   </span>
                   {detailLoading && (
-                    <span className="text-[10px] text-indigo-400 flex items-center gap-1">
+                    <span className="text-xs text-[var(--accent-primary)] flex items-center gap-1">
                       <Loader2 className="h-3 w-3 animate-spin" /> Loading details...
                     </span>
                   )}
                 </div>
-                <h2 className="text-base sm:text-lg font-bold text-slate-100 leading-snug">
+                <h2 className="text-base sm:text-lg font-medium text-[var(--text-muted)] leading-snug">
                   {detailWorkflow.name}
                 </h2>
                 {detailWorkflow.user && (
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
+                  <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
                     <span>By {detailWorkflow.user.name || detailWorkflow.user.username}</span>
                   </div>
                 )}
@@ -653,54 +653,54 @@ export function N8nWorkflowsMarketplace() {
               <button
                 type="button"
                 onClick={() => setDetailWorkflow(null)}
-                className="p-1.5 rounded-lg border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
+                className="p-1.5 rounded-lg border border-[var(--border-strong)] hover:bg-[var(--surface-elevated)] text-[var(--text-muted)] hover:text-[var(--text-muted)] transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             {/* Modal Actions */}
-            <div className="flex flex-wrap items-center gap-2.5 bg-slate-900/60 p-3 rounded-xl border border-slate-800/80">
+            <div className="flex flex-wrap items-center gap-2.5 bg-[var(--surface-elevated)]/60 p-3 rounded-xl border border-[var(--border-strong)]">
               <Link
                 href={`/dashboard/canvas/new?n8nId=${detailWorkflow.id}`}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold border border-rose-500 bg-rose-600 hover:bg-rose-500 text-white shadow-md shadow-rose-500/30 transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium border border-[var(--state-error)]/40 bg-[var(--state-error)] hover:bg-[var(--state-error)] text-[var(--cta-primary-text)] transition-colors cursor-pointer"
               >
                 <GitBranch className="h-3.5 w-3.5" />
-                OPEN IN AGENT CANVAS
+                Open in agent canvas
               </Link>
 
               <button
                 type="button"
                 disabled={importingId === detailWorkflow.id}
                 onClick={() => handleImportToStudio(detailWorkflow)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold border border-indigo-500/40 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/20 hover:bg-[var(--cta-primary-hover)]/40 text-[var(--accent-primary)] transition-colors cursor-pointer"
               >
                 {importingId === detailWorkflow.id ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
                 ) : (
                   <DownloadCloud className="h-3.5 w-3.5" />
                 )}
-                IMPORT AS STUDIO SKILL
+                Import as studio skill
               </button>
 
               <button
                 type="button"
                 onClick={() => handleCopyJson(detailWorkflow)}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs border border-slate-800 hover:bg-slate-800 text-slate-300 transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs border border-[var(--border-strong)] hover:bg-[var(--surface-elevated)] text-[var(--text-muted)] transition-colors cursor-pointer"
               >
                 {copiedId === detailWorkflow.id ? (
-                  <Check className="h-3.5 w-3.5 text-emerald-400" />
+                  <Check className="h-3.5 w-3.5 text-[var(--state-success)]" />
                 ) : (
                   <Copy className="h-3.5 w-3.5" />
                 )}
-                COPY JSON
+                Copy JSON
               </button>
 
               <a
                 href={detailWorkflow.url || `https://n8n.io/workflows/${detailWorkflow.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-auto inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-200 transition-colors"
+                className="ml-auto inline-flex items-center gap-1 text-xs text-[var(--text-muted)] hover:text-[var(--text-muted)] transition-colors"
               >
                 View on n8n.io <ExternalLink className="h-3 w-3" />
               </a>
@@ -708,17 +708,17 @@ export function N8nWorkflowsMarketplace() {
 
             {/* Converted Graph Architecture Info */}
             {detailWorkflow.convertedGraph && (
-              <div className="space-y-2 p-4 rounded-xl border border-indigo-950 bg-indigo-950/20">
-                <div className="flex items-center justify-between text-xs text-indigo-400 font-bold">
+              <div className="space-y-2 p-4 rounded-xl border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/20">
+                <div className="flex items-center justify-between text-xs text-[var(--accent-primary)] font-medium">
                   <span className="flex items-center gap-1.5">
-                    <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
+                    <Sparkles className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
                     Agent Hub CANVAS MAPPING
                   </span>
-                  <span className="text-[10px] text-slate-400">
+                  <span className="text-xs text-[var(--text-muted)]">
                     {detailWorkflow.convertedGraph.nodes.length} Nodes · {detailWorkflow.convertedGraph.edges.length} Edges
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-xs text-[var(--text-muted)]">
                   This workflow has been translated into an Agent Hub visual graph definition. Opening it on the canvas will render all triggers, agent LLM steps, conditional routers, and tool connectors with wiring intact.
                 </p>
               </div>
@@ -726,10 +726,10 @@ export function N8nWorkflowsMarketplace() {
 
             {/* Description & Overview */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">
+              <h4 className="text-xs font-medium text-[var(--text-muted)]">
                 Workflow Overview & Instructions
               </h4>
-              <div className="text-xs text-slate-300/90 font-sans leading-relaxed whitespace-pre-wrap bg-slate-900/40 p-4 rounded-xl border border-slate-900 max-h-80 overflow-y-auto">
+              <div className="text-xs text-[var(--text-muted)]/90 font-sans leading-relaxed whitespace-pre-wrap bg-[var(--surface-elevated)]/40 p-4 rounded-xl border border-[var(--border-strong)] max-h-80 overflow-y-auto">
                 {detailWorkflow.description || "No detailed description available."}
               </div>
             </div>

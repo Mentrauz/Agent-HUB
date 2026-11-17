@@ -60,68 +60,68 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
 
 const COLOR_MAP: Record<string, { border: string; bg: string; text: string; accent: string; gradient: string }> = {
   indigo: {
-    border: "border-indigo-300 dark:border-indigo-500/40",
-    bg: "bg-indigo-50 dark:bg-indigo-950/40",
-    text: "text-indigo-700 dark:text-indigo-300",
-    accent: "bg-indigo-600",
-    gradient: "from-indigo-600 to-indigo-800",
+    border: "border-[var(--accent-primary)]/25",
+    bg: "bg-[var(--accent-primary)]/10",
+    text: "text-[var(--accent-primary)]",
+    accent: "bg-[var(--cta-primary-bg)]",
+    gradient: "from-[var(--text-muted)] to-[var(--text-muted)]",
   },
   emerald: {
-    border: "border-emerald-300 dark:border-emerald-500/40",
-    bg: "bg-emerald-50 dark:bg-emerald-950/40",
-    text: "text-emerald-700 dark:text-emerald-300",
-    accent: "bg-emerald-600",
-    gradient: "from-emerald-600 to-emerald-800",
+    border: "border-[var(--state-success)]/25",
+    bg: "bg-[var(--state-success)]/10",
+    text: "text-[var(--state-success)]",
+    accent: "bg-[var(--state-success)]",
+    gradient: "from-[var(--text-muted)] to-[var(--text-muted)]",
   },
   pink: {
-    border: "border-pink-300 dark:border-pink-500/40",
-    bg: "bg-pink-50 dark:bg-pink-950/40",
-    text: "text-pink-700 dark:text-pink-300",
-    accent: "bg-pink-600",
-    gradient: "from-pink-600 to-pink-800",
+    border: "border-[var(--accent-primary)]/25",
+    bg: "bg-[var(--accent-primary)]/10",
+    text: "text-[var(--accent-primary)]",
+    accent: "bg-[var(--cta-primary-bg)]",
+    gradient: "from-[var(--text-muted)] to-[var(--text-muted)]",
   },
   violet: {
-    border: "border-violet-300 dark:border-violet-500/40",
-    bg: "bg-violet-50 dark:bg-violet-950/40",
-    text: "text-violet-700 dark:text-violet-300",
-    accent: "bg-violet-600",
-    gradient: "from-violet-600 to-violet-800",
+    border: "border-[var(--accent-primary)]/25",
+    bg: "bg-[var(--accent-primary)]/10",
+    text: "text-[var(--accent-primary)]",
+    accent: "bg-[var(--cta-primary-bg)]",
+    gradient: "from-[var(--text-muted)] to-[var(--text-muted)]",
   },
   red: {
-    border: "border-red-300 dark:border-red-500/40",
-    bg: "bg-red-50 dark:bg-red-950/40",
-    text: "text-red-700 dark:text-red-300",
-    accent: "bg-red-600",
-    gradient: "from-red-600 to-red-800",
+    border: "border-[var(--state-error)]/25",
+    bg: "bg-[var(--state-error)]/10",
+    text: "text-[var(--state-error)]",
+    accent: "bg-[var(--state-error)]",
+    gradient: "from-[var(--text-muted)] to-[var(--text-muted)]",
   },
   amber: {
-    border: "border-amber-300 dark:border-amber-500/40",
-    bg: "bg-amber-50 dark:bg-amber-950/40",
-    text: "text-amber-700 dark:text-amber-300",
-    accent: "bg-amber-600",
-    gradient: "from-amber-600 to-amber-800",
+    border: "border-[var(--state-warning)]/25",
+    bg: "bg-[var(--state-warning)]/10",
+    text: "text-[var(--state-warning)]",
+    accent: "bg-[var(--state-warning)]",
+    gradient: "from-[var(--text-muted)] to-[var(--text-muted)]",
   },
   slate: {
-    border: "border-slate-300 dark:border-slate-500/40",
-    bg: "bg-slate-50 dark:bg-slate-950/40",
-    text: "text-slate-700 dark:text-slate-300",
-    accent: "bg-slate-600",
-    gradient: "from-slate-600 to-slate-800",
+    border: "border-[var(--border-strong)]",
+    bg: "bg-[var(--surface-sunken)]",
+    text: "text-[var(--text-secondary)]",
+    accent: "bg-[var(--surface-elevated)]",
+    gradient: "from-[var(--text-muted)] to-[var(--text-muted)]",
   },
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  SCM: "border-blue-300 bg-blue-50 text-blue-700",
-  CLOUD: "border-cyan-300 bg-cyan-50 text-cyan-700",
-  DATABASE: "border-emerald-300 bg-emerald-50 text-emerald-700",
-  MESSAGING: "border-pink-300 bg-pink-50 text-pink-700",
-  MONITORING: "border-amber-300 bg-amber-50 text-amber-700",
-  ANALYTICS: "border-indigo-300 bg-indigo-50 text-indigo-700",
-  CRM: "border-violet-300 bg-violet-50 text-violet-700",
-  MARKETING: "border-rose-300 bg-rose-50 text-rose-700",
-  AI: "border-purple-300 bg-purple-50 text-purple-700",
-  INFRASTRUCTURE: "border-slate-300 bg-slate-50 text-slate-700",
-  COLLABORATION: "border-teal-300 bg-teal-50 text-teal-700",
+  SCM: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  CLOUD: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  DATABASE: "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]",
+  MESSAGING: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  MONITORING: "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
+  ANALYTICS: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  CRM: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  MARKETING: "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]",
+  AI: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  INFRASTRUCTURE: "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
+  COLLABORATION: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
 };
 
 export function SkillPackMarketplace() {
@@ -200,16 +200,16 @@ export function SkillPackMarketplace() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-sm font-mono font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <Layers className="h-4 w-4 text-violet-500" />
-            SKILL PACKS
+          <h2 className="text-sm font-sans font-medium text-[var(--text-primary)] flex items-center gap-2">
+            <Layers className="h-4 w-4 text-[var(--accent-primary)]" />
+            Skill packs
           </h2>
-          <p className="text-[10px] font-mono text-slate-500 mt-0.5">
+          <p className="text-xs font-sans text-[var(--text-muted)] mt-0.5">
             1-click solution stacks — pre-configured MCP servers + workflow skills
           </p>
         </div>
-        <span className="text-[9px] font-mono text-slate-500 px-2 py-1 rounded border border-slate-200 dark:border-indigo-900/50 bg-slate-50 dark:bg-black/40">
-          {SKILL_PACKS.length} PACKS · {SKILL_PACKS.reduce((a, p) => a + p.serverCount, 0)} SERVERS · {SKILL_PACKS.reduce((a, p) => a + p.skillCount, 0)} SKILLS
+        <span className="text-xs font-sans text-[var(--text-muted)] px-2 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+          {SKILL_PACKS.length} Packs ·{SKILL_PACKS.reduce((a, p) => a + p.serverCount, 0)} Servers ·{SKILL_PACKS.reduce((a, p) => a + p.skillCount, 0)} SKILLS
         </span>
       </div>
 
@@ -224,10 +224,10 @@ export function SkillPackMarketplace() {
               type="button"
               onClick={() => setSelectedCategory(cat.id)}
               className={clsx(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-semibold uppercase tracking-wider border transition-all cursor-pointer",
+                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-sans font-medium border transition-colors cursor-pointer",
                 active
-                  ? "border-indigo-500 bg-indigo-600 text-white shadow-sm"
-                  : "border-slate-200 dark:border-indigo-900/50 bg-white/70 dark:bg-black/40 text-slate-600 dark:text-slate-400 hover:border-indigo-400"
+                  ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
+                  : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40"
               )}
             >
               <Icon className="h-3 w-3" />
@@ -248,10 +248,10 @@ export function SkillPackMarketplace() {
             <div
               key={pack.id}
               className={clsx(
-                "group rounded-lg border bg-white/80 dark:bg-[#0a0a0a]/70 hover:shadow-lg transition-all flex flex-col cursor-pointer overflow-hidden",
+                "group rounded-lg border bg-[var(--surface-raised)]/80 transition-colors flex flex-col cursor-pointer overflow-hidden",
                 isInstalled
-                  ? "border-emerald-300 dark:border-emerald-500/30"
-                  : "border-slate-200 dark:border-indigo-900/40 hover:border-indigo-500/60 dark:hover:border-indigo-500/50"
+                  ? "border-[var(--state-success)]/25"
+                  : "border-[var(--border-subtle)] hover:border-[var(--accent-primary)]/40"
               )}
               onClick={() => setDetailPack(pack)}
             >
@@ -261,18 +261,18 @@ export function SkillPackMarketplace() {
                   <div className="flex items-center gap-2">
                     {(() => {
                       const PackIcon = ICON_MAP[pack.icon] || Layers;
-                      return <PackIcon className="h-5 w-5 text-white" />;
+                      return <PackIcon className="h-5 w-5 text-[var(--text-primary)]" />;
                     })()}
                     <div>
-                      <h3 className="text-xs font-mono font-bold text-white uppercase tracking-wider">
+                      <h3 className="text-xs font-sans font-medium text-[var(--text-primary)]">
                         {pack.name}
                       </h3>
-                      <p className="text-[9px] font-mono text-white/70">{pack.tagline}</p>
+                      <p className="text-xs font-sans text-[var(--text-primary)]/70">{pack.tagline}</p>
                     </div>
                   </div>
                   {isInstalled && (
-                    <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded text-[8px] font-mono font-bold bg-white/20 text-white border border-white/30">
-                      <Check className="h-2.5 w-2.5" /> INSTALLED
+                    <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded text-xs font-sans font-medium bg-[var(--surface-raised)]/20 text-[var(--text-primary)] border border-[var(--border-subtle)]/30">
+                      <Check className="h-2.5 w-2.5" /> Installed
                     </span>
                   )}
                 </div>
@@ -280,13 +280,13 @@ export function SkillPackMarketplace() {
 
               {/* Pack Body */}
               <div className="px-4 py-3 space-y-3 flex-1">
-                <p className="text-[10px] font-mono text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                <p className="text-xs font-sans text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
                   {pack.description}
                 </p>
 
                 {/* Server Badges */}
                 <div className="space-y-1.5">
-                  <div className="text-[8px] font-mono font-bold text-slate-500 uppercase tracking-widest">
+                  <div className="text-xs font-sans font-medium text-[var(--text-muted)]">
                     MCP Servers ({pack.serverCount})
                   </div>
                   <div className="flex flex-wrap gap-1">
@@ -294,8 +294,8 @@ export function SkillPackMarketplace() {
                       <span
                         key={i}
                         className={clsx(
-                          "px-1.5 py-0.5 rounded text-[8px] font-mono font-bold border",
-                          CATEGORY_COLORS[s.category] || "border-slate-200 bg-slate-50 text-slate-600"
+                          "px-1.5 py-0.5 rounded text-xs font-sans font-medium border",
+                          CATEGORY_COLORS[s.category] || "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]"
                         )}
                       >
                         {s.name}
@@ -306,14 +306,14 @@ export function SkillPackMarketplace() {
 
                 {/* Skill Badges */}
                 <div className="space-y-1.5">
-                  <div className="text-[8px] font-mono font-bold text-slate-500 uppercase tracking-widest">
+                  <div className="text-xs font-sans font-medium text-[var(--text-muted)]">
                     Workflow Skills ({pack.skillCount})
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {pack.skills.map((s, i) => (
                       <span
                         key={i}
-                        className="px-1.5 py-0.5 rounded text-[8px] font-mono bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/50"
+                        className="px-1.5 py-0.5 rounded text-xs font-sans bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25"
                       >
                         <FileCode2 className="inline h-2 w-2 mr-0.5" />
                         {s.name}
@@ -323,27 +323,27 @@ export function SkillPackMarketplace() {
                 </div>
 
                 {/* Meta */}
-                <div className="flex items-center gap-3 text-[9px] font-mono text-slate-400 pt-2 border-t border-slate-100 dark:border-indigo-950/60">
+                <div className="flex items-center gap-3 text-xs font-sans text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)]">
                   <span className="flex items-center gap-0.5">
                     <Clock className="h-3 w-3" /> {pack.estimatedSetupTime}
                   </span>
                   <span className={clsx(
-                    "px-1.5 py-0.5 rounded text-[8px] font-bold border",
+                    "px-1.5 py-0.5 rounded text-xs font-medium border",
                     pack.difficulty === "BEGINNER"
-                      ? "border-emerald-300 bg-emerald-50 text-emerald-700"
+                      ? "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]"
                       : pack.difficulty === "INTERMEDIATE"
-                      ? "border-amber-300 bg-amber-50 text-amber-700"
-                      : "border-red-300 bg-red-50 text-red-700"
+                      ? "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]"
+                      : "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]"
                   )}>
                     {pack.difficulty}
                   </span>
                   {pack.isNew && (
-                    <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-violet-100 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300 border border-violet-300">
+                    <span className="px-1.5 py-0.5 rounded text-xs font-medium bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25">
                       NEW
                     </span>
                   )}
                   <span className="flex items-center gap-0.5">
-                    <Star className="h-3 w-3 fill-amber-400 text-amber-500" /> {pack.popularity}
+                    <Star className="h-3 w-3 fill-[var(--text-muted)] text-[var(--state-warning)]" /> {pack.popularity}
                   </span>
                 </div>
               </div>
@@ -351,8 +351,8 @@ export function SkillPackMarketplace() {
               {/* Install Button */}
               <div className="px-4 pb-3">
                 {isInstalled ? (
-                  <div className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded text-[10px] font-mono font-semibold uppercase tracking-wider border border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300">
-                    <Check className="h-3 w-3" /> INSTALLED
+                  <div className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded text-xs font-sans font-medium border border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]">
+                    <Check className="h-3 w-3" /> Installed
                   </div>
                 ) : (
                   <button
@@ -363,18 +363,18 @@ export function SkillPackMarketplace() {
                     }}
                     disabled={isInstalling}
                     className={clsx(
-                      "w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded text-[10px] font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer",
+                      "w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded text-xs font-sans font-medium transition-colors cursor-pointer",
                       isInstalling ? "opacity-60 cursor-wait" : "",
-                      "border border-indigo-500 bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm shadow-indigo-500/25 active:scale-95"
+                      "border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] active:scale-95"
                     )}
                   >
                     {isInstalling ? (
                       <>
-                        <Loader2 className="h-3 w-3 animate-spin" /> INSTALLING...
+                        <Loader2 className="h-3 w-3 animate-spin" /> Installing...
                       </>
                     ) : (
                       <>
-                        <Package className="h-3 w-3" /> INSTALL PACK
+                        <Package className="h-3 w-3" /> Install pack
                       </>
                     )}
                   </button>
@@ -388,9 +388,9 @@ export function SkillPackMarketplace() {
       {/* Empty State */}
       {filteredPacks.length === 0 && (
         <div className="text-center py-12">
-          <Layers className="h-8 w-8 text-indigo-400 mx-auto" />
-          <p className="text-xs font-mono font-semibold text-slate-800 dark:text-slate-200 mt-3">
-            NO PACKS IN THIS CATEGORY
+          <Layers className="h-8 w-8 text-[var(--accent-primary)] mx-auto" />
+          <p className="text-xs font-sans font-medium text-[var(--text-primary)] mt-3">
+            No packs in this category
           </p>
         </div>
       )}
@@ -435,9 +435,9 @@ function PackDetailModal({
   const colors = COLOR_MAP[pack.color] || COLOR_MAP.slate;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 animate-fadeIn" onClick={onClose}>
       <div
-        className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-xl border border-slate-200 dark:border-indigo-800/60 bg-white dark:bg-[#0a0a0a] shadow-2xl"
+        className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -446,19 +446,19 @@ function PackDetailModal({
             <div className="flex items-center gap-3">
               {(() => {
                 const PackIcon = ICON_MAP[pack.icon] || Layers;
-                return <PackIcon className="h-6 w-6 text-white" />;
+                return <PackIcon className="h-6 w-6 text-[var(--text-primary)]" />;
               })()}
               <div>
-                <h2 className="text-sm font-mono font-bold text-white uppercase tracking-wider">
+                <h2 className="text-sm font-sans font-medium text-[var(--text-primary)]">
                   {pack.name}
                 </h2>
-                <p className="text-[10px] font-mono text-white/70">{pack.tagline}</p>
+                <p className="text-xs font-sans text-[var(--text-primary)]/70">{pack.tagline}</p>
               </div>
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer"
+              className="p-1.5 rounded-lg bg-[var(--surface-raised)]/10 hover:bg-[var(--surface-raised)]/20 text-[var(--text-primary)] transition-colors cursor-pointer"
             >
               <X className="h-4 w-4" />
             </button>
@@ -468,22 +468,22 @@ function PackDetailModal({
         {/* Body */}
         <div className="px-6 py-5 space-y-5">
           {/* Description */}
-          <p className="text-[11px] font-mono text-slate-600 dark:text-slate-400 leading-relaxed">
+          <p className="text-xs font-sans text-[var(--text-secondary)] leading-relaxed">
             {pack.description}
           </p>
 
           {/* Meta Row */}
-          <div className="flex items-center gap-4 text-[10px] font-mono text-slate-500">
+          <div className="flex items-center gap-4 text-xs font-sans text-[var(--text-muted)]">
             <span className="flex items-center gap-1">
               <Clock className="h-3 w-3" /> {pack.estimatedSetupTime} setup
             </span>
             <span className={clsx(
-              "px-2 py-0.5 rounded border font-bold",
+              "px-2 py-0.5 rounded border font-medium",
               pack.difficulty === "BEGINNER"
-                ? "border-emerald-300 bg-emerald-50 text-emerald-700"
+                ? "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]"
                 : pack.difficulty === "INTERMEDIATE"
-                ? "border-amber-300 bg-amber-50 text-amber-700"
-                : "border-red-300 bg-red-50 text-red-700"
+                ? "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]"
+                : "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]"
             )}>
               {pack.difficulty}
             </span>
@@ -493,18 +493,18 @@ function PackDetailModal({
 
           {/* Installation Progress */}
           {installState && (
-            <div className="rounded-lg border border-indigo-200 dark:border-indigo-800/40 bg-indigo-50 dark:bg-indigo-950/30 p-4 space-y-3">
+            <div className="rounded-lg border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 p-4 space-y-3">
               <div className="flex items-center gap-2">
                 {installState.status === "completed" ? (
-                  <Check className="h-4 w-4 text-emerald-500" />
+                  <Check className="h-4 w-4 text-[var(--state-success)]" />
                 ) : installState.status === "partial" ? (
-                  <AlertTriangle className="h-4 w-4 text-amber-500" />
+                  <AlertTriangle className="h-4 w-4 text-[var(--state-warning)]" />
                 ) : installState.status === "failed" ? (
-                  <AlertTriangle className="h-4 w-4 text-red-500" />
+                  <AlertTriangle className="h-4 w-4 text-[var(--state-error)]" />
                 ) : (
-                  <Loader2 className="h-4 w-4 animate-spin text-indigo-500" />
+                  <Loader2 className="h-4 w-4 animate-spin text-[var(--accent-primary)]" />
                 )}
-                <span className="text-[10px] font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">
+                <span className="text-xs font-sans font-medium text-[var(--text-secondary)]">
                   {installState.status === "completed"
                     ? "All Done!"
                     : installState.status === "partial"
@@ -514,16 +514,16 @@ function PackDetailModal({
                     : "Installing..."}
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-3 text-[10px] font-mono">
+              <div className="grid grid-cols-2 gap-3 text-xs font-sans">
                 <div>
-                  <span className="text-slate-500">Servers: </span>
-                  <span className="font-bold text-slate-700 dark:text-slate-300">
+                  <span className="text-[var(--text-muted)]">Servers: </span>
+                  <span className="font-medium text-[var(--text-secondary)]">
                     {installState.serversInstalled}/{installState.serversTotal}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-500">Skills: </span>
-                  <span className="font-bold text-slate-700 dark:text-slate-300">
+                  <span className="text-[var(--text-muted)]">Skills: </span>
+                  <span className="font-medium text-[var(--text-secondary)]">
                     {installState.skillsInstalled}/{installState.skillsTotal}
                   </span>
                 </div>
@@ -531,7 +531,7 @@ function PackDetailModal({
               {installState.errors.length > 0 && (
                 <div className="space-y-1">
                   {installState.errors.map((err, i) => (
-                    <p key={i} className="text-[9px] font-mono text-red-600 dark:text-red-400 flex items-center gap-1">
+                    <p key={i} className="text-xs font-sans text-[var(--state-error)] flex items-center gap-1">
                       <AlertTriangle className="h-3 w-3 shrink-0" /> {err}
                     </p>
                   ))}
@@ -542,7 +542,7 @@ function PackDetailModal({
 
           {/* Servers Section */}
           <div className="space-y-2">
-            <div className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+            <div className="text-xs font-sans font-medium text-[var(--text-muted)] flex items-center gap-1.5">
               <Server className="h-3 w-3" />
               MCP Servers ({pack.servers.length})
             </div>
@@ -552,41 +552,41 @@ function PackDetailModal({
                 return (
                   <div
                     key={idx}
-                    className="rounded-lg border border-slate-200 dark:border-indigo-900/30 overflow-hidden"
+                    className="rounded-lg border border-[var(--border-subtle)] overflow-hidden"
                   >
                     <button
                       type="button"
                       onClick={() => setExpandedServer(isExpanded ? null : idx)}
-                      className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-slate-50 dark:hover:bg-black/30 transition-colors cursor-pointer"
+                      className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
                         {isExpanded ? (
-                          <ChevronDown className="h-3 w-3 text-slate-400" />
+                          <ChevronDown className="h-3 w-3 text-[var(--text-muted)]" />
                         ) : (
-                          <ChevronRight className="h-3 w-3 text-slate-400" />
+                          <ChevronRight className="h-3 w-3 text-[var(--text-muted)]" />
                         )}
-                        <span className="text-[11px] font-mono font-bold text-slate-900 dark:text-slate-100">
+                        <span className="text-xs font-sans font-medium text-[var(--text-primary)]">
                           {server.name}
                         </span>
                         <span
                           className={clsx(
-                            "px-1.5 py-0.5 rounded text-[8px] font-mono font-bold border",
-                            CATEGORY_COLORS[server.category] || "border-slate-200 bg-slate-50 text-slate-600"
+                            "px-1.5 py-0.5 rounded text-xs font-sans font-medium border",
+                            CATEGORY_COLORS[server.category] || "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]"
                           )}
                         >
                           {server.category}
                         </span>
-                        <span className="text-[8px] font-mono text-slate-400 uppercase">
+                        <span className="text-xs font-sans text-[var(--text-muted)]">
                           via {server.directorySource || "composio"}
                         </span>
                       </div>
                     </button>
                     {isExpanded && (
-                      <div className="px-3 pb-3 pt-0 border-t border-slate-100 dark:border-indigo-950/30">
-                        <p className="text-[10px] font-mono text-slate-500 mt-2">
+                      <div className="px-3 pb-3 pt-0 border-t border-[var(--border-subtle)]">
+                        <p className="text-xs font-sans text-[var(--text-muted)] mt-2">
                           {server.description}
                         </p>
-                        <p className="text-[9px] font-mono text-slate-400 mt-1">
+                        <p className="text-xs font-sans text-[var(--text-muted)] mt-1">
                           Search: &quot;{server.searchQuery}&quot;
                         </p>
                       </div>
@@ -599,7 +599,7 @@ function PackDetailModal({
 
           {/* Skills Section */}
           <div className="space-y-2">
-            <div className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+            <div className="text-xs font-sans font-medium text-[var(--text-muted)] flex items-center gap-1.5">
               <FileCode2 className="h-3 w-3" />
               Workflow Skills ({pack.skills.length})
             </div>
@@ -609,41 +609,41 @@ function PackDetailModal({
                 return (
                   <div
                     key={idx}
-                    className="rounded-lg border border-slate-200 dark:border-indigo-900/30 overflow-hidden"
+                    className="rounded-lg border border-[var(--border-subtle)] overflow-hidden"
                   >
                     <button
                       type="button"
                       onClick={() => setExpandedSkill(isExpanded ? null : idx)}
-                      className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-slate-50 dark:hover:bg-black/30 transition-colors cursor-pointer"
+                      className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
                         {isExpanded ? (
-                          <ChevronDown className="h-3 w-3 text-slate-400" />
+                          <ChevronDown className="h-3 w-3 text-[var(--text-muted)]" />
                         ) : (
-                          <ChevronRight className="h-3 w-3 text-slate-400" />
+                          <ChevronRight className="h-3 w-3 text-[var(--text-muted)]" />
                         )}
-                        <FileCode2 className="h-3 w-3 text-indigo-500" />
-                        <span className="text-[11px] font-mono font-bold text-slate-900 dark:text-slate-100">
+                        <FileCode2 className="h-3 w-3 text-[var(--accent-primary)]" />
+                        <span className="text-xs font-sans font-medium text-[var(--text-primary)]">
                           {skill.name}
                         </span>
-                        <span className="text-[8px] font-mono text-slate-400">
+                        <span className="text-xs font-sans text-[var(--text-muted)]">
                           {skill.steps.length} steps
                         </span>
                       </div>
                     </button>
                     {isExpanded && (
-                      <div className="px-3 pb-3 pt-0 border-t border-slate-100 dark:border-indigo-950/30 space-y-2 mt-2">
-                        <p className="text-[10px] font-mono text-slate-600 dark:text-slate-400">
+                      <div className="px-3 pb-3 pt-0 border-t border-[var(--border-subtle)] space-y-2 mt-2">
+                        <p className="text-xs font-sans text-[var(--text-secondary)]">
                           {skill.purpose}
                         </p>
                         <div className="space-y-1">
                           {skill.steps.map((step, si) => (
-                            <div key={si} className="flex items-center gap-2 text-[9px] font-mono text-slate-500">
-                              <span className="w-4 h-4 rounded-full bg-indigo-100 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-[8px] font-bold shrink-0">
+                            <div key={si} className="flex items-center gap-2 text-xs font-sans text-[var(--text-muted)]">
+                              <span className="w-4 h-4 rounded-full bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] flex items-center justify-center text-xs font-medium shrink-0">
                                 {step.order}
                               </span>
-                              <span className="text-slate-700 dark:text-slate-300 font-semibold">{step.action}</span>
-                              <span className="text-slate-400">— {step.description}</span>
+                              <span className="text-[var(--text-secondary)] font-medium">{step.action}</span>
+                              <span className="text-[var(--text-muted)]">— {step.description}</span>
                             </div>
                           ))}
                         </div>
@@ -651,7 +651,7 @@ function PackDetailModal({
                           {skill.allowedToolPatterns.map((pattern, pi) => (
                             <span
                               key={pi}
-                              className="px-1.5 py-0.5 rounded text-[7px] font-mono bg-slate-100 dark:bg-black/50 text-slate-500 border border-slate-200 dark:border-indigo-950"
+                              className="px-1.5 py-0.5 rounded text-xs font-sans bg-[var(--surface-sunken)] text-[var(--text-muted)] border border-[var(--border-subtle)]"
                             >
                               {pattern}
                             </span>
@@ -667,17 +667,17 @@ function PackDetailModal({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-slate-200 dark:border-indigo-900/50 flex items-center justify-between">
+        <div className="px-6 py-4 border-t border-[var(--border-subtle)] flex items-center justify-between">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded border border-slate-200 dark:border-slate-700 text-[10px] font-mono font-bold text-slate-700 dark:text-slate-300 hover:border-slate-400 transition-colors cursor-pointer"
+            className="px-4 py-2 rounded border border-[var(--border-subtle)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--border-strong)] transition-colors cursor-pointer"
           >
-            CLOSE
+            Close
           </button>
           {isInstalled ? (
-            <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-300">
-              <Check className="h-3 w-3" /> INSTALLED
+            <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-xs font-sans font-medium text-[var(--state-success)]">
+              <Check className="h-3 w-3" /> Installed
             </div>
           ) : (
             <button
@@ -685,18 +685,18 @@ function PackDetailModal({
               onClick={onInstall}
               disabled={isInstalling}
               className={clsx(
-                "inline-flex items-center gap-1.5 px-4 py-2 rounded border text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
+                "inline-flex items-center gap-1.5 px-4 py-2 rounded border text-xs font-sans font-medium transition-colors cursor-pointer",
                 isInstalling ? "opacity-50 cursor-wait" : "",
-                "border-indigo-500 bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm shadow-indigo-500/25 active:scale-95"
+                "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] active:scale-95"
               )}
             >
               {isInstalling ? (
                 <>
-                  <Loader2 className="h-3 w-3 animate-spin" /> INSTALLING...
+                  <Loader2 className="h-3 w-3 animate-spin" /> Installing...
                 </>
               ) : (
                 <>
-                  <Package className="h-3 w-3" /> INSTALL PACK
+                  <Package className="h-3 w-3" /> Install pack
                   <ArrowRight className="h-3 w-3" />
                 </>
               )}

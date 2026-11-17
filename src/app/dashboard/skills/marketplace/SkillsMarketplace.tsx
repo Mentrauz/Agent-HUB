@@ -115,58 +115,58 @@ function buildAllowedTools(skill: AgentSkill, mountedServerIds: string[]): strin
 }
 
 const CATEGORIES: { id: SkillCategory | "ALL"; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { id: "ALL", label: "ALL", icon: Sparkles },
-  { id: "RESEARCH", label: "RESEARCH", icon: BookOpen },
-  { id: "CODING", label: "CODING", icon: Code },
-  { id: "DATA", label: "DATA", icon: Database },
-  { id: "ANALYSIS", label: "ANALYSIS", icon: BarChart3 },
-  { id: "COMMUNICATION", label: "COMMUNICATION", icon: MessageSquare },
-  { id: "AUTOMATION", label: "AUTOMATION", icon: Zap },
-  { id: "KNOWLEDGE", label: "KNOWLEDGE", icon: Brain },
-  { id: "PRODUCTIVITY", label: "PRODUCTIVITY", icon: Wrench },
-  { id: "CREATIVE", label: "CREATIVE", icon: Globe },
+  { id: "ALL", label: "All", icon: Sparkles },
+  { id: "RESEARCH", label: "Research", icon: BookOpen },
+  { id: "CODING", label: "Coding", icon: Code },
+  { id: "DATA", label: "Data", icon: Database },
+  { id: "ANALYSIS", label: "Analysis", icon: BarChart3 },
+  { id: "COMMUNICATION", label: "Communication", icon: MessageSquare },
+  { id: "AUTOMATION", label: "Automation", icon: Zap },
+  { id: "KNOWLEDGE", label: "Knowledge", icon: Brain },
+  { id: "PRODUCTIVITY", label: "Productivity", icon: Wrench },
+  { id: "CREATIVE", label: "Creative", icon: Globe },
 ];
 
 const DIFFICULTIES = [
-  { id: "ALL", label: "ALL LEVELS" },
-  { id: "BEGINNER", label: "BEGINNER" },
-  { id: "INTERMEDIATE", label: "INTERMEDIATE" },
-  { id: "ADVANCED", label: "ADVANCED" },
+  { id: "ALL", label: "All levels" },
+  { id: "BEGINNER", label: "Beginner" },
+  { id: "INTERMEDIATE", label: "Intermediate" },
+  { id: "ADVANCED", label: "Advanced" },
 ];
 
 const DIFFICULTY_COLORS: Record<string, string> = {
-  BEGINNER: "border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300",
-  INTERMEDIATE: "border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300",
-  ADVANCED: "border-red-300 dark:border-red-500/40 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300",
+  BEGINNER: "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]",
+  INTERMEDIATE: "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
+  ADVANCED: "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]",
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  RESEARCH: "border-blue-300 dark:border-blue-500/40 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300",
-  CODING: "border-violet-300 dark:border-violet-500/40 bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300",
-  DATA: "border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300",
-  ANALYSIS: "border-cyan-300 dark:border-cyan-500/40 bg-cyan-50 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-300",
-  COMMUNICATION: "border-pink-300 dark:border-pink-500/40 bg-pink-50 dark:bg-pink-950/40 text-pink-700 dark:text-pink-300",
-  AUTOMATION: "border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300",
-  KNOWLEDGE: "border-indigo-300 dark:border-indigo-500/40 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300",
-  PRODUCTIVITY: "border-slate-300 dark:border-slate-500/40 bg-slate-50 dark:bg-slate-950/40 text-slate-700 dark:text-slate-300",
-  CREATIVE: "border-rose-300 dark:border-rose-500/40 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300",
+  RESEARCH: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  CODING: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  DATA: "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]",
+  ANALYSIS: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  COMMUNICATION: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  AUTOMATION: "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
+  KNOWLEDGE: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  PRODUCTIVITY: "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
+  CREATIVE: "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]",
 };
 
 const SOURCES = [
-  { id: "ALL", label: "ALL SOURCES" },
-  { id: "glama", label: "GLAMA.AI" },
-  { id: "mcp.so", label: "MCP.SO" },
-  { id: "smithery", label: "SMITHERY.AI" },
-  { id: "composio", label: "COMPOSIO" },
+  { id: "ALL", label: "All sources" },
+  { id: "glama", label: "Glama.ai" },
+  { id: "mcp.so", label: "mcp.so" },
+  { id: "smithery", label: "Smithery.ai" },
+  { id: "composio", label: "Composio" },
 ];
 
 const SOURCE_COLORS: Record<string, string> = {
-  glama: "border-cyan-400 dark:border-cyan-500/40 bg-cyan-50 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-300",
-  "mcp.so": "border-emerald-400 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300",
-  smithery: "border-amber-400 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300",
-  composio: "border-emerald-400 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300",
-  "awesome-mcp": "border-purple-400 dark:border-purple-500/40 bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300",
-  community: "border-slate-400 dark:border-slate-500/40 bg-slate-50 dark:bg-slate-950/40 text-slate-700 dark:text-slate-300",
+  glama: "border-[var(--accent-primary)]/40 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  "mcp.so": "border-[var(--state-success)]/40 bg-[var(--state-success)]/10 text-[var(--state-success)]",
+  smithery: "border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
+  composio: "border-[var(--state-success)]/40 bg-[var(--state-success)]/10 text-[var(--state-success)]",
+  "awesome-mcp": "border-[var(--accent-primary)]/40 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  community: "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
 };
 
 export function SkillsMarketplace() {
@@ -705,29 +705,29 @@ export function SkillsMarketplace() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-sm font-mono font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-amber-500" />
-            SKILLS MARKETPLACE
+          <h2 className="text-sm font-sans font-medium text-[var(--text-primary)] flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-[var(--state-warning)]" />
+            Skills marketplace
           </h2>
-          <p className="text-[10px] font-mono text-slate-500 mt-0.5">
+          <p className="text-xs font-sans text-[var(--text-muted)] mt-0.5">
             Discover and install pre-configured agent skills from Glama, MCP.SO &amp; Smithery
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[9px] font-mono text-slate-500 px-2 py-1 rounded border border-slate-200 dark:border-indigo-900/50 bg-slate-50 dark:bg-black/40">
-            {skills.length} OF {totalCount > 0 ? totalCount.toLocaleString() : skills.length} SKILLS LOADED
+          <span className="text-xs font-sans text-[var(--text-muted)] px-2 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+            {skills.length} OF {totalCount > 0 ? totalCount.toLocaleString() : skills.length} Skills loaded
           </span>
 
           {/* View Mode Toggle */}
-          <div className="flex items-center rounded-lg border border-slate-200 dark:border-indigo-900/50 bg-slate-100 dark:bg-black/40 p-0.5">
+          <div className="flex items-center rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-0.5">
             <button
               type="button"
               onClick={() => handleToggleViewMode("grid")}
               className={clsx(
-                "p-1.5 rounded text-xs font-mono transition-all cursor-pointer",
+                "p-1.5 rounded text-xs font-sans transition-colors cursor-pointer",
                 viewMode === "grid"
-                  ? "bg-white dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 shadow-sm"
-                  : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                  ? "bg-[var(--surface-raised)] text-[var(--accent-primary)] "
+                  : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
               )}
               title="Card Grid View"
             >
@@ -737,10 +737,10 @@ export function SkillsMarketplace() {
               type="button"
               onClick={() => handleToggleViewMode("list")}
               className={clsx(
-                "p-1.5 rounded text-xs font-mono transition-all cursor-pointer",
+                "p-1.5 rounded text-xs font-sans transition-colors cursor-pointer",
                 viewMode === "list"
-                  ? "bg-white dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 shadow-sm"
-                  : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                  ? "bg-[var(--surface-raised)] text-[var(--accent-primary)] "
+                  : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
               )}
               title="Row List View"
             >
@@ -754,19 +754,19 @@ export function SkillsMarketplace() {
       <div className="space-y-3">
         {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search skills (e.g. research, database, github, slack)..."
-            className="w-full pl-9 pr-8 py-2 text-xs font-mono rounded border border-slate-200 dark:border-indigo-900/60 bg-white dark:bg-black/60 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-all"
+            className="w-full pl-9 pr-8 py-2 text-xs font-sans rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)]/40 transition-colors"
           />
           {search && (
             <button
               type="button"
               onClick={() => setSearch("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] cursor-pointer"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -775,7 +775,7 @@ export function SkillsMarketplace() {
 
         {/* Source Pills + Installed Filter */}
         <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          <span className="text-[9px] font-mono text-slate-500 font-semibold">SOURCE:</span>
+          <span className="text-xs font-sans text-[var(--text-muted)] font-medium">Source</span>
           {SOURCES.map((src) => {
             const active = source === src.id;
             return (
@@ -784,25 +784,25 @@ export function SkillsMarketplace() {
                 type="button"
                 onClick={() => setSource(src.id)}
                 className={clsx(
-                  "px-2 py-0.5 rounded text-[9px] font-mono font-semibold uppercase tracking-wider border transition-all cursor-pointer",
+                  "px-2 py-0.5 rounded text-xs font-sans font-medium border transition-colors cursor-pointer",
                   active
-                    ? "border-indigo-500 bg-indigo-600 text-white shadow-sm"
-                    : "border-slate-200 dark:border-indigo-900/50 bg-white/70 dark:bg-black/40 text-slate-500 dark:text-slate-400 hover:border-indigo-400"
+                    ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
+                    : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-muted)] hover:border-[var(--accent-primary)]/40"
                 )}
               >
                 {src.label}
               </button>              )
             ;
           })}
-          <div className="w-px h-4 bg-slate-200 dark:bg-indigo-900/50 mx-0.5" />
+          <div className="w-px h-4 bg-[var(--surface-sunken)] mx-0.5" />
           <button
             type="button"
             onClick={() => setShowInstalledOnly((p) => !p)}
             className={clsx(
-              "inline-flex items-center gap-1 px-2 py-1 rounded text-[9px] font-mono font-semibold uppercase tracking-wider border transition-all cursor-pointer",
+              "inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-sans font-medium border transition-colors cursor-pointer",
               showInstalledOnly
-                ? "border-emerald-500 bg-emerald-600 text-white shadow-sm"
-                : "border-slate-200 dark:border-indigo-900/50 bg-white/70 dark:bg-black/40 text-slate-500 dark:text-slate-400 hover:border-emerald-400"
+                ? "border-[var(--state-success)]/40 bg-[var(--state-success)] text-[var(--cta-primary-text)] "
+                : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-muted)] hover:border-[var(--state-success)]/40"
             )}
           >
             <Check className="h-3 w-3" />
@@ -824,10 +824,10 @@ export function SkillsMarketplace() {
                 type="button"
                 onClick={() => setCategory(cat.id)}
                 className={clsx(
-                  "inline-flex items-center gap-1 px-2 py-1 rounded text-[9px] font-mono font-semibold uppercase tracking-wider border transition-all cursor-pointer",
+                  "inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-sans font-medium border transition-colors cursor-pointer",
                   active
-                    ? "border-indigo-500 bg-indigo-600 text-white shadow-sm"
-                    : "border-slate-200 dark:border-indigo-900/50 bg-white/70 dark:bg-black/40 text-slate-600 dark:text-slate-400 hover:border-indigo-400"
+                    ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
+                    : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40"
                 )}
               >
                 <Icon className="h-3 w-3" />
@@ -839,17 +839,17 @@ export function SkillsMarketplace() {
 
         {/* Difficulty Filter */}
         <div className="flex items-center gap-1.5">
-          <span className="text-[9px] font-mono text-slate-500 font-semibold">LEVEL:</span>
+          <span className="text-xs font-sans text-[var(--text-muted)] font-medium">Level</span>
           {DIFFICULTIES.map((d) => (
             <button
               key={d.id}
               type="button"
               onClick={() => setDifficulty(d.id)}
               className={clsx(
-                "px-2 py-0.5 rounded text-[9px] font-mono font-semibold uppercase tracking-wider border transition-all cursor-pointer",
+                "px-2 py-0.5 rounded text-xs font-sans font-medium border transition-colors cursor-pointer",
                 difficulty === d.id
-                  ? "border-indigo-500 bg-indigo-600 text-white shadow-sm"
-                  : "border-slate-200 dark:border-indigo-900/50 bg-white/70 dark:bg-black/40 text-slate-500 dark:text-slate-400 hover:border-indigo-400"
+                  ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
+                  : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-muted)] hover:border-[var(--accent-primary)]/40"
               )}
             >
               {d.label}
@@ -861,14 +861,14 @@ export function SkillsMarketplace() {
       {/* Loading State */}
       {loading && (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
-          <span className="ml-2 text-xs font-mono text-slate-500">Loading skills...</span>
+          <Loader2 className="h-5 w-5 animate-spin text-[var(--accent-primary)]" />
+          <span className="ml-2 text-xs font-sans text-[var(--text-muted)]">Loading skills...</span>
         </div>
       )}
 
       {/* Error State */}
       {error && (
-        <div className="rounded border border-red-300 dark:border-red-500/40 bg-red-50 dark:bg-red-950/30 p-3 text-xs font-mono text-red-700 dark:text-red-300">
+        <div className="rounded border border-[var(--state-error)]/25 bg-[var(--state-error)]/10 p-3 text-xs font-sans text-[var(--state-error)]">
           {error}
         </div>
       )}
@@ -889,7 +889,7 @@ export function SkillsMarketplace() {
                   <div
                     key={skill.id}
                     onClick={() => setDetailSkill(skill)}
-                    className="group rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/70 hover:border-indigo-500/60 dark:hover:border-indigo-500/50 hover:shadow-lg transition-all p-4 flex flex-col justify-between space-y-3 cursor-pointer"
+                    className="group rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 transition-colors p-4 flex flex-col justify-between space-y-3 cursor-pointer"
                   >
                     {/* Top */}
                     <div className="space-y-2">
@@ -903,39 +903,39 @@ export function SkillsMarketplace() {
                             size="sm"
                           />
                           <div className="min-w-0 flex-1">
-                            <h3 className="text-xs font-mono font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                            <h3 className="text-xs font-sans font-medium text-[var(--text-primary)] truncate group-hover:text-[var(--accent-primary)] transition-colors">
                               {skill.name}
                             </h3>
-                            <p className="text-[9px] font-mono text-slate-500">
-                              by <span className="font-semibold text-slate-700 dark:text-slate-300">{skill.author}</span>
+                            <p className="text-xs font-sans text-[var(--text-muted)]">
+                              by <span className="font-medium text-[var(--text-secondary)]">{skill.author}</span>
                             </p>
                           </div>
                         </div>
                         {isInstalled && (
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[7px] font-mono font-bold uppercase bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700/50 shrink-0">
-                            <Check className="h-2.5 w-2.5" /> INSTALLED
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--state-success)]/10 text-[var(--state-success)] border border-[var(--state-success)]/25 shrink-0">
+                            <Check className="h-2.5 w-2.5" /> Installed
                           </span>
                         )}
                       </div>
 
                       {/* Description */}
-                      <p className="text-[10px] font-mono text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                      <p className="text-xs font-sans text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
                         {skill.description}
                       </p>
 
                       {/* Tags & Source */}
                       <div className="flex flex-wrap items-center gap-1">
-                        <span className={clsx("px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border", srcColor)}>
-                          {skill.source === "smithery" ? "SMITHERY" : skill.source === "glama" ? "GLAMA" : skill.source === "mcp.so" ? "MCP.SO" : skill.source}
+                        <span className={clsx("px-1.5 py-0.5 rounded text-xs font-sans font-medium border", srcColor)}>
+                          {skill.source === "smithery" ? "SMITHERY" : skill.source === "glama" ? "GLAMA" : skill.source === "mcp.so" ? "mcp.so" : skill.source}
                         </span>
-                        <span className={clsx("px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border", catColor)}>
+                        <span className={clsx("px-1.5 py-0.5 rounded text-xs font-sans font-medium border", catColor)}>
                           {skill.category}
                         </span>
-                        <span className={clsx("px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border", diffColor)}>
+                        <span className={clsx("px-1.5 py-0.5 rounded text-xs font-sans font-medium border", diffColor)}>
                           {skill.difficulty}
                         </span>
                         {skill.tags.slice(0, 2).map((t, i) => (
-                          <span key={i} className="px-1.5 py-0.5 rounded text-[8px] font-mono bg-slate-100 dark:bg-black/50 text-slate-500 border border-slate-200 dark:border-indigo-950">
+                          <span key={i} className="px-1.5 py-0.5 rounded text-xs font-sans bg-[var(--surface-sunken)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
                             #{t}
                           </span>
                         ))}
@@ -943,10 +943,10 @@ export function SkillsMarketplace() {
                     </div>
 
                     {/* Stats */}
-                    <div className="flex items-center justify-between text-[9px] font-mono text-slate-500 pt-2 border-t border-slate-100 dark:border-indigo-950/60">
+                    <div className="flex items-center justify-between text-xs font-sans text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)]">
                       <div className="flex items-center gap-2">
-                        <span className="flex items-center gap-0.5 text-amber-500 font-semibold">
-                          {typeof skill.rating === "number" && (<><Star className="h-3 w-3 fill-amber-400" /> {skill.rating}</>)}
+                        <span className="flex items-center gap-0.5 text-[var(--state-warning)] font-medium">
+                          {typeof skill.rating === "number" && (<><Star className="h-3 w-3 fill-[var(--text-muted)]" /> {skill.rating}</>)}
                         </span>
                         <span className="flex items-center gap-0.5">
                           {typeof skill.installs === "number" && (<><Download className="h-3 w-3" /> {skill.installs.toLocaleString()}</>)}
@@ -955,7 +955,7 @@ export function SkillsMarketplace() {
                           <Clock className="h-3 w-3" /> {skill.estimatedTime}
                         </span>
                       </div>
-                      <span className="text-[8px] text-slate-400">{skill.steps.length} steps</span>
+                      <span className="text-xs text-[var(--text-muted)]">{skill.steps.length} steps</span>
                     </div>
 
                     {/* Install / Uninstall Buttons */}
@@ -968,12 +968,12 @@ export function SkillsMarketplace() {
                         }}
                         disabled={installing === skill.id}
                         className={clsx(
-                          "w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer",
+                          "w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer",
                           installing === skill.id ? "opacity-60 cursor-wait" : "",
-                          "border border-red-300 dark:border-red-500/40 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-950/60"
+                          "border border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)] hover:bg-[var(--state-error)]/10"
                         )}
                       >
-                        {installing === skill.id ? <><Loader2 className="h-3 w-3 animate-spin" /> REMOVING...</> : <><Trash2 className="h-3 w-3" /> UNINSTALL</>}
+                        {installing === skill.id ? <><Loader2 className="h-3 w-3 animate-spin" /> Removing...</> : <><Trash2 className="h-3 w-3" /> Uninstall</>}
                       </button>
                     ) : (
                       <button
@@ -984,12 +984,12 @@ export function SkillsMarketplace() {
                         }}
                         disabled={installing === skill.id}
                         className={clsx(
-                          "w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer",
+                          "w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer",
                           installing === skill.id ? "opacity-60 cursor-wait" : "",
-                          "border border-indigo-500 bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm shadow-indigo-500/25 active:scale-95"
+                          "border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] active:scale-95"
                         )}
                       >
-                        {installing === skill.id ? <><Loader2 className="h-3 w-3 animate-spin" /> INSTALLING...</> : <><Plus className="h-3 w-3" /> INSTALL SKILL</>}
+                        {installing === skill.id ? <><Loader2 className="h-3 w-3 animate-spin" /> Installing...</> : <><Plus className="h-3 w-3" /> Install skill</>}
                       </button>
                     )}
                   </div>
@@ -1009,7 +1009,7 @@ export function SkillsMarketplace() {
                   <div
                     key={skill.id}
                     onClick={() => setDetailSkill(skill)}
-                    className="group rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/70 hover:border-indigo-500/60 dark:hover:border-indigo-500/50 hover:shadow-md transition-all p-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3.5 cursor-pointer"
+                    className="group rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 transition-colors p-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3.5 cursor-pointer"
                   >
                     {/* Left: Info, Badges, Description */}
                     <div className="min-w-0 flex-1 space-y-1.5">
@@ -1021,35 +1021,35 @@ export function SkillsMarketplace() {
                           owner={skill.author}
                           size="xs"
                         />
-                        <h3 className="text-xs font-mono font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        <h3 className="text-xs font-sans font-medium text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">
                           {skill.name}
                         </h3>
-                        <span className="text-[9px] font-mono text-slate-500">
-                          by <span className="font-semibold text-slate-700 dark:text-slate-300">{skill.author}</span>
+                        <span className="text-xs font-sans text-[var(--text-muted)]">
+                          by <span className="font-medium text-[var(--text-secondary)]">{skill.author}</span>
                         </span>
-                        <span className={clsx("px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border", srcColor)}>
-                          {skill.source === "smithery" ? "SMITHERY" : skill.source === "glama" ? "GLAMA" : skill.source === "mcp.so" ? "MCP.SO" : skill.source}
+                        <span className={clsx("px-1.5 py-0.5 rounded text-xs font-sans font-medium border", srcColor)}>
+                          {skill.source === "smithery" ? "SMITHERY" : skill.source === "glama" ? "GLAMA" : skill.source === "mcp.so" ? "mcp.so" : skill.source}
                         </span>
-                        <span className={clsx("px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border", catColor)}>
+                        <span className={clsx("px-1.5 py-0.5 rounded text-xs font-sans font-medium border", catColor)}>
                           {skill.category}
                         </span>
-                        <span className={clsx("px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border", diffColor)}>
+                        <span className={clsx("px-1.5 py-0.5 rounded text-xs font-sans font-medium border", diffColor)}>
                           {skill.difficulty}
                         </span>
                         {isInstalled && (
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[7px] font-mono font-bold uppercase bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700/50 shrink-0">
-                            <Check className="h-2.5 w-2.5" /> INSTALLED
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--state-success)]/10 text-[var(--state-success)] border border-[var(--state-success)]/25 shrink-0">
+                            <Check className="h-2.5 w-2.5" /> Installed
                           </span>
                         )}
                       </div>
 
-                      <p className="text-[10px] font-mono text-slate-600 dark:text-slate-400 line-clamp-1 leading-relaxed">
+                      <p className="text-xs font-sans text-[var(--text-secondary)] line-clamp-1 leading-relaxed">
                         {skill.description}
                       </p>
 
-                      <div className="flex flex-wrap items-center gap-1.5 text-[8px] font-mono text-slate-400">
+                      <div className="flex flex-wrap items-center gap-1.5 text-xs font-sans text-[var(--text-muted)]">
                         {skill.tags.slice(0, 3).map((t, i) => (
-                          <span key={i} className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-black/50 text-slate-500 border border-slate-200 dark:border-indigo-950">
+                          <span key={i} className="px-1.5 py-0.5 rounded bg-[var(--surface-sunken)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
                             #{t}
                           </span>
                         ))}
@@ -1059,10 +1059,10 @@ export function SkillsMarketplace() {
                     </div>
 
                     {/* Right: Stats & Action */}
-                    <div className="flex items-center justify-between md:justify-end gap-3.5 w-full md:w-auto shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-indigo-950/60">
-                      <div className="flex items-center gap-3 text-[9px] font-mono text-slate-500">
-                        <span className="flex items-center gap-0.5 text-amber-500 font-semibold">
-                          {typeof skill.rating === "number" && (<><Star className="h-3 w-3 fill-amber-400" /> {skill.rating}</>)}
+                    <div className="flex items-center justify-between md:justify-end gap-3.5 w-full md:w-auto shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-[var(--border-subtle)]">
+                      <div className="flex items-center gap-3 text-xs font-sans text-[var(--text-muted)]">
+                        <span className="flex items-center gap-0.5 text-[var(--state-warning)] font-medium">
+                          {typeof skill.rating === "number" && (<><Star className="h-3 w-3 fill-[var(--text-muted)]" /> {skill.rating}</>)}
                         </span>
                         <span className="flex items-center gap-0.5">
                           {typeof skill.installs === "number" && (<><Download className="h-3 w-3" /> {skill.installs.toLocaleString()}</>)}
@@ -1081,12 +1081,12 @@ export function SkillsMarketplace() {
                           }}
                           disabled={installing === skill.id}
                           className={clsx(
-                            "inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded text-[10px] font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer shrink-0 min-w-[90px]",
+                            "inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer shrink-0 min-w-[90px]",
                             installing === skill.id ? "opacity-60 cursor-wait" : "",
-                            "border border-red-300 dark:border-red-500/40 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-950/60"
+                            "border border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)] hover:bg-[var(--state-error)]/10"
                           )}
                         >
-                          {installing === skill.id ? <><Loader2 className="h-3 w-3 animate-spin" /> ...</> : <><Trash2 className="h-3 w-3" /> REMOVE</>}
+                          {installing === skill.id ? <><Loader2 className="h-3 w-3 animate-spin" /> ...</> : <><Trash2 className="h-3 w-3" /> Remove</>}
                         </button>
                       ) : (
                         <button
@@ -1097,12 +1097,12 @@ export function SkillsMarketplace() {
                           }}
                           disabled={installing === skill.id}
                           className={clsx(
-                            "inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded text-[10px] font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer shrink-0 min-w-[90px]",
+                            "inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer shrink-0 min-w-[90px]",
                             installing === skill.id ? "opacity-60 cursor-wait" : "",
-                            "border border-indigo-500 bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm shadow-indigo-500/25 active:scale-95"
+                            "border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] active:scale-95"
                           )}
                         >
-                          {installing === skill.id ? <><Loader2 className="h-3 w-3 animate-spin" /> ...</> : <><Plus className="h-3 w-3" /> INSTALL</>}
+                          {installing === skill.id ? <><Loader2 className="h-3 w-3 animate-spin" /> ...</> : <><Plus className="h-3 w-3" /> Install</>}
                         </button>
                       )}
                     </div>
@@ -1130,9 +1130,9 @@ export function SkillsMarketplace() {
       {/* Empty State */}
       {!loading && !error && filteredSkills.length === 0 && (
         <div className="text-center py-12">
-          <Sparkles className="h-8 w-8 text-indigo-400 mx-auto" />
-          <p className="text-xs font-mono font-semibold text-slate-800 dark:text-slate-200 mt-3">NO SKILLS FOUND</p>
-          <p className="text-[10px] font-mono text-slate-500 mt-1">
+          <Sparkles className="h-8 w-8 text-[var(--accent-primary)] mx-auto" />
+          <p className="text-xs font-sans font-medium text-[var(--text-primary)] mt-3">No skills found</p>
+          <p className="text-xs font-sans text-[var(--text-muted)] mt-1">
             {showInstalledOnly ? "No installed skills match this filter." : `No skills matching "${search}" in this category.`}
           </p>
         </div>
@@ -1169,13 +1169,13 @@ function SkillDetailModal({
   const [sandboxOpen, setSandboxOpen] = useState(false);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 animate-fadeIn" onClick={onClose}>
       <div
-        className="relative w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-xl border border-slate-200 dark:border-indigo-800/60 bg-white dark:bg-[#0a0a0a] shadow-2xl shadow-indigo-500/10"
+        className="relative w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200 dark:border-indigo-950 bg-white/90 dark:bg-[#0a0a0a]/90 backdrop-blur-sm rounded-t-xl">
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 px-5 py-4 border-b border-[var(--border-subtle)] bg-[var(--surface-raised)]/90 rounded-t-xl">
           <div className="flex items-center gap-3 min-w-0">
             <ItemIcon
               name={skill.name}
@@ -1185,18 +1185,18 @@ function SkillDetailModal({
               size="lg"
             />
             <div className="min-w-0">
-              <h3 className="text-sm font-mono font-bold text-slate-900 dark:text-slate-100 truncate">
+              <h3 className="text-sm font-sans font-medium text-[var(--text-primary)] truncate">
                 {skill.name}
               </h3>
-              <p className="text-[10px] font-mono text-slate-500">
-                by <span className="font-semibold text-slate-700 dark:text-slate-300">{skill.author}</span>
+              <p className="text-xs font-sans text-[var(--text-muted)]">
+                by <span className="font-medium text-[var(--text-secondary)]">{skill.author}</span>
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-indigo-950/60 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-all cursor-pointer"
+            className="p-1.5 rounded-lg hover:bg-[var(--surface-sunken)] text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
@@ -1206,30 +1206,30 @@ function SkillDetailModal({
         <div className="px-5 py-4 space-y-5">
           {/* Description */}
           <div className="space-y-1.5">
-            <div className="text-[9px] font-mono uppercase tracking-widest text-slate-500 font-semibold">DESCRIPTION</div>
-            <p className="text-[11px] font-mono text-slate-700 dark:text-slate-300 leading-relaxed">
+            <div className="text-xs font-sans text-[var(--text-muted)] font-medium">Description</div>
+            <p className="text-xs font-sans text-[var(--text-secondary)] leading-relaxed">
               {skill.description}
             </p>
           </div>
 
           {/* Tags & Stats */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className={clsx("px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase border", SOURCE_COLORS[skill.source] || SOURCE_COLORS.glama)}>
-              {skill.source === "smithery" ? "SMITHERY.AI" : skill.source === "glama" ? "GLAMA.AI" : skill.source === "mcp.so" ? "MCP.SO" : skill.source}
+            <span className={clsx("px-2 py-0.5 rounded text-xs font-sans font-medium border", SOURCE_COLORS[skill.source] || SOURCE_COLORS.glama)}>
+              {skill.source === "smithery" ? "Smithery.ai" : skill.source === "glama" ? "Glama.ai" : skill.source === "mcp.so" ? "mcp.so" : skill.source}
             </span>
-            <span className={clsx("px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase border", catColor)}>
+            <span className={clsx("px-2 py-0.5 rounded text-xs font-sans font-medium border", catColor)}>
               {skill.category}
             </span>
-            <span className={clsx("px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase border", diffColor)}>
+            <span className={clsx("px-2 py-0.5 rounded text-xs font-sans font-medium border", diffColor)}>
               {skill.difficulty}
             </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-mono font-semibold border border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300">
-              {typeof skill.rating === "number" && (<><Star className="h-3 w-3 fill-amber-400" /> {skill.rating}</>)}
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-sans font-medium border border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]">
+              {typeof skill.rating === "number" && (<><Star className="h-3 w-3 fill-[var(--text-muted)]" /> {skill.rating}</>)}
             </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-mono font-semibold border border-slate-200 dark:border-indigo-900/50 bg-slate-50 dark:bg-black/40 text-slate-600 dark:text-slate-400">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]">
               {typeof skill.installs === "number" && (<><Download className="h-3 w-3" /> {skill.installs.toLocaleString()} installs</>)}
             </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-mono font-semibold border border-slate-200 dark:border-indigo-900/50 bg-slate-50 dark:bg-black/40 text-slate-600 dark:text-slate-400">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]">
               <Clock className="h-3 w-3" /> {skill.estimatedTime}
             </span>
           </div>
@@ -1237,12 +1237,12 @@ function SkillDetailModal({
           {/* Required Servers */}
           {skill.requiredServers.length > 0 && (
             <div className="space-y-1.5">
-              <div className="text-[9px] font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center gap-1.5">
-                <Shield className="h-3 w-3" /> REQUIRED MCP SERVERS
+              <div className="text-xs font-sans text-[var(--text-muted)] font-medium flex items-center gap-1.5">
+                <Shield className="h-3 w-3" /> Required MCP servers
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {skill.requiredServers.map((s, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded text-[9px] font-mono font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/50">
+                  <span key={i} className="px-2 py-0.5 rounded text-xs font-sans font-medium bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25">
                     {s}
                   </span>
                 ))}
@@ -1252,25 +1252,25 @@ function SkillDetailModal({
 
           {/* Steps */}
           <div className="space-y-2">
-            <div className="text-[9px] font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center gap-1.5">
+            <div className="text-xs font-sans text-[var(--text-muted)] font-medium flex items-center gap-1.5">
               <Zap className="h-3 w-3" /> SKILL STEPS ({skill.steps.length})
             </div>
             <div className="space-y-2">
               {skill.steps.map((step) => (
                 <div
                   key={step.order}
-                  className="flex items-start gap-3 p-2.5 rounded border border-slate-200 dark:border-indigo-900/40 bg-slate-50/60 dark:bg-black/40"
+                  className="flex items-start gap-3 p-2.5 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60"
                 >
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-[9px] font-mono font-bold shrink-0">
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] text-xs font-sans font-medium shrink-0">
                     {step.order}
                   </span>
                   <div className="min-w-0">
-                    <p className="text-[10px] font-mono font-semibold text-slate-900 dark:text-slate-100">
+                    <p className="text-xs font-sans font-medium text-[var(--text-primary)]">
                       {step.description}
                     </p>
                     {step.requiredTool && (
-                      <p className="text-[8px] font-mono text-slate-500 mt-0.5">
-                        Tool: <span className="font-semibold text-indigo-600 dark:text-indigo-400">{step.requiredTool}</span>
+                      <p className="text-xs font-sans text-[var(--text-muted)] mt-0.5">
+                        Tool: <span className="font-medium text-[var(--accent-primary)]">{step.requiredTool}</span>
                       </p>
                     )}
                   </div>
@@ -1280,11 +1280,11 @@ function SkillDetailModal({
           </div>
 
           {/* Source */}
-          <div className="flex items-center gap-2 text-[9px] font-mono text-slate-500">
-            <span className="uppercase">Source:</span>
-            <span className="font-semibold text-slate-700 dark:text-slate-300">{skill.source}</span>
+          <div className="flex items-center gap-2 text-xs font-sans text-[var(--text-muted)]">
+            <span className="">Source:</span>
+            <span className="font-medium text-[var(--text-secondary)]">{skill.source}</span>
             {skill.sourceUrl && (
-              <a href={skill.sourceUrl} target="_blank" rel="noreferrer" className="text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-0.5">
+              <a href={skill.sourceUrl} target="_blank" rel="noreferrer" className="text-[var(--accent-primary)] hover:underline inline-flex items-center gap-0.5">
                 View <ExternalLink className="h-2.5 w-2.5" />
               </a>
             )}
@@ -1292,36 +1292,36 @@ function SkillDetailModal({
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 flex items-center justify-end gap-2 px-5 py-3.5 border-t border-slate-200 dark:border-indigo-950 bg-slate-50/80 dark:bg-[#0a0a0a]/80 backdrop-blur-sm rounded-b-xl">
+        <div className="sticky bottom-0 flex items-center justify-end gap-2 px-5 py-3.5 border-t border-[var(--border-subtle)] bg-black/60 rounded-b-xl">
           <button
             type="button"
             onClick={() => setSandboxOpen(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded border text-[10px] font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer border-amber-400 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-950/60"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded border text-xs font-sans font-medium transition-colors cursor-pointer border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-[var(--state-warning)] hover:bg-[var(--state-warning)]/10"
           >
-            <Play className="h-3 w-3" /> TEST RUN
+            <Play className="h-3 w-3" /> Test run
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded border border-slate-300 dark:border-indigo-900/50 text-[10px] font-mono font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 hover:border-slate-400 transition-all cursor-pointer"
+            className="px-4 py-2 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--border-strong)] transition-colors cursor-pointer"
           >
-            CLOSE
+            Close
           </button>
           {isInstalled ? (
             <button
               type="button"
               onClick={onInstall}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded border text-[10px] font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer border-red-300 dark:border-red-500/40 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-950/60"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded border text-xs font-sans font-medium transition-colors cursor-pointer border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)] hover:bg-[var(--state-error)]/10"
             >
-              <Trash2 className="h-3 w-3" /> UNINSTALL
+              <Trash2 className="h-3 w-3" /> Uninstall
             </button>
           ) : (
             <button
               type="button"
               onClick={onInstall}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded border text-[10px] font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer border-indigo-500 bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm shadow-indigo-500/25 active:scale-95"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded border text-xs font-sans font-medium transition-colors cursor-pointer border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] active:scale-95"
             >
-              <Plus className="h-3 w-3" /> INSTALL SKILL
+              <Plus className="h-3 w-3" /> Install skill
             </button>
           )}
         </div>

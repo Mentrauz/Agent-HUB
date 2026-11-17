@@ -42,7 +42,7 @@ export function AvailableMcpTools({ selected, onAdd }: AvailableMcpToolsProps) {
 
   if (error) {
     return (
-      <div className="flex items-center gap-1.5 pt-2 border-t border-slate-200 dark:border-indigo-950/60 text-[10px] font-mono text-red-600 dark:text-red-400">
+      <div className="flex items-center gap-1.5 pt-2 border-t border-[var(--border-subtle)] text-xs font-sans text-[var(--state-error)]">
         <CircleAlert className="h-3 w-3 shrink-0" /> {error}
       </div>
     );
@@ -50,8 +50,8 @@ export function AvailableMcpTools({ selected, onAdd }: AvailableMcpToolsProps) {
 
   if (servers === null) {
     return (
-      <div className="flex items-center gap-1.5 pt-2 border-t border-slate-200 dark:border-indigo-950/60 text-[10px] font-mono text-slate-500">
-        <Loader2 className="h-3 w-3 animate-spin text-indigo-500" /> LOADING MCP TOOLS…
+      <div className="flex items-center gap-1.5 pt-2 border-t border-[var(--border-subtle)] text-xs font-sans text-[var(--text-muted)]">
+        <Loader2 className="h-3 w-3 animate-spin text-[var(--accent-primary)]" /> Loading MCP tools…
       </div>
     );
   }
@@ -59,15 +59,15 @@ export function AvailableMcpTools({ selected, onAdd }: AvailableMcpToolsProps) {
   const populated = servers.filter((s) => s.cachedTools.length > 0);
   if (populated.length === 0) {
     return (
-      <div className="pt-2 border-t border-slate-200 dark:border-indigo-950/60 space-y-1">
-        <div className="text-[9px] font-mono uppercase tracking-widest text-slate-600 dark:text-slate-500 font-medium">
-          MCP TOOLS
+      <div className="pt-2 border-t border-[var(--border-subtle)] space-y-1">
+        <div className="text-xs font-sans text-[var(--text-secondary)] font-medium">
+          MCP tools
         </div>
-        <p className="text-[10px] font-mono text-slate-500">
+        <p className="text-xs font-sans text-[var(--text-muted)]">
           No MCP tools discovered yet. Connect servers and rediscover tools in the{" "}
           <Link
             href="/dashboard/tools?tab=mcp"
-            className="text-indigo-600 dark:text-indigo-400 underline decoration-dotted hover:text-indigo-500"
+            className="text-[var(--accent-primary)] underline decoration-dotted hover:text-[var(--accent-primary)]"
           >
             MCP Server Hub
           </Link>{" "}
@@ -78,16 +78,16 @@ export function AvailableMcpTools({ selected, onAdd }: AvailableMcpToolsProps) {
   }
 
   return (
-    <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-indigo-950/60">
-      <div className="text-[9px] font-mono uppercase tracking-widest text-slate-600 dark:text-slate-500 font-medium flex items-center gap-1">
-        <Plug className="h-3 w-3 text-indigo-500" /> MCP TOOLS FROM CONNECTED SERVERS
+    <div className="space-y-2 pt-2 border-t border-[var(--border-subtle)]">
+      <div className="text-xs font-sans text-[var(--text-secondary)] font-medium flex items-center gap-1">
+        <Plug className="h-3 w-3 text-[var(--accent-primary)]" /> MCP tools from connected servers
       </div>
       {populated.map((server) => (
         <div key={server.id} className="space-y-1">
-          <div className="flex items-center gap-1.5 text-[9px] font-mono text-indigo-700 dark:text-indigo-400/80 uppercase tracking-wider font-semibold">
+          <div className="flex items-center gap-1.5 text-xs font-sans text-[var(--accent-primary)] font-medium">
             <Server className="h-3 w-3" />
             {server.name}
-            <span className="text-slate-500 normal-case tracking-normal font-medium">
+            <span className="text-[var(--text-muted)] normal-case tracking-normal font-medium">
               · {server.cachedTools.length} tools
             </span>
           </div>
@@ -103,16 +103,16 @@ export function AvailableMcpTools({ selected, onAdd }: AvailableMcpToolsProps) {
                   disabled={isSelected}
                   title={tool.description ?? `MCP tool "${tool.name}" on ${server.name}`}
                   className={clsx(
-                    "inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[10px] font-mono transition-all cursor-pointer font-medium max-w-full",
+                    "inline-flex items-center gap-1 px-2 py-0.5 rounded border text-xs font-sans transition-colors cursor-pointer font-medium max-w-full",
                     isSelected
-                      ? "border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 opacity-80"
-                      : "border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 hover:border-amber-400"
+                      ? "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)] opacity-80"
+                      : "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)] hover:border-[var(--state-warning)]/40"
                   )}
                 >
-                  {isSelected && <Check className="h-2.5 w-2.5 text-emerald-600 dark:text-emerald-400" />}
+                  {isSelected && <Check className="h-2.5 w-2.5 text-[var(--state-success)]" />}
                   <span className="truncate">{registryName}</span>
                   {tool.isWrite && (
-                    <span className="inline-flex items-center gap-0.5 text-[8px] uppercase tracking-wider font-semibold px-1 rounded bg-amber-200/60 dark:bg-amber-900/40">
+                    <span className="inline-flex items-center gap-0.5 text-xs font-medium px-1 rounded bg-[var(--state-warning)]/10">
                       <ShieldCheck className="h-2 w-2" /> HITL
                     </span>
                   )}

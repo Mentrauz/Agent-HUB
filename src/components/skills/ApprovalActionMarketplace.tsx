@@ -419,17 +419,17 @@ export function ApprovalActionMarketplace({
   });
 
   return (
-    <div className="space-y-3 font-mono">
+    <div className="space-y-3 font-sans">
       {/* ─── SECTION 1: LIVE WRITE TOOL AUTO-BINDING BANNER ─── */}
       {discoveredActions.length > 0 && (
-        <div className="p-2.5 rounded-lg border border-indigo-300 dark:border-indigo-800/80 bg-indigo-50/90 dark:bg-indigo-950/40 flex items-center justify-between gap-2 text-xs">
+        <div className="p-2.5 rounded-lg border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 flex items-center justify-between gap-2 text-xs">
           <div className="flex items-center gap-2">
-            <Zap className="h-4 w-4 text-indigo-600 dark:text-indigo-400 animate-pulse shrink-0" />
+            <Zap className="h-4 w-4 text-[var(--accent-primary)] shrink-0" />
             <div>
-              <span className="text-[10px] font-bold text-indigo-950 dark:text-indigo-200">
+              <span className="text-xs font-medium text-[var(--accent-primary)]">
                 {discoveredActions.length} Write Actions Detected from Active Tools
               </span>
-              <p className="text-[9px] text-slate-600 dark:text-slate-400 font-serif leading-tight">
+              <p className="text-xs text-[var(--text-secondary)] font-serif leading-tight">
                 Tools in your chain contain destructive or mutative operations.
               </p>
             </div>
@@ -437,7 +437,7 @@ export function ApprovalActionMarketplace({
           <button
             type="button"
             onClick={lockAllDiscovered}
-            className="shrink-0 px-2.5 py-1 rounded bg-indigo-600 text-white text-[9px] font-bold hover:bg-indigo-500 shadow-sm transition-all cursor-pointer"
+            className="shrink-0 px-2.5 py-1 rounded bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-medium hover:bg-[var(--cta-primary-hover)] transition-colors cursor-pointer"
           >
             Lock Active Write Tools
           </button>
@@ -446,10 +446,10 @@ export function ApprovalActionMarketplace({
 
       {/* ─── SECTION 3: AI PROMPT SMART RECOMMENDATION ─── */}
       {detectedPromptSuggestions.length > 0 && (
-        <div className="p-2.5 rounded-lg border border-purple-300 dark:border-purple-800/60 bg-purple-50/80 dark:bg-purple-950/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+        <div className="p-2.5 rounded-lg border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
           <div className="flex items-center gap-2">
-            <Wand2 className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
-            <span className="text-[10px] text-purple-950 dark:text-purple-200 font-bold">
+            <Wand2 className="h-3.5 w-3.5 text-[var(--accent-primary)] shrink-0" />
+            <span className="text-xs text-[var(--accent-primary)] font-medium">
               AI Detected Intent in Instructions:
             </span>
           </div>
@@ -459,7 +459,7 @@ export function ApprovalActionMarketplace({
                 key={act}
                 type="button"
                 onClick={() => toggleAction(act)}
-                className="px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/60 border border-purple-300 dark:border-purple-700 text-[9px] font-mono font-bold text-purple-900 dark:text-purple-200 hover:bg-purple-200 cursor-pointer transition-all"
+                className="px-2 py-0.5 rounded-md bg-[var(--accent-primary)]/10 border border-[var(--accent-primary)]/25 text-xs font-sans font-medium text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10 cursor-pointer transition-colors"
               >
                 + Lock {act}
               </button>
@@ -471,37 +471,37 @@ export function ApprovalActionMarketplace({
       {/* ─── SECTION 4: ACTIVE LOCKED GATES CHIPS ─── */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
-            <ShieldCheck className="h-3.5 w-3.5 text-amber-600" />
+          <span className="text-xs font-medium text-[var(--state-warning)] flex items-center gap-1.5">
+            <ShieldCheck className="h-3.5 w-3.5 text-[var(--state-warning)]" />
             Active Approval Gates ({selected.length})
           </span>
           {selected.length > 0 && (
             <button
               type="button"
               onClick={() => onChange([])}
-              className="text-[9px] text-slate-500 hover:text-red-500 transition-colors cursor-pointer"
+              className="text-xs text-[var(--text-muted)] hover:text-[var(--state-error)] transition-colors cursor-pointer"
             >
-              CLEAR ALL
+              Clear all
             </button>
           )}
         </div>
 
         {selected.length === 0 ? (
-          <p className="text-[10px] text-slate-500 italic p-2.5 rounded-lg border border-dashed border-amber-200 dark:border-amber-900/40 bg-amber-50/20 dark:bg-black/20">
+          <p className="text-xs text-[var(--text-muted)] p-2.5 rounded-lg border border-dashed border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10">
             No write actions locked. All tool executions will run autonomously without human pauses.
           </p>
         ) : (
-          <div className="flex flex-wrap gap-1.5 p-2.5 rounded-lg border border-amber-300 dark:border-amber-800/60 bg-amber-50/60 dark:bg-amber-950/40">
+          <div className="flex flex-wrap gap-1.5 p-2.5 rounded-lg border border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10">
             {selected.map((action) => (
               <span
                 key={action}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border border-amber-400 bg-amber-200 dark:bg-amber-900/80 text-amber-950 dark:text-amber-100 text-xs font-bold shadow-sm"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-[var(--state-warning)] text-xs font-medium"
               >
                 <code>{action}</code>
                 <button
                   type="button"
                   onClick={() => toggleAction(action)}
-                  className="text-amber-800 dark:text-amber-400 hover:text-red-600 transition-colors cursor-pointer ml-1 font-bold"
+                  className="text-[var(--state-warning)] hover:text-[var(--state-error)] transition-colors cursor-pointer ml-1 font-medium"
                 >
                   ×
                 </button>
@@ -523,38 +523,38 @@ export function ApprovalActionMarketplace({
             }
           }}
           placeholder="Type custom action name (e.g. charge_stripe, send_slack) & press enter…"
-          className="w-full rounded-lg border border-amber-300 dark:border-amber-900/50 bg-white dark:bg-[#0a0a0a] px-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 font-mono placeholder:text-slate-400 focus:border-amber-500 focus:outline-none transition-colors shadow-sm"
+          className="w-full rounded-lg border border-[var(--state-warning)]/25 bg-[var(--surface-raised)] px-3 py-1.5 text-xs text-[var(--text-primary)] font-sans placeholder:text-[var(--text-muted)] focus:border-[var(--state-warning)]/40 focus:outline-none transition-colors"
         />
         <button
           type="button"
           onClick={handleAddCustom}
-          className="shrink-0 px-3 py-1.5 rounded-lg border border-amber-400 bg-amber-200 dark:bg-amber-900 text-xs font-bold text-amber-950 dark:text-amber-100 hover:bg-amber-300 dark:hover:bg-amber-800 transition-all cursor-pointer shadow-sm"
+          className="shrink-0 px-3 py-1.5 rounded-lg border border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-xs font-medium text-[var(--state-warning)] hover:bg-[var(--state-warning)] transition-colors cursor-pointer"
         >
           + ADD
         </button>
       </div>
 
       {/* ─── SECTION 6: CATEGORIZED MARKETPLACE GRID ─── */}
-      <div className="pt-2 border-t border-amber-200 dark:border-amber-900/40 space-y-2">
+      <div className="pt-2 border-t border-[var(--state-warning)]/25 space-y-2">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <div className="flex flex-wrap gap-1">
             {[
-              { id: "ALL", label: "ALL PRESETS" },
+              { id: "ALL", label: "All presets" },
               { id: "DISCOVERED", label: `DISCOVERED (${discoveredActions.length})` },
-              { id: "FINTECH", label: "FINTECH & PAYMENTS" },
-              { id: "DEVOPS", label: "DEVOPS & CLOUD" },
-              { id: "CRM_WEBHOOKS", label: "CRM & COMMS" },
-              { id: "SECURITY", label: "SECURITY & COMPLIANCE" },
+              { id: "FINTECH", label: "Fintech & payments" },
+              { id: "DEVOPS", label: "DevOps & cloud" },
+              { id: "CRM_WEBHOOKS", label: "Crm & comms" },
+              { id: "SECURITY", label: "Security & compliance" },
             ].map((cat) => (
               <button
                 key={cat.id}
                 type="button"
                 onClick={() => setActiveCategory(cat.id as typeof activeCategory)}
                 className={clsx(
-                  "px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer",
+                  "px-2 py-0.5 rounded text-xs font-medium transition-colors cursor-pointer",
                   activeCategory === cat.id
-                    ? "bg-amber-600 text-white shadow-sm"
-                    : "bg-slate-100 dark:bg-amber-950/30 text-amber-900 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50 border border-amber-200/60 dark:border-amber-900/30"
+                    ? "bg-[var(--state-warning)] text-[var(--cta-primary-text)] "
+                    : "bg-[var(--surface-sunken)] text-[var(--state-warning)] hover:bg-[var(--state-warning)]/10 border border-[var(--state-warning)]/25"
                 )}
               >
                 {cat.label}
@@ -563,12 +563,12 @@ export function ApprovalActionMarketplace({
           </div>
 
           <div className="relative w-full sm:w-48">
-            <Search className="h-3 w-3 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="h-3 w-3 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search actions…"
-              className="w-full pl-7 pr-2 py-1 rounded-md border border-amber-200 dark:border-amber-900/40 bg-white dark:bg-black/60 text-[10px] placeholder:text-slate-400 focus:outline-none focus:border-amber-500 shadow-sm"
+              className="w-full pl-7 pr-2 py-1 rounded-md border border-[var(--state-warning)]/25 bg-[var(--surface-raised)] text-xs placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--state-warning)]/40"
             />
           </div>
         </div>
@@ -582,27 +582,27 @@ export function ApprovalActionMarketplace({
                 key={item.id}
                 onClick={() => toggleAction(item.name)}
                 className={clsx(
-                  "p-2.5 rounded-lg border cursor-pointer transition-all text-xs flex flex-col justify-between space-y-1 select-none",
+                  "p-2.5 rounded-lg border cursor-pointer transition-colors text-xs flex flex-col justify-between space-y-1 select-none",
                   isSelected
-                    ? "border-amber-500 bg-amber-100/90 dark:bg-amber-950/80 shadow-sm"
-                    : "border-amber-200/70 dark:border-amber-900/30 bg-white/70 dark:bg-black/30 hover:border-amber-400 hover:bg-amber-50/50 dark:hover:bg-amber-950/20"
+                    ? "border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 "
+                    : "border-[var(--state-warning)]/25 bg-[var(--surface-raised)]/70 hover:border-[var(--state-warning)]/40 hover:bg-[var(--state-warning)]/10"
                 )}
               >
                 <div className="flex items-center justify-between gap-1">
                   <div className="flex items-center gap-1.5 truncate">
-                    <span className="font-bold text-[10px] text-slate-900 dark:text-slate-100 truncate">
+                    <span className="font-medium text-xs text-[var(--text-primary)] truncate">
                       {item.name}
                     </span>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
                     <span
                       className={clsx(
-                        "text-[8px] font-bold uppercase px-1 rounded",
+                        "text-xs font-medium px-1 rounded",
                         item.riskLevel === "CRITICAL"
-                          ? "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300"
+                          ? "bg-[var(--state-error)]/10 text-[var(--state-error)]"
                           : item.riskLevel === "HIGH"
-                          ? "bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300"
-                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                          ? "bg-[var(--state-warning)]/10 text-[var(--state-warning)]"
+                          : "bg-[var(--surface-sunken)] text-[var(--text-secondary)]"
                       )}
                     >
                       {item.riskLevel}
@@ -611,17 +611,17 @@ export function ApprovalActionMarketplace({
                       type="checkbox"
                       checked={isSelected}
                       onChange={() => {}}
-                      className="accent-amber-600 pointer-events-none h-3 w-3"
+                      className="accent-[var(--text-muted)] pointer-events-none h-3 w-3"
                     />
                   </div>
                 </div>
 
-                <p className="text-[9px] text-slate-500 dark:text-slate-400 font-serif line-clamp-1 leading-tight">
+                <p className="text-xs text-[var(--text-muted)] font-serif line-clamp-1 leading-tight">
                   {item.description}
                 </p>
 
                 {item.source && (
-                  <span className="text-[8px] text-cyan-600 dark:text-cyan-400 font-mono truncate">
+                  <span className="text-xs text-[var(--accent-primary)] font-sans truncate">
                     {item.source}
                   </span>
                 )}

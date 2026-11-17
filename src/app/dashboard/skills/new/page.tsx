@@ -3,11 +3,11 @@
 import React, { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { SkillForm } from "@/components/skills/SkillForm";
 import { WORKFLOW_TEMPLATES } from "@/components/workflows/WorkflowTemplates";
 import { skillsApi } from "@/lib/api/skills";
 import { toast } from "@/stores/toastStore";
+import { PageHeader } from "@/components/ui/surfaces";
 
 function NewSkillContent() {
   const router = useRouter();
@@ -17,23 +17,18 @@ function NewSkillContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
-    <div className="space-y-6 w-full max-w-5xl mx-auto">
-      <div className="flex items-center justify-between border-b border-indigo-950/80 pb-5">
-        <div>
-          <Link
-            href="/dashboard/skills"
-            className="inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-widest text-indigo-400 hover:text-indigo-300 transition-colors mb-2"
-          >
-            <ChevronLeft className="h-3 w-3" /> BACK TO STUDIO
-          </Link>
-          <h1 className="text-xl sm:text-2xl font-pixel text-pixel-glow uppercase tracking-wide">
-            {template ? `BLUEPRINT: ${template.name}` : "NEW WORKFLOW / SKILL"}
-          </h1>
-          <p className="text-xs text-slate-400 mt-1 font-mono">
-            {template ? template.purpose : "Define a schema-validated bounded workflow or reusable AI skill."}
-          </p>
-        </div>
-      </div>
+    <div className="mx-auto w-full max-w-5xl space-y-6">
+      <Link
+        href="/dashboard/skills"
+        className="inline-flex rounded-[6px] font-sans text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+      >
+        Studio
+      </Link>
+
+      <PageHeader
+        title={template ? template.name : "New workflow or skill"}
+        meta={template ? template.purpose : "Define a schema-validated bounded workflow or a reusable AI skill"}
+      />
 
       <SkillForm
         mode="create"
@@ -68,9 +63,8 @@ function NewSkillContent() {
 
 export default function NewSkillPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-xs font-mono text-slate-400">[ LOADING STUDIO BUILDER... ]</div>}>
+    <Suspense fallback={<div role="status" className="p-8 font-sans text-sm text-[var(--text-muted)]">Loading the builder</div>}>
       <NewSkillContent />
     </Suspense>
   );
 }
-

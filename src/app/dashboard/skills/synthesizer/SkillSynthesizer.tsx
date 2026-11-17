@@ -77,17 +77,17 @@ const NODE_ICONS: Partial<Record<GraphNodeType, React.ComponentType<{ className?
 };
 
 const NODE_COLORS: Partial<Record<GraphNodeType, string>> = {
-  start: "border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300",
-  end: "border-rose-300 dark:border-rose-500/40 bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-300",
-  agent: "border-indigo-300 dark:border-indigo-500/40 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300",
-  supervisor: "border-violet-300 dark:border-violet-500/40 bg-violet-50 dark:bg-violet-950/30 text-violet-700 dark:text-violet-300",
-  tool: "border-cyan-300 dark:border-cyan-500/40 bg-cyan-50 dark:bg-cyan-950/30 text-cyan-700 dark:text-cyan-300",
-  router: "border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300",
-  approval: "border-orange-300 dark:border-orange-500/40 bg-orange-50 dark:bg-orange-950/30 text-orange-700 dark:text-orange-300",
-  mcp_tool: "border-fuchsia-300 dark:border-fuchsia-500/40 bg-fuchsia-50 dark:bg-fuchsia-950/30 text-fuchsia-700 dark:text-fuchsia-300",
-  mcp_server: "border-violet-300 dark:border-violet-500/40 bg-violet-50 dark:bg-violet-950/30 text-violet-700 dark:text-violet-300",
-  loop: "border-fuchsia-300 dark:border-fuchsia-500/40 bg-fuchsia-50 dark:bg-fuchsia-950/30 text-fuchsia-700 dark:text-fuchsia-300",
-  parallel: "border-teal-300 dark:border-teal-500/40 bg-teal-50 dark:bg-teal-950/30 text-teal-700 dark:text-teal-300",
+  start: "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]",
+  end: "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]",
+  agent: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  supervisor: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  tool: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  router: "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
+  approval: "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
+  mcp_tool: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  mcp_server: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  loop: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  parallel: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
 };
 
 const EXAMPLE_PROMPTS = [
@@ -164,7 +164,7 @@ export function SkillSynthesizer() {
               `${data.data.skillName} is ready in your Studio`,
               {
                 action: {
-                  label: "OPEN IN CANVAS",
+                  label: "Open in canvas",
                   href: `/dashboard/canvas/${data.data.skillId}`,
                 },
               }
@@ -205,7 +205,7 @@ export function SkillSynthesizer() {
         queryClient.invalidateQueries({ queryKey: ["skills"] });
         toast.success("Installed!", `${data.data.skillName} is now in your Studio`, {
           action: {
-            label: "OPEN IN CANVAS",
+            label: "Open in canvas",
             href: `/dashboard/canvas/${data.data.skillId}`,
           },
         });
@@ -242,17 +242,17 @@ export function SkillSynthesizer() {
     <div className="space-y-5">
       {/* Header */}
       <div>
-        <h2 className="text-sm font-mono font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-          <Wand2 className="h-4 w-4 text-violet-500" />
-          SKILL SYNTHESIZER
+        <h2 className="text-sm font-sans font-medium text-[var(--text-primary)] flex items-center gap-2">
+          <Wand2 className="h-4 w-4 text-[var(--accent-primary)]" />
+          Skill synthesizer
         </h2>
-        <p className="text-[10px] font-mono text-slate-500 mt-0.5">
+        <p className="text-xs font-sans text-[var(--text-muted)] mt-0.5">
           Describe your goal in natural language — get a multi-agent graph with MCP servers auto-discovered
         </p>
       </div>
 
       {/* Prompt Input */}
-      <div className="rounded-xl border border-indigo-300 dark:border-indigo-500/40 bg-white dark:bg-[#0a0a0a]/80 shadow-lg shadow-indigo-500/5 overflow-hidden">
+      <div className="rounded-xl border border-[var(--accent-primary)]/25 bg-[var(--surface-raised)] overflow-hidden">
         <div className="p-4 space-y-3">
           <div className="relative">
             <textarea
@@ -270,7 +270,7 @@ export function SkillSynthesizer() {
               }}
               placeholder="Describe your automation goal...&#10;&#10;e.g. &quot;Automate checking new GitHub issues, querying our Postgres DB for user tier, and posting high-priority alerts to Slack&quot;"
               rows={4}
-              className="w-full bg-transparent text-xs font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none resize-none"
+              className="w-full bg-transparent text-xs font-sans text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none resize-none"
               disabled={isSynthesizing}
             />
           </div>
@@ -283,38 +283,38 @@ export function SkillSynthesizer() {
                 onClick={() => handleSynthesize(false)}
                 disabled={!prompt.trim() || isSynthesizing}
                 className={clsx(
-                  "inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
+                  "inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-sans font-medium transition-colors cursor-pointer",
                   prompt.trim() && !isSynthesizing
-                    ? "border border-indigo-500 bg-indigo-600 text-white hover:bg-indigo-500 shadow-md shadow-indigo-500/20 active:scale-95"
-                    : "border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
+                    ? "border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] hover:bg-[var(--cta-primary-hover)] active:scale-95"
+                    : "border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-muted)] cursor-not-allowed"
                 )}
               >
                 {isSynthesizing ? (
                   <>
-                    <Loader2 className="h-3 w-3 animate-spin" /> SYNTHESIZING…
+                    <Loader2 className="h-3 w-3 animate-spin" /> Synthesizing…
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-3 w-3" /> GENERATE GRAPH
+                    <Sparkles className="h-3 w-3" /> Generate graph
                   </>
                 )}
               </button>
               <button
                 type="button"
                 onClick={() => setShowExamples(!showExamples)}
-                className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-[10px] font-mono font-bold text-slate-500 hover:border-indigo-400 hover:text-indigo-600 transition-all cursor-pointer"
+                className="px-3 py-2 rounded-lg border border-[var(--border-subtle)] text-xs font-sans font-medium text-[var(--text-muted)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer"
               >
-                EXAMPLES
+                Examples
               </button>
             </div>
-            <span className="text-[8px] font-mono text-slate-400">
+            <span className="text-xs font-sans text-[var(--text-muted)]">
               ⌘+Enter to generate
             </span>
           </div>
 
           {/* Examples */}
           {showExamples && (
-            <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-indigo-900/30">
+            <div className="space-y-1.5 pt-2 border-t border-[var(--border-subtle)]">
               {EXAMPLE_PROMPTS.map((ex) => (
                 <button
                   key={ex.label}
@@ -324,14 +324,14 @@ export function SkillSynthesizer() {
                     setShowExamples(false);
                     inputRef.current?.focus();
                   }}
-                  className="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-indigo-50 dark:hover:bg-indigo-950/30 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800/40 transition-all cursor-pointer"
+                  className="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-[var(--accent-primary)]/10 border border-transparent hover:border-[var(--accent-primary)]/25 transition-colors cursor-pointer"
                 >
-                  <Sparkles className="h-3 w-3 text-indigo-400 shrink-0" />
+                  <Sparkles className="h-3 w-3 text-[var(--accent-primary)] shrink-0" />
                   <div className="min-w-0">
-                    <div className="text-[10px] font-mono font-bold text-indigo-700 dark:text-indigo-300">
+                    <div className="text-xs font-sans font-medium text-[var(--accent-primary)]">
                       {ex.label}
                     </div>
-                    <div className="text-[9px] font-mono text-slate-500 truncate">
+                    <div className="text-xs font-sans text-[var(--text-muted)] truncate">
                       {ex.prompt}
                     </div>
                   </div>
@@ -343,9 +343,9 @@ export function SkillSynthesizer() {
 
         {/* Error */}
         {error && (
-          <div className="px-4 py-2.5 border-t border-red-200 dark:border-red-500/30 bg-red-50 dark:bg-red-950/30 flex items-center gap-2">
-            <AlertTriangle className="h-3.5 w-3.5 text-red-500 shrink-0" />
-            <span className="text-[10px] font-mono text-red-700 dark:text-red-300">{error}</span>
+          <div className="px-4 py-2.5 border-t border-[var(--state-error)]/25 bg-[var(--state-error)]/10 flex items-center gap-2">
+            <AlertTriangle className="h-3.5 w-3.5 text-[var(--state-error)] shrink-0" />
+            <span className="text-xs font-sans text-[var(--state-error)]">{error}</span>
           </div>
         )}
       </div>
@@ -354,17 +354,17 @@ export function SkillSynthesizer() {
       {result && (
         <div className="space-y-4">
           {/* Goal Summary */}
-          <div className="rounded-lg border border-indigo-200 dark:border-indigo-800/40 bg-indigo-50 dark:bg-indigo-950/30 p-4">
+          <div className="rounded-lg border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-2 flex-1">
-                <div className="text-[9px] font-mono font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">
+                <div className="text-xs font-sans font-medium text-[var(--accent-primary)]">
                   Detected Goal
                 </div>
-                <p className="text-[11px] font-mono text-slate-700 dark:text-slate-300 leading-relaxed">
+                <p className="text-xs font-sans text-[var(--text-secondary)] leading-relaxed">
                   {result.analysis?.goal || prompt}
                 </p>
                 {result.warning && (
-                  <p className="text-[9px] font-mono text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                  <p className="text-xs font-sans text-[var(--state-warning)] flex items-center gap-1">
                     <AlertTriangle className="h-3 w-3" /> {result.warning}
                   </p>
                 )}
@@ -375,32 +375,32 @@ export function SkillSynthesizer() {
                   onClick={handleInstallOnly}
                   disabled={installing}
                   className={clsx(
-                    "inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-[10px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer shrink-0",
-                    "border border-emerald-500 bg-emerald-600 text-white hover:bg-emerald-500 shadow-md shadow-emerald-500/20 active:scale-95"
+                    "inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-sans font-medium transition-colors cursor-pointer shrink-0",
+                    "border border-[var(--state-success)]/40 bg-[var(--state-success)] text-[var(--cta-primary-text)] hover:bg-[var(--state-success)] active:scale-95"
                   )}
                 >
                   {installing ? (
                     <>
-                      <Loader2 className="h-3 w-3 animate-spin" /> INSTALLING…
+                      <Loader2 className="h-3 w-3 animate-spin" /> Installing…
                     </>
                   ) : (
                     <>
-                      <Zap className="h-3 w-3" /> 1-CLICK INSTALL
+                      <Zap className="h-3 w-3" /> 1-Click install
                     </>
                   )}
                 </button>
               )}
               {installed && (
                 <div className="flex items-center gap-2 flex-wrap">
-                  <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-300 shrink-0">
-                    <Check className="h-3 w-3" /> INSTALLED
+                  <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-xs font-sans font-medium text-[var(--state-success)] shrink-0">
+                    <Check className="h-3 w-3" /> Installed
                   </div>
                   {result.skillId && (
                     <Link
                       href={`/dashboard/canvas/${result.skillId}`}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-violet-400 bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-mono font-bold shadow-sm transition-all shrink-0"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] text-xs font-sans font-medium transition-colors shrink-0"
                     >
-                      <Network className="h-3 w-3" /> OPEN IN CANVAS
+                      <Network className="h-3 w-3" /> Open in canvas
                     </Link>
                   )}
                 </div>
@@ -411,7 +411,7 @@ export function SkillSynthesizer() {
           {/* Discovered Servers */}
           {result.servers && result.servers.length > 0 && (
             <div className="space-y-2">
-              <div className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+              <div className="text-xs font-sans font-medium text-[var(--text-muted)] flex items-center gap-1.5">
                 <Server className="h-3 w-3" />
                 DISCOVERED MCP SERVERS ({result.servers.length})
               </div>
@@ -424,54 +424,54 @@ export function SkillSynthesizer() {
                   return (
                     <div
                       key={idx}
-                      className="rounded-lg border border-slate-200 dark:border-indigo-900/30 overflow-hidden"
+                      className="rounded-lg border border-[var(--border-subtle)] overflow-hidden"
                     >
                       <button
                         type="button"
                         onClick={() => toggleServer(idx)}
-                        className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-slate-50 dark:hover:bg-black/30 transition-colors cursor-pointer"
+                        className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           {isExpanded ? (
-                            <ChevronDown className="h-3 w-3 text-slate-400 shrink-0" />
+                            <ChevronDown className="h-3 w-3 text-[var(--text-muted)] shrink-0" />
                           ) : (
-                            <ChevronRight className="h-3 w-3 text-slate-400 shrink-0" />
+                            <ChevronRight className="h-3 w-3 text-[var(--text-muted)] shrink-0" />
                           )}
-                          <Server className="h-3 w-3 text-violet-500 shrink-0" />
-                          <span className="text-[11px] font-mono font-bold text-slate-900 dark:text-slate-100 truncate">
+                          <Server className="h-3 w-3 text-[var(--accent-primary)] shrink-0" />
+                          <span className="text-xs font-sans font-medium text-[var(--text-primary)] truncate">
                             {server.name}
                           </span>
                           {server.directoryMatch && (
-                            <span className="px-1.5 py-0.5 rounded text-[7px] font-mono font-bold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 shrink-0">
-                              FOUND
+                            <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--state-success)]/10 text-[var(--state-success)] border border-[var(--state-success)]/25 shrink-0">
+                              Found
                             </span>
                           )}
                           {!server.directoryMatch && (
-                            <span className="px-1.5 py-0.5 rounded text-[7px] font-mono font-bold bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-300 shrink-0">
-                              MANUAL
+                            <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--state-warning)]/10 text-[var(--state-warning)] border border-[var(--state-warning)]/25 shrink-0">
+                              Manual
                             </span>
                           )}
                           {isMounted && (
-                            <span className="px-1.5 py-0.5 rounded text-[7px] font-mono font-bold bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-300 shrink-0">
-                              MOUNTED
+                            <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25 shrink-0">
+                              Mounted
                             </span>
                           )}
                         </div>
                       </button>
                       {isExpanded && (
-                        <div className="px-3 pb-3 pt-0 border-t border-slate-100 dark:border-indigo-950/30 space-y-2 mt-1">
-                          <p className="text-[10px] font-mono text-slate-500">{server.purpose}</p>
+                        <div className="px-3 pb-3 pt-0 border-t border-[var(--border-subtle)] space-y-2 mt-1">
+                          <p className="text-xs font-sans text-[var(--text-muted)]">{server.purpose}</p>
                           {server.directoryMatch && (
-                            <div className="space-y-1 text-[9px] font-mono text-slate-400">
+                            <div className="space-y-1 text-xs font-sans text-[var(--text-muted)]">
                               <div>Source: {server.directoryMatch.source} · {server.directoryMatch.transport}</div>
                               <div>Stars: {server.directoryMatch.stars} · ID: {server.directoryMatch.id}</div>
                               {server.directoryMatch.description && (
-                                <p className="text-slate-500">{server.directoryMatch.description}</p>
+                                <p className="text-[var(--text-muted)]">{server.directoryMatch.description}</p>
                               )}
                             </div>
                           )}
                           {!server.directoryMatch && (
-                            <p className="text-[9px] font-mono text-amber-500">
+                            <p className="text-xs font-sans text-[var(--state-warning)]">
                               No directory match found — will need manual configuration
                             </p>
                           )}
@@ -487,7 +487,7 @@ export function SkillSynthesizer() {
           {/* Workflow Steps */}
           {result.analysis?.steps && result.analysis.steps.length > 0 && (
             <div className="space-y-2">
-              <div className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+              <div className="text-xs font-sans font-medium text-[var(--text-muted)] flex items-center gap-1.5">
                 <ArrowRight className="h-3 w-3" />
                 WORKFLOW STEPS ({result.analysis.steps.length})
               </div>
@@ -495,12 +495,12 @@ export function SkillSynthesizer() {
                 {result.analysis.steps.map((step, idx) => (
                   <div
                     key={idx}
-                    className="flex items-start gap-2 px-3 py-2 rounded-lg bg-slate-50 dark:bg-black/30 border border-slate-100 dark:border-indigo-950/30"
+                    className="flex items-start gap-2 px-3 py-2 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]"
                   >
-                    <span className="w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-[9px] font-bold shrink-0 mt-0.5">
+                    <span className="w-5 h-5 rounded-full bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] flex items-center justify-center text-xs font-medium shrink-0 mt-0.5">
                       {idx + 1}
                     </span>
-                    <span className="text-[10px] font-mono text-slate-700 dark:text-slate-300">
+                    <span className="text-xs font-sans text-[var(--text-secondary)]">
                       {step}
                     </span>
                   </div>
@@ -512,7 +512,7 @@ export function SkillSynthesizer() {
           {/* Generated Graph Nodes */}
           {result.graph?.nodes && result.graph.nodes.length > 0 && (
             <div className="space-y-2">
-              <div className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+              <div className="text-xs font-sans font-medium text-[var(--text-muted)] flex items-center gap-1.5">
                 <GitBranch className="h-3 w-3" />
                 GENERATED GRAPH ({result.graph.nodes.length} nodes, {result.graph.edges.length} edges)
               </div>
@@ -520,20 +520,20 @@ export function SkillSynthesizer() {
                 {result.graph.nodes.map((node) => {
                   const isExpanded = expandedNodes.has(node.id);
                   const Icon = NODE_ICONS[node.type] || Bot;
-                  const colorClass = NODE_COLORS[node.type] || "border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40 text-slate-700 dark:text-slate-300";
+                  const colorClass = NODE_COLORS[node.type] || "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]";
 
                   return (
                     <div
                       key={node.id}
                       className={clsx(
-                        "rounded-lg border overflow-hidden transition-all",
+                        "rounded-lg border overflow-hidden transition-colors",
                         colorClass
                       )}
                     >
                       <button
                         type="button"
                         onClick={() => toggleNode(node.id)}
-                        className="w-full flex items-center justify-between px-3 py-2 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                        className="w-full flex items-center justify-between px-3 py-2 hover:bg-[var(--surface-sunken)]/5 transition-colors cursor-pointer"
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           {isExpanded ? (
@@ -542,15 +542,15 @@ export function SkillSynthesizer() {
                             <ChevronRight className="h-3 w-3 opacity-50 shrink-0" />
                           )}
                           <Icon className="h-3 w-3 shrink-0" />
-                          <span className="text-[10px] font-mono font-bold truncate">
+                          <span className="text-xs font-sans font-medium truncate">
                             {node.data.label}
                           </span>
-                          <span className="px-1.5 py-0.5 rounded text-[7px] font-mono font-bold bg-white/50 dark:bg-black/20 border border-current/20 uppercase shrink-0">
+                          <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--surface-raised)]/50 border border-current/20 shrink-0">
                             {node.type}
                           </span>
                         </div>
                         {node.type === "approval" && (
-                          <span className="px-1.5 py-0.5 rounded text-[7px] font-mono font-bold bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border border-orange-300 dark:border-orange-700/50 shrink-0">
+                          <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--state-warning)]/10 text-[var(--state-warning)] border border-[var(--state-warning)]/25 shrink-0">
                             HITL
                           </span>
                         )}
@@ -559,37 +559,37 @@ export function SkillSynthesizer() {
                         <div className="px-3 pb-3 pt-1 border-t border-current/10 space-y-2">
                           {node.data.prompt && (
                             <div>
-                              <div className="text-[8px] font-mono font-bold opacity-60 uppercase mb-1">
+                              <div className="text-xs font-sans font-medium opacity-60 mb-1">
                                 System Prompt
                               </div>
-                              <p className="text-[9px] font-mono opacity-80 leading-relaxed whitespace-pre-wrap">
+                              <p className="text-xs font-sans opacity-80 leading-relaxed whitespace-pre-wrap">
                                 {node.data.prompt}
                               </p>
                             </div>
                           )}
                           {node.data.mcpToolName && (
-                            <div className="text-[9px] font-mono opacity-80">
-                              <span className="font-bold">Tool:</span> {node.data.mcpToolServer}/{node.data.mcpToolName}
+                            <div className="text-xs font-sans opacity-80">
+                              <span className="font-medium">Tool:</span> {node.data.mcpToolServer}/{node.data.mcpToolName}
                             </div>
                           )}
                           {node.data.condition && (
-                            <div className="text-[9px] font-mono opacity-80">
-                              <span className="font-bold">Condition:</span> {node.data.condition}
+                            <div className="text-xs font-sans opacity-80">
+                              <span className="font-medium">Condition:</span> {node.data.condition}
                             </div>
                           )}
                           {node.data.routerPrompt && (
-                            <div className="text-[9px] font-mono opacity-80">
-                              <span className="font-bold">Router:</span> {node.data.routerPrompt}
+                            <div className="text-xs font-sans opacity-80">
+                              <span className="font-medium">Router:</span> {node.data.routerPrompt}
                             </div>
                           )}
                           {node.data.approvalReason && (
-                            <div className="text-[9px] font-mono opacity-80">
-                              <span className="font-bold">Approval:</span> {node.data.approvalReason}
+                            <div className="text-xs font-sans opacity-80">
+                              <span className="font-medium">Approval:</span> {node.data.approvalReason}
                             </div>
                           )}
                           {node.data.maxIterations && (
-                            <div className="text-[9px] font-mono opacity-80">
-                              <span className="font-bold">Max Iterations:</span> {node.data.maxIterations}
+                            <div className="text-xs font-sans opacity-80">
+                              <span className="font-medium">Max Iterations:</span> {node.data.maxIterations}
                             </div>
                           )}
                           {/* Edges from this node */}
@@ -598,12 +598,12 @@ export function SkillSynthesizer() {
                             .map((edge) => (
                               <div
                                 key={edge.id}
-                                className="text-[8px] font-mono opacity-60 flex items-center gap-1"
+                                className="text-xs font-sans opacity-60 flex items-center gap-1"
                               >
                                 <ArrowRight className="h-2.5 w-2.5" />
                                 → {edge.target}
                                 {edge.label && (
-                                  <span className="px-1 py-0.5 rounded bg-white/30 dark:bg-black/20 text-[7px]">
+                                  <span className="px-1 py-0.5 rounded bg-[var(--surface-raised)]/30 text-xs">
                                     [{edge.label}]
                                   </span>
                                 )}
@@ -620,22 +620,22 @@ export function SkillSynthesizer() {
 
           {/* Skill Name */}
           {result.skillName && (
-            <div className="rounded-lg border border-slate-200 dark:border-indigo-900/30 p-3 flex items-center gap-3">
-              <FileCode2 className="h-4 w-4 text-indigo-500 shrink-0" />
+            <div className="rounded-lg border border-[var(--border-subtle)] p-3 flex items-center gap-3">
+              <FileCode2 className="h-4 w-4 text-[var(--accent-primary)] shrink-0" />
               <div className="min-w-0 flex-1">
-                <div className="text-[10px] font-mono font-bold text-slate-900 dark:text-slate-100">
+                <div className="text-xs font-sans font-medium text-[var(--text-primary)]">
                   {result.skillName}
                 </div>
-                <div className="text-[9px] font-mono text-slate-500 truncate">
+                <div className="text-xs font-sans text-[var(--text-muted)] truncate">
                   {result.skillPurpose}
                 </div>
               </div>
               {result.skillId && (
                 <a
                   href={`/dashboard/skills/${result.skillId}`}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded text-[9px] font-mono font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 border border-indigo-200 dark:border-indigo-800/40 hover:border-indigo-400 dark:hover:border-indigo-600 transition-all"
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-sans font-medium text-[var(--accent-primary)] hover:text-[var(--accent-primary)] border border-[var(--accent-primary)]/25 hover:border-[var(--accent-primary)]/40 transition-colors"
                 >
-                  OPEN <ArrowRight className="h-2.5 w-2.5" />
+                  Open <ArrowRight className="h-2.5 w-2.5" />
                 </a>
               )}
             </div>

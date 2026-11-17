@@ -2,20 +2,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  Plus,
-  Trash2,
-  Save,
-  Wrench,
-  CheckSquare,
-  ListChecks,
-  Loader2,
-  Workflow,
-  HelpCircle,
-  ChevronDown,
-  ChevronUp,
-  Cpu,
-} from "lucide-react";
 import { createSkillSchema } from "@/validators/skillSchema";
 import { BUILT_IN_TOOL_CATALOG, TOOL_CATEGORIES } from "@/modules/tools";
 import { AvailableMcpTools } from "./AvailableMcpTools";
@@ -26,6 +12,18 @@ import { SkillDTO, SkillVersionDTO } from "@/types/skill";
 import { WorkflowStepChain } from "@/components/workflows/WorkflowStepChain";
 import { toast } from "@/stores/toastStore";
 import { clsx } from "clsx";
+import {
+  BTN_PRIMARY,
+  BTN_SECONDARY_SM,
+  CARD,
+  CARD_HEAD,
+  CARD_TITLE,
+  FIELD,
+  INPUT,
+  LABEL,
+  META,
+  plural,
+} from "@/components/ui/surfaces";
 
 // Client-side form schema: same rules as the API validator, minus userId.
 const formSchema = createSkillSchema.omit({ userId: true });
@@ -40,15 +38,18 @@ interface SkillFormProps {
   isSubmitting?: boolean;
 }
 
-
-const inputClass =
-  "w-full rounded border border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a] px-3 py-2 text-xs text-slate-900 dark:text-slate-100 font-mono placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:border-indigo-500 focus:outline-none transition-colors shadow-sm";
-const labelClass = "text-[10px] font-mono uppercase tracking-widest text-indigo-700 dark:text-indigo-400/80 font-semibold";
-const errorClass = "text-[10px] font-mono text-red-400 mt-1";
+const inputClass = clsx(INPUT, "w-full");
+const areaClass = clsx(FIELD, "w-full resize-y p-3 leading-6");
+const labelClass = LABEL;
+const HINT = "font-sans text-[13px] leading-5 text-[var(--text-muted)]";
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <p className={errorClass}>[ ERROR ] {message}</p>;
+  return (
+    <p role="alert" className="mt-1 font-sans text-[13px] text-[var(--state-error)]">
+      {message}
+    </p>
+  );
 }
 
 // RHF nested array/field errors are a Merge<FieldError, FieldErrorsImpl> —
@@ -120,49 +121,53 @@ function JsonEditor({
     }
   };
 
+  const id = `json-${fieldKey}`;
+
   return (
-    <div>
-      <div className="flex items-center justify-between mb-1.5">
-        <label className={labelClass}>{label}</label>
-        {error && <span className="text-[10px] font-mono text-red-400">{error}</span>}
+    <div className="space-y-2">
+      <div className="flex items-baseline justify-between gap-3">
+        <label htmlFor={id} className={labelClass}>
+          {label}
+        </label>
+        {error && <span className="font-sans text-[13px] text-[var(--state-error)]">{error}</span>}
       </div>
       <textarea
+        id={id}
         value={raw}
         onChange={(e) => handleChange(e.target.value)}
         rows={6}
         spellCheck={false}
         placeholder={placeholder ?? "{ }"}
-        className={`${inputClass} font-mono text-[11px] leading-relaxed resize-y ${localError ? "border-red-500/60" : ""}`}
+        aria-invalid={Boolean(localError)}
+        className={clsx(FIELD, "w-full resize-y p-3 font-mono text-xs leading-5", localError && "border-[var(--state-error)]")}
       />
-      {localError && <p className={errorClass}>[ JSON ERROR ] {localError}</p>}
+      {localError && (
+        <p role="alert" className="font-sans text-[13px] text-[var(--state-error)]">
+          {localError}
+        </p>
+      )}
     </div>
   );
 }
+
+const PILL =
+  "h-7 cursor-pointer rounded-[6px] border border-[var(--border-subtle)] px-2.5 font-mono text-xs text-[var(--text-secondary)] transition-colors hover:border-[var(--border-strong)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]";
 
 /** Quick-add picker of the built-in tools, grouped by registry category. */
 function AvailableTools({ selected, onAdd }: { selected: string[]; onAdd: (name: string) => void }) {
   const available = BUILT_IN_TOOL_CATALOG.filter((t) => !selected.includes(t.name));
   if (available.length === 0) return null;
   return (
-    <div className="space-y-1.5 pt-2 border-t border-slate-200 dark:border-indigo-950/60">
-      <div className="text-[9px] font-mono uppercase tracking-widest text-slate-600 dark:text-slate-500 font-medium">
-        AVAILABLE TOOLS BY CATEGORY
-      </div>
+    <div className="space-y-2 border-t border-[var(--border-subtle)] pt-4">
+      <div className={labelClass}>Built-in tools</div>
       {TOOL_CATEGORIES.map((cat) => {
         const tools = available.filter((t) => t.category === cat.id);
         if (tools.length === 0) return null;
         return (
-          <div key={cat.id} className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[9px] font-mono text-indigo-400/70 uppercase tracking-wider w-16 shrink-0">
-              {cat.label}
-            </span>
+          <div key={cat.id} className="flex flex-wrap items-center gap-2">
+            <span className={clsx(META, "w-20 shrink-0")}>{cat.label.toLowerCase()}</span>
             {tools.map((t) => (
-              <button
-                key={t.name}
-                type="button"
-                onClick={() => onAdd(t.name)}
-                className="px-2 py-0.5 rounded border border-indigo-300 dark:border-indigo-900/50 bg-indigo-50 dark:bg-indigo-950/30 text-[10px] font-mono text-indigo-700 dark:text-indigo-300 hover:border-indigo-400 transition-all cursor-pointer font-medium"
-              >
+              <button key={t.name} type="button" onClick={() => onAdd(t.name)} className={PILL}>
                 + {t.name}
               </button>
             ))}
@@ -198,26 +203,28 @@ function TagsInput({
   };
 
   return (
-    <div>
-      <label className={`${labelClass} block mb-1.5`}>{label}</label>
-      <div className="flex flex-wrap gap-1.5 mb-2">
-        {values.map((v) => (
-          <span
-            key={v}
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-indigo-300 dark:border-indigo-900/50 bg-indigo-50 dark:bg-indigo-950/40 text-[10px] font-mono text-indigo-800 dark:text-indigo-200 font-medium"
-          >
-            {v}
-            <button
-              type="button"
-              onClick={() => onChange(values.filter((x) => x !== v))}
-              aria-label={`Remove ${v}`}
-              className="text-slate-500 hover:text-red-400 transition-colors cursor-pointer"
+    <div className="space-y-2">
+      {label && <label className={labelClass}>{label}</label>}
+      {values.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {values.map((v) => (
+            <span
+              key={v}
+              className="inline-flex items-center gap-1.5 rounded-[6px] bg-[var(--text-primary)]/10 px-2 py-0.5 font-mono text-xs text-[var(--text-primary)]"
             >
-              ×
-            </button>
-          </span>
-        ))}
-      </div>
+              {v}
+              <button
+                type="button"
+                onClick={() => onChange(values.filter((x) => x !== v))}
+                aria-label={`Remove ${v}`}
+                className="cursor-pointer text-[var(--text-muted)] transition-colors hover:text-[var(--state-error)]"
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
       <div className="flex gap-2">
         <input
           value={input}
@@ -229,17 +236,18 @@ function TagsInput({
             }
           }}
           placeholder={placeholder}
+          aria-label={label || "Add a tool"}
           className={inputClass}
         />
-        <button
-          type="button"
-          onClick={add}
-          className="shrink-0 px-3 py-2 rounded border border-indigo-300 dark:border-indigo-500/40 bg-indigo-50 dark:bg-indigo-950/40 text-xs font-mono font-semibold text-indigo-700 dark:text-indigo-300 hover:border-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 dark:hover:text-white transition-all cursor-pointer"
-        >
-          ADD
+        <button type="button" onClick={add} className={BTN_SECONDARY_SM}>
+          Add
         </button>
       </div>
-      {error && <p className={errorClass}>[ ERROR ] {error}</p>}
+      {error && (
+        <p role="alert" className="font-sans text-[13px] text-[var(--state-error)]">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
@@ -255,75 +263,60 @@ function BuilderModeGuide({
   const isWorkflow = toolCount > 1 || approvalCount > 0;
 
   return (
-    <div className="rounded-lg border border-indigo-200 dark:border-indigo-900/50 bg-gradient-to-r from-indigo-50/90 via-slate-50 to-amber-50/60 dark:from-indigo-950/40 dark:via-[#0a0a0a] dark:to-amber-950/20 p-3.5 space-y-2 shadow-sm font-mono transition-all">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          {isWorkflow ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-100 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-700/60 text-[10px] font-bold text-amber-900 dark:text-amber-200 uppercase tracking-wide">
-              <Workflow className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
-              MODE: WORKFLOW PIPELINE ({toolCount} tools · {approvalCount} approvals)
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-100 dark:bg-indigo-950/80 border border-indigo-300 dark:border-indigo-700/60 text-[10px] font-bold text-indigo-900 dark:text-indigo-200 uppercase tracking-wide">
-              <Cpu className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
-              MODE: ATOMIC SKILL ({toolCount === 0 ? "Prompt-only" : "Single capability"})
-            </span>
-          )}
-          <span className="text-[10px] text-slate-500 hidden sm:inline">
+    <section className={CARD}>
+      <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
+        <div className="min-w-0 space-y-1">
+          <div className="font-sans text-sm font-medium text-[var(--text-primary)]">
+            {isWorkflow ? "Workflow pipeline" : "Atomic skill"}
+          </div>
+          <p className={HINT}>
             {isWorkflow
-              ? "Configured as a multi-step sequential business pipeline."
-              : "Configured as an atomic reusable AI capability."}
-          </span>
+              ? `${plural(toolCount, "tool")} and ${plural(approvalCount, "approval")}, run as a bounded multi-step pipeline`
+              : toolCount === 0
+              ? "Prompt only, a reusable AI capability"
+              : "A single focused, reusable capability"}
+          </p>
         </div>
-
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="inline-flex items-center gap-1 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 uppercase tracking-wider transition-colors cursor-pointer"
+          aria-expanded={isOpen}
+          className="cursor-pointer font-sans text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
         >
-          <HelpCircle className="h-3.5 w-3.5" />
-          {isOpen ? "HIDE GUIDE" : "SKILL VS WORKFLOW GUIDE"}
-          {isOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+          {isOpen ? "Hide guide" : "Skill or workflow?"}
         </button>
       </div>
 
-      {/* Expandable Guide Tooltip */}
       {isOpen && (
-        <div className="pt-2 border-t border-slate-200 dark:border-indigo-950/70 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-          {/* Skill Mode Explanation */}
-          <div className="p-3 rounded border border-indigo-200 dark:border-indigo-900/40 bg-white/90 dark:bg-black/50 space-y-1.5">
-            <div className="flex items-center gap-1.5 text-indigo-700 dark:text-indigo-300 font-bold text-[11px] uppercase tracking-wide">
-              <Cpu className="h-3.5 w-3.5" /> Building an Atomic Skill
-            </div>
-            <p className="text-[11px] text-slate-600 dark:text-slate-400 font-serif leading-relaxed">
-              Use this when you want a <strong>single focused capability</strong> (e.g. <em>Forex Rate Fetcher</em>, <em>SQL Generator</em>, <em>Text Classifier</em>).
+        <div className="grid grid-cols-1 gap-px border-t border-[var(--border-subtle)] bg-[var(--border-subtle)] md:grid-cols-2">
+          <div className="space-y-2 bg-[var(--surface-raised)] p-5">
+            <h3 className="font-sans text-sm font-medium text-[var(--text-primary)]">An atomic skill</h3>
+            <p className="font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
+              One focused capability, for example a rate fetcher, an SQL generator or a text classifier.
             </p>
-            <ul className="text-[10px] text-slate-600 dark:text-slate-400 space-y-0.5 list-disc list-inside">
-              <li>Select <strong>0 or 1 tool</strong> in Allowed Tools</li>
-              <li>Leave <strong>Actions Requiring Approval</strong> empty</li>
-              <li>Define strict <strong>Input & Output JSON Schemas</strong></li>
-              <li><span className="text-indigo-600 dark:text-indigo-400 font-bold">Reusable</span> across entire workspace & Agent Canvas</li>
+            <ul className="list-disc space-y-1 pl-5 font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
+              <li>Select 0 or 1 tool in Allowed tools</li>
+              <li>Leave Actions requiring approval empty</li>
+              <li>Define strict input and output JSON schemas</li>
+              <li>Reusable across the workspace and the Agent canvas</li>
             </ul>
           </div>
 
-          {/* Workflow Mode Explanation */}
-          <div className="p-3 rounded border border-amber-200 dark:border-amber-900/40 bg-white/90 dark:bg-black/50 space-y-1.5">
-            <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-300 font-bold text-[11px] uppercase tracking-wide">
-              <Workflow className="h-3.5 w-3.5" /> Building a Workflow Pipeline
-            </div>
-            <p className="text-[11px] text-slate-600 dark:text-slate-400 font-serif leading-relaxed">
-              Use this when you want a <strong>multi-step business process</strong> (e.g. <em>Customer Refund Automation</em>, <em>Invoice Audit</em>, <em>Lead CRM Triage</em>).
+          <div className="space-y-2 bg-[var(--surface-raised)] p-5">
+            <h3 className="font-sans text-sm font-medium text-[var(--text-primary)]">A workflow pipeline</h3>
+            <p className="font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
+              A multi-step business process, for example refund automation, an invoice audit or lead triage.
             </p>
-            <ul className="text-[10px] text-slate-600 dark:text-slate-400 space-y-0.5 list-disc list-inside">
-              <li>Chain <strong>2+ sequential tools</strong> in Allowed Tools</li>
-              <li>Select write actions under <strong>Actions Requiring Approval (HITL)</strong></li>
-              <li>Write step-by-step instructions (<em>1. Search ➔ 2. Extract ➔ 3. Approve ➔ 4. Report</em>)</li>
-              <li><span className="text-amber-600 dark:text-amber-400 font-bold">Executes</span> as a bounded autonomous workflow</li>
+            <ul className="list-disc space-y-1 pl-5 font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
+              <li>Chain 2 or more sequential tools in Allowed tools</li>
+              <li>Choose write actions under Actions requiring approval</li>
+              <li>Write step-by-step instructions: search, extract, approve, report</li>
+              <li>Runs as a bounded autonomous workflow</li>
             </ul>
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 }
 
@@ -393,64 +386,66 @@ export function SkillForm({
   });
 
   return (
-    <form onSubmit={onValidSubmit} className="space-y-6 font-mono" noValidate>
-      {/* Dynamic Skill vs Workflow Mode Guide Banner & Tooltip */}
-      <BuilderModeGuide
-        toolCount={allowedTools.length}
-        approvalCount={actionsRequiringApproval.length}
-      />
+    <form onSubmit={onValidSubmit} className="space-y-6" noValidate>
+      <BuilderModeGuide toolCount={allowedTools.length} approvalCount={actionsRequiringApproval.length} />
 
-      {/* Live Pipeline Preview Banner */}
-      <div className="p-4 rounded border border-indigo-200 dark:border-indigo-900/50 bg-indigo-50/70 dark:bg-[#0a0a0a]/80 space-y-2 shadow-sm">
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold text-indigo-700 dark:text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
-            <Workflow className="h-3.5 w-3.5" /> LIVE PIPELINE STEP CHAIN
-          </span>
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-            {allowedTools.length + 1} STEPS CONFIGURED
-          </span>
+      {/* Live pipeline preview */}
+      <section className={CARD}>
+        <div className={CARD_HEAD}>
+          <h2 className={CARD_TITLE}>Pipeline preview</h2>
+          <span className={META}>{plural(allowedTools.length + 1, "step")}</span>
         </div>
-        <WorkflowStepChain
-          allowedTools={allowedTools}
-          actionsRequiringApproval={actionsRequiringApproval}
-        />
-      </div>
+        <div className="p-5">
+          <WorkflowStepChain allowedTools={allowedTools} actionsRequiringApproval={actionsRequiringApproval} />
+        </div>
+      </section>
 
-      {/* Name & Purpose */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div>
-          <label className={`${labelClass} block mb-1.5`}>Workflow / Skill Name *</label>
-          <input {...register("name")} placeholder="e.g. Customer Refund Bounded Automation" className={inputClass} />
+      {/* Name & purpose */}
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="space-y-2">
+          <label htmlFor="skill-name" className={labelClass}>
+            Name
+          </label>
+          <input id="skill-name" {...register("name")} placeholder="Customer refund automation" className={inputClass} />
           <FieldError message={errors.name?.message} />
         </div>
-        <div>
-          <label className={`${labelClass} block mb-1.5`}>Purpose & Outcome *</label>
-          <input {...register("purpose")} placeholder="What bounded business outcome does this achieve?" className={inputClass} />
+        <div className="space-y-2">
+          <label htmlFor="skill-purpose" className={labelClass}>
+            Purpose
+          </label>
+          <input
+            id="skill-purpose"
+            {...register("purpose")}
+            placeholder="What bounded business outcome does this achieve?"
+            className={inputClass}
+          />
           <FieldError message={errors.purpose?.message} />
         </div>
       </div>
 
       {/* Instructions */}
-
-      <div>
-        <label className={`${labelClass} block mb-1.5`}>Instructions *</label>
+      <div className="space-y-2">
+        <label htmlFor="skill-instructions" className={labelClass}>
+          Instructions
+        </label>
         <textarea
+          id="skill-instructions"
           {...register("instructions")}
           rows={4}
-          placeholder="Step-by-step instructions the agent follows when executing this skill…"
-          className={`${inputClass} resize-y leading-relaxed`}
+          placeholder="Step-by-step instructions the agent follows when it runs this skill"
+          className={areaClass}
         />
         <FieldError message={errors.instructions?.message} />
       </div>
 
-      {/* JSON Schemas */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {/* JSON schemas */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Controller
           control={control}
           name="inputSchema"
           render={({ field }) => (
             <JsonEditor
-              label="Input Schema (JSON)"
+              label="Input schema (JSON)"
               value={field.value}
               onChange={field.onChange}
               error={fieldMessage(errors.inputSchema)}
@@ -465,7 +460,7 @@ export function SkillForm({
           name="outputSchema"
           render={({ field }) => (
             <JsonEditor
-              label="Output Schema (JSON)"
+              label="Output schema (JSON)"
               value={field.value}
               onChange={field.onChange}
               error={fieldMessage(errors.outputSchema)}
@@ -478,122 +473,124 @@ export function SkillForm({
       </div>
 
       {/* Examples */}
-      <div className="rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 p-4 space-y-4 shadow-sm">
-        <div className="flex items-center justify-between">
-          <label className={`${labelClass} flex items-center gap-1.5`}>
-            <ListChecks className="h-3.5 w-3.5" /> Examples
-          </label>
-          <button
-            type="button"
-            onClick={() => append({ input: {}, output: {}, description: "" })}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-indigo-300 dark:border-indigo-500/40 bg-indigo-50 dark:bg-indigo-950/40 text-[10px] font-mono text-indigo-700 dark:text-indigo-300 hover:border-indigo-400 transition-all cursor-pointer font-semibold"
-          >
-            <Plus className="h-3 w-3" /> ADD EXAMPLE
+      <section className={CARD}>
+        <div className={CARD_HEAD}>
+          <div className="space-y-1">
+            <h2 className={CARD_TITLE}>Examples</h2>
+            <p className={HINT}>Input and output pairs that show the expected behavior</p>
+          </div>
+          <button type="button" onClick={() => append({ input: {}, output: {}, description: "" })} className={BTN_SECONDARY_SM}>
+            Add example
           </button>
         </div>
 
-        {fields.length === 0 && (
-          <p className="text-[11px] text-slate-500">No examples yet. Add input/output pairs to demonstrate expected behavior.</p>
+        {fields.length === 0 ? (
+          <p className="px-5 py-8 text-center font-sans text-sm text-[var(--text-muted)]">No examples yet</p>
+        ) : (
+          <ul className="divide-y divide-[var(--border-subtle)]">
+            {fields.map((field, index) => (
+              <li key={field.id} className="space-y-4 p-5">
+                <div className="flex items-center justify-between">
+                  <span className={META}>example {index + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => remove(index)}
+                    aria-label={`Remove example ${index + 1}`}
+                    className="cursor-pointer font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--state-error)]"
+                  >
+                    Remove
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                  <Controller
+                    control={control}
+                    name={`examples.${index}.input`}
+                    render={({ field: f }) => (
+                      <JsonEditor
+                        label="Input"
+                        value={f.value}
+                        onChange={f.onChange}
+                        error={fieldMessage(exampleFieldError(errors, index, "input"))}
+                        fieldKey={`examples.${index}.input`}
+                        onValidityChange={setJsonValidity}
+                        placeholder='{ "query": "…" }'
+                      />
+                    )}
+                  />
+                  <Controller
+                    control={control}
+                    name={`examples.${index}.output`}
+                    render={({ field: f }) => (
+                      <JsonEditor
+                        label="Output"
+                        value={f.value}
+                        onChange={f.onChange}
+                        error={fieldMessage(exampleFieldError(errors, index, "output"))}
+                        fieldKey={`examples.${index}.output`}
+                        onValidityChange={setJsonValidity}
+                        placeholder='{ "result": "…" }'
+                      />
+                    )}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor={`example-desc-${index}`} className={labelClass}>
+                    Description (optional)
+                  </label>
+                  <input
+                    id={`example-desc-${index}`}
+                    {...register(`examples.${index}.description`)}
+                    placeholder="Explain this example"
+                    className={inputClass}
+                  />
+                </div>
+              </li>
+            ))}
+          </ul>
         )}
-
-        <div className="space-y-4">
-          {fields.map((field, index) => (
-            <div key={field.id} className="rounded border border-slate-200 dark:border-indigo-900/30 bg-slate-50/80 dark:bg-black/40 p-3 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-indigo-400/70">
-                  EXAMPLE #{index + 1}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => remove(index)}
-                  aria-label={`Remove example ${index + 1}`}
-                  className="text-slate-600 hover:text-red-400 transition-colors cursor-pointer"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
-              </div>
-              <Controller
-                control={control}
-                name={`examples.${index}.input`}
-                render={({ field: f }) => (
-                  <JsonEditor
-                    label="Input"
-                    value={f.value}
-                    onChange={f.onChange}
-                    error={fieldMessage(exampleFieldError(errors, index, "input"))}
-                    fieldKey={`examples.${index}.input`}
-                    onValidityChange={setJsonValidity}
-                    placeholder='{ "query": "…" }'
-                  />
-                )}
-              />
-              <Controller
-                control={control}
-                name={`examples.${index}.output`}
-                render={({ field: f }) => (
-                  <JsonEditor
-                    label="Output"
-                    value={f.value}
-                    onChange={f.onChange}
-                    error={fieldMessage(exampleFieldError(errors, index, "output"))}
-                    fieldKey={`examples.${index}.output`}
-                    onValidityChange={setJsonValidity}
-                    placeholder='{ "result": "…" }'
-                  />
-                )}
-              />
-              <div>
-                <label className={`${labelClass} block mb-1.5`}>Description (optional)</label>
-                <input {...register(`examples.${index}.description`)} placeholder="Explain this example…" className={inputClass} />
-              </div>
-            </div>
-          ))}
-        </div>
         <FieldError message={fieldMessage(errors.examples)} />
-      </div>
+      </section>
 
-      {/* Allowed Tools & Approval Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {/* Allowed tools, approvals and policy */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Controller
           control={control}
           name="allowedTools"
           render={({ field }) => (
-            <div className="rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 p-4 space-y-3 shadow-sm">
-              <div className="flex items-center justify-between gap-2">
-                <label className={`${labelClass} flex items-center gap-1.5`}>
-                  <Wrench className="h-3.5 w-3.5 text-indigo-600" /> Allowed Tools * <span className="text-slate-500">(min 1)</span>
-                </label>
-                <button
-                  type="button"
-                  onClick={() => setIsQuickConnectOpen(true)}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border border-indigo-300 dark:border-indigo-700 bg-indigo-50 dark:bg-indigo-950/70 text-[10px] font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 transition-all cursor-pointer shadow-sm"
-                >
-                  <Plus className="h-3 w-3" /> Quick-Connect Public APIs & Tools
+            <section className={CARD}>
+              <div className={CARD_HEAD}>
+                <div className="space-y-1">
+                  <h2 className={CARD_TITLE}>Allowed tools</h2>
+                  <p className={HINT}>At least one is required</p>
+                </div>
+                <button type="button" onClick={() => setIsQuickConnectOpen(true)} className={BTN_SECONDARY_SM}>
+                  Connect public APIs
                 </button>
               </div>
 
-              <TagsInput
-                label=""
-                values={field.value ?? []}
-                onChange={field.onChange}
-                error={fieldMessage(errors.allowedTools)}
-                placeholder="e.g. calculator, document_search…"
-              />
+              <div className="space-y-4 p-5">
+                <TagsInput
+                  label=""
+                  values={field.value ?? []}
+                  onChange={field.onChange}
+                  error={fieldMessage(errors.allowedTools)}
+                  placeholder="calculator, document_search"
+                />
 
-              <AvailableTools
-                selected={field.value ?? []}
-                onAdd={(name) => field.onChange([...(field.value ?? []), name])}
-              />
-              <AvailableMcpTools
-                selected={field.value ?? []}
-                onAdd={(name) => field.onChange([...(field.value ?? []), name])}
-              />
-              <AvailableOpenApiTools
-                selected={field.value ?? []}
-                onAdd={(name) => field.onChange([...(field.value ?? []), name])}
-              />
+                <AvailableTools
+                  selected={field.value ?? []}
+                  onAdd={(name) => field.onChange([...(field.value ?? []), name])}
+                />
+                <AvailableMcpTools
+                  selected={field.value ?? []}
+                  onAdd={(name) => field.onChange([...(field.value ?? []), name])}
+                />
+                <AvailableOpenApiTools
+                  selected={field.value ?? []}
+                  onAdd={(name) => field.onChange([...(field.value ?? []), name])}
+                />
+              </div>
 
-              {/* Quick Connect Modal */}
               <QuickConnectToolModal
                 isOpen={isQuickConnectOpen}
                 onClose={() => setIsQuickConnectOpen(false)}
@@ -604,34 +601,33 @@ export function SkillForm({
                   }
                 }}
               />
-            </div>
+            </section>
           )}
         />
         <Controller
           control={control}
           name="actionsRequiringApproval"
           render={({ field }) => (
-            <div className="rounded border border-amber-300 dark:border-amber-500/40 bg-amber-50/40 dark:bg-amber-950/20 p-4 space-y-3 shadow-sm">
-              <div className="flex items-center justify-between">
-                <label className={`${labelClass} flex items-center gap-1.5 text-amber-900 dark:text-amber-300 font-bold`}>
-                  <CheckSquare className="h-3.5 w-3.5 text-amber-600" /> Actions Requiring Approval (HITL)
-                </label>
-                <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-200/80 dark:bg-amber-900/60 text-amber-950 dark:text-amber-200 font-bold">
-                  IDEMPOTENT PAUSE
-                </span>
+            <section className={CARD}>
+              <div className={CARD_HEAD}>
+                <div className="space-y-1">
+                  <h2 className={CARD_TITLE}>Actions requiring approval</h2>
+                  <p className={HINT}>
+                    When an agent attempts one of these write actions, the run pauses in{" "}
+                    <code className="font-mono text-xs">PAUSED_FOR_APPROVAL</code> until a person reviews it.
+                  </p>
+                </div>
               </div>
-              <p className="text-[10px] text-amber-900/80 dark:text-amber-400/80 font-serif leading-tight">
-                When an agent attempts these write actions, execution will pause into <code className="font-mono font-bold">PAUSED_FOR_APPROVAL</code> until reviewed by a user.
-              </p>
 
-              {/* Action Marketplace, Auto-Binding & Policy Profiles */}
-              <ApprovalActionMarketplace
-                selected={field.value ?? []}
-                onChange={field.onChange}
-                allowedTools={allowedTools}
-                instructions={instructions}
-              />
-            </div>
+              <div className="p-5">
+                <ApprovalActionMarketplace
+                  selected={field.value ?? []}
+                  onChange={field.onChange}
+                  allowedTools={allowedTools}
+                  instructions={instructions}
+                />
+              </div>
+            </section>
           )}
         />
         <Controller
@@ -647,104 +643,108 @@ export function SkillForm({
             const toolBasedApproval = policy.toolBasedApproval ?? [];
 
             return (
-              <div className="rounded border border-slate-300 dark:border-indigo-900/50 bg-slate-50/60 dark:bg-[#0a0a0a]/60 p-4 space-y-3 shadow-sm">
-                <label className={`${labelClass} flex items-center gap-1.5`}>
-                  <CheckSquare className="h-3.5 w-3.5 text-indigo-500" /> Approval Policy Overrides
-                </label>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-serif leading-tight">
-                  Evaluated before the per-action list above: an override here always wins.
-                </p>
-
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      field.onChange({
-                        ...policy,
-                        alwaysRequireApproval: !policy.alwaysRequireApproval,
-                        neverRequireApproval: false,
-                      })
-                    }
-                    className={clsx(
-                      "px-2.5 py-1.5 rounded border text-[10px] font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer",
-                      policy.alwaysRequireApproval
-                        ? "border-amber-500 bg-amber-500 text-white"
-                        : "border-slate-300 dark:border-indigo-900/50 text-slate-600 dark:text-slate-400 hover:border-amber-400"
-                    )}
-                  >
-                    Always require approval
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      field.onChange({
-                        ...policy,
-                        neverRequireApproval: !policy.neverRequireApproval,
-                        alwaysRequireApproval: false,
-                      })
-                    }
-                    className={clsx(
-                      "px-2.5 py-1.5 rounded border text-[10px] font-mono font-semibold uppercase tracking-wider transition-all cursor-pointer",
-                      policy.neverRequireApproval
-                        ? "border-red-500 bg-red-500 text-white"
-                        : "border-slate-300 dark:border-indigo-900/50 text-slate-600 dark:text-slate-400 hover:border-red-400"
-                    )}
-                  >
-                    Never require approval
-                  </button>
+              <section className={clsx(CARD, "lg:col-span-2")}>
+                <div className={CARD_HEAD}>
+                  <div className="space-y-1">
+                    <h2 className={CARD_TITLE}>Approval policy overrides</h2>
+                    <p className={HINT}>Checked before the per-action list above, so an override here always wins</p>
+                  </div>
                 </div>
 
-                {policy.neverRequireApproval && (
-                  <p className="text-[10px] text-red-600 dark:text-red-400 font-semibold">
-                    ⚠ Overrides every tool's own WRITE/requiresApproval contract — actions execute without human review.
-                  </p>
-                )}
-
-                {allowedTools.length > 0 && (
-                  <div className="space-y-1.5">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500">
-                      Always pause for these tools (independent of the action list above)
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {allowedTools.map((toolName) => {
-                        const active = toolBasedApproval.includes(toolName);
-                        return (
-                          <button
-                            key={toolName}
-                            type="button"
-                            onClick={() =>
-                              field.onChange({
-                                ...policy,
-                                toolBasedApproval: active
-                                  ? toolBasedApproval.filter((t) => t !== toolName)
-                                  : [...toolBasedApproval, toolName],
-                              })
-                            }
-                            className={clsx(
-                              "px-2 py-1 rounded text-[10px] font-mono border transition-all cursor-pointer",
-                              active
-                                ? "border-indigo-500 bg-indigo-600 text-white"
-                                : "border-slate-300 dark:border-indigo-900/50 text-slate-600 dark:text-slate-400 hover:border-indigo-400"
-                            )}
-                          >
-                            {toolName}
-                          </button>
-                        );
-                      })}
-                    </div>
+                <div className="space-y-4 p-5">
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      aria-pressed={policy.alwaysRequireApproval}
+                      onClick={() =>
+                        field.onChange({
+                          ...policy,
+                          alwaysRequireApproval: !policy.alwaysRequireApproval,
+                          neverRequireApproval: false,
+                        })
+                      }
+                      className={clsx(
+                        "h-8 cursor-pointer rounded-[8px] border px-3 font-sans text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
+                        policy.alwaysRequireApproval
+                          ? "border-[var(--state-warning)] bg-[var(--state-warning)]/10 text-[var(--text-primary)]"
+                          : "border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                      )}
+                    >
+                      Always require approval
+                    </button>
+                    <button
+                      type="button"
+                      aria-pressed={policy.neverRequireApproval}
+                      onClick={() =>
+                        field.onChange({
+                          ...policy,
+                          neverRequireApproval: !policy.neverRequireApproval,
+                          alwaysRequireApproval: false,
+                        })
+                      }
+                      className={clsx(
+                        "h-8 cursor-pointer rounded-[8px] border px-3 font-sans text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
+                        policy.neverRequireApproval
+                          ? "border-[var(--state-error)] bg-[var(--state-error)]/10 text-[var(--text-primary)]"
+                          : "border-[var(--border-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                      )}
+                    >
+                      Never require approval
+                    </button>
                   </div>
-                )}
-              </div>
+
+                  {policy.neverRequireApproval && (
+                    <p className="font-sans text-[13px] leading-5 text-[var(--state-error)]">
+                      This overrides every tool&rsquo;s own write and approval contract. Actions run without human review.
+                    </p>
+                  )}
+
+                  {allowedTools.length > 0 && (
+                    <div className="space-y-2">
+                      <div className={labelClass}>Always pause for these tools, whatever the action list says</div>
+                      <div className="flex flex-wrap gap-2">
+                        {allowedTools.map((toolName) => {
+                          const active = toolBasedApproval.includes(toolName);
+                          return (
+                            <button
+                              key={toolName}
+                              type="button"
+                              aria-pressed={active}
+                              onClick={() =>
+                                field.onChange({
+                                  ...policy,
+                                  toolBasedApproval: active
+                                    ? toolBasedApproval.filter((t) => t !== toolName)
+                                    : [...toolBasedApproval, toolName],
+                                })
+                              }
+                              className={clsx(
+                                PILL,
+                                active && "border-[var(--border-strong)] bg-[var(--text-primary)]/10 text-[var(--text-primary)]"
+                              )}
+                            >
+                              {toolName}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </section>
             );
           }}
         />
       </div>
 
-      {/* Max Steps & Notes */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div>
-          <label className={`${labelClass} block mb-1.5`}>Max Execution Steps *</label>
+      {/* Max steps and notes */}
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+        <div className="space-y-2">
+          <label htmlFor="skill-max-steps" className={labelClass}>
+            Max execution steps
+          </label>
           <input
+            id="skill-max-steps"
             type="number"
             min={1}
             max={100}
@@ -758,27 +758,24 @@ export function SkillForm({
           />
           <FieldError message={errors.maxExecutionSteps?.message} />
         </div>
-        <div className="md:col-span-2">
-          <label className={`${labelClass} block mb-1.5`}>Notes</label>
+        <div className="space-y-2 md:col-span-2">
+          <label htmlFor="skill-notes" className={labelClass}>
+            Notes
+          </label>
           <textarea
+            id="skill-notes"
             {...register("notes")}
             rows={2}
-            placeholder="Internal notes about this skill (not part of execution)…"
-            className={`${inputClass} resize-y`}
+            placeholder="Internal notes about this skill. They are not part of execution."
+            className={areaClass}
           />
           <FieldError message={errors.notes?.message} />
         </div>
       </div>
 
-      {/* Submit */}
-      <div className="flex justify-end pt-2 border-t border-slate-200 dark:border-indigo-950/60">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded border border-indigo-400 bg-indigo-600 text-white text-xs font-mono font-semibold hover:bg-indigo-500 shadow-md shadow-indigo-500/30 transition-all cursor-pointer disabled:opacity-50"
-        >
-          {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-          {mode === "create" ? "[ CREATE SKILL ]" : "[ SAVE DRAFT ]"}
+      <div className="flex justify-end border-t border-[var(--border-subtle)] pt-5">
+        <button type="submit" disabled={isSubmitting} className={BTN_PRIMARY}>
+          {isSubmitting ? "Saving" : mode === "create" ? "Create skill" : "Save draft"}
         </button>
       </div>
     </form>

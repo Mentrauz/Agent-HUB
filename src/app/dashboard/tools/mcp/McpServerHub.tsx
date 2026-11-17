@@ -57,16 +57,16 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
 const statusTheme: Record<string, { chip: string; dot: string }> = {
   CONNECTED: {
-    chip: "border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 font-semibold",
-    dot: "bg-emerald-500",
+    chip: "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)] font-medium",
+    dot: "bg-[var(--state-success)]",
   },
   DISCONNECTED: {
-    chip: "border-slate-300 dark:border-indigo-900/60 bg-slate-100 dark:bg-indigo-950/30 text-slate-700 dark:text-slate-400 font-semibold",
-    dot: "bg-slate-400",
+    chip: "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] font-medium",
+    dot: "bg-[var(--surface-elevated)]",
   },
   ERROR: {
-    chip: "border-red-300 dark:border-red-500/40 bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-300 font-semibold",
-    dot: "bg-red-500",
+    chip: "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)] font-medium",
+    dot: "bg-[var(--state-error)]",
   },
 };
 
@@ -83,16 +83,16 @@ async function api<T>(url: string, init?: RequestInit): Promise<T> {
 }
 
 const PRESET_CATEGORIES = [
-  { id: "ALL", label: "ALL PRESETS", icon: Sparkles },
-  { id: "DEVELOPMENT", label: "DEV & CODE", icon: Code },
-  { id: "DATABASE", label: "DATABASES", icon: Database },
-  { id: "BROWSER", label: "BROWSER", icon: Monitor },
-  { id: "WEB_SEARCH", label: "WEB & SEARCH", icon: Globe },
-  { id: "PRODUCTIVITY", label: "PRODUCTIVITY", icon: Zap },
-  { id: "REASONING", label: "REASONING", icon: Brain },
-  { id: "DEVOPS", label: "DEVOPS", icon: Cpu },
-  { id: "RESEARCH", label: "RESEARCH", icon: BookOpen },
-  { id: "UTILITY", label: "UTILITIES", icon: Wrench },
+  { id: "ALL", label: "All presets", icon: Sparkles },
+  { id: "DEVELOPMENT", label: "Dev & code", icon: Code },
+  { id: "DATABASE", label: "Databases", icon: Database },
+  { id: "BROWSER", label: "Browser", icon: Monitor },
+  { id: "WEB_SEARCH", label: "Web & search", icon: Globe },
+  { id: "PRODUCTIVITY", label: "Productivity", icon: Zap },
+  { id: "REASONING", label: "Reasoning", icon: Brain },
+  { id: "DEVOPS", label: "DevOps", icon: Cpu },
+  { id: "RESEARCH", label: "Research", icon: BookOpen },
+  { id: "UTILITY", label: "Utilities", icon: Wrench },
 ];
 
 export function McpServerHub() {
@@ -402,9 +402,9 @@ export function McpServerHub() {
     <div className="space-y-6 w-full">
       {/* Stats + actions */}
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-2 text-[10px] font-mono text-slate-700 dark:text-slate-400 px-3 py-2 rounded border border-slate-200 dark:border-indigo-900/50 bg-white/80 dark:bg-[#0a0a0a]/80 shadow-sm font-semibold">
-          <Server className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
-          {pad(servers?.length ?? 0)} SERVERS · {pad(connectedCount)} CONNECTED · {pad(totalTools)} TOOLS
+        <div className="flex flex-wrap items-center gap-2 text-xs font-sans text-[var(--text-secondary)] px-3 py-2 rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 font-medium">
+          <Server className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
+          {pad(servers?.length ?? 0)} Servers ·{pad(connectedCount)} Connected ·{pad(totalTools)} TOOLS
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -414,20 +414,20 @@ export function McpServerHub() {
                 type="button"
                 onClick={handleBatchHealth}
                 disabled={Boolean(batchBusy)}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-slate-300 dark:border-indigo-900/60 bg-slate-100 dark:bg-indigo-950/40 text-slate-700 dark:text-slate-300 text-[10px] font-mono font-semibold uppercase tracking-wider hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-all cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] text-xs font-sans font-medium hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer disabled:opacity-50"
                 title="Run live latency probes across all connected servers"
               >
                 {batchBusy === "health" ? <Loader2 className="h-3 w-3 animate-spin" /> : <Activity className="h-3 w-3" />}
-                PROBE ALL
+                Probe all
               </button>
 
               <button
                 type="button"
                 onClick={handleExport}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-slate-300 dark:border-indigo-900/60 bg-slate-100 dark:bg-indigo-950/40 text-slate-700 dark:text-slate-300 text-[10px] font-mono font-semibold uppercase tracking-wider hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] text-xs font-sans font-medium hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer"
                 title="Export all server configs as a portable JSON bundle"
               >
-                <Download className="h-3 w-3" /> EXPORT
+                <Download className="h-3 w-3" /> Export
               </button>
             </>
           )}
@@ -439,19 +439,19 @@ export function McpServerHub() {
               const el = document.getElementById("mcp-catalog-section");
               if (el) el.scrollIntoView({ behavior: "smooth" });
             }}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-indigo-300 dark:border-indigo-800/80 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-[10px] font-mono font-semibold uppercase tracking-wider hover:border-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition-all cursor-pointer shadow-xs"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] text-xs font-sans font-medium hover:border-[var(--accent-primary)]/40 hover:bg-[var(--accent-primary)]/10 transition-colors cursor-pointer shadow-xs"
             title="Browse 120K+ MCP servers from Glama, mcp.so & Smithery"
           >
-            <Globe className="h-3 w-3 text-indigo-500 animate-pulse" /> BROWSE REGISTRY
+            <Globe className="h-3 w-3 text-[var(--accent-primary)]" /> Browse registry
           </button>
 
           <button
             type="button"
             onClick={() => setImportOpen(true)}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-slate-300 dark:border-indigo-900/60 bg-slate-100 dark:bg-indigo-950/40 text-slate-700 dark:text-slate-300 text-[10px] font-mono font-semibold uppercase tracking-wider hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] text-xs font-sans font-medium hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer"
             title="Import MCP server configurations from JSON"
           >
-            <Upload className="h-3 w-3" /> IMPORT
+            <Upload className="h-3 w-3" /> Import
           </button>
 
           <button
@@ -460,7 +460,7 @@ export function McpServerHub() {
               setConnectPreset(null);
               setConnectOpen(true);
             }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-indigo-500 bg-indigo-600 text-white text-[10px] font-mono font-semibold uppercase tracking-wider hover:bg-indigo-500 shadow-sm shadow-indigo-500/30 transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] transition-colors cursor-pointer"
           >
             <Plus className="h-3.5 w-3.5" /> Connect MCP Server
           </button>
@@ -468,7 +468,7 @@ export function McpServerHub() {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded border border-red-300 dark:border-red-500/40 bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-300 text-[11px] font-mono font-semibold">
+        <div className="flex items-center gap-2 px-3 py-2 rounded border border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)] text-xs font-sans font-medium">
           <CircleAlert className="h-3.5 w-3.5 shrink-0" /> {error}
           <button type="button" onClick={() => setError(null)} className="ml-auto cursor-pointer hover:opacity-70">
             <X className="h-3.5 w-3.5" />
@@ -477,7 +477,7 @@ export function McpServerHub() {
       )}
 
       {successMessage && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded border border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 text-[11px] font-mono font-semibold animate-fadeIn">
+        <div className="flex items-center gap-2 px-3 py-2 rounded border border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)] text-xs font-sans font-medium animate-fadeIn">
           <Check className="h-3.5 w-3.5 shrink-0" /> {successMessage}
           <button type="button" onClick={() => setSuccessMessage(null)} className="ml-auto cursor-pointer hover:opacity-70">
             <X className="h-3.5 w-3.5" />
@@ -486,44 +486,44 @@ export function McpServerHub() {
       )}
 
       {/* Presets & Directory Discovery Section */}
-      <div id="mcp-catalog-section" className="space-y-4 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-slate-50/50 dark:bg-[#0a0a0a]/40 p-4">
+      <div id="mcp-catalog-section" className="space-y-4 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 p-4">
         {/* Navigation Tabs */}
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-indigo-950 pb-3 gap-2 flex-wrap">
+        <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3 gap-2 flex-wrap">
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setHubCatalogMode("PRESETS")}
               className={clsx(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[11px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer",
+                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer",
                 hubCatalogMode === "PRESETS"
-                  ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
+                  ? "bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)]"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-sunken)]/60"
               )}
             >
-              <Zap className={clsx("h-3.5 w-3.5", hubCatalogMode === "PRESETS" ? "fill-amber-400 text-amber-300" : "text-amber-500")} />
-              1-CLICK ECOSYSTEM PRESETS ({presets.length})
+              <Zap className={clsx("h-3.5 w-3.5", hubCatalogMode === "PRESETS" ? "fill-[var(--text-muted)] text-[var(--state-warning)]" : "text-[var(--state-warning)]")} />
+              Presets ({presets.length})
             </button>
 
             <button
               type="button"
               onClick={() => setHubCatalogMode("DIRECTORY")}
               className={clsx(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-[11px] font-mono font-bold uppercase tracking-wider transition-all cursor-pointer relative",
+                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer relative",
                 hubCatalogMode === "DIRECTORY"
-                  ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-indigo-950/40"
+                  ? "bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)]"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-sunken)]/60"
               )}
             >
-              <Globe className="h-3.5 w-3.5 text-indigo-400" />
-              PUBLIC REGISTRY (GLAMA & MCP.SO)
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[8px] bg-amber-400 text-black font-bold uppercase">
+              <Globe className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
+              Public registry (glama & mcp.so)
+              <span className="ml-1 px-1.5 py-0.2 rounded-full text-xs bg-[var(--state-warning)] text-[var(--text-primary)] font-medium">
                 120K+
               </span>
             </button>
-          </div>            <div className="text-[10px] font-mono text-slate-500 hidden sm:block">
+          </div>            <div className="text-xs font-sans text-[var(--text-muted)] hidden sm:block">
             {hubCatalogMode === "PRESETS"
-              ? "CURATED ZERO-CONFIG REFERENCE PRESETS"
-              : "LIVE DISCOVERY FROM GLAMA.AI, MCP.SO & SMITHERY"}
+              ? "Curated zero-config reference presets"
+              : "Live discovery from glama.ai, mcp.so & smithery"}
           </div>
         </div>
 
@@ -540,25 +540,25 @@ export function McpServerHub() {
         ) : (
           <div className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="text-[10px] font-mono uppercase tracking-widest text-indigo-700 dark:text-indigo-400 font-bold">
-                SELECT A LOCAL OR CLOUD TEMPLATE TO PREFILL CONNECTION
+              <div className="text-xs font-sans text-[var(--accent-primary)] font-medium">
+                Select a local or cloud template to prefill connection
               </div>
 
               {/* Search box for presets */}
               <div className="relative w-full sm:w-64">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--text-muted)]" />
                 <input
                   type="text"
                   value={presetSearch}
                   onChange={(e) => setPresetSearch(e.target.value)}
                   placeholder="Search 22+ presets..."
-                  className="w-full pl-8 pr-3 py-1 text-[11px] font-mono rounded border border-slate-200 dark:border-indigo-900/60 bg-white dark:bg-black/60 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500"
+                  className="w-full pl-8 pr-3 py-1 text-xs font-sans rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)]/40"
                 />
                 {presetSearch && (
                   <button
                     type="button"
                     onClick={() => setPresetSearch("")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -583,10 +583,10 @@ export function McpServerHub() {
                     type="button"
                     onClick={() => setPresetCategory(cat.id)}
                     className={clsx(
-                      "inline-flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-mono font-semibold uppercase tracking-wider border transition-all cursor-pointer",
+                      "inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-sans font-medium border transition-colors cursor-pointer",
                       active
-                        ? "border-indigo-500 bg-indigo-600 text-white shadow-sm"
-                        : "border-slate-200 dark:border-indigo-900/50 bg-white/70 dark:bg-black/40 text-slate-600 dark:text-slate-400 hover:border-indigo-400"
+                        ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
+                        : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40"
                     )}
                   >
                     <Icon className="h-3 w-3" />
@@ -609,7 +609,7 @@ export function McpServerHub() {
                 />
               ))}
               {filteredPresets.length === 0 && (
-                <div className="col-span-full text-center py-6 text-xs font-mono text-slate-500">
+                <div className="col-span-full text-center py-6 text-xs font-sans text-[var(--text-muted)]">
                   No presets matching &quot;{presetSearch}&quot; in this category.
                 </div>
               )}
@@ -620,25 +620,25 @@ export function McpServerHub() {
 
       {/* Server list */}
       <div className="space-y-3 pt-2">
-        <div className="text-[11px] font-mono uppercase tracking-widest text-slate-700 dark:text-slate-300 font-bold flex items-center justify-between">
+        <div className="text-xs font-sans text-[var(--text-secondary)] font-medium flex items-center justify-between">
           <span className="flex items-center gap-1.5">
-            <Server className="h-4 w-4 text-indigo-500" />
-            CONFIGURED MCP SERVERS
+            <Server className="h-4 w-4 text-[var(--accent-primary)]" />
+            Configured MCP servers
           </span>
           <div className="flex items-center gap-3">
-            <span className="text-[10px] font-normal text-slate-500 hidden sm:block">
-              DISCOVERED TOOLS ARE AUTO-REGISTERED IN WORKFLOW RUNTIMES
+            <span className="text-xs font-normal text-[var(--text-muted)] hidden sm:block">
+              Discovered tools are auto-registered in workflow runtimes
             </span>
             {servers && servers.length > 0 && (
-              <div className="flex items-center rounded-lg border border-slate-200 dark:border-indigo-900/50 bg-slate-100 dark:bg-black/40 p-0.5">
+              <div className="flex items-center rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-0.5">
                 <button
                   type="button"
                   onClick={() => setServerViewMode("list")}
                   className={clsx(
-                    "p-1.5 rounded text-xs font-mono transition-all cursor-pointer",
+                    "p-1.5 rounded text-xs font-sans transition-colors cursor-pointer",
                     serverViewMode === "list"
-                      ? "bg-white dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 shadow-sm"
-                      : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                      ? "bg-[var(--surface-raised)] text-[var(--accent-primary)] "
+                      : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                   )}
                   title="List View"
                 >
@@ -648,10 +648,10 @@ export function McpServerHub() {
                   type="button"
                   onClick={() => setServerViewMode("grid")}
                   className={clsx(
-                    "p-1.5 rounded text-xs font-mono transition-all cursor-pointer",
+                    "p-1.5 rounded text-xs font-sans transition-colors cursor-pointer",
                     serverViewMode === "grid"
-                      ? "bg-white dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 shadow-sm"
-                      : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                      ? "bg-[var(--surface-raised)] text-[var(--accent-primary)] "
+                      : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                   )}
                   title="Grid View"
                 >
@@ -663,14 +663,14 @@ export function McpServerHub() {
         </div>
 
         {servers === null ? (
-          <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500 px-3 py-6">
-            <Loader2 className="h-4 w-4 animate-spin text-indigo-500" /> LOADING MCP SERVERS…
+          <div className="flex items-center gap-2 text-xs font-sans text-[var(--text-muted)] px-3 py-6">
+            <Loader2 className="h-4 w-4 animate-spin text-[var(--accent-primary)]" /> Loading MCP servers…
           </div>
         ) : servers.length === 0 ? (
-          <div className="rounded border border-dashed border-slate-300 dark:border-indigo-900/50 p-8 text-center space-y-2">
-            <Plug className="h-6 w-6 text-indigo-400 mx-auto" />
-            <p className="text-sm font-mono font-semibold text-slate-800 dark:text-slate-200">NO MCP SERVERS CONFIGURED</p>
-            <p className="text-[11px] font-mono text-slate-500">
+          <div className="rounded border border-dashed border-[var(--border-strong)] p-8 text-center space-y-2">
+            <Plug className="h-6 w-6 text-[var(--accent-primary)] mx-auto" />
+            <p className="text-sm font-sans font-medium text-[var(--text-primary)]">No MCP servers configured</p>
+            <p className="text-xs font-sans text-[var(--text-muted)]">
               Select one of the 22+ 1-click presets above or connect a custom SSE endpoint or local stdio command.
             </p>
           </div>
@@ -804,7 +804,7 @@ function ServerGridCard(props: {
   const toolCount = server.cachedTools?.length ?? 0;
 
   return (
-    <div className="rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/70 hover:border-indigo-500/60 dark:hover:border-indigo-500/50 hover:shadow-lg transition-all flex flex-col justify-between overflow-hidden">
+    <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 transition-colors flex flex-col justify-between overflow-hidden">
       <div className="p-4 flex flex-col justify-between space-y-3 flex-1">
         {/* Top */}
         <div className="space-y-2">
@@ -815,16 +815,16 @@ function ServerGridCard(props: {
                 size="sm"
               />
               <div className="min-w-0 flex-1">
-                <h3 className="text-xs font-mono font-bold text-slate-900 dark:text-slate-100 truncate">
+                <h3 className="text-xs font-sans font-medium text-[var(--text-primary)] truncate">
                   {server.name}
                 </h3>
-                <p className="text-[9px] font-mono text-slate-500 truncate">
+                <p className="text-xs font-sans text-[var(--text-muted)] truncate">
                   {server.transport === "SSE" ? server.endpointUrl : server.command}
                 </p>
               </div>
             </div>
             <span className={clsx(
-              "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border shrink-0",
+              "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-sans font-medium border shrink-0",
               theme.chip
             )}>
               <span className={clsx("h-1.5 w-1.5 rounded-full", theme.dot)} />
@@ -834,23 +834,23 @@ function ServerGridCard(props: {
 
           {/* Badges */}
           <div className="flex flex-wrap gap-1">
-            <span className="px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border border-slate-200 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a]/60 text-slate-600 dark:text-slate-400">
+            <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-secondary)]">
               {server.transport}
             </span>
-            <span className="px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border border-slate-200 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a]/60 text-slate-600 dark:text-slate-400">
+            <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-secondary)]">
               {toolCount} TOOLS
             </span>
             {props.hasUpdate && (
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 animate-pulse">
-                <ArrowUpCircle className="h-2.5 w-2.5" /> UPDATE
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]">
+                <ArrowUpCircle className="h-2.5 w-2.5" /> Update
               </span>
             )}
             {health && (
               <span className={clsx(
-                "px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border",
-                health.status === "healthy" ? "border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300" :
-                  health.status === "degraded" ? "border-amber-300 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300" :
-                    "border-red-300 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300"
+                "px-1.5 py-0.5 rounded text-xs font-sans font-medium border",
+                health.status === "healthy" ? "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]" :
+                  health.status === "degraded" ? "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]" :
+                    "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]"
               )}>
                 {health.status} · {health.latencyMs}ms
               </span>
@@ -859,37 +859,37 @@ function ServerGridCard(props: {
         </div>
 
         {/* Actions */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-indigo-950/60">
+        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-[var(--border-subtle)]">
           {isConnected ? (
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); props.onDisconnect(); }}
               disabled={busy}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-300 dark:border-indigo-900/50 text-[8px] font-mono uppercase tracking-wider font-semibold text-slate-600 dark:text-slate-400 hover:border-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-all cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer disabled:opacity-50"
             >
-              <Unplug className="h-2.5 w-2.5" /> DISCONNECT
+              <Unplug className="h-2.5 w-2.5" /> Disconnect
             </button>
           ) : (
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); props.onConnect(); }}
               disabled={busy}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded border border-indigo-500 bg-indigo-600 text-white text-[8px] font-mono uppercase tracking-wider font-semibold hover:bg-indigo-500 shadow-sm shadow-indigo-500/30 transition-all cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] transition-colors cursor-pointer disabled:opacity-50"
             >
-              <PlugZap className="h-2.5 w-2.5" /> CONNECT
+              <PlugZap className="h-2.5 w-2.5" /> Connect
             </button>
           )}
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); props.onHealth(); }}
-            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-300 dark:border-indigo-900/50 text-[8px] font-mono uppercase tracking-wider font-semibold text-slate-600 dark:text-slate-400 hover:border-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-all cursor-pointer"
+            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer"
           >
-            <Activity className="h-2.5 w-2.5" /> PROBE
+            <Activity className="h-2.5 w-2.5" /> Probe
           </button>
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); props.onInspect(); }}
-            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-300 dark:border-indigo-900/50 text-[8px] font-mono uppercase tracking-wider font-semibold text-slate-600 dark:text-slate-400 hover:border-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-all cursor-pointer"
+            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer"
           >
             <Braces className="h-2.5 w-2.5" /> {expanded ? "COLLAPSE" : "INSPECT"}
           </button>
@@ -897,16 +897,16 @@ function ServerGridCard(props: {
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); props.onViewUpdate?.(); }}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded border border-amber-400 bg-amber-50 dark:bg-amber-950/40 text-[8px] font-mono uppercase tracking-wider font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-950/60 transition-all cursor-pointer"
+              className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-xs font-sans font-medium text-[var(--state-warning)] hover:bg-[var(--state-warning)]/10 transition-colors cursor-pointer"
             >
-              <ArrowUpCircle className="h-2.5 w-2.5" /> UPDATE
+              <ArrowUpCircle className="h-2.5 w-2.5" /> Update
             </button>
           )}
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); props.onDelete(); }}
             disabled={busy}
-            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-red-300 dark:border-red-500/30 text-[8px] font-mono uppercase tracking-wider font-semibold text-red-700 dark:text-red-300 hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all cursor-pointer disabled:opacity-50 ml-auto"
+            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--state-error)]/25 text-xs font-sans font-medium text-[var(--state-error)] hover:border-[var(--state-error)]/40 hover:bg-[var(--state-error)]/10 transition-colors cursor-pointer disabled:opacity-50 ml-auto"
           >
             <Trash2 className="h-2.5 w-2.5" />
           </button>
@@ -930,7 +930,7 @@ function PresetCard({ preset, onUse }: { preset: McpPreset; onUse: () => void })
       type="button"
       onClick={onUse}
       title={preset.description}
-      className="text-left rounded border border-slate-200 dark:border-indigo-900/50 bg-white/80 dark:bg-[#0a0a0a]/60 p-3 space-y-1.5 hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:-translate-y-0.5 hover:shadow-lg transition-all cursor-pointer group"
+      className="text-left rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 p-3 space-y-1.5 hover:border-[var(--accent-primary)]/40 transition-colors cursor-pointer group"
     >
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -939,28 +939,28 @@ function PresetCard({ preset, onUse }: { preset: McpPreset; onUse: () => void })
             category={preset.category}
             size="xs"
           />
-          <span className="text-[11px] font-mono font-semibold text-slate-900 dark:text-slate-100 truncate">{preset.name}</span>
+          <span className="text-xs font-sans font-medium text-[var(--text-primary)] truncate">{preset.name}</span>
         </div>
         {preset.requiresAuthToken ? (
-          <KeyRound className="h-3 w-3 text-amber-500 shrink-0" />
+          <KeyRound className="h-3 w-3 text-[var(--state-warning)] shrink-0" />
         ) : (
-          <Globe className="h-3 w-3 text-indigo-400 shrink-0" />
+          <Globe className="h-3 w-3 text-[var(--accent-primary)] shrink-0" />
         )}
       </div>
-      <div className="flex items-center gap-1.5 text-[9px] font-mono uppercase tracking-wider">
+      <div className="flex items-center gap-1.5 text-xs font-sans">
         <span
           className={clsx(
-            "px-1.5 py-0.5 rounded border font-semibold",
+            "px-1.5 py-0.5 rounded border font-medium",
             preset.transport === "SSE"
-              ? "border-sky-300 dark:border-sky-500/40 bg-sky-50 dark:bg-sky-950/40 text-sky-800 dark:text-sky-300"
-              : "border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300"
+              ? "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]"
+              : "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]"
           )}
         >
           {preset.transport}
         </span>
-        <span className="text-slate-500 dark:text-slate-500">{preset.transport === "SSE" ? "REMOTE" : "LOCAL"}</span>
+        <span className="text-[var(--text-muted)]">{preset.transport === "SSE" ? "REMOTE" : "LOCAL"}</span>
       </div>
-      <p className="text-[9px] font-mono text-slate-500 leading-relaxed line-clamp-2">{preset.description}</p>
+      <p className="text-xs font-sans text-[var(--text-muted)] leading-relaxed line-clamp-2">{preset.description}</p>
     </button>
   );
 }
@@ -986,7 +986,7 @@ function ServerCard(props: {
   const toolCount = server.cachedTools?.length ?? 0;
 
   return (
-    <div className="group rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/70 hover:border-indigo-500/60 dark:hover:border-indigo-500/50 hover:shadow-md transition-all overflow-hidden flex flex-col">
+    <div className="group rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 transition-colors overflow-hidden flex flex-col">
       {/* Header Row */}
       <div className="p-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3.5">
         {/* Left: Info, Badges */}
@@ -996,45 +996,45 @@ function ServerCard(props: {
               name={server.name}
               size="xs"
             />
-            <h3 className="text-xs font-mono font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            <h3 className="text-xs font-sans font-medium text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">
               {server.name}
             </h3>
             <span className={clsx(
-              "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border",
+              "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-sans font-medium border",
               theme.chip
             )}>
               <span className={clsx("h-1.5 w-1.5 rounded-full", theme.dot)} />
               {server.status}
             </span>
-            <span className="px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border border-slate-200 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a]/60 text-slate-600 dark:text-slate-400">
+            <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-secondary)]">
               {server.transport}
             </span>
-            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border border-slate-200 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a]/60 text-slate-600 dark:text-slate-400">
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-secondary)]">
               <Braces className="h-2.5 w-2.5" /> {toolCount} TOOLS
             </span>
             {props.hasUpdate && (
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 animate-pulse">
-                <ArrowUpCircle className="h-2.5 w-2.5" /> UPDATE AVAILABLE
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]">
+                <ArrowUpCircle className="h-2.5 w-2.5" /> Update available
               </span>
             )}
             {health && (
               <span className={clsx(
-                "px-1.5 py-0.5 rounded text-[8px] font-mono font-bold uppercase border",
-                health.status === "healthy" ? "border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300" :
-                  health.status === "degraded" ? "border-amber-300 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300" :
-                    "border-red-300 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300"
+                "px-1.5 py-0.5 rounded text-xs font-sans font-medium border",
+                health.status === "healthy" ? "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]" :
+                  health.status === "degraded" ? "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]" :
+                    "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]"
               )}>
                 {health.status} · {health.latencyMs}ms
               </span>
             )}
           </div>
 
-          <p className="text-[9px] font-mono text-slate-500 truncate">
+          <p className="text-xs font-sans text-[var(--text-muted)] truncate">
             {server.transport === "SSE" ? server.endpointUrl : server.command}
           </p>
 
           {server.lastError && server.status === "ERROR" && (
-            <p className="flex items-center gap-1 text-[9px] font-mono text-red-700 dark:text-red-400 font-semibold break-all">
+            <p className="flex items-center gap-1 text-xs font-sans text-[var(--state-error)] font-medium break-all">
               <CircleAlert className="h-3 w-3 shrink-0" />
               <span>{server.lastError}</span>
             </p>
@@ -1053,16 +1053,16 @@ function ServerCard(props: {
             <button
               type="button"
               onClick={props.onViewUpdate}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded border border-amber-400 bg-amber-50 dark:bg-amber-950/40 text-[8px] font-mono uppercase tracking-wider font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-950/60 transition-all cursor-pointer"
+              className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-xs font-sans font-medium text-[var(--state-warning)] hover:bg-[var(--state-warning)]/10 transition-colors cursor-pointer"
             >
-              <ArrowUpCircle className="h-3 w-3" /> VIEW UPDATE
+              <ArrowUpCircle className="h-3 w-3" /> View update
             </button>
           )}
           <ActionButton icon={Trash2} label="Delete" onClick={props.onDelete} disabled={busy} tone="danger" />
           <button
             type="button"
             onClick={props.onToggle}
-            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-300 dark:border-indigo-900/50 text-[8px] font-mono uppercase tracking-wider font-semibold text-slate-600 dark:text-slate-400 hover:border-indigo-400 transition-all cursor-pointer"
+            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 transition-colors cursor-pointer"
           >
             {expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
             Inspect
@@ -1089,13 +1089,13 @@ function ActionButton(props: {
       onClick={props.onClick}
       disabled={props.disabled}
       className={clsx(
-        "inline-flex items-center gap-1 px-2 py-1 rounded border text-[9px] font-mono uppercase tracking-wider font-semibold transition-all cursor-pointer disabled:opacity-50",
+        "inline-flex items-center gap-1 px-2 py-1 rounded border text-xs font-sans font-medium transition-colors cursor-pointer disabled:opacity-50",
         props.tone === "primary" &&
-        "border-indigo-500 bg-indigo-600 text-white hover:bg-indigo-500 shadow-sm shadow-indigo-500/30",
+        "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] hover:bg-[var(--cta-primary-hover)]",
         props.tone === "neutral" &&
-        "border-slate-300 dark:border-indigo-900/50 text-slate-600 dark:text-slate-400 hover:border-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300",
+        "border-[var(--border-strong)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)]",
         props.tone === "danger" &&
-        "border-red-300 dark:border-red-500/30 text-red-700 dark:text-red-300 hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-950/30"
+        "border-[var(--state-error)]/25 text-[var(--state-error)] hover:border-[var(--state-error)]/40 hover:bg-[var(--state-error)]/10"
       )}
     >
       <Icon className="h-3 w-3" /> {props.label}
@@ -1143,11 +1143,11 @@ function generateSamplePayload(schema: Record<string, unknown> | undefined): str
 type InspectorTab = "tools" | "resources" | "prompts" | "sampling" | "progress";
 
 const INSPECTOR_TABS: { id: InspectorTab; label: string; icon: typeof Braces; count?: (s: McpServerDTO) => number }[] = [
-  { id: "tools", label: "TOOLS", icon: Braces, count: (s) => s.cachedTools?.length ?? 0 },
-  { id: "resources", label: "RESOURCES", icon: Database },
-  { id: "prompts", label: "PROMPTS", icon: BookOpen },
-  { id: "sampling", label: "SAMPLING", icon: Brain },
-  { id: "progress", label: "PROGRESS", icon: Activity },
+  { id: "tools", label: "Tools", icon: Braces, count: (s) => s.cachedTools?.length ?? 0 },
+  { id: "resources", label: "Resources", icon: Database },
+  { id: "prompts", label: "Prompts", icon: BookOpen },
+  { id: "sampling", label: "Sampling", icon: Brain },
+  { id: "progress", label: "Progress", icon: Activity },
 ];
 
 function ToolInspector({ server, pendingUpdate, onViewUpdate }: { server: McpServerDTO; pendingUpdate?: McpToolUpdate; onViewUpdate?: () => void }) {
@@ -1156,9 +1156,9 @@ function ToolInspector({ server, pendingUpdate, onViewUpdate }: { server: McpSer
   const [schemaOpen, setSchemaOpen] = useState<string | null>(null);
 
   return (
-    <div className="border-t border-slate-200 dark:border-indigo-950/60 bg-slate-50/60 dark:bg-black/30">
+    <div className="border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60">
       {/* Tab bar */}
-      <div className="flex items-center gap-0.5 px-4 pt-3 border-b border-slate-200 dark:border-indigo-950/60">
+      <div className="flex items-center gap-0.5 px-4 pt-3 border-b border-[var(--border-subtle)]">
         {INSPECTOR_TABS.map((tab) => {
           const Icon = tab.icon;
           const count = tab.count?.(server);
@@ -1169,16 +1169,16 @@ function ToolInspector({ server, pendingUpdate, onViewUpdate }: { server: McpSer
               type="button"
               onClick={() => setActiveTab(tab.id)}
               className={clsx(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-t text-[9px] font-mono font-semibold uppercase tracking-wider border border-b-0 transition-all cursor-pointer",
+                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-t text-xs font-sans font-medium border border-b-0 transition-colors cursor-pointer",
                 isActive
-                  ? "border-indigo-500 bg-indigo-600 text-white shadow-sm"
-                  : "border-transparent text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:border-slate-300 dark:hover:border-indigo-800"
+                  ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
+                  : "border-transparent text-[var(--text-muted)] hover:text-[var(--accent-primary)] hover:border-[var(--border-strong)]"
               )}
             >
               <Icon className="h-3 w-3" />
               {tab.label}
               {count !== undefined && (
-                <span className={clsx("ml-0.5 text-[8px] font-normal", isActive ? "text-indigo-200" : "text-slate-400")}>
+                <span className={clsx("ml-0.5 text-xs font-normal", isActive ? "text-[var(--accent-primary)]" : "text-[var(--text-muted)]")}>
                   ({count})
                 </span>
               )}
@@ -1216,10 +1216,10 @@ function ToolsTab({ server, activeTestTool, setActiveTestTool, schemaOpen, setSc
   return (
     <div className="space-y-3">
       {pendingUpdate && (
-        <div className="flex items-center justify-between rounded border border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-950/30 px-3 py-2">
+        <div className="flex items-center justify-between rounded border border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 px-3 py-2">
           <div className="flex items-center gap-2">
-            <ArrowUpCircle className="h-4 w-4 text-amber-500" />
-            <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-300 uppercase">
+            <ArrowUpCircle className="h-4 w-4 text-[var(--state-warning)]" />
+            <span className="text-xs font-sans font-medium text-[var(--state-warning)]">
               {pendingUpdate.changes.length} tool update(s) available
             </span>
           </div>
@@ -1227,28 +1227,28 @@ function ToolsTab({ server, activeTestTool, setActiveTestTool, schemaOpen, setSc
             <button
               type="button"
               onClick={onViewUpdate}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-amber-400 bg-amber-100 dark:bg-amber-900/40 text-[9px] font-mono font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/60 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-xs font-sans font-medium text-[var(--state-warning)] hover:bg-[var(--state-warning)]/10 transition-colors cursor-pointer"
             >
-              <ArrowUpCircle className="h-3 w-3" /> VIEW & UPGRADE
+              <ArrowUpCircle className="h-3 w-3" /> View & upgrade
             </button>
           )}
         </div>
       )}
-      <div className="text-[10px] font-mono uppercase tracking-widest text-indigo-700 dark:text-indigo-400 font-semibold flex items-center justify-between">
+      <div className="text-xs font-sans text-[var(--accent-primary)] font-medium flex items-center justify-between">
         <span className="flex items-center gap-1.5">
           <Braces className="h-3.5 w-3.5" /> DISCOVERED TOOLS ({tools.length})
         </span>
-        <span className="text-[9px] text-slate-500 font-normal">
+        <span className="text-xs text-[var(--text-muted)] font-normal">
           Click TEST on any tool for live schema execution
         </span>
       </div>
 
       {tools.length === 0 ? (
-        <div className="rounded border border-dashed border-slate-300 dark:border-indigo-900/50 p-6 text-center space-y-1">
-          <p className="text-xs font-mono font-semibold text-slate-700 dark:text-slate-300">
+        <div className="rounded border border-dashed border-[var(--border-strong)] p-6 text-center space-y-1">
+          <p className="text-xs font-sans font-medium text-[var(--text-secondary)]">
             No tools cached yet.
           </p>
-          <p className="text-[11px] font-mono text-slate-500">
+          <p className="text-xs font-sans text-[var(--text-muted)]">
             Connect the server and run Rediscover to query the remote tools/list.
           </p>
         </div>
@@ -1262,17 +1262,17 @@ function ToolsTab({ server, activeTestTool, setActiveTestTool, schemaOpen, setSc
               <li
                 key={tool.name}
                 className={clsx(
-                  "rounded border bg-white/80 dark:bg-[#0a0a0a]/60 p-3 space-y-2 transition-all shadow-sm",
+                  "rounded border bg-[var(--surface-raised)]/80 p-3 space-y-2 transition-colors ",
                   isTesting
-                    ? "border-indigo-500/80 shadow-md shadow-indigo-500/10 ring-1 ring-indigo-500/30"
-                    : "border-slate-200 dark:border-indigo-900/40"
+                    ? "border-[var(--accent-primary)]/40 ring-1 ring-[var(--accent-primary)]/40"
+                    : "border-[var(--border-subtle)]"
                 )}
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setSchemaOpen((prev) => (prev === tool.name ? null : tool.name))}
-                    className="inline-flex items-center gap-1 text-xs font-mono font-semibold text-indigo-900 dark:text-indigo-200 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer min-w-0"
+                    className="inline-flex items-center gap-1 text-xs font-sans font-medium text-[var(--accent-primary)] hover:text-[var(--accent-primary)] cursor-pointer min-w-0"
                   >
                     {isSchemaOpen ? <ChevronDown className="h-3.5 w-3.5 shrink-0" /> : <ChevronRight className="h-3.5 w-3.5 shrink-0" />}
                     <span className="truncate">{tool.name}</span>
@@ -1280,17 +1280,17 @@ function ToolsTab({ server, activeTestTool, setActiveTestTool, schemaOpen, setSc
 
                   <span
                     className={clsx(
-                      "px-1.5 py-0.5 rounded border text-[9px] font-mono uppercase tracking-wider font-semibold",
+                      "px-1.5 py-0.5 rounded border text-xs font-sans font-medium",
                       tool.isWrite
-                        ? "border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300"
-                        : "border-sky-300 dark:border-sky-500/40 bg-sky-50 dark:bg-sky-950/40 text-sky-800 dark:text-sky-300"
+                        ? "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]"
+                        : "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]"
                     )}
                   >
                     {tool.isWrite ? "WRITE" : "READ"}
                   </span>
 
                   {tool.requiresApproval && (
-                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-amber-300 dark:border-amber-500/40 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 uppercase tracking-wider font-semibold text-[9px] font-mono">
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)] font-medium text-xs font-sans">
                       <ShieldCheck className="h-2.5 w-2.5" /> HITL
                     </span>
                   )}
@@ -1299,23 +1299,23 @@ function ToolsTab({ server, activeTestTool, setActiveTestTool, schemaOpen, setSc
                     type="button"
                     onClick={() => setActiveTestTool((prev) => (prev === tool.name ? null : tool.name))}
                     className={clsx(
-                      "ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded border text-[9px] font-mono uppercase tracking-wider font-semibold transition-all cursor-pointer",
+                      "ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded border text-xs font-sans font-medium transition-colors cursor-pointer",
                       isTesting
-                        ? "border-indigo-400 bg-indigo-700 text-white shadow-sm"
-                        : "border-indigo-500 bg-indigo-600 text-white hover:bg-indigo-500 shadow-sm shadow-indigo-500/20"
+                        ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
+                        : "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] hover:bg-[var(--cta-primary-hover)]"
                     )}
                   >
                     <Terminal className="h-3 w-3" />
-                    {isTesting ? "CLOSE TEST" : "TEST TOOL"}
+                    {isTesting ? "Close test" : "Test tool"}
                   </button>
                 </div>
 
                 {tool.description && (
-                  <p className="text-[10px] font-mono text-slate-600 dark:text-slate-400">{tool.description}</p>
+                  <p className="text-xs font-sans text-[var(--text-secondary)]">{tool.description}</p>
                 )}
 
                 {isSchemaOpen && (
-                  <pre className="rounded border border-slate-200 dark:border-indigo-900/40 bg-black/40 dark:bg-black/60 p-2.5 text-[9px] text-slate-700 dark:text-slate-300 font-mono overflow-x-auto max-h-56 overflow-y-auto whitespace-pre">
+                  <pre className="rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/40 p-2.5 text-xs text-[var(--text-secondary)] font-sans overflow-x-auto max-h-56 overflow-y-auto whitespace-pre">
                     {JSON.stringify(tool.inputSchema, null, 2)}
                   </pre>
                 )}
@@ -1401,11 +1401,11 @@ function ToolTestConsole({
   const propKeys = Object.keys(properties);
 
   return (
-    <div className="rounded border border-indigo-400/60 dark:border-indigo-700/60 bg-indigo-50/70 dark:bg-indigo-950/30 p-3.5 space-y-3 mt-2 animate-fadeInUp">
-      <div className="flex items-center justify-between border-b border-indigo-200 dark:border-indigo-900/50 pb-2">
+    <div className="rounded border border-[var(--accent-primary)]/40 bg-[var(--accent-primary)]/10 p-3.5 space-y-3 mt-2 animate-fadeInUp">
+      <div className="flex items-center justify-between border-b border-[var(--accent-primary)]/25 pb-2">
         <div className="flex items-center gap-2">
-          <Terminal className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
-          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-indigo-900 dark:text-indigo-200">
+          <Terminal className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
+          <span className="text-xs font-sans font-medium text-[var(--accent-primary)]">
             INTERACTIVE RUNTIME TEST // {tool.name}
           </span>
         </div>
@@ -1413,21 +1413,21 @@ function ToolTestConsole({
           <button
             type="button"
             onClick={handlePrettify}
-            className="text-[9px] font-mono text-indigo-700 dark:text-indigo-300 hover:underline cursor-pointer"
+            className="text-xs font-sans text-[var(--accent-primary)] hover:underline cursor-pointer"
           >
-            [ FORMAT JSON ]
+            Format JSON
           </button>
           <button
             type="button"
             onClick={handleReset}
-            className="text-[9px] font-mono text-indigo-700 dark:text-indigo-300 hover:underline cursor-pointer"
+            className="text-xs font-sans text-[var(--accent-primary)] hover:underline cursor-pointer"
           >
-            [ RESET SAMPLE ]
+            Reset sample
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-red-500 cursor-pointer ml-1"
+            className="text-[var(--text-muted)] hover:text-[var(--state-error)] cursor-pointer ml-1"
           >
             <X className="h-3.5 w-3.5" />
           </button>
@@ -1436,8 +1436,8 @@ function ToolTestConsole({
 
       {/* Schema parameter pills */}
       {propKeys.length > 0 && (
-        <div className="flex flex-wrap items-center gap-1.5 text-[9px] font-mono">
-          <span className="text-slate-500 font-semibold uppercase">EXPECTED PARAMS:</span>
+        <div className="flex flex-wrap items-center gap-1.5 text-xs font-sans">
+          <span className="text-[var(--text-muted)] font-medium">Expected params</span>
           {propKeys.map((k) => {
             const p = properties[k];
             if (!p) return null;
@@ -1449,12 +1449,12 @@ function ToolTestConsole({
                 className={clsx(
                   "px-1.5 py-0.5 rounded border",
                   isReq
-                    ? "border-indigo-400 dark:border-indigo-600 bg-indigo-100 dark:bg-indigo-900/60 text-indigo-900 dark:text-indigo-200 font-bold"
-                    : "border-slate-300 dark:border-slate-700 bg-white/70 dark:bg-black/40 text-slate-700 dark:text-slate-300"
+                    ? "border-[var(--accent-primary)]/40 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] font-medium"
+                    : "border-[var(--border-strong)] bg-[var(--surface-raised)]/70 text-[var(--text-secondary)]"
                 )}
               >
                 {k}: <span className="opacity-75">{p.type || "any"}</span>
-                {isReq && <span className="text-red-500 ml-0.5">*</span>}
+                {isReq && <span className="text-[var(--state-error)] ml-0.5">*</span>}
               </span>
             );
           })}
@@ -1463,16 +1463,16 @@ function ToolTestConsole({
 
       {/* JSON Payload Editor */}
       <div className="space-y-1">
-        <label className="text-[9px] font-mono uppercase tracking-widest text-slate-600 dark:text-slate-400 font-semibold flex items-center justify-between">
-          <span>CALL ARGUMENTS (JSON PAYLOAD)</span>
-          <span className="text-[8px] text-indigo-600 dark:text-indigo-400">PASSED DIRECTLY TO MCP CALLTOOL</span>
+        <label className="text-xs font-sans text-[var(--text-secondary)] font-medium flex items-center justify-between">
+          <span>Call arguments (JSON payload)</span>
+          <span className="text-xs text-[var(--accent-primary)]">Passed directly to MCP calltool</span>
         </label>
         <textarea
           value={args}
           onChange={(e) => setArgs(e.target.value)}
           spellCheck={false}
           rows={Math.min(8, Math.max(3, args.split("\n").length))}
-          className="w-full rounded border border-slate-300 dark:border-indigo-800/80 bg-white dark:bg-black/70 p-2.5 text-[11px] font-mono text-slate-900 dark:text-slate-100 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none resize-y"
+          className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2.5 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 focus:ring-1 focus:ring-[var(--accent-primary)]/40 outline-none resize-y"
           placeholder='{"param": "value"}'
         />
       </div>
@@ -1482,22 +1482,22 @@ function ToolTestConsole({
           type="button"
           onClick={() => void run()}
           disabled={running}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-indigo-500 bg-indigo-600 text-white text-[10px] font-mono font-semibold uppercase tracking-wider hover:bg-indigo-500 disabled:opacity-50 shadow-md shadow-indigo-500/25 cursor-pointer active:scale-95 transition-all"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer active:scale-95 transition-colors"
         >
           {running ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Zap className="h-3.5 w-3.5 fill-current" />}
-          {running ? "CALLING MCP TOOL..." : "EXECUTE MCP CALL"}
+          {running ? "Calling MCP tool…" : "Execute MCP call"}
         </button>
 
         {result && (
           <span
             className={clsx(
-              "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border text-[10px] font-mono uppercase tracking-wider font-semibold",
+              "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border text-xs font-sans font-medium",
               result.ok
-                ? "border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 shadow-sm"
-                : "border-red-300 dark:border-red-500/40 bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-300 shadow-sm"
+                ? "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)] "
+                : "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)] "
             )}
           >
-            {result.ok ? "STATUS: SUCCESS (200 OK)" : "STATUS: EXECUTION ERROR"} · <Zap className="h-3 w-3 inline" /> {result.durationMs}ms
+            {result.ok ? "Status: success (200 OK)" : "Status: execution error"} · <Zap className="h-3 w-3 inline" /> {result.durationMs}ms
           </span>
         )}
       </div>
@@ -1505,13 +1505,13 @@ function ToolTestConsole({
       {/* Result Display Console */}
       {result && (
         <div className="space-y-1 pt-1">
-          <div className="text-[9px] font-mono uppercase tracking-widest text-slate-600 dark:text-slate-400 font-semibold flex items-center justify-between">
-            <span>RESPONSE STREAM OUTPUT</span>
-            <span className={result.ok ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}>
+          <div className="text-xs font-sans text-[var(--text-secondary)] font-medium flex items-center justify-between">
+            <span>Response stream output</span>
+            <span className={result.ok ? "text-[var(--state-success)]" : "text-[var(--state-error)]"}>
               {result.ok ? "RAW_RESULT_OBJ" : "EXCEPTION_TRACE"}
             </span>
           </div>
-          <pre className="rounded border border-slate-300 dark:border-indigo-900/60 bg-black text-slate-100 p-3 text-[10px] font-mono overflow-x-auto max-h-72 overflow-y-auto whitespace-pre shadow-inner">
+          <pre className="rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-muted)] p-3 text-xs font-sans overflow-x-auto max-h-72 overflow-y-auto whitespace-pre">
             {JSON.stringify(result.output ?? result.error ?? result, null, 2)}
           </pre>
         </div>
@@ -1580,66 +1580,66 @@ function ResourcesTab({ server }: { server: McpServerDTO }) {
   if (server.status !== "CONNECTED") {
     return (
       <div className="text-center py-8 space-y-2">
-        <Database className="h-6 w-6 text-slate-400 mx-auto" />
-        <p className="text-xs font-mono text-slate-500">Connect the server to browse resources.</p>
+        <Database className="h-6 w-6 text-[var(--text-muted)] mx-auto" />
+        <p className="text-xs font-sans text-[var(--text-muted)]">Connect the server to browse resources.</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-3">
-      <div className="text-[10px] font-mono uppercase tracking-widest text-indigo-700 dark:text-indigo-400 font-semibold flex items-center justify-between">
+      <div className="text-xs font-sans text-[var(--accent-primary)] font-medium flex items-center justify-between">
         <span className="flex items-center gap-1.5">
-          <Database className="h-3.5 w-3.5" /> MCP RESOURCES
+          <Database className="h-3.5 w-3.5" /> MCP resources
         </span>
-        <button type="button" onClick={loadResources} disabled={loading} className="inline-flex items-center gap-1 hover:text-indigo-600 cursor-pointer">
+        <button type="button" onClick={loadResources} disabled={loading} className="inline-flex items-center gap-1 hover:text-[var(--accent-primary)] cursor-pointer">
           {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />} REFRESH
         </button>
       </div>
 
       {error && (
-        <div className="text-[10px] font-mono text-red-600 dark:text-red-400 px-2 py-1 rounded bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-500/30">{error}</div>
+        <div className="text-xs font-sans text-[var(--state-error)] px-2 py-1 rounded bg-[var(--state-error)]/10 border border-[var(--state-error)]/25">{error}</div>
       )}
 
       {resources === null || (loading && resources.length === 0) ? (
-        <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500 py-4">
-          <Loader2 className="h-4 w-4 animate-spin text-indigo-500" /> Loading resources...
+        <div className="flex items-center gap-2 text-xs font-sans text-[var(--text-muted)] py-4">
+          <Loader2 className="h-4 w-4 animate-spin text-[var(--accent-primary)]" /> Loading resources...
         </div>
       ) : resources.length === 0 ? (
         <div className="text-center py-6 space-y-1">
-          <p className="text-xs font-mono text-slate-600 dark:text-slate-400">No resources exposed by this server.</p>
-          <p className="text-[10px] font-mono text-slate-500">Resources are URI-addressable data exposed via MCP resources/list.</p>
+          <p className="text-xs font-sans text-[var(--text-secondary)]">No resources exposed by this server.</p>
+          <p className="text-xs font-sans text-[var(--text-muted)]">Resources are URI-addressable data exposed via MCP resources/list.</p>
         </div>
       ) : (
         <div className="space-y-2">
-          <div className="text-[9px] font-mono text-slate-500">{resources.length} resource(s) available — click to read content</div>
+          <div className="text-xs font-sans text-[var(--text-muted)]">{resources.length} resource(s) available — click to read content</div>
           {resources.map((res) => (
-            <div key={res.uri} className="rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 p-3 space-y-2">
+            <div key={res.uri} className="rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 p-3 space-y-2">
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0">
-                  <div className="text-xs font-mono font-semibold text-indigo-900 dark:text-indigo-200 truncate">{res.name ?? res.uri}</div>
-                  <div className="text-[9px] font-mono text-slate-500 truncate" title={res.uri}>{res.uri}</div>
+                  <div className="text-xs font-sans font-medium text-[var(--accent-primary)] truncate">{res.name ?? res.uri}</div>
+                  <div className="text-xs font-sans text-[var(--text-muted)] truncate" title={res.uri}>{res.uri}</div>
                 </div>
                 <div className="flex items-center gap-2">
                   {res.mimeType && (
-                    <span className="px-1.5 py-0.5 rounded border border-slate-300 dark:border-indigo-900/50 text-[8px] font-mono text-slate-500 uppercase">{res.mimeType}</span>
+                    <span className="px-1.5 py-0.5 rounded border border-[var(--border-strong)] text-xs font-sans text-[var(--text-muted)]">{res.mimeType}</span>
                   )}
                   <button
                     type="button"
                     onClick={() => readResource(res.uri)}
                     disabled={readingUri === res.uri}
-                    className="inline-flex items-center gap-1 px-2 py-1 rounded border border-indigo-500 bg-indigo-600 text-white text-[9px] font-mono font-semibold uppercase tracking-wider hover:bg-indigo-500 disabled:opacity-50 cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
                   >
                     {readingUri === res.uri ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Download className="h-2.5 w-2.5" />} READ
                   </button>
                 </div>
               </div>
-              {res.description && <p className="text-[10px] font-mono text-slate-600 dark:text-slate-400">{res.description}</p>}
+              {res.description && <p className="text-xs font-sans text-[var(--text-secondary)]">{res.description}</p>}
 
               {selectedUri === res.uri && resourceContent && (
-                <div className="mt-2 rounded border border-indigo-300 dark:border-indigo-700/50 bg-indigo-50/50 dark:bg-indigo-950/20 p-3 animate-fadeInUp">
-                  <div className="text-[9px] font-mono uppercase tracking-widest text-indigo-700 dark:text-indigo-400 font-semibold mb-2">RESOURCE CONTENT</div>
-                  <pre className="rounded border border-slate-200 dark:border-indigo-900/40 bg-black text-slate-100 p-3 text-[10px] font-mono overflow-x-auto max-h-72 overflow-y-auto whitespace-pre shadow-inner">
+                <div className="mt-2 rounded border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 p-3 animate-fadeInUp">
+                  <div className="text-xs font-sans text-[var(--accent-primary)] font-medium mb-2">Resource content</div>
+                  <pre className="rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-muted)] p-3 text-xs font-sans overflow-x-auto max-h-72 overflow-y-auto whitespace-pre">
                     {typeof resourceContent === "string"
                       ? resourceContent
                       : ((resourceContent as Record<string, unknown>)?.contents as Array<{ text?: string }>)?.[0]?.text ??
@@ -1726,51 +1726,51 @@ function PromptsTab({ server }: { server: McpServerDTO }) {
   if (server.status !== "CONNECTED") {
     return (
       <div className="text-center py-8 space-y-2">
-        <BookOpen className="h-6 w-6 text-slate-400 mx-auto" />
-        <p className="text-xs font-mono text-slate-500">Connect the server to browse prompt templates.</p>
+        <BookOpen className="h-6 w-6 text-[var(--text-muted)] mx-auto" />
+        <p className="text-xs font-sans text-[var(--text-muted)]">Connect the server to browse prompt templates.</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-3">
-      <div className="text-[10px] font-mono uppercase tracking-widest text-indigo-700 dark:text-indigo-400 font-semibold flex items-center justify-between">
+      <div className="text-xs font-sans text-[var(--accent-primary)] font-medium flex items-center justify-between">
         <span className="flex items-center gap-1.5">
-          <BookOpen className="h-3.5 w-3.5" /> MCP PROMPT TEMPLATES
+          <BookOpen className="h-3.5 w-3.5" /> MCP prompt templates
         </span>
-        <button type="button" onClick={loadPrompts} disabled={loading} className="inline-flex items-center gap-1 hover:text-indigo-600 cursor-pointer">
+        <button type="button" onClick={loadPrompts} disabled={loading} className="inline-flex items-center gap-1 hover:text-[var(--accent-primary)] cursor-pointer">
           {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />} REFRESH
         </button>
       </div>
 
       {error && (
-        <div className="text-[10px] font-mono text-red-600 dark:text-red-400 px-2 py-1 rounded bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-500/30">{error}</div>
+        <div className="text-xs font-sans text-[var(--state-error)] px-2 py-1 rounded bg-[var(--state-error)]/10 border border-[var(--state-error)]/25">{error}</div>
       )}
 
       {prompts === null || (loading && prompts.length === 0) ? (
-        <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500 py-4">
-          <Loader2 className="h-4 w-4 animate-spin text-indigo-500" /> Loading prompts...
+        <div className="flex items-center gap-2 text-xs font-sans text-[var(--text-muted)] py-4">
+          <Loader2 className="h-4 w-4 animate-spin text-[var(--accent-primary)]" /> Loading prompts...
         </div>
       ) : prompts.length === 0 ? (
         <div className="text-center py-6 space-y-1">
-          <p className="text-xs font-mono text-slate-600 dark:text-slate-400">No prompt templates exposed by this server.</p>
-          <p className="text-[10px] font-mono text-slate-500">Prompts are curated system prompt templates exposed via MCP prompts/list.</p>
+          <p className="text-xs font-sans text-[var(--text-secondary)]">No prompt templates exposed by this server.</p>
+          <p className="text-xs font-sans text-[var(--text-muted)]">Prompts are curated system prompt templates exposed via MCP prompts/list.</p>
         </div>
       ) : (
         <div className="space-y-2">
-          <div className="text-[9px] font-mono text-slate-500">{prompts.length} prompt template(s) available</div>
+          <div className="text-xs font-sans text-[var(--text-muted)]">{prompts.length} prompt template(s) available</div>
           {prompts.map((prompt) => (
-            <div key={prompt.name} className="rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 p-3 space-y-2">
+            <div key={prompt.name} className="rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 p-3 space-y-2">
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0">
-                  <div className="text-xs font-mono font-semibold text-indigo-900 dark:text-indigo-200">{prompt.name}</div>
-                  {prompt.description && <div className="text-[10px] font-mono text-slate-500 truncate">{prompt.description}</div>}
+                  <div className="text-xs font-sans font-medium text-[var(--accent-primary)]">{prompt.name}</div>
+                  {prompt.description && <div className="text-xs font-sans text-[var(--text-muted)] truncate">{prompt.description}</div>}
                 </div>
                 <button
                   type="button"
                   onClick={() => getPrompt(prompt.name)}
                   disabled={fetchingPrompt && selectedPrompt === prompt.name}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded border border-indigo-500 bg-indigo-600 text-white text-[9px] font-mono font-semibold uppercase tracking-wider hover:bg-indigo-500 disabled:opacity-50 cursor-pointer"
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
                 >
                   {fetchingPrompt && selectedPrompt === prompt.name ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Sparkles className="h-2.5 w-2.5" />} GET
                 </button>
@@ -1779,19 +1779,19 @@ function PromptsTab({ server }: { server: McpServerDTO }) {
               {/* Prompt arguments */}
               {prompt.arguments && prompt.arguments.length > 0 && (
                 <div className="space-y-1.5">
-                  <div className="text-[9px] font-mono uppercase tracking-widest text-slate-500 font-semibold">ARGUMENTS</div>
+                  <div className="text-xs font-sans text-[var(--text-muted)] font-medium">Arguments</div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                     {prompt.arguments.map((arg) => (
                       <div key={arg.name} className="flex items-center gap-2">
-                        <label className="text-[9px] font-mono text-slate-600 dark:text-slate-400 shrink-0">
-                          {arg.name}{arg.required && <span className="text-red-500 ml-0.5">*</span>}:
+                        <label className="text-xs font-sans text-[var(--text-secondary)] shrink-0">
+                          {arg.name}{arg.required && <span className="text-[var(--state-error)] ml-0.5">*</span>}:
                         </label>
                         <input
                           type="text"
                           value={promptArgs[arg.name] ?? ""}
                           onChange={(e) => setPromptArgs((prev) => ({ ...prev, [arg.name]: e.target.value }))}
                           placeholder={arg.description ?? arg.name}
-                          className="flex-1 rounded border border-slate-300 dark:border-indigo-800/60 bg-white dark:bg-black/50 px-2 py-0.5 text-[9px] font-mono text-slate-900 dark:text-slate-100 focus:border-indigo-500 outline-none"
+                          className="flex-1 rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2 py-0.5 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
                         />
                       </div>
                     ))}
@@ -1801,26 +1801,26 @@ function PromptsTab({ server }: { server: McpServerDTO }) {
 
               {/* Prompt result */}
               {selectedPrompt === prompt.name && promptResult && (
-                <div className="mt-2 rounded border border-indigo-300 dark:border-indigo-700/50 bg-indigo-50/50 dark:bg-indigo-950/20 p-3 animate-fadeInUp">
-                  <div className="text-[9px] font-mono uppercase tracking-widest text-indigo-700 dark:text-indigo-400 font-semibold mb-2">PROMPT RESULT</div>
+                <div className="mt-2 rounded border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 p-3 animate-fadeInUp">
+                  <div className="text-xs font-sans text-[var(--accent-primary)] font-medium mb-2">Prompt result</div>
                   {promptResult.messages ? (
                     <div className="space-y-2">
                       {promptResult.messages.map((msg, i: number) => (
-                        <div key={i} className="rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 p-2">
+                        <div key={i} className="rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 p-2">
                           <span className={clsx(
-                            "text-[8px] font-mono uppercase font-bold px-1.5 py-0.5 rounded mr-2",
+                            "text-xs font-sans font-medium px-1.5 py-0.5 rounded mr-2",
                             msg.role === "user"
-                              ? "bg-sky-100 dark:bg-sky-900/40 text-sky-800 dark:text-sky-300"
-                              : "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300"
+                              ? "bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]"
+                              : "bg-[var(--state-success)]/10 text-[var(--state-success)]"
                           )}>{msg.role}</span>
-                          <span className="text-[10px] font-mono text-slate-800 dark:text-slate-200">
+                          <span className="text-xs font-sans text-[var(--text-primary)]">
                             {typeof msg.content === "string" ? msg.content : msg.content?.text ?? JSON.stringify(msg.content)}
                           </span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <pre className="rounded border border-slate-200 dark:border-indigo-900/40 bg-black text-slate-100 p-3 text-[10px] font-mono overflow-x-auto whitespace-pre shadow-inner">
+                    <pre className="rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-muted)] p-3 text-xs font-sans overflow-x-auto whitespace-pre">
                       {JSON.stringify(promptResult, null, 2)}
                     </pre>
                   )}
@@ -1861,8 +1861,8 @@ function SamplingTab({ server }: { server: McpServerDTO }) {
   if (server.status !== "CONNECTED") {
     return (
       <div className="text-center py-8 space-y-2">
-        <Brain className="h-6 w-6 text-slate-400 mx-auto" />
-        <p className="text-xs font-mono text-slate-500">Connect the server to test sampling.</p>
+        <Brain className="h-6 w-6 text-[var(--text-muted)] mx-auto" />
+        <p className="text-xs font-sans text-[var(--text-muted)]">Connect the server to test sampling.</p>
       </div>
     );
   }
@@ -1902,49 +1902,49 @@ function SamplingTab({ server }: { server: McpServerDTO }) {
 
   return (
     <div className="space-y-3">
-      <div className="text-[10px] font-mono uppercase tracking-widest text-indigo-700 dark:text-indigo-400 font-semibold flex items-center gap-1.5">
+      <div className="text-xs font-sans text-[var(--accent-primary)] font-medium flex items-center gap-1.5">
         <Brain className="h-3.5 w-3.5" /> MCP SAMPLING (sampling/createMessage)
       </div>
 
-      <p className="text-[10px] font-mono text-slate-500">
+      <p className="text-xs font-sans text-[var(--text-muted)]">
         Send LLM sampling requests from connected MCP servers. Agent Hub acts as a sampling client,
         allowing nested agentic behavior where tools call Studio models without needing their own API keys.
       </p>
 
       <div className="space-y-2">
         <div className="space-y-1">
-          <label className="text-[9px] font-mono uppercase tracking-widest text-slate-600 dark:text-slate-400 font-semibold">MESSAGES (JSON ARRAY)</label>
+          <label className="text-xs font-sans text-[var(--text-secondary)] font-medium">Messages (JSON array)</label>
           <textarea
             value={messages}
             onChange={(e) => setMessages(e.target.value)}
             spellCheck={false}
             rows={5}
-            className="w-full rounded border border-slate-300 dark:border-indigo-800/80 bg-white dark:bg-black/70 p-2.5 text-[10px] font-mono text-slate-900 dark:text-slate-100 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none resize-y"
+            className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2.5 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 focus:ring-1 focus:ring-[var(--accent-primary)]/40 outline-none resize-y"
           />
         </div>
 
         <div className="grid grid-cols-3 gap-2">
           <div className="space-y-1">
-            <label className="text-[9px] font-mono uppercase tracking-widest text-slate-600 dark:text-slate-400 font-semibold">SYSTEM PROMPT</label>
+            <label className="text-xs font-sans text-[var(--text-secondary)] font-medium">System prompt</label>
             <input
               type="text"
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
               placeholder="Optional system prompt"
-              className="w-full rounded border border-slate-300 dark:border-indigo-800/60 bg-white dark:bg-black/50 px-2 py-1 text-[10px] font-mono text-slate-900 dark:text-slate-100 focus:border-indigo-500 outline-none"
+              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2 py-1 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[9px] font-mono uppercase tracking-widest text-slate-600 dark:text-slate-400 font-semibold">MAX TOKENS</label>
+            <label className="text-xs font-sans text-[var(--text-secondary)] font-medium">Max tokens</label>
             <input
               type="number"
               value={maxTokens}
               onChange={(e) => setMaxTokens(e.target.value)}
-              className="w-full rounded border border-slate-300 dark:border-indigo-800/60 bg-white dark:bg-black/50 px-2 py-1 text-[10px] font-mono text-slate-900 dark:text-slate-100 focus:border-indigo-500 outline-none"
+              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2 py-1 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[9px] font-mono uppercase tracking-widest text-slate-600 dark:text-slate-400 font-semibold">TEMPERATURE</label>
+            <label className="text-xs font-sans text-[var(--text-secondary)] font-medium">Temperature</label>
             <input
               type="number"
               step="0.1"
@@ -1952,7 +1952,7 @@ function SamplingTab({ server }: { server: McpServerDTO }) {
               max="2"
               value={temperature}
               onChange={(e) => setTemperature(e.target.value)}
-              className="w-full rounded border border-slate-300 dark:border-indigo-800/60 bg-white dark:bg-black/50 px-2 py-1 text-[10px] font-mono text-slate-900 dark:text-slate-100 focus:border-indigo-500 outline-none"
+              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2 py-1 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
             />
           </div>
         </div>
@@ -1961,25 +1961,25 @@ function SamplingTab({ server }: { server: McpServerDTO }) {
           type="button"
           onClick={handleSample}
           disabled={running}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-indigo-500 bg-indigo-600 text-white text-[10px] font-mono font-semibold uppercase tracking-wider hover:bg-indigo-500 disabled:opacity-50 shadow-md shadow-indigo-500/25 cursor-pointer active:scale-95 transition-all"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer active:scale-95 transition-colors"
         >
           {running ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Brain className="h-3.5 w-3.5" />}
-          {running ? "SAMPLING..." : "SEND SAMPLING REQUEST"}
+          {running ? "Sampling…" : "Send sampling request"}
         </button>
       </div>
 
       {error && (
-        <div className="text-[10px] font-mono text-red-600 dark:text-red-400 px-2 py-1 rounded bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-500/30">{error}</div>
+        <div className="text-xs font-sans text-[var(--state-error)] px-2 py-1 rounded bg-[var(--state-error)]/10 border border-[var(--state-error)]/25">{error}</div>
       )}
 
       {result && (
-        <div className="rounded border border-emerald-300 dark:border-emerald-500/40 bg-emerald-50/50 dark:bg-emerald-950/20 p-3 animate-fadeInUp">
-          <div className="text-[9px] font-mono uppercase tracking-widest text-emerald-700 dark:text-emerald-400 font-semibold mb-2">SAMPLING RESULT</div>
+        <div className="rounded border border-[var(--state-success)]/25 bg-[var(--state-success)]/10 p-3 animate-fadeInUp">
+          <div className="text-xs font-sans text-[var(--state-success)] font-medium mb-2">Sampling result</div>
           <div className="space-y-1">
-            <div className="text-[9px] font-mono text-slate-500">Model: <span className="text-emerald-700 dark:text-emerald-300 font-semibold">{result.model}</span></div>
-            {result.stopReason && <div className="text-[9px] font-mono text-slate-500">Stop: <span className="text-emerald-700 dark:text-emerald-300 font-semibold">{result.stopReason}</span></div>}
+            <div className="text-xs font-sans text-[var(--text-muted)]">Model: <span className="text-[var(--state-success)] font-medium">{result.model}</span></div>
+            {result.stopReason && <div className="text-xs font-sans text-[var(--text-muted)]">Stop: <span className="text-[var(--state-success)] font-medium">{result.stopReason}</span></div>}
           </div>
-          <pre className="mt-2 rounded border border-slate-200 dark:border-indigo-900/40 bg-black text-slate-100 p-3 text-[10px] font-mono overflow-x-auto max-h-60 overflow-y-auto whitespace-pre shadow-inner">
+          <pre className="mt-2 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-muted)] p-3 text-xs font-sans overflow-x-auto max-h-60 overflow-y-auto whitespace-pre">
             {result.content?.text ?? JSON.stringify(result, null, 2)}
           </pre>
         </div>
@@ -2050,81 +2050,81 @@ function ProgressTab({ server }: { server: McpServerDTO }) {
   if (server.status !== "CONNECTED") {
     return (
       <div className="text-center py-8 space-y-2">
-        <Activity className="h-6 w-6 text-slate-400 mx-auto" />
-        <p className="text-xs font-mono text-slate-500">Connect the server to view progress events.</p>
+        <Activity className="h-6 w-6 text-[var(--text-muted)] mx-auto" />
+        <p className="text-xs font-sans text-[var(--text-muted)]">Connect the server to view progress events.</p>
       </div>
     );
   }
 
   const typeColors: Record<string, string> = {
-    started: "border-sky-300 dark:border-sky-500/40 bg-sky-50 dark:bg-sky-950/40 text-sky-800 dark:text-sky-300",
-    progress: "border-indigo-300 dark:border-indigo-500/40 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-800 dark:text-indigo-300",
-    completed: "border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300",
-    failed: "border-red-300 dark:border-red-500/40 bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-300",
+    started: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+    progress: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+    completed: "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]",
+    failed: "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]",
   };
 
   return (
     <div className="space-y-3">
-      <div className="text-[10px] font-mono uppercase tracking-widest text-indigo-700 dark:text-indigo-400 font-semibold flex items-center justify-between">
+      <div className="text-xs font-sans text-[var(--accent-primary)] font-medium flex items-center justify-between">
         <span className="flex items-center gap-1.5">
-          <Activity className="h-3.5 w-3.5" /> PROGRESS NOTIFICATIONS (SSE)
+          <Activity className="h-3.5 w-3.5" /> Progress notifications (SSE)
         </span>
         <div className="flex items-center gap-2">
           <span className={clsx(
-            "inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[8px] font-mono",
+            "inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-xs font-sans",
             connected
-              ? "border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300"
-              : "border-slate-300 dark:border-slate-700 text-slate-500"
+              ? "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]"
+              : "border-[var(--border-strong)] text-[var(--text-muted)]"
           )}>
-            <span className={clsx("h-1.5 w-1.5 rounded-full", connected ? "bg-emerald-500 animate-pulse" : "bg-slate-400")} />
-            {connected ? "STREAM ACTIVE" : "DISCONNECTED"}
+            <span className={clsx("h-1.5 w-1.5 rounded-full", connected ? "bg-[var(--state-success)]" : "bg-[var(--surface-elevated)]")} />
+            {connected ? "Stream active" : "DISCONNECTED"}
           </span>
           {listening ? (
-            <button type="button" onClick={stopListening} className="inline-flex items-center gap-1 px-2 py-1 rounded border border-red-300 dark:border-red-500/30 text-red-700 dark:text-red-300 text-[9px] font-mono font-semibold uppercase cursor-pointer hover:bg-red-50 dark:hover:bg-red-950/30">
+            <button type="button" onClick={stopListening} className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--state-error)]/25 text-[var(--state-error)] text-xs font-sans font-medium cursor-pointer hover:bg-[var(--state-error)]/10">
               <X className="h-2.5 w-2.5" /> STOP
             </button>
           ) : (
-            <button type="button" onClick={startListening} className="inline-flex items-center gap-1 px-2 py-1 rounded border border-indigo-500 bg-indigo-600 text-white text-[9px] font-mono font-semibold uppercase cursor-pointer hover:bg-indigo-500">
-              <Activity className="h-2.5 w-2.5" /> START LISTENING
+            <button type="button" onClick={startListening} className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium cursor-pointer hover:bg-[var(--cta-primary-hover)]">
+              <Activity className="h-2.5 w-2.5" /> Start listening
             </button>
           )}
         </div>
       </div>
 
-      <p className="text-[10px] font-mono text-slate-500">
+      <p className="text-xs font-sans text-[var(--text-muted)]">
         Real-time progress events streamed via Server-Sent Events during MCP tool/resource/prompt calls.
         Start listening, then execute a tool from the Tools tab to see progress events here.
       </p>
 
-      <div className="text-[9px] font-mono text-slate-500">
+      <div className="text-xs font-sans text-[var(--text-muted)]">
         {events.length} event(s) received
       </div>
 
       {events.length === 0 ? (
         <div className="text-center py-6 space-y-1">
-          <p className="text-xs font-mono text-slate-600 dark:text-slate-400">No progress events yet.</p>
-          <p className="text-[10px] font-mono text-slate-500">Click START LISTENING, then run a tool to see progress events stream in real-time.</p>
+          <p className="text-xs font-sans text-[var(--text-secondary)]">No progress events yet.</p>
+          <p className="text-xs font-sans text-[var(--text-muted)]">Click START LISTENING, then run a tool to see progress events stream in real-time.</p>
         </div>
       ) : (
         <div className="space-y-1.5 max-h-96 overflow-y-auto">
           {events.map((event, i) => (
-            <div key={i} className="flex items-start gap-2 px-2 py-1.5 rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60">
+            <div key={i} className="flex items-start gap-2 px-2 py-1.5 rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80">
               <span className={clsx(
-                "px-1.5 py-0.5 rounded border text-[8px] font-mono font-bold uppercase shrink-0",
+                "px-1.5 py-0.5 rounded border text-xs font-sans font-medium shrink-0",
                 typeColors[event.type] ?? typeColors.started
               )}>{event.type}</span>
               <div className="min-w-0 flex-1">
-                <span className="text-[10px] font-mono text-slate-700 dark:text-slate-300 font-semibold">{event.operation}</span>
-                {event.detail && <span className="text-[10px] font-mono text-slate-500 ml-1">// {event.detail}</span>}
-                {event.message && <div className="text-[9px] font-mono text-slate-500 mt-0.5">{event.message}</div>}
-                {event.error && <div className="text-[9px] font-mono text-red-500 mt-0.5">{event.error}</div>}
+                <span className="text-xs font-sans text-[var(--text-secondary)] font-medium">{event.operation}</span>
+                {event.detail && <span className="text-xs font-sans text-[var(--text-muted)] ml-1">// {event.detail}</span>}
+                {event.message && <div className="text-xs font-sans text-[var(--text-muted)] mt-0.5">{event.message}</div>}
+                {event.error && <div className="text-xs font-sans text-[var(--state-error)] mt-0.5">{event.error}</div>}
                 {event.progress !== undefined && (
-                  <div className="mt-1 h-1.5 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
-                    <div className="h-full rounded-full bg-indigo-500 transition-all" style={{ width: `${event.progress}%` }} />
+                  <div className="mt-1 h-1.5 rounded-full bg-[var(--surface-sunken)] overflow-hidden">
+                    <div className="h-full rounded-full bg-[var(--cta-primary-bg)] transition-colors" style={{ width: `${event.progress}%` }} />
                   </div>
                 )}
               </div>
-              <span className="text-[8px] font-mono text-slate-400 shrink-0">
+              <span className="text-xs font-sans text-[var(--text-muted)] shrink-0">
                 {new Date(event.timestamp).toLocaleTimeString()}
               </span>
             </div>
@@ -2241,16 +2241,16 @@ function ConnectModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={onClose}>
       <div
-        className="w-full max-w-lg rounded border border-slate-200 dark:border-indigo-800/60 bg-white dark:bg-[#0a0a0a] shadow-2xl font-mono max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-lg rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)] font-sans max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-indigo-950/60 px-4 py-3">
-          <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide flex items-center gap-2">
-            <Plug className="h-4 w-4 text-indigo-600 dark:text-indigo-400" /> Connect MCP Server
+        <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-4 py-3">
+          <h2 className="text-sm font-medium text-[var(--text-primary)] flex items-center gap-2">
+            <Plug className="h-4 w-4 text-[var(--accent-primary)]" /> Connect MCP Server
           </h2>
-          <button type="button" onClick={onClose} className="text-slate-500 hover:text-red-500 cursor-pointer">
+          <button type="button" onClick={onClose} className="text-[var(--text-muted)] hover:text-[var(--state-error)] cursor-pointer">
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -2258,8 +2258,8 @@ function ConnectModal({
         <div className="p-4 space-y-4">
           {/* Presets */}
           <div className="space-y-1.5">
-            <div className="text-[9px] font-mono uppercase tracking-widest text-indigo-700 dark:text-indigo-400 font-semibold flex items-center gap-1">
-              <Zap className="h-3 w-3" /> 1-CLICK PRESETS
+            <div className="text-xs font-sans text-[var(--accent-primary)] font-medium flex items-center gap-1">
+              <Zap className="h-3 w-3" /> 1-Click presets
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
               {presets.map((preset) => (
@@ -2267,7 +2267,7 @@ function ConnectModal({
                   key={preset.id}
                   type="button"
                   onClick={() => applyPreset(preset)}
-                  className="text-left px-2 py-1.5 rounded border border-slate-200 dark:border-indigo-900/50 text-[9px] font-mono font-semibold text-slate-700 dark:text-slate-300 hover:border-indigo-400 transition-all cursor-pointer truncate"
+                  className="text-left px-2 py-1.5 rounded border border-[var(--border-subtle)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 transition-colors cursor-pointer truncate"
                 >
                   {preset.name}
                 </button>
@@ -2276,17 +2276,17 @@ function ConnectModal({
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[9px] font-mono uppercase tracking-widest text-slate-500 font-semibold">Server Name</label>
+            <label className="text-xs font-sans text-[var(--text-muted)] font-medium">Server Name</label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. GitHub MCP"
-              className="w-full rounded border border-slate-300 dark:border-indigo-800/60 bg-white dark:bg-black/50 p-2 text-[11px] font-mono text-slate-800 dark:text-slate-200 focus:border-indigo-400 outline-none"
+              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[9px] font-mono uppercase tracking-widest text-slate-500 font-semibold">Transport</label>
+            <label className="text-xs font-sans text-[var(--text-muted)] font-medium">Transport</label>
             <div className="grid grid-cols-2 gap-1.5">
               {(["SSE", "STDIO"] as const).map((t) => (
                 <button
@@ -2294,17 +2294,17 @@ function ConnectModal({
                   type="button"
                   onClick={() => setTransport(t)}
                   className={clsx(
-                    "px-3 py-2 rounded border text-[10px] font-mono uppercase tracking-wider font-semibold transition-all cursor-pointer",
+                    "px-3 py-2 rounded border text-xs font-sans font-medium transition-colors cursor-pointer",
                     transport === t
-                      ? "border-indigo-500 bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
-                      : "border-slate-300 dark:border-indigo-900/50 text-slate-600 dark:text-slate-400 hover:border-indigo-400"
+                      ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)]"
+                      : "border-[var(--border-strong)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40"
                   )}
                 >
                   {t === "SSE" ? "SSE / HTTP" : "STDIO"}
                 </button>
               ))}
             </div>
-            <p className="text-[9px] font-mono text-slate-500">
+            <p className="text-xs font-sans text-[var(--text-muted)]">
               {transport === "SSE"
                 ? "Remote server — Streamable HTTP with legacy SSE fallback."
                 : "Local process — e.g. npx -y @modelcontextprotocol/server-postgres <DATABASE_URL>"}
@@ -2313,25 +2313,25 @@ function ConnectModal({
 
           {transport === "SSE" ? (
             <div className="space-y-1.5">
-              <label className="text-[9px] font-mono uppercase tracking-widest text-slate-500 font-semibold">Endpoint URL</label>
+              <label className="text-xs font-sans text-[var(--text-muted)] font-medium">Endpoint URL</label>
               <input
                 value={endpointUrl}
                 onChange={(e) => setEndpointUrl(e.target.value)}
                 placeholder="https://mcp.example.com/sse"
-                className="w-full rounded border border-slate-300 dark:border-indigo-800/60 bg-white dark:bg-black/50 p-2 text-[11px] font-mono text-slate-800 dark:text-slate-200 focus:border-indigo-400 outline-none"
+                className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
               />
             </div>
           ) : (
             <div className="space-y-1.5">
-              <label className="text-[9px] font-mono uppercase tracking-widest text-slate-500 font-semibold">Command</label>
+              <label className="text-xs font-sans text-[var(--text-muted)] font-medium">Command</label>
               <input
                 value={command}
                 onChange={(e) => setCommand(e.target.value)}
                 placeholder="npx -y @modelcontextprotocol/server-filesystem ./data"
-                className="w-full rounded border border-slate-300 dark:border-indigo-800/60 bg-white dark:bg-black/50 p-2 text-[11px] font-mono text-slate-800 dark:text-slate-200 focus:border-indigo-400 outline-none"
+                className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
               />
               {command.includes("<") && command.includes(">") && (
-                <p className="text-[9px] font-mono text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                <p className="text-xs font-sans text-[var(--state-warning)] flex items-center gap-1">
                   💡 Replace placeholder tokens like &lt;PATH_TO_VAULT&gt; with your actual file path or connection string.
                 </p>
               )}
@@ -2339,13 +2339,13 @@ function ConnectModal({
           )}
 
           <div className="space-y-1.5">
-            <label className="text-[9px] font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center justify-between">
+            <label className="text-xs font-sans text-[var(--text-muted)] font-medium flex items-center justify-between">
               <span className="flex items-center gap-1">
-                <KeyRound className="h-3 w-3 text-amber-500" />
+                <KeyRound className="h-3 w-3 text-[var(--state-warning)]" />
                 Auth Token {activePreset?.requiresAuthToken ? "(required for this service)" : "(optional)"}
               </span>
               {activePreset?.requiresAuthToken && (
-                <span className="text-[8px] text-amber-600 dark:text-amber-400 font-semibold uppercase">Auth Required</span>
+                <span className="text-xs text-[var(--state-warning)] font-medium">Auth Required</span>
               )}
             </label>
             <input
@@ -2359,12 +2359,12 @@ function ConnectModal({
                     ? "BSA_xxxxxxxxxxxxxxxxxxxx (Brave Search API Key)"
                     : "Bearer token sent as an Authorization header"
               }
-              className="w-full rounded border border-slate-300 dark:border-indigo-800/60 bg-white dark:bg-black/50 p-2 text-[11px] font-mono text-slate-800 dark:text-slate-200 focus:border-indigo-400 outline-none"
+              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
             />
           </div>
 
           {error && (
-            <p className="text-[10px] font-mono text-red-700 dark:text-red-400 font-semibold flex items-center gap-1">
+            <p className="text-xs font-sans text-[var(--state-error)] font-medium flex items-center gap-1">
               <CircleAlert className="h-3 w-3 shrink-0" /> {error}
             </p>
           )}
@@ -2373,7 +2373,7 @@ function ConnectModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-2 rounded border border-slate-300 dark:border-indigo-900/50 text-[10px] font-mono font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 hover:border-indigo-400 cursor-pointer"
+              className="px-3 py-2 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 cursor-pointer"
             >
               Cancel
             </button>
@@ -2381,7 +2381,7 @@ function ConnectModal({
               type="button"
               onClick={() => void submit()}
               disabled={submitting || !name.trim() || (transport === "SSE" ? !endpointUrl.trim() : !command.trim())}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-indigo-500 bg-indigo-600 text-white text-[10px] font-mono font-semibold uppercase tracking-wider hover:bg-indigo-500 disabled:opacity-50 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
             >
               {submitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <PlugZap className="h-3.5 w-3.5" />}
               {submitting ? "Connecting…" : "Connect & Discover"}
@@ -2406,27 +2406,27 @@ function DeleteMcpServerModal({
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 animate-fadeIn"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-lg rounded border border-red-300/60 dark:border-red-500/40 bg-white dark:bg-[#0a0a0a] p-5 font-mono shadow-2xl space-y-4 animate-fadeInUp text-slate-900 dark:text-slate-100"
+        className="relative w-full max-w-lg rounded border border-[var(--state-error)]/25 bg-[var(--surface-raised)] p-5 font-sans space-y-4 animate-fadeInUp text-[var(--text-primary)]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-label="Confirm MCP Server Deletion"
       >
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-red-200 dark:border-red-950/60 pb-3">
+        <div className="flex items-start justify-between border-b border-[var(--state-error)]/25 pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded border border-red-400/50 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400">
-              <Trash2 className="h-4 w-4 animate-pulse" />
+            <div className="p-2 rounded border border-[var(--state-error)]/40 bg-[var(--state-error)]/10 text-[var(--state-error)]">
+              <Trash2 className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-red-600 dark:text-red-400 uppercase tracking-wide">
-                DELETE MCP SERVER
+              <h3 className="text-sm font-medium text-[var(--state-error)]">
+                Delete MCP server
               </h3>
-              <div className="text-[10px] text-slate-500 dark:text-slate-400">
+              <div className="text-xs text-[var(--text-muted)]">
                 [SYS::SEVER_MCP_INTEGRATION]
               </div>
             </div>
@@ -2435,71 +2435,71 @@ function DeleteMcpServerModal({
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1"
+            className="text-[var(--text-muted)] hover:text-[var(--text-secondary)] cursor-pointer p-1"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Warning Explanation */}
-        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+        <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
           Are you sure you want to delete this Model Context Protocol server configuration?
           All discovered tools will immediately be unmounted from the LangGraph execution runtime.
         </p>
 
         {/* Server Details Spec Box */}
-        <div className="rounded border border-slate-200 dark:border-indigo-900/40 bg-slate-50/80 dark:bg-black/60 p-3 space-y-2 text-xs">
+        <div className="rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/80 p-3 space-y-2 text-xs">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase text-slate-500 font-semibold">SERVER NAME:</span>
-            <span className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-              <Server className="h-3.5 w-3.5 text-indigo-500" />
+            <span className="text-xs text-[var(--text-muted)] font-medium">Server name</span>
+            <span className="font-medium text-[var(--text-primary)] flex items-center gap-1.5">
+              <Server className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
               {server.name}
             </span>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase text-slate-500 font-semibold">TRANSPORT:</span>
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold border border-slate-300 dark:border-indigo-800 bg-white dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 uppercase">
+            <span className="text-xs text-[var(--text-muted)] font-medium">Transport</span>
+            <span className="px-1.5 py-0.5 rounded text-xs font-medium border border-[var(--border-strong)] bg-[var(--surface-raised)] text-[var(--accent-primary)]">
               {server.transport} ({server.transport === "SSE" ? "REMOTE" : "LOCAL"})
             </span>
           </div>
 
-          <div className="flex items-center justify-between text-[11px]">
-            <span className="text-[10px] uppercase text-slate-500 font-semibold">
-              {server.transport === "SSE" ? "ENDPOINT:" : "COMMAND:"}
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-xs text-[var(--text-muted)] font-medium">
+              {server.transport === "SSE" ? "Endpoint" : "Command"}
             </span>
-            <span className="font-mono text-[10px] text-indigo-700 dark:text-indigo-400 max-w-[260px] truncate">
+            <span className="font-sans text-xs text-[var(--accent-primary)] max-w-[260px] truncate">
               {server.transport === "SSE" ? server.endpointUrl : server.command}
             </span>
           </div>
 
-          <div className="flex items-center justify-between pt-1 border-t border-slate-200 dark:border-indigo-950/60">
-            <span className="text-[10px] uppercase text-slate-500 font-semibold">CACHED TOOLS:</span>
-            <span className="font-bold text-red-600 dark:text-red-400 flex items-center gap-1">
+          <div className="flex items-center justify-between pt-1 border-t border-[var(--border-subtle)]">
+            <span className="text-xs text-[var(--text-muted)] font-medium">Cached tools</span>
+            <span className="font-medium text-[var(--state-error)] flex items-center gap-1">
               <Braces className="h-3 w-3" />
-              {server.cachedTools?.length ?? 0} TOOLS WILL BE UNMOUNTED
+              {server.cachedTools?.length ?? 0} Tools will be unmounted
             </span>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-200 dark:border-indigo-950/60">
+        <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-[var(--border-subtle)]">
           <button
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="px-4 py-2 rounded border border-slate-300 dark:border-indigo-900/50 text-xs font-mono font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 hover:border-indigo-400 hover:bg-slate-100 dark:hover:bg-indigo-950/40 cursor-pointer disabled:opacity-50 transition-all"
+            className="px-4 py-2 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:bg-[var(--surface-sunken)] cursor-pointer disabled:opacity-50 transition-colors"
           >
-            [ CANCEL ]
+            Cancel
           </button>
           <button
             type="button"
             onClick={onConfirm}
             disabled={isPending}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-red-500 bg-red-600 text-white text-xs font-mono font-semibold uppercase tracking-wider hover:bg-red-500 shadow-md shadow-red-500/30 disabled:opacity-50 cursor-pointer transition-all active:scale-95"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--state-error)]/40 bg-[var(--state-error)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--state-error)] disabled:opacity-50 cursor-pointer transition-colors active:scale-95"
           >
             {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-            {isPending ? "UNMOUNTING..." : "[ DELETE SERVER ]"}
+            {isPending ? "Unmounting…" : "DELETE server"}
           </button>
         </div>
       </div>
@@ -2566,26 +2566,26 @@ function ImportMcpModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 animate-fadeIn"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-xl rounded border border-slate-300 dark:border-indigo-900/60 bg-white dark:bg-[#0a0a0a] p-5 font-mono shadow-2xl space-y-4 animate-fadeInUp text-slate-900 dark:text-slate-100"
+        className="relative w-full max-w-xl rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-5 font-sans space-y-4 animate-fadeInUp text-[var(--text-primary)]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-label="Import MCP Server Configurations"
       >
-        <div className="flex items-start justify-between border-b border-slate-200 dark:border-indigo-950/60 pb-3">
+        <div className="flex items-start justify-between border-b border-[var(--border-subtle)] pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded border border-indigo-400/50 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400">
+            <div className="p-2 rounded border border-[var(--accent-primary)]/40 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]">
               <Upload className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wide">
-                IMPORT MCP SERVERS
+              <h3 className="text-sm font-medium text-[var(--text-primary)]">
+                Import MCP servers
               </h3>
-              <div className="text-[10px] text-slate-500 dark:text-slate-400">
+              <div className="text-xs text-[var(--text-muted)]">
                 [PORTABLE_BUNDLE::JSON_IMPORT]
               </div>
             </div>
@@ -2594,26 +2594,26 @@ function ImportMcpModal({
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1"
+            className="text-[var(--text-muted)] hover:text-[var(--text-secondary)] cursor-pointer p-1"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {error && (
-          <div className="p-2.5 rounded border border-red-300 dark:border-red-500/40 bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-300 text-xs">
+          <div className="p-2.5 rounded border border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)] text-xs">
             {error}
           </div>
         )}
 
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <label className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
-              PASTE JSON OR UPLOAD .JSON BUNDLE
+            <label className="text-xs text-[var(--text-muted)] font-medium">
+              Paste JSON or upload .JSON bundle
             </label>
-            <label className="inline-flex items-center gap-1 text-[10px] text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer">
+            <label className="inline-flex items-center gap-1 text-xs text-[var(--accent-primary)] hover:underline cursor-pointer">
               <Upload className="h-3 w-3" />
-              <span>CHOOSE FILE</span>
+              <span>Choose file</span>
               <input type="file" accept=".json,application/json" onChange={handleFileUpload} className="hidden" />
             </label>
           </div>
@@ -2626,27 +2626,27 @@ function ImportMcpModal({
             }}
             placeholder={`{\n  "version": "1.0",\n  "servers": [\n    {\n      "name": "Playwright MCP",\n      "transport": "STDIO",\n      "command": "npx -y @playwright/mcp@latest"\n    }\n  ]\n}`}
             rows={8}
-            className="w-full rounded border border-slate-300 dark:border-indigo-900/60 bg-slate-50/50 dark:bg-black/60 p-3 text-xs font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500"
+            className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)]/50 p-3 text-xs font-sans text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)]/40"
           />
         </div>
 
-        <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-200 dark:border-indigo-950/60">
+        <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-[var(--border-subtle)]">
           <button
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="px-4 py-2 rounded border border-slate-300 dark:border-indigo-900/50 text-xs font-mono font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 hover:border-indigo-400 hover:bg-slate-100 dark:hover:bg-indigo-950/40 cursor-pointer disabled:opacity-50 transition-all"
+            className="px-4 py-2 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:bg-[var(--surface-sunken)] cursor-pointer disabled:opacity-50 transition-colors"
           >
-            [ CANCEL ]
+            Cancel
           </button>
           <button
             type="button"
             onClick={() => void handleImport()}
             disabled={isPending || !jsonText.trim()}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-indigo-500 bg-indigo-600 text-white text-xs font-mono font-semibold uppercase tracking-wider hover:bg-indigo-500 shadow-md shadow-indigo-500/30 disabled:opacity-50 cursor-pointer transition-all active:scale-95"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer transition-colors active:scale-95"
           >
             {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
-            {isPending ? "IMPORTING..." : "[ IMPORT SERVERS ]"}
+            {isPending ? "Importing…" : "Import servers"}
           </button>
         </div>
       </div>
