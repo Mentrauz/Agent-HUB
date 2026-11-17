@@ -19,6 +19,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   compress: false,
   experimental: {
+    agentUpgrade: "security",
     optimizePackageImports: [
       "lucide-react",
     ],
