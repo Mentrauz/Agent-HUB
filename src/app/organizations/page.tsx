@@ -1,16 +1,20 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import {
-  Building2,
-  Plus,
-  Users,
-  Loader2,
-  ChevronRight,
-  Settings
-} from "lucide-react";
+import Link from "next/link";
+import { clsx } from "clsx";
 import { toast } from "@/stores/toastStore";
+import {
+  BTN_PRIMARY,
+  BTN_SECONDARY,
+  CARD,
+  INPUT,
+  LABEL,
+  META,
+  PageHeader,
+  ROW_HOVER,
+  plural,
+} from "@/components/ui/surfaces";
 
 // ────────────── Types ──────────────
 
@@ -26,7 +30,6 @@ interface Organization {
 // ────────────── Component ──────────────
 
 export default function OrganizationsPage() {
-  const router = useRouter();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -86,149 +89,108 @@ export default function OrganizationsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+      <div role="status" className="flex min-h-[400px] items-center justify-center font-sans text-sm text-[var(--text-muted)]">
+        Loading organizations
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 w-full font-mono">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-mono font-bold text-slate-900 dark:text-slate-100 flex items-center gap-3">
-            <Building2 className="h-6 w-6 text-indigo-500" />
-            Organizations
-          </h1>
-          <p className="text-sm font-mono text-slate-500 mt-1">
-            Manage your team workspaces and collaborators
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setShowCreateModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-mono font-bold hover:bg-indigo-500"
-        >
-          <Plus className="h-4 w-4" />
-          Create Organization
-        </button>
-      </div>
+    <div className="w-full space-y-6">
+      <PageHeader
+        title="Organizations"
+        meta="Team workspaces and their members"
+        action={
+          <button type="button" onClick={() => setShowCreateModal(true)} className={BTN_PRIMARY}>
+            New organization
+          </button>
+        }
+      />
 
-      {/* Organizations Grid */}
       {organizations.length === 0 ? (
-        <div className="text-center py-16 rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-700">
-          <Building2 className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-          <h3 className="text-lg font-mono font-bold text-slate-900 dark:text-slate-100 mb-2">
-            No organizations yet
-          </h3>
-          <p className="text-sm font-mono text-slate-500 mb-6">
-            Create an organization to collaborate with your team
-          </p>
-          <button
-            type="button"
-            onClick={() => setShowCreateModal(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-mono font-bold hover:bg-indigo-500"
-          >
-            <Plus className="h-4 w-4" />
-            Create Your First Organization
+        <div className="space-y-4 rounded-[14px] border border-dashed border-[var(--border-strong)] p-10 text-center">
+          <div className="space-y-1">
+            <h2 className="font-sans text-sm font-medium text-[var(--text-primary)]">No organizations yet</h2>
+            <p className="font-sans text-[13px] text-[var(--text-muted)]">
+              Create one to share skills and graphs with your team
+            </p>
+          </div>
+          <button type="button" onClick={() => setShowCreateModal(true)} className={BTN_SECONDARY}>
+            New organization
           </button>
         </div>
       ) : (
-        <div className="grid gap-4">
+        <ul className={clsx(CARD, "divide-y divide-[var(--border-subtle)] overflow-hidden")}>
           {organizations.map((org) => (
-            <div
-              key={org.id}
-              className="flex items-center justify-between p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
-                  <Building2 className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+            <li key={org.id}>
+              <Link
+                href={`/organizations/${org.id}`}
+                className={clsx(
+                  ROW_HOVER,
+                  "flex items-center justify-between gap-4 px-5 py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent-primary)]"
+                )}
+              >
+                <div className="min-w-0 space-y-1">
+                  <div className="truncate font-sans text-sm font-medium text-[var(--text-primary)]">{org.name}</div>
+                  <div className={META}>{org.slug}</div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-mono font-bold text-slate-900 dark:text-slate-100">
-                    {org.name}
-                  </h3>
-                  <div className="flex items-center gap-4 text-sm font-mono text-slate-500">
-                    <span className="flex items-center gap-1">
-                      <Users className="h-3.5 w-3.5" />
-                      {org.memberCount} member{org.memberCount !== 1 ? "s" : ""}
-                    </span>
-                    <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs">
-                      {org.plan}
-                    </span>
-                  </div>
+                <div className={clsx(META, "flex shrink-0 items-center gap-6")}>
+                  <span>{plural(org.memberCount, "member")}</span>
+                  <span>{org.plan}</span>
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => router.push(`/organizations/${org.id}`)}
-                  className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
-                  title="Settings"
-                >
-                  <Settings className="h-5 w-5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => router.push(`/organizations/${org.id}`)}
-                  className="p-2 rounded-lg text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
 
-      {/* Create Modal */}
+      {/* Create modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-md rounded-lg border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-700 dark:bg-slate-900">
-            <h3 className="text-lg font-mono font-bold text-slate-900 dark:text-slate-100 mb-4">
-              Create Organization
-            </h3>
+        <div
+          className="fixed inset-0 z-50 flex animate-fadeIn items-center justify-center bg-black/60 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="new-org-title"
+        >
+          <div className="w-full max-w-md space-y-5 rounded-[16px] border border-[var(--border-subtle)] bg-[var(--surface-elevated)] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.24)]">
+            <h2 id="new-org-title" className="font-sans text-base font-medium text-[var(--text-primary)]">
+              New organization
+            </h2>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-mono font-bold text-slate-500 mb-2">
-                  Organization Name
-                </label>
-                <input
-                  type="text"
-                  value={newOrgName}
-                  onChange={(e) => setNewOrgName(e.target.value)}
-                  placeholder="My Team"
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-mono"
-                  autoFocus
-                />
-              </div>
+            <div className="space-y-2">
+              <label htmlFor="new-org-name" className={LABEL}>
+                Name
+              </label>
+              <input
+                id="new-org-name"
+                type="text"
+                value={newOrgName}
+                onChange={(e) => setNewOrgName(e.target.value)}
+                placeholder="My team"
+                className={clsx(INPUT, "w-full")}
+                autoFocus
+              />
+            </div>
 
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowCreateModal(false);
-                    setNewOrgName("");
-                  }}
-                  className="px-4 py-2 rounded-lg text-sm font-mono font-bold border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCreate}
-                  disabled={creating || !newOrgName.trim()}
-                  className="px-4 py-2 rounded-lg text-sm font-mono font-bold bg-indigo-600 text-white hover:bg-indigo-500 disabled:opacity-50"
-                >
-                  {creating ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    "Create"
-                  )}
-                </button>
-              </div>
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCreateModal(false);
+                  setNewOrgName("");
+                }}
+                className={BTN_SECONDARY}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleCreate}
+                disabled={creating || !newOrgName.trim()}
+                className={BTN_PRIMARY}
+              >
+                {creating ? "Creating" : "Create"}
+              </button>
             </div>
           </div>
         </div>

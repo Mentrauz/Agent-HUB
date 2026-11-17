@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Play, Loader2, Award, CheckCircle2 } from "lucide-react";
+import { clsx } from "clsx";
 import { BenchmarkSuite, BenchmarkScorecard } from "@/types/benchmark";
 import { ModelDropdown } from "@/components/common/ModelDropdown";
+import { BTN_PRIMARY, BTN_SECONDARY, FIELD, INPUT, LABEL, META } from "@/components/ui/surfaces";
 
 interface RunBenchmarkModalProps {
   isOpen: boolean;
@@ -64,50 +65,50 @@ export function RunBenchmarkModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-xl rounded-xl border border-indigo-500/40 bg-white dark:bg-[#0a0a0c] font-mono shadow-2xl p-6 space-y-5">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-indigo-950/80 pb-3">
-          <div className="flex items-center gap-2">
-            <Award className="h-5 w-5 text-indigo-400" />
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100 font-pixel">
-              LAUNCH AGENT BENCHMARK EVALUATION
-            </h3>
-          </div>
+    <div
+      className="fixed inset-0 z-50 flex animate-fadeIn items-center justify-center bg-black/60 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="run-benchmark-title"
+    >
+      <div className="flex max-h-[90vh] w-full max-w-xl flex-col overflow-hidden rounded-[16px] border border-[var(--border-subtle)] bg-[var(--surface-elevated)] shadow-[0_8px_24px_rgba(0,0,0,0.24)]">
+        <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-5 py-4">
+          <h2 id="run-benchmark-title" className="font-sans text-base font-medium text-[var(--text-primary)]">
+            Run a benchmark
+          </h2>
           <button
             type="button"
             onClick={onClose}
             disabled={running}
-            className="text-slate-400 hover:text-white p-1"
+            aria-label="Close"
+            className="h-8 cursor-pointer rounded-[8px] px-2 font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)] disabled:opacity-50"
           >
-            <X className="h-4 w-4" />
+            Close
           </button>
         </div>
 
-        {/* Configuration Form */}
-        <div className="space-y-4 text-xs">
-          <div className="space-y-1.5">
-            <label className="text-[10px] text-slate-400 uppercase font-bold">
-              Select Benchmark Suite:
+        <div className="flex-1 space-y-5 overflow-y-auto p-5">
+          <div className="space-y-2">
+            <label htmlFor="bench-suite" className={LABEL}>
+              Suite
             </label>
             <select
+              id="bench-suite"
               value={selectedSuiteId}
               onChange={(e) => setSelectedSuiteId(e.target.value)}
               disabled={running}
-              className="w-full p-2.5 rounded border border-slate-300 dark:border-indigo-900/60 bg-slate-50 dark:bg-black/60 text-slate-900 dark:text-slate-100 font-mono"
+              className={clsx(FIELD, "h-9 w-full cursor-pointer px-3")}
             >
               {suites.map((s) => (
                 <option key={s.id} value={s.id}>
-                  [{s.badge}] {s.name} ({s.testCases.length} Tests)
+                  {s.name} ({s.testCases.length} tests)
                 </option>
               ))}
             </select>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-[10px] text-slate-400 uppercase font-bold">
-              Target Evaluation Model:
-            </label>
+          <div className="space-y-2">
+            <span className={LABEL}>Model</span>
             <ModelDropdown
               value={selectedModel}
               onChange={(m) => setSelectedModel(m)}
@@ -117,31 +118,28 @@ export function RunBenchmarkModal({
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-[10px] text-slate-400 uppercase font-bold">
-              Agent / Architecture Label:
+          <div className="space-y-2">
+            <label htmlFor="bench-label" className={LABEL}>
+              Label for this run
             </label>
             <input
+              id="bench-label"
               type="text"
               value={skillName}
               onChange={(e) => setSkillName(e.target.value)}
               disabled={running}
-              className="w-full p-2 rounded border border-slate-300 dark:border-indigo-900/60 bg-slate-50 dark:bg-black/60 text-slate-900 dark:text-slate-100 font-mono"
+              className={clsx(INPUT, "w-full")}
             />
           </div>
 
-          {/* Test Case Overview Card */}
           {currentSuite && (
-            <div className="p-3.5 rounded-lg border border-indigo-950/80 bg-slate-900/40 space-y-2">
-              <div className="text-[10px] text-indigo-300 font-bold uppercase">
-                Included Test Assertions ({currentSuite.testCases.length}):
-              </div>
-              <ul className="space-y-1 text-[10px] text-slate-400">
+            <div className="space-y-2">
+              <div className={LABEL}>Included tests ({currentSuite.testCases.length})</div>
+              <ul className="divide-y divide-[var(--border-subtle)] rounded-[8px] border border-[var(--border-subtle)]">
                 {currentSuite.testCases.map((tc) => (
-                  <li key={tc.id} className="flex items-center gap-1.5">
-                    <CheckCircle2 className="h-3 w-3 text-indigo-400" />
-                    <span>{tc.name}</span>
-                    <span className="text-[8px] text-slate-500">({tc.difficulty})</span>
+                  <li key={tc.id} className="flex items-baseline justify-between gap-3 px-3 py-2">
+                    <span className="font-sans text-[13px] text-[var(--text-secondary)]">{tc.name}</span>
+                    <span className={META}>{String(tc.difficulty).toLowerCase()}</span>
                   </li>
                 ))}
               </ul>
@@ -149,38 +147,18 @@ export function RunBenchmarkModal({
           )}
 
           {error && (
-            <div className="p-2.5 rounded border border-red-500/40 bg-red-950/30 text-red-300 text-[11px]">
+            <p role="alert" className="font-sans text-[13px] text-[var(--state-error)]">
               {error}
-            </div>
+            </p>
           )}
         </div>
 
-        {/* Footer Actions */}
-        <div className="pt-3 border-t border-indigo-950/80 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={running}
-            className="px-4 py-2 rounded text-xs text-slate-400 hover:text-slate-200 cursor-pointer"
-          >
-            CANCEL
+        <div className="flex items-center justify-end gap-2 border-t border-[var(--border-subtle)] px-5 py-4">
+          <button type="button" onClick={onClose} disabled={running} className={BTN_SECONDARY}>
+            Cancel
           </button>
-
-          <button
-            type="button"
-            onClick={handleRun}
-            disabled={running}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-indigo-400 bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 transition-all shadow-md cursor-pointer disabled:opacity-50"
-          >
-            {running ? (
-              <>
-                <Loader2 className="h-3.5 w-3.5 animate-spin" /> EXECUTING SUITE...
-              </>
-            ) : (
-              <>
-                <Play className="h-3.5 w-3.5" /> RUN BENCHMARK EVALUATION
-              </>
-            )}
+          <button type="button" onClick={handleRun} disabled={running} className={BTN_PRIMARY}>
+            {running ? "Running suite" : "Run benchmark"}
           </button>
         </div>
       </div>

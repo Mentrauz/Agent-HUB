@@ -4,12 +4,12 @@ import { clsx } from "clsx";
 /* ============================================================================
  * Skeleton primitives
  * A set of shimmering building blocks that mirror the app's terminal/pixel
- * design language (indigo-tinted, mono, bordered). Each primitive maps 1:1 to
+ * design language (neutral, token-based). Each primitive maps 1:1 to
  * a real UI element so skeleton → content swaps cause zero layout shift.
  * ==========================================================================*/
 
 export function Skeleton({ className }: { className?: string }) {
-  return <div className={clsx("skeleton-shimmer rounded bg-indigo-100 dark:bg-indigo-950/20", className)} aria-hidden />;
+  return <div className={clsx("skeleton-shimmer rounded bg-[var(--text-primary)]/[0.08]", className)} aria-hidden />;
 }
 
 function SkeletonText({
@@ -40,7 +40,7 @@ function SkeletonPageHeader({
   action?: boolean;
 }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 dark:border-indigo-950/80 pb-5" aria-hidden>
+    <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-5" aria-hidden>
       <div className="space-y-2">
         <Skeleton className="h-4 w-48" />
         {subtitle && <Skeleton className="h-2.5 w-64" />}
@@ -64,7 +64,7 @@ function SkeletonToolbar({ controls = 3 }: { controls?: number }) {
 function SkeletonCard({ className }: { className?: string }) {
   return (
     <div
-      className={clsx("p-5 rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-3 shadow-sm", className)}
+      className={clsx("p-5 rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)] space-y-3", className)}
       aria-hidden
     >
       <div className="flex items-center justify-between">
@@ -101,7 +101,7 @@ export function SkeletonList({ rows = 5 }: { rows?: number }) {
       {Array.from({ length: rows }).map((_, i) => (
         <div
           key={i}
-          className="flex items-center justify-between gap-3 p-4 rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 shadow-sm"
+          className="flex items-center justify-between gap-3 p-4 rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]"
         >
           <div className="space-y-2 flex-1 min-w-0">
             <Skeleton className="h-3.5 w-1/3" />
@@ -116,14 +116,14 @@ export function SkeletonList({ rows = 5 }: { rows?: number }) {
 
 export function SkeletonTable({ cols = 4, rows = 6 }: { cols?: number; rows?: number }) {
   return (
-    <div className="overflow-hidden rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 shadow-sm" aria-hidden>
-      <div className="flex items-center gap-4 border-b border-slate-200 dark:border-indigo-950/60 bg-slate-100 dark:bg-[#0a0a0a] px-4 py-3">
+    <div className="overflow-hidden rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]" aria-hidden>
+      <div className="flex items-center gap-4 border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)] px-4 py-3">
         {Array.from({ length: cols }).map((_, i) => (
           <Skeleton key={i} className="h-3 w-24" />
         ))}
       </div>
       {Array.from({ length: rows }).map((_, r) => (
-        <div key={r} className="flex items-center gap-4 border-b border-slate-200 dark:border-indigo-950/40 px-4 py-3.5">
+        <div key={r} className="flex items-center gap-4 border-b border-[var(--border-subtle)] px-4 py-3.5">
           {Array.from({ length: cols }).map((_, c) => (
             <Skeleton key={c} className={clsx("h-3", c === 0 ? "w-1/3" : "w-20")} />
           ))}
@@ -147,7 +147,7 @@ export function SkeletonPanels({ panels = 2, rows = 4 }: { panels?: number; rows
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" aria-hidden>
       {Array.from({ length: panels }).map((_, i) => (
-        <div key={i} className="p-6 rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-4 shadow-sm">
+        <div key={i} className="p-6 rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)] space-y-4">
           <div className="flex items-center justify-between">
             <Skeleton className="h-3.5 w-40" />
             <Skeleton className="h-3 w-16" />
@@ -186,7 +186,7 @@ export function SkeletonDashboard() {
     <FullPageSkeleton label="Loading dashboard">
       <SkeletonPageHeader action />
       <SkeletonMetrics cards={6} />
-      <div className="border-t border-slate-200 dark:border-indigo-950/80 pt-6 space-y-6">
+      <div className="border-t border-[var(--border-subtle)] pt-6 space-y-6">
         <Skeleton className="h-3.5 w-64" />
         <SkeletonPanels panels={4} rows={3} />
       </div>
@@ -235,14 +235,14 @@ export function SkeletonSkillForm() {
       <SkeletonPageHeader />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="p-5 rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-3 shadow-sm">
+          <div key={i} className="p-5 rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)] space-y-3">
             <Skeleton className="h-3.5 w-32" />
             <Skeleton className="h-10 w-full rounded" />
             <SkeletonText lines={2} />
           </div>
         ))}
       </div>
-      <div className="p-5 rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-3 shadow-sm">
+      <div className="p-5 rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)] space-y-3">
         <Skeleton className="h-3.5 w-40" />
         <Skeleton className="h-32 w-full rounded" />
       </div>
@@ -331,7 +331,7 @@ export function SkeletonSettings() {
     <FullPageSkeleton label="Loading settings">
       <SkeletonPageHeader />
       <div className="space-y-6">
-        <div className="p-6 rounded border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-4 shadow-sm">
+        <div className="p-6 rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)] space-y-4">
           <Skeleton className="h-14 w-14 rounded-full" />
           <SkeletonText lines={2} />
         </div>

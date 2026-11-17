@@ -1,15 +1,28 @@
 "use client";
 
 import React, { useState } from "react";
-import { Database, Play, ChevronDown, ChevronUp, Plus, X } from "lucide-react";
+import { clsx } from "clsx";
 import { EvalDataset } from "@/types/evals";
 import { toast } from "@/stores/toastStore";
+import {
+  BTN_PRIMARY,
+  BTN_SECONDARY,
+  BTN_SECONDARY_SM,
+  CARD,
+  FIELD,
+  INPUT,
+  LABEL,
+  META,
+  SECTION_TITLE,
+} from "@/components/ui/surfaces";
 
 interface EvalDatasetsTabProps {
   datasets: EvalDataset[];
   onRunDataset: (dataset: EvalDataset) => void;
   onRefresh: () => void;
 }
+
+const SAMPLE_LABEL = "font-sans text-[13px] text-[var(--text-muted)]";
 
 export function EvalDatasetsTab({ datasets, onRunDataset, onRefresh }: EvalDatasetsTabProps) {
   const [expandedDatasetId, setExpandedDatasetId] = useState<string | null>(datasets[0]?.id || null);
@@ -79,236 +92,185 @@ export function EvalDatasetsTab({ datasets, onRunDataset, onRefresh }: EvalDatas
   };
 
   return (
-    <div className="space-y-4 font-mono">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-indigo-950/80 pb-2.5">
-        <div className="flex items-center gap-2">
-          <Database className="h-4 w-4 text-indigo-500" />
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
-            GOLDEN TEST DATASETS ({datasets.length})
-          </h3>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-baseline gap-3">
+          <h2 className={SECTION_TITLE}>Golden datasets</h2>
+          <span className={META}>{datasets.length}</span>
         </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setCreateModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-indigo-300 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-200 text-xs font-bold hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition-all shadow-sm cursor-pointer"
-          >
-            <Plus className="h-3.5 w-3.5" /> CREATE NEW DATASET
-          </button>
-        </div>
+        <button type="button" onClick={() => setCreateModalOpen(true)} className={BTN_SECONDARY}>
+          New dataset
+        </button>
       </div>
 
-      <div className="space-y-3">
+      <ul className={clsx(CARD, "divide-y divide-[var(--border-subtle)] overflow-hidden")}>
         {datasets.map((ds) => {
           const isExpanded = expandedDatasetId === ds.id;
           return (
-            <div
-              key={ds.id}
-              className="rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0c]/80 shadow-sm transition-all overflow-hidden"
-            >
-              {/* Dataset Header Row */}
-              <div className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50 dark:bg-black/30">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded text-[9px] font-bold border border-indigo-300 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 uppercase">
-                      {ds.category}
-                    </span>
-                    <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">
-                      {ds.name}
-                    </h4>
+            <li key={ds.id}>
+              <div className="flex flex-col justify-between gap-3 px-5 py-4 sm:flex-row sm:items-center">
+                <div className="min-w-0 space-y-1">
+                  <div className="flex items-baseline gap-3">
+                    <h3 className="truncate font-sans text-sm font-medium text-[var(--text-primary)]">{ds.name}</h3>
+                    <span className={META}>{String(ds.category).toLowerCase().replace(/_/g, " ")}</span>
                   </div>
-                  <p className="text-[11px] text-slate-600 dark:text-slate-400 font-sans leading-relaxed">
-                    {ds.description}
-                  </p>
+                  <p className="font-sans text-[13px] leading-5 text-[var(--text-secondary)]">{ds.description}</p>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-[10px] text-slate-400 font-mono">
-                    {ds.items.length} Test Samples
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => onRunDataset(ds)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-indigo-400 bg-indigo-600 text-white text-[10px] font-bold hover:bg-indigo-500 transition-all shadow-sm cursor-pointer"
-                  >
-                    <Play className="h-3 w-3" /> EVALUATE ON DATASET
+                <div className="flex shrink-0 items-center gap-2">
+                  <span className={clsx(META, "mr-2")}>{ds.items.length} samples</span>
+                  <button type="button" onClick={() => onRunDataset(ds)} className={BTN_SECONDARY_SM}>
+                    Evaluate
                   </button>
                   <button
                     type="button"
                     onClick={() => setExpandedDatasetId(isExpanded ? null : ds.id)}
-                    className="p-1.5 rounded border border-slate-300 dark:border-indigo-900/60 bg-white dark:bg-black text-slate-600 dark:text-slate-400 hover:text-indigo-400 cursor-pointer"
+                    aria-expanded={isExpanded}
+                    className={BTN_SECONDARY_SM}
                   >
-                    {isExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                    {isExpanded ? "Hide samples" : "Show samples"}
                   </button>
                 </div>
               </div>
 
-              {/* Expandable Test Cases Preview */}
               {isExpanded && (
-                <div className="p-4 border-t border-slate-200 dark:border-indigo-950/80 bg-white dark:bg-black/50 space-y-3">
-                  <div className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">
-                    Included Golden Samples:
-                  </div>
+                <ul className="divide-y divide-[var(--border-subtle)] border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
+                  {ds.items.map((item, idx) => (
+                    <li key={item.id} className="space-y-3 px-5 py-4">
+                      <div className={clsx(META, "flex flex-wrap items-center justify-between gap-2")}>
+                        <span>
+                          {idx + 1} · {item.id}
+                        </span>
+                        {item.tags && <span>{item.tags.join(", ")}</span>}
+                      </div>
 
-                  <div className="space-y-2">
-                    {ds.items.map((item, idx) => (
-                      <div
-                        key={item.id}
-                        className="p-3 rounded-lg border border-slate-200 dark:border-indigo-950/60 bg-slate-50/70 dark:bg-slate-950/40 text-xs space-y-2"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-indigo-400">
-                            #{idx + 1} Sample ID: {item.id}
-                          </span>
-                          {item.tags && (
-                            <div className="flex items-center gap-1">
-                              {item.tags.map((t) => (
-                                <span
-                                  key={t}
-                                  className="text-[8px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-indigo-950/80 text-slate-700 dark:text-slate-300"
-                                >
-                                  #{t}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="space-y-1 text-[11px] font-sans">
-                          <div>
-                            <span className="font-mono text-[9px] font-bold uppercase text-slate-500 block">
-                              Input Query:
-                            </span>
-                            <span className="text-slate-800 dark:text-slate-200">
-                              {typeof item.input === "string" ? item.input : JSON.stringify(item.input)}
-                            </span>
-                          </div>
-
-                          {item.context && (
-                            <div className="pt-1">
-                              <span className="font-mono text-[9px] font-bold uppercase text-violet-400 block">
-                                Injected RAG Context:
-                              </span>
-                              <p className="text-[10px] text-slate-600 dark:text-slate-400 italic line-clamp-2">
-                                {Array.isArray(item.context) ? item.context.join(" ") : item.context}
-                              </p>
-                            </div>
-                          )}
-
-                          {item.groundTruth && (
-                            <div className="pt-1">
-                              <span className="font-mono text-[9px] font-bold uppercase text-emerald-400 block">
-                                Reference Ground Truth:
-                              </span>
-                              <span className="text-emerald-700 dark:text-emerald-300 text-[10px]">
-                                {item.groundTruth}
-                              </span>
-                            </div>
-                          )}
+                      <div className="space-y-1">
+                        <div className={SAMPLE_LABEL}>Input</div>
+                        <div className="font-sans text-sm text-[var(--text-primary)]">
+                          {typeof item.input === "string" ? item.input : JSON.stringify(item.input)}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
+
+                      {item.context && (
+                        <div className="space-y-1">
+                          <div className={SAMPLE_LABEL}>Context given to the model</div>
+                          <p className="line-clamp-2 font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
+                            {Array.isArray(item.context) ? item.context.join(" ") : item.context}
+                          </p>
+                        </div>
+                      )}
+
+                      {item.groundTruth && (
+                        <div className="space-y-1">
+                          <div className={SAMPLE_LABEL}>Reference answer</div>
+                          <p className="font-sans text-[13px] leading-5 text-[var(--text-secondary)]">{item.groundTruth}</p>
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               )}
-            </div>
+            </li>
           );
         })}
-      </div>
+      </ul>
 
-      {/* Create Custom Dataset Modal */}
+      {/* New dataset modal */}
       {createModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fadeIn">
-          <div className="relative w-full max-w-xl rounded-xl border border-indigo-500/40 bg-white dark:bg-[#0a0a0c] shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
-            <div className="flex items-center justify-between border-b border-indigo-950/80 pb-3">
-              <div className="flex items-center gap-2">
-                <Database className="h-5 w-5 text-indigo-400" />
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100 font-pixel">
-                  CREATE CUSTOM GOLDEN DATASET
-                </h3>
-              </div>
+        <div
+          className="fixed inset-0 z-50 flex animate-fadeIn items-center justify-center bg-black/60 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="new-dataset-title"
+        >
+          <div className="custom-scrollbar flex max-h-[90vh] w-full max-w-xl flex-col overflow-hidden rounded-[16px] border border-[var(--border-subtle)] bg-[var(--surface-elevated)] shadow-[0_8px_24px_rgba(0,0,0,0.24)]">
+            <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-5 py-4">
+              <h2 id="new-dataset-title" className="font-sans text-base font-medium text-[var(--text-primary)]">
+                New golden dataset
+              </h2>
               <button
                 type="button"
                 onClick={() => setCreateModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 cursor-pointer"
+                className="h-8 cursor-pointer rounded-[8px] px-2 font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
               >
-                <X className="h-4 w-4" />
+                Close
               </button>
             </div>
 
-            <div className="space-y-3 text-xs">
-              <div className="space-y-1">
-                <label className="text-[10px] text-slate-400 uppercase font-bold">Dataset Name:</label>
+            <div className="flex-1 space-y-4 overflow-y-auto p-5">
+              <div className="space-y-2">
+                <label htmlFor="ds-name" className={LABEL}>
+                  Name
+                </label>
                 <input
+                  id="ds-name"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Healthcare QA Verification Golden Set"
-                  className="w-full p-2.5 rounded border border-slate-300 dark:border-indigo-900/60 bg-slate-50 dark:bg-black/60 text-slate-900 dark:text-slate-100 font-mono text-xs"
+                  placeholder="Healthcare QA verification set"
+                  className={clsx(INPUT, "w-full")}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-[10px] text-slate-400 uppercase font-bold">Category:</label>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <label htmlFor="ds-category" className={LABEL}>
+                    Category
+                  </label>
                   <input
+                    id="ds-category"
                     type="text"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    placeholder="e.g. HEALTHCARE_RAG"
-                    className="w-full p-2 rounded border border-slate-300 dark:border-indigo-900/60 bg-slate-50 dark:bg-black/60 text-slate-900 dark:text-slate-100 font-mono text-xs"
+                    placeholder="HEALTHCARE_RAG"
+                    className={clsx(INPUT, "w-full font-mono text-xs")}
                   />
                 </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] text-slate-400 uppercase font-bold">Description:</label>
+                <div className="space-y-2">
+                  <label htmlFor="ds-desc" className={LABEL}>
+                    Description
+                  </label>
                   <input
+                    id="ds-desc"
                     type="text"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Brief purpose of the dataset"
-                    className="w-full p-2 rounded border border-slate-300 dark:border-indigo-900/60 bg-slate-50 dark:bg-black/60 text-slate-900 dark:text-slate-100 font-mono text-xs"
+                    placeholder="What this set checks"
+                    className={clsx(INPUT, "w-full")}
                   />
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[10px] text-slate-400 uppercase font-bold flex items-center justify-between">
-                  <span>Test Samples JSON Array:</span>
-                  <span className="text-[9px] text-indigo-400 font-normal">JSON Schema: [&#123; id, input, context?, groundTruth? &#125;]</span>
-                </label>
+              <div className="space-y-2">
+                <div className="flex items-baseline justify-between gap-3">
+                  <label htmlFor="ds-items" className={LABEL}>
+                    Samples (JSON array)
+                  </label>
+                  <span className={META}>{"{ id, input, context?, groundTruth? }"}</span>
+                </div>
                 <textarea
+                  id="ds-items"
                   value={rawItemsJson}
                   onChange={(e) => setRawItemsJson(e.target.value)}
                   rows={8}
-                  className="w-full p-2.5 rounded border border-slate-300 dark:border-indigo-900/60 bg-slate-50 dark:bg-black/60 text-slate-900 dark:text-slate-100 font-mono text-[11px] leading-relaxed"
+                  spellCheck={false}
+                  className={clsx(FIELD, "w-full p-3 font-mono text-xs leading-5")}
                 />
               </div>
 
               {error && (
-                <div className="p-2.5 rounded border border-red-500/40 bg-red-950/30 text-red-300 text-[11px]">
+                <p role="alert" className="font-sans text-[13px] text-[var(--state-error)]">
                   {error}
-                </div>
+                </p>
               )}
             </div>
 
-            <div className="pt-3 border-t border-indigo-950/80 flex items-center justify-between">
-              <button
-                type="button"
-                onClick={() => setCreateModalOpen(false)}
-                className="px-4 py-2 rounded text-xs text-slate-400 hover:text-slate-200 cursor-pointer"
-              >
-                CANCEL
+            <div className="flex items-center justify-end gap-2 border-t border-[var(--border-subtle)] px-5 py-4">
+              <button type="button" onClick={() => setCreateModalOpen(false)} className={BTN_SECONDARY}>
+                Cancel
               </button>
-
-              <button
-                type="button"
-                onClick={handleCreateDataset}
-                disabled={saving}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-indigo-400 bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 transition-all shadow-md cursor-pointer disabled:opacity-50"
-              >
-                <Plus className="h-3.5 w-3.5" /> SAVE DATASET
+              <button type="button" onClick={handleCreateDataset} disabled={saving} className={BTN_PRIMARY}>
+                {saving ? "Saving" : "Save dataset"}
               </button>
             </div>
           </div>

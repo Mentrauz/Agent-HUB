@@ -3,10 +3,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Shield, Play, X, ArrowUpRight, Clock, MessageSquare } from "lucide-react";
+import { clsx } from "clsx";
 import { ApprovalRequestDTO } from "@/types/approval";
 import { executionsApi } from "@/lib/api/executions";
 import { toast } from "@/stores/toastStore";
+import { BTN_PRIMARY_SM, BTN_SECONDARY_SM, CARD, CARD_HEAD, CARD_TITLE, HEAD_LINK, META } from "@/components/ui/surfaces";
 
 interface EnhancedApprovalQueueProps {
   approvals: ApprovalRequestDTO[];
@@ -14,7 +15,7 @@ interface EnhancedApprovalQueueProps {
   totalCount: number;
 }
 
-function formatDate(d: Date | string): string {
+function formatTime(d: Date | string): string {
   return new Date(d).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 }
 
@@ -72,135 +73,108 @@ export function EnhancedApprovalQueue({ approvals, totalCount }: EnhancedApprova
   const isBusy = approveMutation.isPending || rejectMutation.isPending;
 
   return (
-    <div className="p-5 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-4 h-full shadow-sm font-mono flex flex-col justify-between">
-      <div className="space-y-3">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Shield className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
-              HUMAN REVIEW QUEUE ({totalCount})
-            </h3>
-          </div>
-          <Link
-            href="/dashboard/review"
-            className="text-[11px] text-amber-700 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 font-semibold flex items-center gap-1"
-          >
-            [ FULL QUEUE ] <ArrowUpRight className="h-3 w-3" />
-          </Link>
+    <section className={clsx(CARD, "h-full")}>
+      <div className={CARD_HEAD}>
+        <div className="flex items-baseline gap-3">
+          <h2 className={CARD_TITLE}>Human review</h2>
+          <span className={clsx(META, totalCount > 0 && "text-[var(--accent-primary)]")}>{totalCount} pending</span>
         </div>
-
-        {/* List of approvals */}
-        {approvals.length === 0 ? (
-          <div className="py-6 text-center space-y-1.5 border border-dashed border-slate-200 dark:border-indigo-950/60 rounded-md p-4">
-            <Shield className="h-6 w-6 text-emerald-500 mx-auto opacity-80" />
-            <p className="text-xs font-bold text-slate-800 dark:text-slate-200">Review queue is clear</p>
-            <p className="text-[11px] text-slate-500 font-sans">
-              When an agent requests a write action requiring human approval, it will appear here.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {approvals.slice(0, 3).map((req) => (
-              <div
-                key={req.id}
-                className="p-3.5 rounded-lg border border-amber-300/80 dark:border-amber-500/40 bg-amber-50/40 dark:bg-amber-950/20 space-y-2.5 shadow-sm"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded bg-amber-200/70 dark:bg-amber-900/50 text-amber-900 dark:text-amber-200 text-[10px] font-bold">
-                      {req.toolName}
-                    </span>
-                    <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
-                      {req.action}
-                    </span>
-                  </div>
-                  <span className="text-[10px] text-slate-500 flex items-center gap-1 font-medium">
-                    <Clock className="h-3 w-3" /> {formatDate(req.requestedAt)}
-                  </span>
-                </div>
-
-                {req.plannerReason && (
-                  <p className="text-[11px] text-slate-700 dark:text-slate-300 italic line-clamp-2 bg-white/60 dark:bg-black/40 p-2 rounded border border-amber-200/50 dark:border-amber-950/40">
-                    &ldquo;{req.plannerReason}&rdquo;
-                  </p>
-                )}
-
-                {rejectingId === req.id ? (
-                  <div className="space-y-2 pt-1 animate-fadeIn">
-                    <div className="flex items-center gap-1 text-[10px] text-red-600 dark:text-red-400 font-semibold">
-                      <MessageSquare className="h-3 w-3" /> Rejection Reason:
-                    </div>
-                    <input
-                      type="text"
-                      value={rejectReason}
-                      onChange={(e) => setRejectReason(e.target.value)}
-                      placeholder="Why is this being rejected?"
-                      className="w-full text-xs font-mono rounded border border-red-300 dark:border-red-500/40 bg-white dark:bg-black/60 px-2.5 py-1.5 text-slate-900 dark:text-slate-100"
-                    />
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => rejectMutation.mutate({ req, reason: rejectReason })}
-                        disabled={isBusy}
-                        className="px-2.5 py-1 rounded bg-red-600 text-white text-[10px] font-bold uppercase hover:bg-red-500 transition-all disabled:opacity-50"
-                      >
-                        CONFIRM REJECT
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setRejectingId(null);
-                          setRejectReason("");
-                        }}
-                        className="text-[10px] text-slate-500 hover:underline"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-between pt-1 border-t border-amber-200/60 dark:border-amber-950/40">
-                    <span className="text-[10px] text-slate-500 font-semibold">
-                      Skill: {req.skillName || "Agent Workflow"}
-                    </span>
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => approveMutation.mutate(req)}
-                        disabled={isBusy}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-emerald-400 bg-emerald-600 text-white text-[10px] font-bold uppercase hover:bg-emerald-500 transition-all disabled:opacity-50 cursor-pointer shadow-sm"
-                      >
-                        <Play className="h-3 w-3" /> APPROVE
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setRejectingId(req.id);
-                          setRejectReason("");
-                        }}
-                        disabled={isBusy}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded border border-red-300 dark:border-red-500/40 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 text-[10px] font-bold uppercase hover:bg-red-100 transition-all disabled:opacity-50 cursor-pointer"
-                      >
-                        <X className="h-3 w-3" /> REJECT
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="pt-2 border-t border-slate-100 dark:border-indigo-950/60">
-        <Link
-          href="/dashboard/review"
-          className="text-xs text-amber-700 dark:text-amber-400 hover:underline flex items-center justify-center gap-1 font-semibold"
-        >
-          OPEN HUMAN-IN-THE-LOOP CENTER →
+        <Link href="/dashboard/review" className={HEAD_LINK}>
+          Open queue
         </Link>
       </div>
-    </div>
+
+      {approvals.length === 0 ? (
+        <div className="space-y-1 px-5 py-10 text-center">
+          <p className="font-sans text-sm text-[var(--text-primary)]">Nothing waiting for review</p>
+          <p className="font-sans text-[13px] text-[var(--text-muted)]">
+            Write actions that need a human appear here
+          </p>
+        </div>
+      ) : (
+        <ul className="divide-y divide-[var(--border-subtle)]">
+          {approvals.slice(0, 3).map((req) => (
+            <li key={req.id} className="relative space-y-3 px-5 py-4">
+              {/* Accent rule marks the item as waiting on a person */}
+              <span aria-hidden="true" className="absolute bottom-4 left-0 top-4 w-0.5 rounded-full bg-[var(--accent-primary)]" />
+
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 space-y-1">
+                  <div className="truncate font-sans text-sm font-medium text-[var(--text-primary)]">{req.action}</div>
+                  <div className={clsx(META, "truncate")}>
+                    {req.toolName} · {req.skillName || "Agent workflow"}
+                  </div>
+                </div>
+                <span className={clsx(META, "shrink-0")}>{formatTime(req.requestedAt)}</span>
+              </div>
+
+              {req.plannerReason && (
+                <p className="line-clamp-2 font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
+                  {req.plannerReason}
+                </p>
+              )}
+
+              {rejectingId === req.id ? (
+                <div className="space-y-2">
+                  <label htmlFor={`reject-${req.id}`} className="block font-sans text-[13px] text-[var(--text-secondary)]">
+                    Reason for rejecting
+                  </label>
+                  <input
+                    id={`reject-${req.id}`}
+                    type="text"
+                    value={rejectReason}
+                    onChange={(e) => setRejectReason(e.target.value)}
+                    placeholder="Optional"
+                    className="h-9 w-full rounded-[8px] border border-[var(--border-strong)] bg-[var(--surface-sunken)] px-3 font-sans text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+                  />
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => rejectMutation.mutate({ req, reason: rejectReason })}
+                      disabled={isBusy}
+                      className={clsx(BTN_SECONDARY_SM, "text-[var(--state-error)]")}
+                    >
+                      Confirm reject
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRejectingId(null);
+                        setRejectReason("");
+                      }}
+                      className="h-8 rounded-[8px] px-3 font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)] cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => approveMutation.mutate(req)}
+                    disabled={isBusy}
+                    className={BTN_PRIMARY_SM}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setRejectingId(req.id);
+                      setRejectReason("");
+                    }}
+                    disabled={isBusy}
+                    className={BTN_SECONDARY_SM}
+                  >
+                    Reject
+                  </button>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }

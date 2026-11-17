@@ -2,23 +2,24 @@
 
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Scale,
-  Database,
-  Play,
-  RotateCw,
-  Award,
-  CheckCircle2,
-  GitCompare,
-  AlertTriangle,
-} from "lucide-react";
-import { Reveal } from "@/components/Reveal";
+import { RotateCw } from "lucide-react";
+import { clsx } from "clsx";
 import { EvalDataset, EvalRunReport } from "@/types/evals";
 import { BUILT_IN_GOLDEN_DATASETS } from "@/modules/evals/datasetStore";
 import { EvalDatasetsTab } from "@/components/evals/EvalDatasetsTab";
 import { EvalRunModal } from "@/components/evals/EvalRunModal";
 import { EvalRunDetailsDrawer } from "@/components/evals/EvalRunDetailsDrawer";
 import { EvalComparisonView } from "@/components/evals/EvalComparisonView";
+import {
+  BTN_PRIMARY,
+  BTN_SECONDARY,
+  CARD,
+  META,
+  PageHeader,
+  ROW_HOVER,
+  SECTION_TITLE,
+  StatGrid,
+} from "@/components/ui/surfaces";
 
 export default function EvalsPage() {
   const [activeTab, setActiveTab] = useState<"runs" | "datasets" | "compare">("runs");
@@ -67,16 +68,10 @@ export default function EvalsPage() {
     .filter((s): s is number => typeof s === "number");
   const avgFaithfulness =
     faithfulnessScores.length > 0
-      ? (
-          (faithfulnessScores.reduce((a, b) => a + b, 0) / faithfulnessScores.length) *
-          100
-        ).toFixed(1) + "%"
+      ? ((faithfulnessScores.reduce((a, b) => a + b, 0) / faithfulnessScores.length) * 100).toFixed(1) + "%"
       : null;
 
-  const activeRegressionAlertsCount = runs.reduce(
-    (acc, r) => acc + (r.regressionAlerts?.length || 0),
-    0
-  );
+  const activeRegressionAlertsCount = runs.reduce((acc, r) => acc + (r.regressionAlerts?.length || 0), 0);
   const totalTestSamples = datasets.reduce((acc, d) => acc + (d.items?.length || 0), 0);
 
   const handleOpenRun = (dataset?: EvalDataset) => {
@@ -89,243 +84,153 @@ export default function EvalsPage() {
     refetchRuns();
   };
 
-  return (
-    <div className="space-y-6 sm:space-y-8 w-full max-w-[1600px] mx-auto pb-12 font-mono">
-      {/* 1. Header with Controls */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 dark:border-indigo-950/80 pb-5">
-        <Reveal delay={0}>
-          <div className="space-y-1">
-            <div className="flex items-center gap-2.5">
-              <Scale className="h-6 w-6 text-indigo-500 animate-pulse" />
-              <h1 className="text-lg sm:text-2xl font-pixel text-pixel-glow uppercase tracking-wide">
-                AUTOMATED EVAL PIPELINES & LLM-AS-A-JUDGE
-              </h1>
-              <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-800">
-                MLOPS EVALS
-              </span>
-            </div>
-            <p className="text-xs text-slate-600 dark:text-slate-400 font-mono">
-              Batch evaluation against golden test datasets, multi-metric scoring (Faithfulness, Relevance, Correctness) & model drift detection.
-            </p>
-          </div>
-        </Reveal>
+  const tabs = [
+    { id: "runs" as const, label: "Runs", count: runs.length },
+    { id: "datasets" as const, label: "Datasets", count: datasets.length },
+    { id: "compare" as const, label: "Regression compare", count: null },
+  ];
 
-        <Reveal delay={100}>
-          <div className="flex items-center gap-3">
+  return (
+    <div className="mx-auto w-full max-w-[1600px] space-y-6 pb-12">
+      <PageHeader
+        title="Evals"
+        meta="Score runs against golden datasets with an LLM judge, and catch regressions between models"
+        action={
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => {
                 refetchDatasets();
                 refetchRuns();
               }}
-              title="Refresh evals"
+              title="Refresh"
+              aria-label="Refresh"
               disabled={runsLoading}
-              className="p-2 rounded-lg border border-slate-300 dark:border-indigo-900/60 bg-white/80 dark:bg-black/50 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-400 transition-all cursor-pointer shadow-sm"
+              className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
             >
-              <RotateCw className={`h-4 w-4 ${runsLoading ? "animate-spin text-indigo-500" : ""}`} />
+              <RotateCw className={clsx("h-4 w-4", runsLoading && "animate-spin")} strokeWidth={1.5} />
             </button>
-
-            <button
-              type="button"
-              onClick={() => handleOpenRun()}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-indigo-400 bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 transition-all shadow-md cursor-pointer"
-            >
-              <Play className="h-3.5 w-3.5" /> RUN EVALUATION PIPELINE
+            <button type="button" onClick={() => handleOpenRun()} className={BTN_PRIMARY}>
+              Run evaluation
             </button>
           </div>
-        </Reveal>
+        }
+      />
+
+      <StatGrid
+        stats={[
+          {
+            label: "Quality index",
+            value: overallQualityIndex !== null ? `${overallQualityIndex}%` : "—",
+            detail:
+              overallPassRate !== null
+                ? `${overallPassRate}% pass, across ${totalRuns} ${totalRuns === 1 ? "run" : "runs"}`
+                : "No runs yet",
+          },
+          {
+            label: "Golden datasets",
+            value: datasets.length,
+            detail: `${totalTestSamples.toLocaleString()} samples`,
+          },
+          {
+            label: "Faithfulness",
+            value: avgFaithfulness ?? "—",
+            detail: "Answers grounded in the retrieved context",
+          },
+          {
+            label: "Regression alerts",
+            value: activeRegressionAlertsCount,
+            detail: activeRegressionAlertsCount === 0 ? "None active" : "Needs attention",
+          },
+        ]}
+      />
+
+      <div role="tablist" className="flex items-center gap-6 border-b border-[var(--border-subtle)]">
+        {tabs.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === t.id}
+            onClick={() => setActiveTab(t.id)}
+            className={clsx(
+              "-mb-px flex h-10 cursor-pointer items-center gap-2 border-b-2 font-sans text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
+              activeTab === t.id
+                ? "border-[var(--text-primary)] text-[var(--text-primary)]"
+                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+            )}
+          >
+            {t.label}
+            {t.count !== null && <span className={META}>{t.count}</span>}
+          </button>
+        ))}
       </div>
 
-      {/* 2. Executive KPI Metrics Grid */}
-      <Reveal delay={100}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-4 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-1 shadow-sm">
-            <span className="text-[10px] text-slate-500 uppercase flex items-center gap-1.5 font-semibold">
-              <Award className="h-3.5 w-3.5 text-indigo-400" /> Evaluation Quality Index
-            </span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold font-pixel text-slate-900 dark:text-slate-100">
-                {overallQualityIndex !== null ? `${overallQualityIndex}%` : "—"}
-              </span>
-              <span className="text-xs font-bold text-emerald-500 font-pixel">
-                {overallPassRate !== null ? `[${overallPassRate}% Pass]` : "[No Runs]"}
-              </span>
-            </div>
-            <span className="text-[9px] text-slate-400">
-              {totalRuns > 0 ? `Aggregated across ${totalRuns} run(s)` : "Awaiting first evaluation run"}
-            </span>
-          </div>
-
-          <div className="p-4 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-1 shadow-sm">
-            <span className="text-[10px] text-slate-500 uppercase flex items-center gap-1.5 font-semibold">
-              <Database className="h-3.5 w-3.5 text-cyan-400" /> Golden Datasets
-            </span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold font-pixel text-cyan-400">
-                {datasets.length}
-              </span>
-              <span className="text-[10px] text-slate-400">
-                ({totalTestSamples} Samples)
-              </span>
-            </div>
-            <span className="text-[9px] text-slate-400">Curated ground truth collections</span>
-          </div>
-
-          <div className="p-4 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-1 shadow-sm">
-            <span className="text-[10px] text-slate-500 uppercase flex items-center gap-1.5 font-semibold">
-              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" /> Faithfulness SLA
-            </span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold font-pixel text-emerald-400">
-                {avgFaithfulness !== null ? avgFaithfulness : "—"}
-              </span>
-              <span className="text-[10px] text-slate-400">Zero-Hallucination</span>
-            </div>
-            <span className="text-[9px] text-slate-400">Grounded context alignment</span>
-          </div>
-
-          <div className="p-4 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0a]/60 space-y-1 shadow-sm">
-            <span className="text-[10px] text-slate-500 uppercase flex items-center gap-1.5 font-semibold">
-              <AlertTriangle className="h-3.5 w-3.5 text-yellow-400" /> Regression Alerts
-            </span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold font-pixel text-yellow-400">
-                {activeRegressionAlertsCount} Active
-              </span>
-              <span className="text-[10px] text-slate-400">
-                {activeRegressionAlertsCount === 0 ? "Healthy SLA" : "Action Required"}
-              </span>
-            </div>
-            <span className="text-[9px] text-slate-400">Continuous model monitoring</span>
-          </div>
-        </div>
-      </Reveal>
-
-      {/* 3. Navigation Tabs */}
-      <Reveal delay={150}>
-        <div className="flex items-center gap-2 border-b border-slate-200 dark:border-indigo-950/80 pb-2">
-          <button
-            type="button"
-            onClick={() => setActiveTab("runs")}
-            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
-              activeTab === "runs"
-                ? "bg-indigo-600 text-white shadow-sm"
-                : "text-slate-600 dark:text-slate-400 hover:text-white"
-            }`}
-          >
-            EVALUATION RUNS ({runs.length})
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("datasets")}
-            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer ${
-              activeTab === "datasets"
-                ? "bg-indigo-600 text-white shadow-sm"
-                : "text-slate-600 dark:text-slate-400 hover:text-white"
-            }`}
-          >
-            GOLDEN DATASETS ({datasets.length})
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab("compare")}
-            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              activeTab === "compare"
-                ? "bg-indigo-600 text-white shadow-sm"
-                : "text-slate-600 dark:text-slate-400 hover:text-white"
-            }`}
-          >
-            <GitCompare className="h-3.5 w-3.5" /> REGRESSION COMPARATOR
-          </button>
-        </div>
-      </Reveal>
-
-      {/* 4. Tab Content */}
       {activeTab === "runs" && (
-        <Reveal delay={200}>
-          <div className="space-y-4">
-            {selectedReport && (
-              <EvalRunDetailsDrawer
-                report={selectedReport}
-                onClose={() => setSelectedReport(null)}
-              />
-            )}
+        <div className="space-y-4">
+          {selectedReport && (
+            <EvalRunDetailsDrawer report={selectedReport} onClose={() => setSelectedReport(null)} />
+          )}
 
-            {runs.length === 0 && !selectedReport ? (
-              <div className="p-8 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/60 dark:bg-black/40 text-center space-y-3">
-                <Scale className="h-8 w-8 text-indigo-500 mx-auto" />
-                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                  No automated evaluations executed yet
-                </h4>
-                <p className="text-[11px] text-slate-500 font-sans max-w-md mx-auto">
-                  Launch an automated evaluation against a golden test dataset to measure Faithfulness, Answer Relevance, and Semantic Correctness with LLM-as-a-Judge.
+          {runs.length === 0 && !selectedReport ? (
+            <div className="space-y-4 rounded-[14px] border border-dashed border-[var(--border-strong)] p-10 text-center">
+              <div className="space-y-1">
+                <h2 className="font-sans text-sm font-medium text-[var(--text-primary)]">No evaluations yet</h2>
+                <p className="mx-auto max-w-md font-sans text-[13px] text-[var(--text-muted)]">
+                  Run an evaluation against a golden dataset to score faithfulness, answer relevance and semantic
+                  correctness with an LLM judge.
                 </p>
-                <button
-                  type="button"
-                  onClick={() => handleOpenRun()}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-indigo-400 bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 transition-all shadow-md cursor-pointer"
-                >
-                  <Play className="h-3.5 w-3.5" /> LAUNCH FIRST EVALUATION
-                </button>
               </div>
-            ) : (
-              <div className="space-y-3">
-                <div className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">
-                  HISTORICAL EVALUATION RUNS:
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {runs.map((r) => (
-                    <div
-                      key={r.id}
+              <button type="button" onClick={() => handleOpenRun()} className={BTN_SECONDARY}>
+                Run first evaluation
+              </button>
+            </div>
+          ) : (
+            <section className="space-y-3">
+              <h2 className={SECTION_TITLE}>Past runs</h2>
+              <ul className={clsx(CARD, "divide-y divide-[var(--border-subtle)] overflow-hidden")}>
+                {runs.map((r) => (
+                  <li key={r.id}>
+                    <button
+                      type="button"
                       onClick={() => setSelectedReport(r)}
-                      className="p-4 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/80 dark:bg-[#0a0a0c]/80 hover:border-indigo-400 dark:hover:border-indigo-500/60 cursor-pointer transition-all space-y-3 shadow-sm"
+                      className={clsx(
+                        ROW_HOVER,
+                        "flex w-full cursor-pointer flex-col gap-2 px-5 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent-primary)] sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+                      )}
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate max-w-[200px]">
-                          {r.name}
-                        </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 font-bold border border-emerald-800 font-pixel">
-                          {r.summary.overallScore}% ({r.summary.passRate}% PASS)
+                      <div className="min-w-0 space-y-1">
+                        <div className="truncate font-sans text-sm font-medium text-[var(--text-primary)]">{r.name}</div>
+                        <div className="font-sans text-[13px] text-[var(--text-secondary)]">
+                          {r.datasetName} · {r.targetName}
+                        </div>
+                      </div>
+                      <div className={clsx(META, "flex shrink-0 items-center gap-x-6")}>
+                        <span>{r.summary.totalItems} samples</span>
+                        <span>{r.summary.avgLatencyMs} ms avg</span>
+                        <span className="text-[var(--text-primary)]">
+                          {r.summary.overallScore}% · {r.summary.passRate}% pass
                         </span>
                       </div>
-
-                      <p className="text-[11px] text-slate-500 font-sans">
-                        Dataset: <span className="text-slate-300 font-bold">{r.datasetName}</span> · Target: <span className="text-indigo-400">{r.targetName}</span>
-                      </p>
-
-                      <div className="pt-2 border-t border-slate-100 dark:border-indigo-950/60 flex items-center justify-between text-[10px] text-slate-400">
-                        <span>{r.summary.totalItems} Samples Tested</span>
-                        <span>Avg Latency: {r.summary.avgLatencyMs}ms</span>
-                        <span className="text-indigo-400 font-bold">[ VIEW REPORT → ]</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </Reveal>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
       )}
 
       {activeTab === "datasets" && (
-        <Reveal delay={200}>
-          <EvalDatasetsTab
-            datasets={datasets}
-            onRunDataset={(ds) => handleOpenRun(ds)}
-            onRefresh={() => refetchDatasets()}
-          />
-        </Reveal>
+        <EvalDatasetsTab
+          datasets={datasets}
+          onRunDataset={(ds) => handleOpenRun(ds)}
+          onRefresh={() => refetchDatasets()}
+        />
       )}
 
-      {activeTab === "compare" && (
-        <Reveal delay={200}>
-          <EvalComparisonView runs={runs} />
-        </Reveal>
-      )}
+      {activeTab === "compare" && <EvalComparisonView runs={runs} />}
 
-      {/* 5. Launch Run Modal */}
       <EvalRunModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -1,225 +1,162 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, XCircle, Award, Gauge, Sparkles, Clock, Zap, Cpu, X, Check } from "lucide-react";
+import { clsx } from "clsx";
 import { BenchmarkScorecard } from "@/types/benchmark";
+import { CARD, CARD_HEAD, CARD_TITLE, META, SECTION_TITLE, Tag } from "@/components/ui/surfaces";
 
 interface BenchmarkScorecardViewProps {
   scorecard: BenchmarkScorecard;
   onClose?: () => void;
 }
 
-function getGradeBadgeColor(grade: string) {
-  switch (grade) {
-    case "A+":
-    case "A":
-      return "bg-emerald-500/20 text-emerald-300 border-emerald-400/50";
-    case "B":
-      return "bg-cyan-500/20 text-cyan-300 border-cyan-400/50";
-    case "C":
-      return "bg-amber-500/20 text-amber-300 border-amber-400/50";
-    default:
-      return "bg-red-500/20 text-red-300 border-red-400/50";
-  }
-}
-
 export function BenchmarkScorecardView({ scorecard, onClose }: BenchmarkScorecardViewProps) {
   const radarItems = [
-    { label: "Accuracy & Intent Grounding", value: scorecard.radar.accuracyScore, color: "bg-emerald-500" },
-    { label: "Tool Calling Precision", value: scorecard.radar.toolPrecisionScore, color: "bg-cyan-500" },
-    { label: "Latency & Throughput SLA", value: scorecard.radar.latencyScore, color: "bg-yellow-500" },
-    { label: "Token & Cost Efficiency", value: scorecard.radar.costEfficiencyScore, color: "bg-indigo-500" },
-    { label: "Safety & HITL Compliance", value: scorecard.radar.safetyComplianceScore, color: "bg-violet-500" },
-    { label: "Multi-Agent Swarm Cohesion", value: scorecard.radar.multiAgentCohesionScore, color: "bg-pink-500" },
+    { label: "Accuracy and intent grounding", value: scorecard.radar.accuracyScore },
+    { label: "Tool calling precision", value: scorecard.radar.toolPrecisionScore },
+    { label: "Latency and throughput", value: scorecard.radar.latencyScore },
+    { label: "Token and cost efficiency", value: scorecard.radar.costEfficiencyScore },
+    { label: "Safety and approval compliance", value: scorecard.radar.safetyComplianceScore },
+    { label: "Multi-agent cohesion", value: scorecard.radar.multiAgentCohesionScore },
+  ];
+  // The weakest axis is the one worth acting on, so it gets the highlight
+  const weakest = Math.min(...radarItems.map((r) => r.value));
+
+  const facts = [
+    { label: "Pass rate", value: `${scorecard.passRate}%`, detail: `${scorecard.passedTests} of ${scorecard.totalTests} tests` },
+    { label: "Duration", value: `${(scorecard.durationMs / 1000).toFixed(2)} s`, detail: "End to end" },
+    {
+      label: "Average latency",
+      value: `${Math.round(scorecard.durationMs / Math.max(1, scorecard.totalTests))} ms`,
+      detail: "Per test",
+    },
+    { label: "Model", value: scorecard.modelEvaluated.split("/").pop() ?? "—", detail: "Evaluated endpoint" },
   ];
 
   return (
-    <div className="p-6 rounded-xl border border-indigo-500/40 bg-white dark:bg-[#070709] font-mono space-y-6 shadow-2xl">
-      {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-indigo-950/80 pb-5">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2.5">
-            <Award className="h-5 w-5 text-indigo-400" />
-            <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
-              {scorecard.suiteName}
-            </h2>
+    <div className="space-y-6">
+      {/* Summary */}
+      <section className={CARD}>
+        <div className={CARD_HEAD}>
+          <div className="min-w-0 space-y-1">
+            <h2 className={CARD_TITLE}>{scorecard.suiteName}</h2>
+            <div className={clsx(META, "truncate")}>
+              {scorecard.skillName} · {scorecard.modelEvaluated}
+            </div>
           </div>
-          <p className="text-xs text-slate-500 font-sans">
-            Target Evaluated: <span className="font-bold text-indigo-400">{scorecard.skillName}</span> · Model: <span className="font-mono text-slate-300">{scorecard.modelEvaluated}</span>
-          </p>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <div className="text-right">
-            <span className="text-[10px] text-slate-400 block uppercase">Overall Quality</span>
-            <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-pixel">
-              {scorecard.overallScore}<span className="text-xs text-slate-500">/100</span>
-            </span>
-          </div>
-
-          <div
-            className={`px-4 py-2 rounded-lg border text-xl font-bold font-pixel tracking-wider shadow-md ${getGradeBadgeColor(
-              scorecard.grade
-            )}`}
-          >
-            {scorecard.grade}
-          </div>
-
-          {onClose && (
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-xs text-slate-400 hover:text-white p-1 rounded"
-              title="Close scorecard"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* KPI Stats Strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="p-3 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-slate-50 dark:bg-black/50 space-y-1">
-          <span className="text-[9px] text-slate-500 uppercase flex items-center gap-1">
-            <CheckCircle2 className="h-3 w-3 text-emerald-400" /> Pass Rate
-          </span>
-          <span className="text-base font-bold text-emerald-400">{scorecard.passRate}%</span>
-          <span className="text-[8px] text-slate-400 block">
-            {scorecard.passedTests}/{scorecard.totalTests} tests passed
-          </span>
-        </div>
-
-        <div className="p-3 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-slate-50 dark:bg-black/50 space-y-1">
-          <span className="text-[9px] text-slate-500 uppercase flex items-center gap-1">
-            <Clock className="h-3 w-3 text-cyan-400" /> Total Duration
-          </span>
-          <span className="text-base font-bold text-cyan-400">
-            {(scorecard.durationMs / 1000).toFixed(2)}s
-          </span>
-          <span className="text-[8px] text-slate-400 block">End-to-end benchmark run</span>
-        </div>
-
-        <div className="p-3 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-slate-50 dark:bg-black/50 space-y-1">
-          <span className="text-[9px] text-slate-500 uppercase flex items-center gap-1">
-            <Zap className="h-3 w-3 text-yellow-400" /> Avg Latency
-          </span>
-          <span className="text-base font-bold text-yellow-400">
-            {Math.round(scorecard.durationMs / Math.max(1, scorecard.totalTests))}ms
-          </span>
-          <span className="text-[8px] text-slate-400 block">Per assertion cycle</span>
-        </div>
-
-        <div className="p-3 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-slate-50 dark:bg-black/50 space-y-1">
-          <span className="text-[9px] text-slate-500 uppercase flex items-center gap-1">
-            <Cpu className="h-3 w-3 text-violet-400" /> Model Target
-          </span>
-          <span className="text-xs font-bold text-violet-300 truncate block">
-            {scorecard.modelEvaluated.split("/").pop()}
-          </span>
-          <span className="text-[8px] text-slate-400 block">Evaluated endpoint</span>
-        </div>
-      </div>
-
-      {/* Radar Dimension Breakdown */}
-      <div className="space-y-3 p-4 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/70 dark:bg-[#0a0a0c]/80">
-        <div className="flex items-center gap-2 border-b border-indigo-950/60 pb-2">
-          <Gauge className="h-4 w-4 text-indigo-400" />
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-200">
-            Multi-Dimensional Radar Metrics
-          </h3>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
-          {radarItems.map((item) => (
-            <div key={item.label} className="space-y-1">
-              <div className="flex items-center justify-between text-[10px]">
-                <span className="text-slate-600 dark:text-slate-400">{item.label}</span>
-                <span className="font-bold text-slate-900 dark:text-slate-100">{item.value}%</span>
+          <div className="flex shrink-0 items-center gap-6">
+            <div className="text-right">
+              <div className="font-pixel text-3xl font-medium leading-none tabular-nums text-[var(--text-primary)]">
+                {scorecard.overallScore}
+                <span className="font-sans text-sm text-[var(--text-muted)]"> / 100</span>
               </div>
-              <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+              <div className="mt-1 font-sans text-[13px] text-[var(--text-muted)]">Quality, grade {scorecard.grade}</div>
+            </div>
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="cursor-pointer font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
+              >
+                Close
+              </button>
+            )}
+          </div>
+        </div>
+
+        <dl className="grid grid-cols-2 divide-x divide-y divide-[var(--border-subtle)] sm:grid-cols-4 sm:divide-y-0">
+          {facts.map((f) => (
+            <div key={f.label} className="space-y-1 px-5 py-4">
+              <dt className="font-sans text-[13px] text-[var(--text-muted)]">{f.label}</dt>
+              <dd className="truncate font-mono text-sm tabular-nums text-[var(--text-primary)]">{f.value}</dd>
+              <dd className="font-sans text-[13px] text-[var(--text-secondary)]">{f.detail}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      {/* Dimensions */}
+      <section className={CARD}>
+        <div className={CARD_HEAD}>
+          <h3 className={CARD_TITLE}>Dimensions</h3>
+          <span className={META}>weakest in amber</span>
+        </div>
+        <ul className="grid grid-cols-1 gap-x-8 gap-y-5 p-5 md:grid-cols-2">
+          {radarItems.map((item) => (
+            <li key={item.label} className="space-y-1.5">
+              <div className="flex items-baseline justify-between gap-3">
+                <span className="font-sans text-[13px] text-[var(--text-secondary)]">{item.label}</span>
+                <span className={clsx(META, "text-[var(--text-primary)]")}>{item.value}%</span>
+              </div>
+              <div className="h-1 overflow-hidden rounded-full bg-[var(--border-subtle)]">
                 <div
-                  className={`h-full ${item.color} rounded-full transition-all duration-500`}
-                  style={{ width: `${item.value}%` }}
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${item.value}%`,
+                    background: item.value === weakest ? "var(--state-warning)" : "var(--text-muted)",
+                    opacity: item.value === weakest ? 1 : 0.6,
+                  }}
                 />
               </div>
-            </div>
+            </li>
           ))}
+        </ul>
+      </section>
+
+      {/* Tests */}
+      <section className="space-y-3">
+        <div className="flex items-baseline justify-between gap-3">
+          <h3 className={SECTION_TITLE}>Test cases</h3>
+          <span className={META}>{scorecard.testResults.length}</span>
         </div>
-      </div>
-
-      {/* Test Case Execution Breakdown */}
-      <div className="space-y-3">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-200 flex items-center gap-2">
-          <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-          Test Case Assertions & Telemetry ({scorecard.testResults.length})
-        </h3>
-
-        <div className="space-y-2">
+        <ul className={clsx(CARD, "divide-y divide-[var(--border-subtle)] overflow-hidden")}>
           {scorecard.testResults.map((t, idx) => (
-            <div
-              key={t.testCaseId}
-              className="p-3 rounded-lg border border-slate-200 dark:border-indigo-950/80 bg-white/60 dark:bg-black/60 space-y-2"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {t.passed ? (
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                  ) : (
-                    <XCircle className="h-4 w-4 text-red-400 shrink-0" />
-                  )}
-                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
-                    #{idx + 1} {t.name}
-                  </span>
+            <li key={t.testCaseId} className="space-y-2 px-5 py-4">
+              <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+                <div className="flex min-w-0 items-baseline gap-3">
+                  <span className={META}>{idx + 1}</span>
+                  <span className="truncate font-sans text-sm font-medium text-[var(--text-primary)]">{t.name}</span>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] text-slate-400">
-                  <span>{t.durationMs}ms</span>
-                  <span>·</span>
-                  <span>{t.tokensUsed} tokens</span>
-                  <span>·</span>
-                  <span className="text-cyan-400 font-bold">{t.tokensPerSec} tok/s</span>
-                  <span
-                    className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
-                      t.passed
-                        ? "bg-emerald-950/80 text-emerald-300 border border-emerald-800/60"
-                        : "bg-red-950/80 text-red-300 border border-red-800/60"
-                    }`}
-                  >
-                    {t.passed ? "PASSED" : "FAILED"}
+                <div className="flex items-center gap-x-4">
+                  <span className={META}>
+                    {t.durationMs} ms · {t.tokensUsed} tokens · {t.tokensPerSec} tok/s
                   </span>
+                  <Tag tone={t.passed ? "good" : "bad"}>{t.passed ? "Passed" : "Failed"}</Tag>
                 </div>
               </div>
 
-              {/* Assertions List */}
-              <div className="pl-6 space-y-1 text-[10px]">
+              <ul className="space-y-1 pl-6">
                 {t.assertions.map((a, aIdx) => (
-                  <div key={aIdx} className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
-                    {a.passed ? (
-                      <Check className="h-3 w-3 text-emerald-400 shrink-0" />
-                    ) : (
-                      <X className="h-3 w-3 text-red-400 shrink-0" />
-                    )}
-                    <span>{a.message}</span>
-                  </div>
+                  <li key={aIdx} className="flex items-baseline gap-2 font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
+                    <span
+                      aria-hidden="true"
+                      className="mt-1.5 h-1.5 w-1.5 shrink-0 translate-y-[-1px] rounded-full"
+                      style={{ background: a.passed ? "var(--state-success)" : "var(--state-error)" }}
+                    />
+                    <span className="sr-only">{a.passed ? "Passed:" : "Failed:"}</span>
+                    {a.message}
+                  </li>
                 ))}
-              </div>
-            </div>
+              </ul>
+            </li>
           ))}
-        </div>
-      </div>
+        </ul>
+      </section>
 
-      {/* Actionable Recommendations */}
+      {/* Recommendations */}
       {scorecard.recommendations.length > 0 && (
-        <div className="p-4 rounded-lg border border-indigo-500/30 bg-indigo-50/50 dark:bg-indigo-950/30 space-y-2">
-          <div className="flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase">
-            <Sparkles className="h-4 w-4" /> AI Architectural Recommendations
+        <section className={CARD}>
+          <div className={CARD_HEAD}>
+            <h3 className={CARD_TITLE}>Recommendations</h3>
           </div>
-          <ul className="list-disc pl-5 space-y-1 text-[11px] text-slate-700 dark:text-slate-300 font-sans">
+          <ul className="space-y-2 p-5">
             {scorecard.recommendations.map((rec, i) => (
-              <li key={i}>{rec}</li>
+              <li key={i} className="font-sans text-sm leading-6 text-[var(--text-secondary)]">
+                {rec}
+              </li>
             ))}
           </ul>
-        </div>
+        </section>
       )}
     </div>
   );

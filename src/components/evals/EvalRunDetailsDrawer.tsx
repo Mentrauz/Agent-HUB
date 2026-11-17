@@ -1,25 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  X,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  Zap,
-  DollarSign,
-  Scale,
-  BrainCircuit,
-  ChevronDown,
-  ChevronUp,
-  AlertTriangle,
-} from "lucide-react";
+import { clsx } from "clsx";
 import { EvalRunReport } from "@/types/evals";
+import { CARD, CARD_HEAD, CARD_TITLE, META, ROW_HOVER, SECTION_TITLE, Segmented, Tag } from "@/components/ui/surfaces";
 
 interface EvalRunDetailsDrawerProps {
   report: EvalRunReport;
   onClose?: () => void;
 }
+
+const LABEL = "font-sans text-[13px] text-[var(--text-muted)]";
+const BLOCK =
+  "whitespace-pre-wrap rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-3 font-sans text-[13px] leading-5 text-[var(--text-secondary)]";
+
+const metricName = (key: string) => key.charAt(0) + key.slice(1).toLowerCase().replace(/_/g, " ");
 
 export function EvalRunDetailsDrawer({ report, onClose }: EvalRunDetailsDrawerProps) {
   const [filter, setFilter] = useState<"ALL" | "PASSED" | "FAILED">("ALL");
@@ -33,294 +28,197 @@ export function EvalRunDetailsDrawer({ report, onClose }: EvalRunDetailsDrawerPr
     return true;
   });
 
+  const metricRows = Object.entries(report.summary.metricSummaries).map(([key, summary]) => ({
+    key,
+    pct: Math.round(summary.averageScore * 100),
+    passRate: summary.passRate,
+  }));
+  const weakest = Math.min(...metricRows.map((m) => m.pct));
+
+  const facts = [
+    { label: "Pass rate", value: `${report.summary.passRate}%`, detail: `${report.summary.passedItems} of ${report.summary.totalItems} samples` },
+    { label: "Average latency", value: `${report.summary.avgLatencyMs} ms`, detail: `p90 ${report.summary.p90LatencyMs} ms` },
+    { label: "Tokens", value: report.summary.totalTokens.toLocaleString(), detail: "Prompt and completion" },
+    { label: "Estimated cost", value: `$${report.summary.estimatedCostUsd.toFixed(4)}`, detail: "This run" },
+  ];
+
   return (
-    <div className="p-6 rounded-xl border border-indigo-500/40 bg-white dark:bg-[#070709] font-mono space-y-6 shadow-2xl">
-      {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-indigo-950/80 pb-5">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2.5">
-            <Scale className="h-5 w-5 text-indigo-400" />
-            <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
-              {report.name}
-            </h2>
+    <div className="space-y-6">
+      <section className={CARD}>
+        <div className={CARD_HEAD}>
+          <div className="min-w-0 space-y-1">
+            <h2 className={CARD_TITLE}>{report.name}</h2>
+            <div className={clsx(META, "truncate")}>
+              {report.datasetName} · judge {report.judgeConfig.judgeModel.split("/").pop()}
+            </div>
           </div>
-          <p className="text-xs text-slate-500 font-sans">
-            Dataset: <span className="font-bold text-indigo-400">{report.datasetName}</span> · Judge: <span className="font-mono text-slate-300">{report.judgeConfig.judgeModel.split("/").pop()}</span>
-          </p>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <div className="text-right">
-            <span className="text-[10px] text-slate-400 block uppercase">Overall Quality</span>
-            <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-pixel">
-              {report.summary.overallScore}<span className="text-xs text-slate-500">/100</span>
-            </span>
-          </div>
-
-          <div
-            className={`px-4 py-2 rounded-lg border text-lg font-bold font-pixel tracking-wider shadow-md ${
-              report.summary.overallScore >= 85
-                ? "bg-emerald-500/20 text-emerald-300 border-emerald-400/50"
-                : report.summary.overallScore >= 70
-                ? "bg-amber-500/20 text-amber-300 border-amber-400/50"
-                : "bg-red-500/20 text-red-300 border-red-400/50"
-            }`}
-          >
-            {report.summary.passRate}% PASS
-          </div>
-
-          {onClose && (
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-xs text-slate-400 hover:text-white p-1 rounded"
-              title="Close report"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Regression & Quality Alerts */}
-      {report.regressionAlerts.length > 0 && (
-        <div className="p-3.5 rounded-lg border border-amber-500/40 bg-amber-50/60 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200 text-xs space-y-1">
-          <div className="flex items-center gap-1.5 font-bold uppercase text-[11px]">
-            <AlertTriangle className="h-4 w-4 text-amber-500" /> MLOps Quality & SLA Alerts:
-          </div>
-          <ul className="list-disc pl-5 space-y-0.5 text-[11px] font-sans">
-            {report.regressionAlerts.map((alert, i) => (
-              <li key={i}>{alert}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* KPI Stats Strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="p-3 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-slate-50 dark:bg-black/50 space-y-1">
-          <span className="text-[9px] text-slate-500 uppercase flex items-center gap-1">
-            <CheckCircle2 className="h-3 w-3 text-emerald-400" /> Pass Rate
-          </span>
-          <span className="text-base font-bold text-emerald-400">{report.summary.passRate}%</span>
-          <span className="text-[8px] text-slate-400 block">
-            {report.summary.passedItems}/{report.summary.totalItems} samples passed
-          </span>
-        </div>
-
-        <div className="p-3 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-slate-50 dark:bg-black/50 space-y-1">
-          <span className="text-[9px] text-slate-500 uppercase flex items-center gap-1">
-            <Clock className="h-3 w-3 text-cyan-400" /> Avg Latency
-          </span>
-          <span className="text-base font-bold text-cyan-400">{report.summary.avgLatencyMs}ms</span>
-          <span className="text-[8px] text-slate-400 block">P90: {report.summary.p90LatencyMs}ms</span>
-        </div>
-
-        <div className="p-3 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-slate-50 dark:bg-black/50 space-y-1">
-          <span className="text-[9px] text-slate-500 uppercase flex items-center gap-1">
-            <Zap className="h-3 w-3 text-yellow-400" /> Total Tokens
-          </span>
-          <span className="text-base font-bold text-yellow-400">
-            {report.summary.totalTokens.toLocaleString()}
-          </span>
-          <span className="text-[8px] text-slate-400 block">Prompt & completion</span>
-        </div>
-
-        <div className="p-3 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-slate-50 dark:bg-black/50 space-y-1">
-          <span className="text-[9px] text-slate-500 uppercase flex items-center gap-1">
-            <DollarSign className="h-3 w-3 text-violet-400" /> Estimated Cost
-          </span>
-          <span className="text-base font-bold text-violet-400">
-            ${report.summary.estimatedCostUsd.toFixed(4)}
-          </span>
-          <span className="text-[8px] text-slate-400 block">Evaluation run cost</span>
-        </div>
-      </div>
-
-      {/* Metric Breakdown Progress Bars */}
-      <div className="p-4 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/70 dark:bg-[#0a0a0c]/80 space-y-3">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-200">
-          LLM-as-a-Judge Metric Rubrics Performance
-        </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3">
-          {Object.entries(report.summary.metricSummaries).map(([metricKey, summary]) => {
-            const pct = Math.round(summary.averageScore * 100);
-            return (
-              <div key={metricKey} className="space-y-1">
-                <div className="flex items-center justify-between text-[10px]">
-                  <span className="text-slate-600 dark:text-slate-400 font-semibold">{metricKey}</span>
-                  <span className="font-bold text-slate-900 dark:text-slate-100">
-                    {pct}% ({summary.passRate}% pass)
-                  </span>
-                </div>
-                <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      pct >= 85
-                        ? "bg-emerald-500"
-                        : pct >= 70
-                        ? "bg-yellow-500"
-                        : "bg-red-500"
-                    }`}
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
+          <div className="flex shrink-0 items-center gap-6">
+            <div className="text-right">
+              <div className="font-pixel text-3xl font-medium leading-none tabular-nums text-[var(--text-primary)]">
+                {report.summary.overallScore}
+                <span className="font-sans text-sm text-[var(--text-muted)]"> / 100</span>
               </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Verdicts List with Filters */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-200">
-            Sample Verdicts & Judge Chain-of-Thought ({filteredVerdicts.length})
-          </h3>
-
-          <div className="flex items-center gap-1 text-[10px]">
-            <button
-              type="button"
-              onClick={() => setFilter("ALL")}
-              className={`px-2 py-0.5 rounded border ${
-                filter === "ALL" ? "bg-indigo-600 text-white border-indigo-500" : "border-slate-300 dark:border-slate-800"
-              }`}
-            >
-              ALL ({report.verdicts.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilter("PASSED")}
-              className={`px-2 py-0.5 rounded border ${
-                filter === "PASSED" ? "bg-emerald-600 text-white border-emerald-500" : "border-slate-300 dark:border-slate-800"
-              }`}
-            >
-              PASSED ({report.summary.passedItems})
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilter("FAILED")}
-              className={`px-2 py-0.5 rounded border ${
-                filter === "FAILED" ? "bg-red-600 text-white border-red-500" : "border-slate-300 dark:border-slate-800"
-              }`}
-            >
-              FAILED ({report.summary.failedItems})
-            </button>
+              <div className="mt-1 font-sans text-[13px] text-[var(--text-muted)]">Overall quality</div>
+            </div>
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="cursor-pointer font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
+              >
+                Close
+              </button>
+            )}
           </div>
         </div>
 
-        <div className="space-y-2.5">
+        {report.regressionAlerts.length > 0 && (
+          <div className="relative space-y-1 border-b border-[var(--border-subtle)] px-5 py-4">
+            <span aria-hidden="true" className="absolute bottom-4 left-0 top-4 w-0.5 rounded-full bg-[var(--state-warning)]" />
+            <div className="font-sans text-sm font-medium text-[var(--text-primary)]">Quality alerts</div>
+            <ul className="space-y-1">
+              {report.regressionAlerts.map((alert, i) => (
+                <li key={i} className="font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
+                  {alert}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <dl className="grid grid-cols-2 divide-x divide-y divide-[var(--border-subtle)] sm:grid-cols-4 sm:divide-y-0">
+          {facts.map((f) => (
+            <div key={f.label} className="space-y-1 px-5 py-4">
+              <dt className={LABEL}>{f.label}</dt>
+              <dd className="font-mono text-sm tabular-nums text-[var(--text-primary)]">{f.value}</dd>
+              <dd className="font-sans text-[13px] text-[var(--text-secondary)]">{f.detail}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      {/* Metric breakdown */}
+      <section className={CARD}>
+        <div className={CARD_HEAD}>
+          <h3 className={CARD_TITLE}>Judge scores by metric</h3>
+          <span className={META}>weakest in amber</span>
+        </div>
+        <ul className="grid grid-cols-1 gap-x-8 gap-y-5 p-5 md:grid-cols-2">
+          {metricRows.map((m) => (
+            <li key={m.key} className="space-y-1.5">
+              <div className="flex items-baseline justify-between gap-3">
+                <span className="font-sans text-[13px] text-[var(--text-secondary)]">{metricName(m.key)}</span>
+                <span className={clsx(META, "text-[var(--text-primary)]")}>
+                  {m.pct}% · {m.passRate}% pass
+                </span>
+              </div>
+              <div className="h-1 overflow-hidden rounded-full bg-[var(--border-subtle)]">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${m.pct}%`,
+                    background: m.pct === weakest ? "var(--state-warning)" : "var(--text-muted)",
+                    opacity: m.pct === weakest ? 1 : 0.6,
+                  }}
+                />
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Verdicts */}
+      <section className="space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-baseline gap-3">
+            <h3 className={SECTION_TITLE}>Sample verdicts</h3>
+            <span className={META}>{filteredVerdicts.length}</span>
+          </div>
+          <Segmented
+            label="Show"
+            hideLabel
+            value={filter}
+            onChange={setFilter}
+            options={[
+              { id: "ALL", label: `All ${report.verdicts.length}` },
+              { id: "PASSED", label: `Passed ${report.summary.passedItems}` },
+              { id: "FAILED", label: `Failed ${report.summary.failedItems}` },
+            ]}
+          />
+        </div>
+
+        <ul className={clsx(CARD, "divide-y divide-[var(--border-subtle)] overflow-hidden")}>
           {filteredVerdicts.map((v, idx) => {
             const isExpanded = expandedVerdictId === v.id;
             return (
-              <div
-                key={v.id}
-                className="rounded-lg border border-slate-200 dark:border-indigo-950/80 bg-white/60 dark:bg-black/60 overflow-hidden shadow-sm"
-              >
-                {/* Row Header */}
-                <div
+              <li key={v.id}>
+                <button
+                  type="button"
                   onClick={() => setExpandedVerdictId(isExpanded ? null : v.id)}
-                  className="p-3 flex items-center justify-between gap-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-indigo-950/20 transition-colors"
+                  aria-expanded={isExpanded}
+                  className={clsx(
+                    ROW_HOVER,
+                    "flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent-primary)]"
+                  )}
                 >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    {v.passed ? (
-                      <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    ) : (
-                      <XCircle className="h-4 w-4 text-red-400 shrink-0" />
-                    )}
-                    <span className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
-                      #{idx + 1} {v.datasetItemId}
-                    </span>
-                    <span className="text-[10px] text-slate-500 truncate max-w-md font-sans">
+                  <div className="flex min-w-0 items-baseline gap-3">
+                    <span className={META}>{idx + 1}</span>
+                    <Tag tone={v.passed ? "good" : "bad"}>{v.passed ? "Passed" : "Failed"}</Tag>
+                    <span className="truncate font-sans text-sm text-[var(--text-primary)]">
                       {typeof v.input === "string" ? v.input : JSON.stringify(v.input)}
                     </span>
                   </div>
+                  <span className={clsx(META, "shrink-0")}>
+                    {Math.round(v.overallScore * 100)}% · {v.durationMs} ms
+                  </span>
+                </button>
 
-                  <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-[10px] font-bold text-indigo-400">
-                      Score: {Math.round(v.overallScore * 100)}%
-                    </span>
-                    <span className="text-[9px] text-slate-400">{v.durationMs}ms</span>
-                    {isExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                  </div>
-                </div>
-
-                {/* Expanded Verdict Details with Judge CoT */}
                 {isExpanded && (
-                  <div className="p-4 border-t border-slate-200 dark:border-indigo-950/80 bg-slate-50/50 dark:bg-black/40 space-y-3 font-sans text-xs">
-                    {/* Context & Ground Truth */}
+                  <div className="space-y-4 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)] px-5 py-4">
+                    <div className={clsx(META)}>{v.datasetItemId}</div>
+
                     {v.context && (
-                      <div>
-                        <span className="font-mono text-[9px] font-bold uppercase text-violet-400 block mb-0.5">
-                          Retrieved Context:
-                        </span>
-                        <div className="p-2 rounded bg-violet-950/20 border border-violet-900/30 text-[11px] text-slate-300">
-                          {Array.isArray(v.context) ? v.context.join("\n") : v.context}
-                        </div>
+                      <div className="space-y-1">
+                        <div className={LABEL}>Retrieved context</div>
+                        <div className={BLOCK}>{Array.isArray(v.context) ? v.context.join("\n") : v.context}</div>
                       </div>
                     )}
 
-                    {/* Agent Output */}
-                    <div>
-                      <span className="font-mono text-[9px] font-bold uppercase text-cyan-400 block mb-0.5">
-                        Agent Generated Output:
-                      </span>
-                      <div className="p-2.5 rounded bg-cyan-950/20 border border-cyan-900/30 text-[11px] text-slate-200 whitespace-pre-wrap">
-                        {v.output}
-                      </div>
+                    <div className="space-y-1">
+                      <div className={LABEL}>Agent output</div>
+                      <div className={BLOCK}>{v.output}</div>
                     </div>
 
-                    {/* Reference Ground Truth */}
                     {v.groundTruth && (
-                      <div>
-                        <span className="font-mono text-[9px] font-bold uppercase text-emerald-400 block mb-0.5">
-                          Golden Ground Truth Reference:
-                        </span>
-                        <div className="p-2 rounded bg-emerald-950/20 border border-emerald-900/30 text-[11px] text-emerald-300">
-                          {v.groundTruth}
-                        </div>
+                      <div className="space-y-1">
+                        <div className={LABEL}>Reference answer</div>
+                        <div className={BLOCK}>{v.groundTruth}</div>
                       </div>
                     )}
 
-                    {/* LLM-as-a-Judge CoT Reasoning for each metric */}
-                    <div className="pt-2 space-y-2 border-t border-indigo-950/60 font-mono">
-                      <span className="text-[10px] uppercase font-bold text-indigo-400 flex items-center gap-1.5">
-                        <BrainCircuit className="h-3.5 w-3.5" /> LLM-as-a-Judge Reasoning & Rubrics:
-                      </span>
-
-                      <div className="grid grid-cols-1 gap-2">
+                    <div className="space-y-2">
+                      <div className={LABEL}>Judge reasoning</div>
+                      <ul className="divide-y divide-[var(--border-subtle)] rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)]">
                         {Object.entries(v.metrics).map(([mKey, res]) => (
-                          <div
-                            key={mKey}
-                            className="p-2.5 rounded border border-indigo-950/80 bg-slate-900/40 space-y-1"
-                          >
-                            <div className="flex items-center justify-between text-[10px]">
-                              <span className="font-bold text-slate-200">{mKey}</span>
-                              <span
-                                className={`px-1.5 py-0.5 rounded font-bold ${
-                                  res.passed
-                                    ? "bg-emerald-950 text-emerald-300 border border-emerald-800"
-                                    : "bg-red-950 text-red-300 border border-red-800"
-                                }`}
-                              >
-                                {Math.round(res.score * 100)}% ({res.passed ? "PASS" : "FAIL"})
-                              </span>
+                          <li key={mKey} className="space-y-1 px-3 py-3">
+                            <div className="flex items-baseline justify-between gap-3">
+                              <span className="font-sans text-[13px] font-medium text-[var(--text-primary)]">{metricName(mKey)}</span>
+                              <Tag tone={res.passed ? "good" : "bad"}>
+                                {Math.round(res.score * 100)}% {res.passed ? "pass" : "fail"}
+                              </Tag>
                             </div>
-                            <p className="text-[10px] text-slate-400 font-sans italic leading-relaxed">
-                              {res.reasoning}
-                            </p>
-                          </div>
+                            <p className="font-sans text-[13px] leading-5 text-[var(--text-secondary)]">{res.reasoning}</p>
+                          </li>
                         ))}
-                      </div>
+                      </ul>
                     </div>
                   </div>
                 )}
-              </div>
+              </li>
             );
           })}
-        </div>
-      </div>
+        </ul>
+      </section>
     </div>
   );
 }

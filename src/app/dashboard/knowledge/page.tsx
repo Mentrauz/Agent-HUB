@@ -1,29 +1,23 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { clsx } from "clsx";
 import {
-  Database,
-  UploadCloud,
-  Search,
-  FileText,
-  Layers,
-  Sparkles,
-  CheckCircle2,
-  Trash2,
-  RefreshCw,
-  Sliders,
-  Eye,
-  Zap,
-  Cpu,
-  ShieldCheck,
+  BTN_PRIMARY,
+  BTN_SECONDARY_SM,
+  CARD,
+  CARD_HEAD,
+  CARD_TITLE,
+  FIELD,
+  INPUT,
+  LABEL,
+  META,
+  PageHeader,
+  ROW_HOVER,
+  Segmented,
+  SECTION_TITLE,
   Tag,
-  Copy,
-  Check,
-  Activity,
-  Compass,
-  Scale,
-  GitMerge,
-} from "lucide-react";
+} from "@/components/ui/surfaces";
 import { previewChunks } from "@/modules/rag/chunkingService";
 import { ClusterMapData } from "@/modules/rag/clusterVisualizer";
 import { RAGTriadEvaluationReport } from "@/modules/rag/evaluation";
@@ -213,7 +207,7 @@ export default function KnowledgeBasePage() {
     ctx.clearRect(0, 0, width, height);
 
     // Draw Grid & Axes
-    ctx.strokeStyle = "rgba(99, 102, 241, 0.15)";
+    ctx.strokeStyle = "rgba(128, 128, 128, 0.15)";
     ctx.lineWidth = 1;
 
     for (let x = 0; x < width; x += 40) {
@@ -230,7 +224,7 @@ export default function KnowledgeBasePage() {
     }
 
     // Origin Axes
-    ctx.strokeStyle = "rgba(99, 102, 241, 0.4)";
+    ctx.strokeStyle = "rgba(128, 128, 128, 0.35)";
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(width / 2, 0);
@@ -248,13 +242,7 @@ export default function KnowledgeBasePage() {
       const px = width / 2 + pt.x * (width * 0.42);
       const py = height / 2 - pt.y * (height * 0.42);
 
-      const color = colorMap.get(pt.collection) || "#6366f1";
-
-      // Outer glow
-      ctx.beginPath();
-      ctx.arc(px, py, 6, 0, Math.PI * 2);
-      ctx.fillStyle = `${color}40`;
-      ctx.fill();
+      const color = colorMap.get(pt.collection) || "#8a8a8a";
 
       // Core point
       ctx.beginPath();
@@ -269,18 +257,13 @@ export default function KnowledgeBasePage() {
       const qy = height / 2 - clusterData.queryPoint.y * (height * 0.42);
 
       ctx.beginPath();
-      ctx.arc(qx, qy, 9, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(239, 68, 68, 0.3)";
-      ctx.fill();
-
-      ctx.beginPath();
       ctx.arc(qx, qy, 5, 0, Math.PI * 2);
       ctx.fillStyle = "#ef4444";
       ctx.fill();
 
-      ctx.font = "bold 10px monospace";
+      ctx.font = "12px monospace";
       ctx.fillStyle = "#ef4444";
-      ctx.fillText("QUERY PIN", qx + 8, qy - 8);
+      ctx.fillText("query", qx + 8, qy - 8);
     }
   }, [clusterData, activeTab]);
 
@@ -446,116 +429,51 @@ export default function KnowledgeBasePage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto p-4 md:p-6 font-mono">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-xl border border-indigo-200 dark:border-indigo-900/50 bg-gradient-to-r from-indigo-50/80 via-slate-50 to-indigo-50/50 dark:from-indigo-950/40 dark:via-black/60 dark:to-indigo-950/20 shadow-sm backdrop-blur-sm">
-        <div>
-          <div className="flex flex-wrap items-center gap-2 mb-2">
-            <span className="px-2.5 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700/50">
-              ADVANCED RAG ARCHITECTURE
-            </span>
-            <span className="px-2.5 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700/50 flex items-center gap-1">
-              <ShieldCheck className="h-3 w-3" /> PGVECTOR (HYBRID RRF)
-            </span>
-            <span className="px-2.5 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 flex items-center gap-1">
-              <Sparkles className="h-3 w-3" /> SMALL-TO-BIG RETRIEVAL
-            </span>
-          </div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
-            <Database className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />
-            Knowledge Base & pgvector RAG Engine
-          </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-3xl">
-            Hierarchical chunking, 1536D normalized embeddings, Hybrid Reciprocal Rank Fusion (RRF), Small-to-Big parent context expansion, 2D PCA cluster mapping, and RAG Triad observability.
-          </p>
-        </div>
-
-        {/* Global Quick Stats */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="px-4 py-2.5 rounded-lg border border-indigo-200 dark:border-indigo-900/60 bg-white dark:bg-black/60 shadow-sm text-center min-w-[100px]">
-            <div className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">Documents</div>
-            <div className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
-              {stats?.documentCount ?? documents.length}
-            </div>
-          </div>
-          <div className="px-4 py-2.5 rounded-lg border border-indigo-200 dark:border-indigo-900/60 bg-white dark:bg-black/60 shadow-sm text-center min-w-[100px]">
-            <div className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">Vector Chunks</div>
-            <div className="text-xl font-bold text-purple-600 dark:text-purple-400">
-              {stats?.chunkCount ?? "0"}
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div className="mx-auto w-full max-w-[1600px] space-y-6 pb-12">
+      <PageHeader
+        title="Knowledge base"
+        meta="Ingest documents, search them with hybrid retrieval, and inspect chunks, clusters and benchmarks"
+        action={
+          <span className={META}>
+            {(stats?.documentCount ?? documents.length).toLocaleString()} documents · {(stats?.chunkCount ?? 0).toLocaleString()} chunks
+          </span>
+        }
+      />
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-indigo-900/40 pb-2 overflow-x-auto">
-        <button
-          onClick={() => setActiveTab("ingest")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold tracking-wider uppercase transition-all duration-150 shrink-0 ${
-            activeTab === "ingest"
-              ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
-              : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-indigo-950/40"
-          }`}
-        >
-          <UploadCloud className="h-4 w-4" /> 1. Ingestion & Chunking
-        </button>
-        <button
-          onClick={() => setActiveTab("search")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold tracking-wider uppercase transition-all duration-150 shrink-0 ${
-            activeTab === "search"
-              ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
-              : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-indigo-950/40"
-          }`}
-        >
-          <Search className="h-4 w-4" /> 2. Hybrid Search & RAG
-        </button>
-        <button
-          onClick={() => setActiveTab("cluster_map")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold tracking-wider uppercase transition-all duration-150 shrink-0 ${
-            activeTab === "cluster_map"
-              ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
-              : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-indigo-950/40"
-          }`}
-        >
-          <Compass className="h-4 w-4" /> 3. 2D Vector Cluster Map (PCA)
-        </button>
-        <button
-          onClick={() => setActiveTab("documents")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold tracking-wider uppercase transition-all duration-150 shrink-0 ${
-            activeTab === "documents"
-              ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
-              : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-indigo-950/40"
-          }`}
-        >
-          <Layers className="h-4 w-4" /> 4. Collections ({documents.length})
-        </button>
-        <button
-          onClick={() => setActiveTab("architecture")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold tracking-wider uppercase transition-all duration-150 shrink-0 ${
-            activeTab === "architecture"
-              ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
-              : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-indigo-950/40"
-          }`}
-        >
-          <Cpu className="h-4 w-4" /> 5. Architecture & RRF Benchmarks
-        </button>
+      <div role="tablist" className="flex items-center gap-6 overflow-x-auto border-b border-[var(--border-subtle)]">
+        {[
+    { id: "ingest" as const, label: "Ingestion" },
+    { id: "search" as const, label: "Search" },
+    { id: "cluster_map" as const, label: "Cluster map" },
+    { id: "documents" as const, label: `Collections (${documents.length})` },
+    { id: "architecture" as const, label: "Architecture" },
+        ].map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === t.id}
+            onClick={() => setActiveTab(t.id)}
+            className={`-mb-px flex h-10 shrink-0 cursor-pointer items-center border-b-2 font-sans text-sm whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] ${
+              activeTab === t.id
+                ? "border-[var(--text-primary)] text-[var(--text-primary)]"
+                : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
 
-      {/* TAB 1: INGESTION & CHUNKING */}
+      {/* Ingestion */}
       {activeTab === "ingest" && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-7 space-y-4">
-            <form
-              onSubmit={handleIngest}
-              className="p-6 rounded-xl border border-slate-200 dark:border-indigo-900/40 bg-white dark:bg-black/60 shadow-sm space-y-4"
-            >
-              <div className="flex items-center justify-between">
-                <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                  Document Ingestion & Chunking Studio
-                </h2>
-                <div className="flex items-center gap-1.5 text-xs">
-                  <span className="text-slate-500 text-[11px]">Load Sample:</span>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="space-y-4 lg:col-span-7">
+            <form onSubmit={handleIngest} className={CARD}>
+              <div className={CARD_HEAD}>
+                <h2 className={CARD_TITLE}>Add a document</h2>
+                <div className="flex items-center gap-2">
+                  <span className={META}>sample</span>
                   {SAMPLE_DOCUMENTS.map((s, idx) => (
                     <button
                       key={idx}
@@ -565,7 +483,7 @@ export default function KnowledgeBasePage() {
                         setCollection(s.collection);
                         setContent(s.content);
                       }}
-                      className="px-2 py-0.5 rounded border border-indigo-300 dark:border-indigo-800 text-[10px] text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50"
+                      className={BTN_SECONDARY_SM}
                     >
                       {s.collection}
                     </button>
@@ -573,339 +491,323 @@ export default function KnowledgeBasePage() {
                 </div>
               </div>
 
-              {/* Ingestion Mode Tabs */}
-              <div className="flex items-center gap-1 p-1 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-indigo-900/40">
-                {([
-                  { id: "text" as const, label: "Paste Text", icon: FileText },
-                  { id: "file" as const, label: "Upload Files", icon: UploadCloud },
-                  { id: "url" as const, label: "Fetch URL", icon: Compass },
-                ]).map((mode) => (
-                  <button
-                    key={mode.id}
-                    type="button"
-                    onClick={() => setIngestMode(mode.id)}
-                    className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md text-[11px] font-semibold uppercase tracking-wider transition-all cursor-pointer ${
-                      ingestMode === mode.id
-                        ? "bg-white dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 shadow-sm"
-                        : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-                    }`}
-                  >
-                    <mode.icon className="h-3.5 w-3.5" />
-                    {mode.label}
-                  </button>
-                ))}
-              </div>
+              <div className="space-y-6 p-5">
+                <Segmented
+                  label="Source"
+                  value={ingestMode}
+                  onChange={setIngestMode}
+                  options={[
+                    { id: "text", label: "Paste text" },
+                    { id: "file", label: "Upload files" },
+                    { id: "url", label: "Fetch URL" },
+                  ]}
+                />
 
-              {/* Title & Collection */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Document Title
-                  </label>
-                  <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required={ingestMode === "text"}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-indigo-900/60 bg-slate-50 dark:bg-slate-950 text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
-                    placeholder="e.g. System Architecture Whitepaper"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Collection Namespace
-                  </label>
-                  <input
-                    type="text"
-                    value={collection}
-                    onChange={(e) => setCollection(e.target.value)}
-                    required
-                    className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-indigo-900/60 bg-slate-50 dark:bg-slate-950 text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
-                    placeholder="e.g. engineering, research, legal"
-                  />
-                </div>
-              </div>
-
-              {/* Tags & Embedding Model */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Tags (for organization)
-                  </label>
-                  <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-lg border border-slate-300 dark:border-indigo-900/60 bg-slate-50 dark:bg-slate-950 min-h-[36px]">
-                    {tags.map((tag) => (
-                      <span key={tag} className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-[10px] font-semibold">
-                        {tag}
-                        <button type="button" onClick={() => setTags((prev) => prev.filter((t) => t !== tag))} className="cursor-pointer hover:text-red-500">×</button>
-                      </span>
-                    ))}
-                    <input
-                      type="text"
-                      value={tagInput}
-                      onChange={(e) => setTagInput(e.target.value)}
-                      onKeyDown={(e) => {
-                        if ((e.key === "Enter" || e.key === ",") && tagInput.trim()) {
-                          e.preventDefault();
-                          if (!tags.includes(tagInput.trim())) {
-                            setTags((prev) => [...prev, tagInput.trim()]);
-                          }
-                          setTagInput("");
-                        }
-                      }}
-                      className="flex-1 min-w-[80px] bg-transparent text-xs outline-none placeholder-slate-400"
-                      placeholder="Add tag & press Enter"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Embedding Model
-                  </label>
-                  <select
-                    value={embeddingModel}
-                    onChange={(e) => setEmbeddingModel(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-indigo-900/60 bg-slate-50 dark:bg-slate-950 text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
-                  >
-                    <option value="">Default (text-embedding-3-small)</option>
-                    <option value="text-embedding-3-small">OpenAI text-embedding-3-small (1536D)</option>
-                    <option value="text-embedding-3-large">OpenAI text-embedding-3-large (3072D)</option>
-                    <option value="text-embedding-ada-002">OpenAI text-embedding-ada-002 (1536D)</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Chunking Settings */}
-              <div className="p-3.5 rounded-lg border border-indigo-100 dark:border-indigo-950 bg-indigo-50/40 dark:bg-indigo-950/20 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-indigo-950 dark:text-indigo-200 flex items-center gap-1.5">
-                    <Sliders className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
-                    Chunking Engine Parameters
-                  </span>
-                  <label className="flex items-center gap-1.5 text-[11px] text-purple-700 dark:text-purple-300 cursor-pointer font-semibold">
-                    <input
-                      type="checkbox"
-                      checked={useParentChunking}
-                      onChange={(e) => setUseParentChunking(e.target.checked)}
-                      className="rounded border-purple-400 text-purple-600"
-                    />
-                    Small-to-Big Parent Context
-                  </label>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {(["markdown", "recursive", "semantic", "fixed"] as const).map((strat) => (
-                    <button
-                      key={strat}
-                      type="button"
-                      onClick={() => setStrategy(strat)}
-                      className={`px-2.5 py-1.5 rounded border text-[11px] font-medium capitalize transition-all ${
-                        strategy === strat
-                          ? "border-indigo-600 bg-indigo-600 text-white shadow-sm"
-                          : "border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-black text-slate-700 dark:text-slate-300 hover:border-indigo-400"
-                      }`}
-                    >
-                      {strat}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-slate-600 dark:text-slate-400">Leaf Chunk Size:</span>
-                      <span className="font-bold text-indigo-600 dark:text-indigo-400">{maxChunkSize} chars</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="150"
-                      max="1200"
-                      step="50"
-                      value={maxChunkSize}
-                      onChange={(e) => setMaxChunkSize(parseInt(e.target.value, 10))}
-                      className="w-full accent-indigo-600"
-                    />
-                  </div>
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-slate-600 dark:text-slate-400">Chunk Overlap:</span>
-                      <span className="font-bold text-indigo-600 dark:text-indigo-400">{overlap} chars</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="300"
-                      step="20"
-                      value={overlap}
-                      onChange={(e) => setOverlap(parseInt(e.target.value, 10))}
-                      className="w-full accent-indigo-600"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* ─── TEXT MODE: Content Textarea ─── */}
-              {ingestMode === "text" && (
-                <>
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                      Document Content (Markdown / Plaintext)
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <label htmlFor="kb-title" className={LABEL}>
+                      Title
                     </label>
-                    <textarea
-                      value={content}
-                      onChange={(e) => setContent(e.target.value)}
-                      rows={12}
-                      required
-                      className="w-full p-3 rounded-lg border border-slate-300 dark:border-indigo-900/60 bg-slate-50 dark:bg-slate-950 text-xs font-mono focus:ring-2 focus:ring-indigo-500 outline-none leading-relaxed"
-                      placeholder="Paste or write document text here..."
+                    <input
+                      id="kb-title"
+                      type="text"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      required={ingestMode === "text"}
+                      className={clsx(INPUT, "w-full")}
+                      placeholder="System architecture whitepaper"
                     />
                   </div>
-                  <button
-                    type="submit"
-                    disabled={isIngesting || !content.trim()}
-                    className="w-full py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-xs font-bold uppercase tracking-wider shadow-md hover:shadow-indigo-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                  >
-                    {isIngesting ? (
-                      <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Chunking, Embedding (1536D) & Storing in pgvector...
-                      </>
-                    ) : (
-                      <>
-                        <Database className="h-4 w-4" />
-                        Ingest Document into pgvector
-                      </>
-                    )}
-                  </button>
-                </>
-              )}
-
-              {/* ─── FILE MODE: Drag & Drop Upload ─── */}
-              {ingestMode === "file" && (
-                <>
-                  <div
-                    onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
-                    onDragLeave={() => setDragActive(false)}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      setDragActive(false);
-                      const files = Array.from(e.dataTransfer.files);
-                      setUploadFiles((prev) => [...prev, ...files]);
-                    }}
-                    className={`relative p-8 rounded-xl border-2 border-dashed transition-all text-center space-y-3 ${
-                      dragActive
-                        ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30"
-                        : "border-slate-300 dark:border-indigo-900/50 bg-slate-50/50 dark:bg-slate-950/30 hover:border-indigo-400"
-                    }`}
-                  >
-                    <UploadCloud className={`h-10 w-10 mx-auto ${dragActive ? "text-indigo-500" : "text-slate-400"}`} />
-                    <div>
-                      <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                        Drop files here or click to browse
-                      </p>
-                      <p className="text-[11px] text-slate-500 mt-1">
-                        PDF, DOCX, HTML, CSV, JSON, TXT, MD — Max 20MB per file, up to 20 files
-                      </p>
-                    </div>
+                  <div className="space-y-2">
+                    <label htmlFor="kb-collection" className={LABEL}>
+                      Collection
+                    </label>
                     <input
-                      type="file"
-                      multiple
-                      accept=".pdf,.docx,.doc,.html,.htm,.csv,.json,.txt,.md,.markdown,.xml,.yaml,.yml"
-                      onChange={(e) => {
-                        const files = Array.from(e.target.files || []);
+                      id="kb-collection"
+                      type="text"
+                      value={collection}
+                      onChange={(e) => setCollection(e.target.value)}
+                      required
+                      className={clsx(INPUT, "w-full")}
+                      placeholder="engineering"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="kb-tags" className={LABEL}>
+                      Tags
+                    </label>
+                    <div className={clsx(FIELD, "flex min-h-9 flex-wrap items-center gap-1.5 px-2 py-1")}>
+                      {tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center gap-1 rounded-[6px] bg-[var(--text-primary)]/10 px-2 py-0.5 font-mono text-xs text-[var(--text-primary)]"
+                        >
+                          {tag}
+                          <button
+                            type="button"
+                            aria-label={`Remove ${tag}`}
+                            onClick={() => setTags((prev) => prev.filter((t) => t !== tag))}
+                            className="cursor-pointer text-[var(--text-muted)] hover:text-[var(--state-error)]"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                      <input
+                        id="kb-tags"
+                        type="text"
+                        value={tagInput}
+                        onChange={(e) => setTagInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if ((e.key === "Enter" || e.key === ",") && tagInput.trim()) {
+                            e.preventDefault();
+                            if (!tags.includes(tagInput.trim())) {
+                              setTags((prev) => [...prev, tagInput.trim()]);
+                            }
+                            setTagInput("");
+                          }
+                        }}
+                        className="min-w-[80px] flex-1 bg-transparent font-sans text-sm outline-none placeholder:text-[var(--text-muted)]"
+                        placeholder="Press Enter to add"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="kb-embed" className={LABEL}>
+                      Embedding model
+                    </label>
+                    <select
+                      id="kb-embed"
+                      value={embeddingModel}
+                      onChange={(e) => setEmbeddingModel(e.target.value)}
+                      className={clsx(FIELD, "h-9 w-full cursor-pointer px-3")}
+                    >
+                      <option value="">Default (text-embedding-3-small)</option>
+                      <option value="text-embedding-3-small">OpenAI text-embedding-3-small (1536D)</option>
+                      <option value="text-embedding-3-large">OpenAI text-embedding-3-large (3072D)</option>
+                      <option value="text-embedding-ada-002">OpenAI text-embedding-ada-002 (1536D)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Chunking */}
+                <fieldset className="space-y-4 rounded-[10px] border border-[var(--border-subtle)] p-4">
+                  <legend className="px-2 font-sans text-[13px] text-[var(--text-muted)]">Chunking</legend>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <Segmented
+                      label="Strategy"
+                      hideLabel
+                      value={strategy}
+                      onChange={setStrategy}
+                      options={(["markdown", "recursive", "semantic", "fixed"] as const).map((s) => ({
+                        id: s,
+                        label: s.charAt(0).toUpperCase() + s.slice(1),
+                      }))}
+                    />
+                    <label className="flex cursor-pointer items-center gap-2 font-sans text-[13px] text-[var(--text-secondary)]">
+                      <input
+                        type="checkbox"
+                        checked={useParentChunking}
+                        onChange={(e) => setUseParentChunking(e.target.checked)}
+                        className="h-4 w-4 accent-[var(--accent-primary)]"
+                      />
+                      Keep parent context (small-to-big)
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <div className="flex items-baseline justify-between">
+                        <label htmlFor="kb-size" className={LABEL}>
+                          Chunk size
+                        </label>
+                        <span className={META}>{maxChunkSize} chars</span>
+                      </div>
+                      <input
+                        id="kb-size"
+                        type="range"
+                        min="150"
+                        max="1200"
+                        step="50"
+                        value={maxChunkSize}
+                        onChange={(e) => setMaxChunkSize(parseInt(e.target.value, 10))}
+                        className="w-full accent-[var(--accent-primary)]"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-baseline justify-between">
+                        <label htmlFor="kb-overlap" className={LABEL}>
+                          Overlap
+                        </label>
+                        <span className={META}>{overlap} chars</span>
+                      </div>
+                      <input
+                        id="kb-overlap"
+                        type="range"
+                        min="0"
+                        max="300"
+                        step="20"
+                        value={overlap}
+                        onChange={(e) => setOverlap(parseInt(e.target.value, 10))}
+                        className="w-full accent-[var(--accent-primary)]"
+                      />
+                    </div>
+                  </div>
+                </fieldset>
+
+                {/* Paste text */}
+                {ingestMode === "text" && (
+                  <>
+                    <div className="space-y-2">
+                      <label htmlFor="kb-content" className={LABEL}>
+                        Content (Markdown or plain text)
+                      </label>
+                      <textarea
+                        id="kb-content"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        rows={12}
+                        required
+                        className={clsx(FIELD, "w-full p-3 leading-6")}
+                        placeholder="Paste or write document text here"
+                      />
+                    </div>
+                    <button type="submit" disabled={isIngesting || !content.trim()} className={clsx(BTN_PRIMARY, "w-full")}>
+                      {isIngesting ? "Chunking, embedding and storing" : "Ingest document"}
+                    </button>
+                  </>
+                )}
+
+                {/* Upload files */}
+                {ingestMode === "file" && (
+                  <>
+                    <div
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setDragActive(true);
+                      }}
+                      onDragLeave={() => setDragActive(false)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        setDragActive(false);
+                        const files = Array.from(e.dataTransfer.files);
                         setUploadFiles((prev) => [...prev, ...files]);
                       }}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    />
-                  </div>
+                      className={clsx(
+                        "relative space-y-1 rounded-[12px] border border-dashed p-8 text-center transition-colors",
+                        dragActive
+                          ? "border-[var(--accent-primary)] bg-[var(--accent-primary)]/10"
+                          : "border-[var(--border-strong)] hover:border-[var(--text-muted)]"
+                      )}
+                    >
+                      <p className="font-sans text-sm text-[var(--text-primary)]">Drop files here or click to browse</p>
+                      <p className="font-sans text-[13px] text-[var(--text-muted)]">
+                        PDF, DOCX, HTML, CSV, JSON, TXT, MD. Up to 20 files, 20 MB each
+                      </p>
+                      <input
+                        type="file"
+                        multiple
+                        aria-label="Choose files to upload"
+                        accept=".pdf,.docx,.doc,.html,.htm,.csv,.json,.txt,.md,.markdown,.xml,.yaml,.yml"
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files || []);
+                          setUploadFiles((prev) => [...prev, ...files]);
+                        }}
+                        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                      />
+                    </div>
 
-                  {/* Uploaded Files List */}
-                  {uploadFiles.length > 0 && (
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                          {uploadFiles.length} file(s) selected
-                        </span>
-                        <button type="button" onClick={() => setUploadFiles([])} className="text-[11px] text-red-500 hover:underline cursor-pointer">
-                          Clear all
-                        </button>
-                      </div>
-                      {uploadFiles.map((f, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-2 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white dark:bg-black/40">
-                          <div className="flex items-center gap-2 text-xs">
-                            <FileText className="h-3.5 w-3.5 text-indigo-500" />
-                            <span className="font-medium text-slate-700 dark:text-slate-300">{f.name}</span>
-                            <span className="text-slate-400">({(f.size / 1024).toFixed(0)}KB)</span>
-                          </div>
-                          <button type="button" onClick={() => setUploadFiles((prev) => prev.filter((_, i) => i !== idx))} className="text-slate-400 hover:text-red-500 cursor-pointer">
-                            <Trash2 className="h-3.5 w-3.5" />
+                    {uploadFiles.length > 0 && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className={META}>{uploadFiles.length} selected</span>
+                          <button
+                            type="button"
+                            onClick={() => setUploadFiles([])}
+                            className="cursor-pointer font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
+                          >
+                            Clear all
                           </button>
                         </div>
-                      ))}
-                    </div>
-                  )}
-
-                  <button
-                    type="button"
-                    disabled={isUploading || uploadFiles.length === 0}
-                    onClick={async () => {
-                      setIsUploading(true);
-                      setUploadResults([]);
-                      try {
-                        const formData = new FormData();
-                        for (const f of uploadFiles) formData.append("file", f);
-                        formData.append("collection", collection || "default");
-                        if (tags.length > 0) formData.append("tags", tags.join(","));
-                        if (embeddingModel) formData.append("embeddingModel", embeddingModel);
-                        formData.append("chunking", JSON.stringify({ strategy, maxChunkSize, overlap, parentChunkSize: useParentChunking ? 1200 : undefined }));
-
-                        const res = await fetch("/api/rag/upload", { method: "POST", body: formData });
-                        const json = await res.json();
-                        if (json.results) setUploadResults(json.results);
-                        fetchDocuments();
-                      } catch (err) {
-                        alert(err instanceof Error ? err.message : "Upload failed");
-                      } finally {
-                        setIsUploading(false);
-                      }
-                    }}
-                    className="w-full py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-xs font-bold uppercase tracking-wider shadow-md hover:shadow-indigo-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                  >
-                    {isUploading ? (
-                      <><RefreshCw className="h-4 w-4 animate-spin" /> Uploading & Ingesting {uploadFiles.length} file(s)...</>
-                    ) : (
-                      <><UploadCloud className="h-4 w-4" /> Upload & Ingest {uploadFiles.length} file(s)</>
+                        <ul className="divide-y divide-[var(--border-subtle)] rounded-[8px] border border-[var(--border-subtle)]">
+                          {uploadFiles.map((f, idx) => (
+                            <li key={idx} className="flex items-center justify-between gap-3 px-3 py-2">
+                              <span className="min-w-0 truncate font-sans text-sm text-[var(--text-primary)]">{f.name}</span>
+                              <div className="flex shrink-0 items-center gap-3">
+                                <span className={META}>{(f.size / 1024).toFixed(0)} KB</span>
+                                <button
+                                  type="button"
+                                  onClick={() => setUploadFiles((prev) => prev.filter((_, i) => i !== idx))}
+                                  className="cursor-pointer font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--state-error)]"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
-                  </button>
 
-                  {/* Upload Results */}
-                  {uploadResults.length > 0 && (
-                    <div className="space-y-2 p-3 rounded-lg border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/30">
-                      <div className="text-xs font-bold text-emerald-800 dark:text-emerald-300">Upload Results</div>
-                      {uploadResults.map((r, idx) => (
-                        <div key={idx} className={`flex items-center gap-2 text-[11px] ${r.status === "success" ? "text-emerald-700 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}>
-                          {r.status === "success" ? <CheckCircle2 className="h-3 w-3 shrink-0" /> : <span className="text-red-500">×</span>}
-                          <span className="font-medium">{r.filename as string}</span>
-                          {r.status === "success" ? <span className="text-emerald-600">— {r.chunkCount as number} chunks</span> : <span>— {r.error as string}</span>}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
+                    <button
+                      type="button"
+                      disabled={isUploading || uploadFiles.length === 0}
+                      onClick={async () => {
+                        setIsUploading(true);
+                        setUploadResults([]);
+                        try {
+                          const formData = new FormData();
+                          for (const f of uploadFiles) formData.append("file", f);
+                          formData.append("collection", collection || "default");
+                          if (tags.length > 0) formData.append("tags", tags.join(","));
+                          if (embeddingModel) formData.append("embeddingModel", embeddingModel);
+                          formData.append("chunking", JSON.stringify({ strategy, maxChunkSize, overlap, parentChunkSize: useParentChunking ? 1200 : undefined }));
 
-              {/* ─── URL MODE: Fetch Web Page ─── */}
-              {ingestMode === "url" && (
-                <>
-                  <div className="space-y-3">
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      Web Page URL
+                          const res = await fetch("/api/rag/upload", { method: "POST", body: formData });
+                          const json = await res.json();
+                          if (json.results) setUploadResults(json.results);
+                          fetchDocuments();
+                        } catch (err) {
+                          alert(err instanceof Error ? err.message : "Upload failed");
+                        } finally {
+                          setIsUploading(false);
+                        }
+                      }}
+                      className={clsx(BTN_PRIMARY, "w-full")}
+                    >
+                      {isUploading ? `Ingesting ${uploadFiles.length} files` : `Upload and ingest ${uploadFiles.length} ${uploadFiles.length === 1 ? "file" : "files"}`}
+                    </button>
+
+                    {uploadResults.length > 0 && (
+                      <ul className="divide-y divide-[var(--border-subtle)] rounded-[8px] border border-[var(--border-subtle)]">
+                        {uploadResults.map((r, idx) => (
+                          <li key={idx} className="flex items-center justify-between gap-3 px-3 py-2">
+                            <span className="min-w-0 truncate font-sans text-sm text-[var(--text-primary)]">{r.filename as string}</span>
+                            {r.status === "success" ? (
+                              <Tag tone="good">{r.chunkCount as number} chunks</Tag>
+                            ) : (
+                              <Tag tone="bad">{r.error as string}</Tag>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </>
+                )}
+
+                {/* Fetch URL */}
+                {ingestMode === "url" && (
+                  <div className="space-y-2">
+                    <label htmlFor="kb-url" className={LABEL}>
+                      Page URL
                     </label>
                     <div className="flex gap-2">
                       <input
+                        id="kb-url"
                         type="url"
                         value={fetchUrl}
                         onChange={(e) => setFetchUrl(e.target.value)}
-                        className="flex-1 px-3 py-2 rounded-lg border border-slate-300 dark:border-indigo-900/60 bg-slate-50 dark:bg-slate-950 text-xs font-mono focus:ring-2 focus:ring-indigo-500 outline-none"
+                        className={clsx(INPUT, "min-w-0 flex-1")}
                         placeholder="https://docs.example.com/api/reference"
                       />
                       <button
@@ -939,216 +841,180 @@ export default function KnowledgeBasePage() {
                             setIsFetchingUrl(false);
                           }
                         }}
-                        className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                        className={BTN_PRIMARY}
                       >
-                        {isFetchingUrl ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <Compass className="h-3.5 w-3.5" />}
-                        {isFetchingUrl ? "Fetching..." : "Fetch & Ingest"}
+                        {isFetchingUrl ? "Fetching" : "Fetch and ingest"}
                       </button>
                     </div>
-                    <p className="text-[11px] text-slate-500">
-                      Fetches the page, converts HTML to clean markdown, and ingests into your knowledge base. Supports any public HTTP/HTTPS URL.
+                    <p className="font-sans text-[13px] text-[var(--text-muted)]">
+                      Fetches a public HTTP or HTTPS page, converts it to markdown and ingests it.
                     </p>
                   </div>
-                </>
-              )}
+                )}
+              </div>
             </form>
 
             {ingestSuccess && (
-              <div className="p-4 rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200 animate-fadeIn space-y-2">
-                <div className="flex items-center gap-2 font-bold text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                  Document Successfully Ingested & Indexed in pgvector!
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] pt-1 border-t border-emerald-200/60 dark:border-emerald-800/60">
+              <section className={clsx(CARD, "animate-fadeIn space-y-3 p-5")}>
+                <Tag tone="good">Ingested and indexed</Tag>
+                <dl className={clsx(META, "grid grid-cols-2 gap-x-6 gap-y-1 sm:grid-cols-4")}>
                   <div>
-                    Doc ID: <span className="font-mono font-bold">{(ingestSuccess.documentId as string)?.slice(0, 10)}...</span>
+                    <dt className="text-[var(--text-muted)]">Document</dt>
+                    <dd className="text-[var(--text-primary)]">{(ingestSuccess.documentId as string)?.slice(0, 10)}…</dd>
                   </div>
                   <div>
-                    Chunks: <span className="font-bold">{ingestSuccess.chunkCount as number}</span>
+                    <dt className="text-[var(--text-muted)]">Chunks</dt>
+                    <dd className="text-[var(--text-primary)]">{ingestSuccess.chunkCount as number}</dd>
                   </div>
                   <div>
-                    Tokens: <span className="font-bold">{ingestSuccess.totalTokens as number}</span>
+                    <dt className="text-[var(--text-muted)]">Tokens</dt>
+                    <dd className="text-[var(--text-primary)]">{ingestSuccess.totalTokens as number}</dd>
                   </div>
                   <div>
-                    Embedding: <span className="font-bold">{ingestSuccess.embeddingModel as string}</span>
+                    <dt className="text-[var(--text-muted)]">Embedding</dt>
+                    <dd className="truncate text-[var(--text-primary)]">{ingestSuccess.embeddingModel as string}</dd>
                   </div>
-                </div>
-              </div>
+                </dl>
+              </section>
             )}
           </div>
 
-          {/* Live Chunk Preview */}
-          <div className="lg:col-span-5 space-y-4">
-            <div className="p-6 rounded-xl border border-slate-200 dark:border-indigo-900/40 bg-white dark:bg-black/60 shadow-sm space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-indigo-900/30 pb-3">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                  <Eye className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                  Live Chunking Visualizer
-                </h3>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-semibold border border-purple-200 dark:border-purple-800">
-                  {chunkPreview.stats.chunkCount} Chunks
-                </span>
-              </div>
-
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="p-2 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                  <div className="text-[10px] text-slate-500">Characters</div>
-                  <div className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                    {chunkPreview.stats.totalChars}
-                  </div>
-                </div>
-                <div className="p-2 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                  <div className="text-[10px] text-slate-500">Est. Tokens</div>
-                  <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">
-                    {chunkPreview.stats.totalTokens}
-                  </div>
-                </div>
-                <div className="p-2 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                  <div className="text-[10px] text-slate-500">Avg Chars/Chunk</div>
-                  <div className="text-sm font-bold text-purple-600 dark:text-purple-400">
-                    {chunkPreview.stats.avgChunkChars}
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
-                {chunkPreview.chunks.map((chunk, idx) => (
-                  <div
-                    key={idx}
-                    className="p-3 rounded-lg border border-slate-200 dark:border-indigo-900/50 bg-slate-50/70 dark:bg-slate-950/70 space-y-2 text-xs hover:border-indigo-400 transition-all"
-                  >
-                    <div className="flex items-center justify-between text-[11px] text-slate-500 border-b border-slate-200/50 dark:border-slate-800 pb-1.5">
-                      <span className="font-bold text-indigo-600 dark:text-indigo-400">
-                        Chunk #{idx + 1}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        {chunk.metadata.section && (
-                          <span className="px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-[10px]">
-                            {chunk.metadata.section}
-                          </span>
-                        )}
-                        <span>
-                          {chunk.metadata.charCount} chars • {chunk.metadata.tokenCount} tokens
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-[11px] leading-relaxed text-slate-700 dark:text-slate-300 font-mono whitespace-pre-wrap">
-                      {chunk.content}
-                    </p>
-                  </div>
-                ))}
-              </div>
+          {/* Live chunk preview */}
+          <section className={clsx(CARD, "self-start lg:col-span-5")}>
+            <div className={CARD_HEAD}>
+              <h2 className={CARD_TITLE}>Chunk preview</h2>
+              <span className={META}>{chunkPreview.stats.chunkCount} chunks</span>
             </div>
-          </div>
+            <dl className="grid grid-cols-3 divide-x divide-[var(--border-subtle)] border-b border-[var(--border-subtle)]">
+              {[
+                { label: "Characters", value: chunkPreview.stats.totalChars },
+                { label: "Est. tokens", value: chunkPreview.stats.totalTokens },
+                { label: "Avg chars per chunk", value: chunkPreview.stats.avgChunkChars },
+              ].map((s) => (
+                <div key={s.label} className="space-y-1 px-5 py-3">
+                  <dt className="font-sans text-[13px] text-[var(--text-muted)]">{s.label}</dt>
+                  <dd className="font-mono text-sm tabular-nums text-[var(--text-primary)]">{s.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <ul className="max-h-[500px] divide-y divide-[var(--border-subtle)] overflow-y-auto">
+              {chunkPreview.chunks.map((chunk, idx) => (
+                <li key={idx} className="space-y-2 px-5 py-3">
+                  <div className={clsx(META, "flex items-center justify-between gap-3")}>
+                    <span>
+                      #{idx + 1}
+                      {chunk.metadata.section && <> · {chunk.metadata.section}</>}
+                    </span>
+                    <span>
+                      {chunk.metadata.charCount} chars · {chunk.metadata.tokenCount} tokens
+                    </span>
+                  </div>
+                  <p className="whitespace-pre-wrap font-sans text-[13px] leading-5 text-[var(--text-secondary)]">{chunk.content}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
       )}
 
-      {/* TAB 2: HYBRID SEARCH & RAG */}
+      {/* Search */}
       {activeTab === "search" && (
-        <div className="space-y-6">
-          <div className="p-6 rounded-xl border border-slate-200 dark:border-indigo-900/40 bg-white dark:bg-black/60 shadow-sm space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <Search className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                Hybrid Semantic Retrieval (Dense + Sparse RRF) & RAG
-              </h2>
-              <div className="flex items-center gap-3 text-xs">
-                <label className="flex items-center gap-1.5 text-indigo-700 dark:text-indigo-300 font-semibold cursor-pointer">
+        <div className="max-w-4xl space-y-6">
+          <section className={CARD}>
+            <div className={CARD_HEAD}>
+              <h2 className={CARD_TITLE}>Search</h2>
+              <div className="flex flex-wrap items-center gap-4">
+                <label className="flex cursor-pointer items-center gap-2 font-sans text-[13px] text-[var(--text-secondary)]">
                   <input
                     type="checkbox"
                     checked={useHybridSearch}
                     onChange={(e) => setUseHybridSearch(e.target.checked)}
-                    className="rounded border-indigo-400 text-indigo-600"
+                    className="h-4 w-4 accent-[var(--accent-primary)]"
                   />
-                  <Scale className="h-3.5 w-3.5" /> Hybrid RRF Ranking
+                  Hybrid ranking
                 </label>
-                <label className="flex items-center gap-1.5 text-purple-700 dark:text-purple-300 font-semibold cursor-pointer">
+                <label className="flex cursor-pointer items-center gap-2 font-sans text-[13px] text-[var(--text-secondary)]">
                   <input
                     type="checkbox"
                     checked={expandToParent}
                     onChange={(e) => setExpandToParent(e.target.checked)}
-                    className="rounded border-purple-400 text-purple-600"
+                    className="h-4 w-4 accent-[var(--accent-primary)]"
                   />
-                  <GitMerge className="h-3.5 w-3.5" /> Small-to-Big Context
+                  Parent context
                 </label>
               </div>
             </div>
 
-            {/* Quick Queries */}
-            <div className="flex flex-wrap items-center gap-2 text-xs">
-              <span className="text-slate-500 text-[11px]">Quick Queries:</span>
-              {[
-                "How does pgvector cosine distance search work?",
-                "Explain A2A protocol task delegation",
-                "What is hierarchical chunking with overlap?",
-                "How does Reciprocal Rank Fusion combine dense and sparse search?",
-              ].map((q, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => {
-                    setSearchQuery(q);
-                    setTimeout(() => handleSearch(), 50);
-                  }}
-                  className="px-2.5 py-1 rounded-full border border-indigo-200 dark:border-indigo-800 text-[11px] text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950"
-                >
-                  {q}
+            <div className="space-y-4 p-5">
+              <form onSubmit={handleSearch} className="flex gap-2">
+                <label className="min-w-0 flex-1">
+                  <span className="sr-only">Search query</span>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Ask a question or describe what you need"
+                    className={clsx(INPUT, "h-10 w-full")}
+                  />
+                </label>
+                <button type="submit" disabled={isSearching || !searchQuery.trim()} className={clsx(BTN_PRIMARY, "h-10")}>
+                  {isSearching ? "Searching" : "Search"}
                 </button>
-              ))}
-            </div>
+              </form>
 
-            <form onSubmit={handleSearch} className="space-y-3">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Enter a natural language search query or question..."
-                  className="w-full pl-4 pr-24 py-3.5 rounded-xl border border-slate-300 dark:border-indigo-900/60 bg-slate-50 dark:bg-slate-950 text-sm focus:ring-2 focus:ring-indigo-500 outline-none font-sans"
-                />
-                <button
-                  type="submit"
-                  disabled={isSearching || !searchQuery.trim()}
-                  className="absolute right-2 top-2 bottom-2 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold tracking-wider uppercase transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-                >
-                  {isSearching ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-                  Search
-                </button>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-sans text-[13px] text-[var(--text-muted)]">
+                <span>Try</span>
+                {[
+                  "How does pgvector cosine distance search work?",
+                  "Explain A2A protocol task delegation",
+                  "What is hierarchical chunking with overlap?",
+                  "How does Reciprocal Rank Fusion combine dense and sparse search?",
+                ].map((q, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery(q);
+                      setTimeout(() => handleSearch(), 50);
+                    }}
+                    className="cursor-pointer text-left text-[var(--text-secondary)] underline decoration-[var(--border-strong)] underline-offset-4 transition-colors hover:text-[var(--text-primary)]"
+                  >
+                    {q}
+                  </button>
+                ))}
               </div>
 
-              {/* Filters */}
-              <div className="flex flex-wrap items-center gap-4 text-xs pt-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-600 dark:text-slate-400">Collection:</span>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-[var(--border-subtle)] pt-4">
+                <label className="flex items-center gap-2 font-sans text-[13px] text-[var(--text-secondary)]">
+                  Collection
                   <select
                     value={searchCollection}
                     onChange={(e) => setSearchCollection(e.target.value)}
-                    className="px-2.5 py-1 rounded border border-slate-300 dark:border-indigo-900/50 bg-slate-50 dark:bg-slate-950 text-xs"
+                    className={clsx(FIELD, "h-8 cursor-pointer px-2 text-[13px]")}
                   >
-                    <option value="">All Collections</option>
+                    <option value="">All collections</option>
                     {collections.map((c) => (
                       <option key={c.name} value={c.name}>
                         {c.name} ({c.chunkCount} chunks)
                       </option>
                     ))}
                   </select>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-600 dark:text-slate-400">Top-K:</span>
+                </label>
+                <label className="flex items-center gap-2 font-sans text-[13px] text-[var(--text-secondary)]">
+                  Results
                   <select
                     value={searchLimit}
                     onChange={(e) => setSearchLimit(parseInt(e.target.value, 10))}
-                    className="px-2 py-1 rounded border border-slate-300 dark:border-indigo-900/50 bg-slate-50 dark:bg-slate-950 text-xs"
+                    className={clsx(FIELD, "h-8 cursor-pointer px-2 text-[13px]")}
                   >
-                    <option value={3}>3 Chunks</option>
-                    <option value={5}>5 Chunks</option>
-                    <option value={10}>10 Chunks</option>
-                    <option value={20}>20 Chunks</option>
+                    <option value={3}>3</option>
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
                   </select>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-600 dark:text-slate-400">Min Similarity:</span>
-                  <span className="font-bold text-indigo-600">{Math.round(minScore * 100)}%</span>
+                </label>
+                <label className="flex items-center gap-2 font-sans text-[13px] text-[var(--text-secondary)]">
+                  Min similarity
                   <input
                     type="range"
                     min="0"
@@ -1156,434 +1022,285 @@ export default function KnowledgeBasePage() {
                     step="0.05"
                     value={minScore}
                     onChange={(e) => setMinScore(parseFloat(e.target.value))}
-                    className="w-24 accent-indigo-600"
+                    className="w-24 accent-[var(--accent-primary)]"
                   />
-                </div>
+                  <span className={META}>{Math.round(minScore * 100)}%</span>
+                </label>
 
-                <div className="ml-auto">
-                  <button
-                    type="button"
-                    onClick={handleGenerateQA}
-                    disabled={isGeneratingQA || !searchQuery.trim()}
-                    className="px-3.5 py-1.5 rounded-lg border border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 hover:bg-purple-100 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm disabled:opacity-50"
-                  >
-                    {isGeneratingQA ? (
-                      <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                    ) : (
-                      <Sparkles className="h-3.5 w-3.5" />
-                    )}
-                    Synthesize Grounded RAG Answer
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          {/* RAG Triad Observability Card */}
-          {evaluationReport && (
-            <div className="p-6 rounded-xl border border-indigo-200 dark:border-indigo-900/50 bg-white dark:bg-black/60 shadow-md space-y-4 animate-fadeIn">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-indigo-900/30 pb-3">
-                <div className="flex items-center gap-2 font-bold text-sm text-indigo-950 dark:text-indigo-200">
-                  <Activity className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                  RAG Triad Observability & Grounding Audit
-                </div>
-                <span
-                  className={`px-2.5 py-0.5 rounded text-xs font-bold ${
-                    evaluationReport.overallGrade === "A"
-                      ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
-                      : evaluationReport.overallGrade === "B"
-                      ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300"
-                      : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-                  }`}
+                <button
+                  type="button"
+                  onClick={handleGenerateQA}
+                  disabled={isGeneratingQA || !searchQuery.trim()}
+                  className={clsx(BTN_SECONDARY_SM, "ml-auto")}
                 >
-                  Grade {evaluationReport.overallGrade} ({Math.round(evaluationReport.overallScore * 100)}%)
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                <div className="p-3 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-slate-50 dark:bg-slate-950 space-y-1">
-                  <div className="flex justify-between font-bold">
-                    <span>1. Context Relevance</span>
-                    <span className="text-indigo-600">
-                      {Math.round(evaluationReport.contextRelevance.score * 100)}%
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-500">{evaluationReport.contextRelevance.details}</p>
-                </div>
-
-                <div className="p-3 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-slate-50 dark:bg-slate-950 space-y-1">
-                  <div className="flex justify-between font-bold">
-                    <span>2. Groundedness</span>
-                    <span className="text-emerald-600">
-                      {Math.round(evaluationReport.groundedness.score * 100)}%
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-500">{evaluationReport.groundedness.details}</p>
-                </div>
-
-                <div className="p-3 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-slate-50 dark:bg-slate-950 space-y-1">
-                  <div className="flex justify-between font-bold">
-                    <span>3. Answer Relevance</span>
-                    <span className="text-purple-600">
-                      {Math.round(evaluationReport.answerRelevance.score * 100)}%
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-500">{evaluationReport.answerRelevance.details}</p>
-                </div>
+                  {isGeneratingQA ? "Writing answer" : "Answer with sources"}
+                </button>
               </div>
             </div>
-          )}
+          </section>
 
-          {/* Grounded QA Answer Display */}
           {qaAnswer && (
-            <div className="p-6 rounded-xl border border-purple-200 dark:border-purple-900/50 bg-gradient-to-r from-purple-50/80 via-white to-indigo-50/50 dark:from-purple-950/30 dark:via-black dark:to-indigo-950/20 shadow-md space-y-4 animate-fadeIn">
-              <div className="flex items-center justify-between border-b border-purple-200 dark:border-purple-900/40 pb-3">
-                <div className="flex items-center gap-2 font-bold text-sm text-purple-950 dark:text-purple-200">
-                  <Sparkles className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                  Grounded AI Answer (Retrieved via pgvector)
-                </div>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800">
-                  {qaAnswer.sources?.length} Sources Cited
-                </span>
+            <section className={clsx(CARD, "animate-fadeIn")}>
+              <div className={CARD_HEAD}>
+                <h2 className={CARD_TITLE}>Answer</h2>
+                <span className={META}>{qaAnswer.sources?.length} sources cited</span>
               </div>
-              <div className="prose dark:prose-invert max-w-none text-xs leading-relaxed font-sans whitespace-pre-wrap text-slate-800 dark:text-slate-200">
-                {qaAnswer.answer}
-              </div>
-            </div>
+              <div className="whitespace-pre-wrap p-5 font-sans text-sm leading-6 text-[var(--text-primary)]">{qaAnswer.answer}</div>
+            </section>
           )}
 
-          {/* Search Results List */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                Retrieved Vector Chunks ({searchResults.length})
-              </h3>
+          {evaluationReport && (
+            <section className={clsx(CARD, "animate-fadeIn")}>
+              <div className={CARD_HEAD}>
+                <h2 className={CARD_TITLE}>Answer quality</h2>
+                <Tag tone={evaluationReport.overallGrade === "A" ? "good" : evaluationReport.overallGrade === "B" ? "accent" : "warn"}>
+                  Grade {evaluationReport.overallGrade} · {Math.round(evaluationReport.overallScore * 100)}%
+                </Tag>
+              </div>
+              <div className="grid grid-cols-1 divide-y divide-[var(--border-subtle)] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+                {[
+                  { label: "Context relevance", r: evaluationReport.contextRelevance },
+                  { label: "Groundedness", r: evaluationReport.groundedness },
+                  { label: "Answer relevance", r: evaluationReport.answerRelevance },
+                ].map((m) => (
+                  <div key={m.label} className="space-y-2 p-5">
+                    <div className="font-sans text-[13px] text-[var(--text-muted)]">{m.label}</div>
+                    <div className="font-pixel text-3xl font-medium leading-none tabular-nums text-[var(--text-primary)]">
+                      {Math.round(m.r.score * 100)}%
+                    </div>
+                    <p className="font-sans text-[13px] leading-5 text-[var(--text-secondary)]">{m.r.details}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Retrieved chunks */}
+          <section className="space-y-3">
+            <div className="flex items-baseline justify-between gap-3">
+              <h2 className={SECTION_TITLE}>Retrieved chunks</h2>
+              <span className={META}>{searchResults.length}</span>
             </div>
 
             {searchResults.length === 0 && !isSearching ? (
-              <div className="p-12 text-center rounded-xl border border-dashed border-slate-300 dark:border-indigo-900/40 text-slate-500">
-                <Search className="h-8 w-8 mx-auto mb-2 opacity-40" />
-                <p className="text-xs">No vector matches found. Ingest new documents or adjust threshold.</p>
+              <div className="rounded-[14px] border border-dashed border-[var(--border-strong)] p-10 text-center font-sans text-sm text-[var(--text-muted)]">
+                No matches. Ingest documents or lower the similarity threshold.
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-4">
+              <ul className="space-y-4">
                 {searchResults.map((result, idx) => {
                   const scorePct = Math.round(((result.score as number) || 0) * 100);
                   const searchType = (result.searchType as string) || "dense";
-
                   return (
-                    <div
-                      key={idx}
-                      className="p-4 rounded-xl border border-slate-200 dark:border-indigo-900/50 bg-white dark:bg-black/60 shadow-sm space-y-3 hover:border-indigo-400 transition-all"
-                    >
-                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-indigo-900/30 pb-2">
-                        <div className="flex items-center gap-2">
-                          <span className="flex items-center justify-center h-5 w-5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold">
-                            #{idx + 1}
-                          </span>
-                          <span className="font-bold text-xs text-slate-900 dark:text-white">
+                    <li key={idx} className={clsx(CARD, "space-y-3 p-5")}>
+                      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
+                        <div className="min-w-0 space-y-1">
+                          <div className="truncate font-sans text-sm font-medium text-[var(--text-primary)]">
                             {result.title as string}
-                          </span>
-                          {Boolean(result.section) && (
-                            <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 text-[10px]">
-                              {result.section as string}
-                            </span>
-                          )}
-                          <span className="px-1.5 py-0.5 rounded text-[9px] uppercase font-semibold bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900">
-                            {searchType}
-                          </span>
+                          </div>
+                          <div className={META}>
+                            {result.collection as string}
+                            {Boolean(result.section) && <> · {result.section as string}</>} · {searchType}
+                          </div>
                         </div>
-
-                        {/* Similarity Meter */}
-                        <div className="flex items-center gap-2">
-                          <div className="w-24 bg-slate-200 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+                        <div className="flex items-center gap-3">
+                          <div className="h-1 w-24 overflow-hidden rounded-full bg-[var(--border-subtle)]">
                             <div
-                              className="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-full transition-all"
-                              style={{ width: `${scorePct}%` }}
+                              className="h-full rounded-full"
+                              style={{
+                                width: `${scorePct}%`,
+                                background: idx === 0 ? "var(--accent-primary)" : "var(--text-muted)",
+                                opacity: idx === 0 ? 1 : 0.6,
+                              }}
                             />
                           </div>
-                          <span className="font-bold text-xs text-emerald-600 dark:text-emerald-400">
-                            {scorePct}% Relevance
-                          </span>
+                          <span className={META}>{scorePct}%</span>
                         </div>
                       </div>
 
-                      <p className="text-xs text-slate-700 dark:text-slate-300 font-mono leading-relaxed whitespace-pre-wrap bg-slate-50 dark:bg-slate-950 p-3 rounded-lg border border-slate-100 dark:border-slate-900">
+                      <p className="whitespace-pre-wrap rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-3 font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
                         {result.content as string}
                       </p>
 
-                      <div className="flex items-center justify-between text-[10px] text-slate-500">
-                        <span>
-                          Collection: <strong className="text-slate-700 dark:text-slate-300">{result.collection as string}</strong>
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => copyToClipboard(result.content as string, `result-${idx}`)}
-                          className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:underline"
-                        >
-                          {copiedId === `result-${idx}` ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                          Copy Context Chunk
-                        </button>
-                      </div>
-                    </div>
+                      <button
+                        type="button"
+                        onClick={() => copyToClipboard(result.content as string, `result-${idx}`)}
+                        className="cursor-pointer font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
+                      >
+                        {copiedId === `result-${idx}` ? "Copied" : "Copy chunk"}
+                      </button>
+                    </li>
                   );
                 })}
-              </div>
+              </ul>
             )}
-          </div>
+          </section>
         </div>
       )}
 
-      {/* TAB 3: 2D VECTOR CLUSTER MAP (PCA) */}
+      {/* Cluster map */}
       {activeTab === "cluster_map" && (
-        <div className="space-y-6">
-          <div className="p-6 rounded-xl border border-slate-200 dark:border-indigo-900/40 bg-white dark:bg-black/60 shadow-sm space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Compass className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                  2D Principal Component Analysis (PCA) Vector Space
-                </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  1536-dimensional dense embedding vectors mathematically projected to 2D coordinates.
-                </p>
-              </div>
-              <button
-                onClick={() => fetchClusterData()}
-                disabled={isLoadingCluster}
-                className="px-3 py-1.5 rounded-lg border border-indigo-200 dark:border-indigo-800 text-xs font-semibold flex items-center gap-1.5 hover:bg-indigo-50 dark:hover:bg-indigo-950 shrink-0"
-              >
-                <RefreshCw className={`h-3.5 w-3.5 ${isLoadingCluster ? "animate-spin" : ""}`} /> Recalculate PCA
-              </button>
+        <section className={CARD}>
+          <div className={CARD_HEAD}>
+            <div className="space-y-1">
+              <h2 className={CARD_TITLE}>Vector space</h2>
+              <p className="font-sans text-[13px] text-[var(--text-muted)]">
+                Embedding vectors projected to two dimensions with PCA. Nearby points have similar meaning.
+              </p>
             </div>
+            <button onClick={() => fetchClusterData()} disabled={isLoadingCluster} className={BTN_SECONDARY_SM}>
+              {isLoadingCluster ? "Calculating" : "Recalculate"}
+            </button>
+          </div>
 
-            {/* Collections Legend */}
+          <div className="space-y-4 p-5">
             {clusterData && clusterData.collections.length > 0 && (
-              <div className="flex flex-wrap items-center gap-3 pt-2 text-xs">
-                <span className="text-slate-500 text-[11px]">Collections:</span>
+              <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-[13px] text-[var(--text-secondary)]">
                 {clusterData.collections.map((coll) => (
-                  <div key={coll.name} className="flex items-center gap-1.5 px-2 py-1 rounded bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: coll.color }} />
-                    <span className="font-semibold text-slate-800 dark:text-slate-200">{coll.name}</span>
-                    <span className="text-slate-500 text-[10px]">({coll.count})</span>
-                  </div>
+                  <li key={coll.name} className="flex items-center gap-2">
+                    <span aria-hidden="true" className="h-2 w-2 rounded-full" style={{ backgroundColor: coll.color }} />
+                    {coll.name}
+                    <span className={META}>{coll.count}</span>
+                  </li>
                 ))}
-                <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900">
-                  <span className="h-2.5 w-2.5 rounded-full bg-red-500" />
-                  <span className="font-semibold text-red-700 dark:text-red-300">Query Pin</span>
-                </div>
-              </div>
+                <li className="flex items-center gap-2">
+                  <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--state-error)]" />
+                  Query
+                </li>
+              </ul>
             )}
 
-            {/* Canvas */}
-            <div className="relative border border-slate-200 dark:border-indigo-900/60 rounded-xl overflow-hidden bg-slate-950 flex items-center justify-center p-4">
+            <div className="flex items-center justify-center overflow-hidden rounded-[10px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
               <canvas
                 ref={canvasRef}
                 width={800}
                 height={500}
-                className="w-full max-w-[800px] h-[500px] rounded-lg cursor-crosshair"
+                aria-label="Two-dimensional map of document chunk embeddings"
+                className="h-[500px] w-full max-w-[800px] cursor-crosshair"
               />
             </div>
           </div>
-        </div>
+        </section>
       )}
 
-      {/* TAB 4: STORED DOCUMENTS */}
+      {/* Collections and documents */}
       {activeTab === "documents" && (
         <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 rounded-xl border border-slate-200 dark:border-indigo-900/40 bg-white dark:bg-black/60 shadow-sm">
-            <div>
-              <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <Layers className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                PostgreSQL pgvector Document Store
-              </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
-                All stored knowledge bases, vector chunks, and collection partitions in PostgreSQL.
-              </p>
-            </div>
-            <button
-              onClick={fetchDocuments}
-              disabled={isLoadingDocs}
-              className="px-3 py-1.5 rounded-lg border border-indigo-200 dark:border-indigo-800 text-xs font-semibold flex items-center gap-1.5 hover:bg-indigo-50 dark:hover:bg-indigo-950"
-            >
-              <RefreshCw className={`h-3.5 w-3.5 ${isLoadingDocs ? "animate-spin" : ""}`} /> Refresh
+          <div className="flex items-center justify-between gap-3">
+            <p className="font-sans text-sm text-[var(--text-secondary)]">Everything stored in PostgreSQL with pgvector.</p>
+            <button onClick={fetchDocuments} disabled={isLoadingDocs} className={BTN_SECONDARY_SM}>
+              {isLoadingDocs ? "Refreshing" : "Refresh"}
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {collections.map((coll) => (
-              <div
-                key={coll.name}
-                className="p-4 rounded-xl border border-slate-200 dark:border-indigo-900/40 bg-white dark:bg-black/60 shadow-sm space-y-2"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-xs text-indigo-600 dark:text-indigo-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <Tag className="h-3.5 w-3.5" /> {coll.name}
-                  </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                    {coll.documentCount} Docs
-                  </span>
+          {collections.length > 0 && (
+            <div className="grid gap-px overflow-hidden rounded-[14px] border border-[var(--border-subtle)] bg-[var(--border-subtle)] sm:grid-cols-3">
+              {collections.map((coll) => (
+                <div key={coll.name} className="space-y-3 bg-[var(--surface-raised)] p-5">
+                  <div className="font-sans text-[13px] text-[var(--text-muted)]">{coll.name}</div>
+                  <div className="font-pixel text-3xl font-medium leading-none tabular-nums text-[var(--text-primary)]">
+                    {coll.chunkCount.toLocaleString()}
+                  </div>
+                  <div className={META}>
+                    chunks · {coll.documentCount} {coll.documentCount === 1 ? "document" : "documents"} · ~{coll.totalTokens.toLocaleString()} tokens
+                  </div>
                 </div>
-                <div className="text-xl font-bold text-slate-900 dark:text-white">
-                  {coll.chunkCount} <span className="text-xs font-normal text-slate-500">Vector Chunks</span>
-                </div>
-                <div className="text-[10px] text-slate-500">
-                  Total Tokens: ~{coll.totalTokens.toLocaleString()}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
-          <div className="rounded-xl border border-slate-200 dark:border-indigo-900/40 bg-white dark:bg-black/60 shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-slate-100 dark:border-indigo-900/30 font-bold text-xs">
-              Ingested Documents ({documents.length})
+          <section className={clsx(CARD, "overflow-hidden")}>
+            <div className={CARD_HEAD}>
+              <h2 className={CARD_TITLE}>Documents</h2>
+              <span className={META}>{documents.length}</span>
             </div>
 
             {documents.length === 0 ? (
-              <div className="p-12 text-center text-xs text-slate-500">
-                No documents ingested yet. Go to the "Ingestion & Chunking" tab to ingest your first document.
-              </div>
+              <p className="px-5 py-10 text-center font-sans text-sm text-[var(--text-muted)]">
+                Nothing ingested yet. Add your first document on the Ingestion tab.
+              </p>
             ) : (
-              <div className="divide-y divide-slate-100 dark:divide-indigo-900/20 text-xs">
+              <ul className="divide-y divide-[var(--border-subtle)]">
                 {documents.map((doc) => (
-                  <div
-                    key={doc.id as string}
-                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-indigo-950/20 transition-all"
-                  >
-                    <div className="space-y-1">
-                      <div className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-indigo-600" />
-                        {doc.title as string}
-                        <span className="px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-[10px]">
-                          {doc.collection as string}
-                        </span>
-                      </div>
-                      <div className="text-[11px] text-slate-500 flex items-center gap-3">
-                        <span>ID: {(doc.id as string).slice(0, 10)}...</span>
+                  <li key={doc.id as string} className={clsx(ROW_HOVER, "flex flex-col justify-between gap-3 px-5 py-4 sm:flex-row sm:items-center")}>
+                    <div className="min-w-0 space-y-1">
+                      <div className="truncate font-sans text-sm font-medium text-[var(--text-primary)]">{doc.title as string}</div>
+                      <div className={clsx(META, "flex flex-wrap items-center gap-x-4")}>
+                        <span>{doc.collection as string}</span>
+                        <span>{(doc.id as string).slice(0, 10)}…</span>
                         <span>{doc.chunkCount as number} chunks</span>
                         <span>{doc.tokenCount as number} tokens</span>
-                        <span>{new Date(doc.createdAt as string).toLocaleDateString()}</span>
+                        <span>{new Date(doc.createdAt as string).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
                       </div>
                     </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleInspectDoc(doc.id as string)}
-                        className="px-2.5 py-1.5 rounded border border-slate-300 dark:border-indigo-900/60 hover:bg-slate-100 dark:hover:bg-indigo-950 text-slate-700 dark:text-slate-300 text-[11px] flex items-center gap-1"
-                      >
-                        <Eye className="h-3 w-3" /> View Chunks
+                    <div className="flex shrink-0 items-center gap-2">
+                      <button onClick={() => handleInspectDoc(doc.id as string)} className={BTN_SECONDARY_SM}>
+                        View chunks
                       </button>
                       <button
                         onClick={() => handleDeleteDoc(doc.id as string)}
-                        className="px-2.5 py-1.5 rounded border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 text-[11px] flex items-center gap-1"
+                        className={clsx(BTN_SECONDARY_SM, "text-[var(--state-error)]")}
                       >
-                        <Trash2 className="h-3 w-3" /> Delete
+                        Delete
                       </button>
                     </div>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
-          </div>
+          </section>
 
           {selectedDocChunks && (
-            <div className="p-6 rounded-xl border border-indigo-200 dark:border-indigo-900 bg-white dark:bg-black/90 shadow-xl space-y-4 animate-fadeIn">
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
-                <div>
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">
-                    Chunks for: {selectedDocChunks.title as string}
-                  </h3>
-                  <p className="text-xs text-slate-500">
-                    {selectedDocChunks.chunkCount as number} total vector chunks
-                  </p>
+            <section className={clsx(CARD, "animate-fadeIn")}>
+              <div className={CARD_HEAD}>
+                <div className="min-w-0 space-y-1">
+                  <h2 className={clsx(CARD_TITLE, "truncate")}>{selectedDocChunks.title as string}</h2>
+                  <div className={META}>{selectedDocChunks.chunkCount as number} chunks</div>
                 </div>
-                <button
-                  onClick={() => setSelectedDocChunks(null)}
-                  className="px-3 py-1 rounded bg-slate-100 dark:bg-slate-800 text-xs"
-                >
+                <button onClick={() => setSelectedDocChunks(null)} className={BTN_SECONDARY_SM}>
                   Close
                 </button>
               </div>
-
-              <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+              <ul className="max-h-[400px] divide-y divide-[var(--border-subtle)] overflow-y-auto">
                 {((selectedDocChunks.chunks as Array<Record<string, unknown>>) || []).map((chunk, idx) => (
-                  <div
-                    key={idx}
-                    className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs space-y-1"
-                  >
-                    <div className="flex items-center justify-between text-[10px] text-slate-500 font-bold">
-                      <span>Chunk #{chunk.chunkIndex as number}</span>
+                  <li key={idx} className="space-y-2 px-5 py-3">
+                    <div className={clsx(META, "flex items-center justify-between")}>
+                      <span>#{chunk.chunkIndex as number}</span>
                       <span>{chunk.tokenCount as number} tokens</span>
                     </div>
-                    <p className="text-[11px] font-mono whitespace-pre-wrap">{chunk.content as string}</p>
-                  </div>
+                    <p className="whitespace-pre-wrap font-sans text-[13px] leading-5 text-[var(--text-secondary)]">{chunk.content as string}</p>
+                  </li>
                 ))}
-              </div>
-            </div>
+              </ul>
+            </section>
           )}
         </div>
       )}
 
-      {/* TAB 5: ARCHITECTURE */}
+      {/* Architecture */}
       {activeTab === "architecture" && (
-        <div className="space-y-6">
-          <div className="p-6 rounded-xl border border-slate-200 dark:border-indigo-900/40 bg-white dark:bg-black/60 shadow-sm space-y-4">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <Cpu className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-              Advanced RAG Architecture & Reciprocal Rank Fusion (RRF)
-            </h2>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              This end-to-end implementation combines Hybrid Search (pgvector dense vector search + sparse keyword search), Reciprocal Rank Fusion, Small-to-Big parent chunk expansion, 2D PCA vector cluster mapping, and automated RAG Triad observability.
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 pt-4">
-              <div className="p-4 rounded-xl border border-indigo-200 dark:border-indigo-900/50 bg-indigo-50/50 dark:bg-indigo-950/20 text-xs space-y-2">
-                <div className="font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
-                  <FileText className="h-4 w-4" /> 1. Ingestion
-                </div>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400">
-                  Parses Markdown, PDF, plaintext with section metadata & parent context linking.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-xl border border-purple-200 dark:border-purple-900/50 bg-purple-50/50 dark:bg-purple-950/20 text-xs space-y-2">
-                <div className="font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
-                  <Sliders className="h-4 w-4" /> 2. Small-to-Big
-                </div>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400">
-                  Indexes 200-char leaf chunks while preserving 1200-char parent section context.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-xl border border-blue-200 dark:border-blue-900/50 bg-blue-50/50 dark:bg-blue-950/20 text-xs space-y-2">
-                <div className="font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                  <Zap className="h-4 w-4" /> 3. 1536D Vectors
-                </div>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400">
-                  OpenAI text-embedding-3 / Open Models / Local normalized embeddings.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/50 dark:bg-emerald-950/20 text-xs space-y-2">
-                <div className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                  <Scale className="h-4 w-4" /> 4. Hybrid RRF
-                </div>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400">
-                  Combines pgvector cosine distance (<code className="font-mono">&lt;=&gt;</code>) with sparse full-text keyword ranking.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-xl border border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-950/20 text-xs space-y-2">
-                <div className="font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
-                  <Activity className="h-4 w-4" /> 5. RAG Triad Audit
-                </div>
-                <p className="text-[11px] text-slate-600 dark:text-slate-400">
-                  Evaluates Context Relevance, Groundedness, and Answer Relevance on every query.
-                </p>
-              </div>
-            </div>
+        <section className={clsx(CARD, "max-w-3xl")}>
+          <div className={CARD_HEAD}>
+            <h2 className={CARD_TITLE}>How retrieval works</h2>
           </div>
-        </div>
+          <ol className="divide-y divide-[var(--border-subtle)]">
+            {[
+              { name: "Ingestion", text: "Parses Markdown, PDF and plain text, keeping section metadata and links to parent context." },
+              { name: "Small-to-big chunks", text: "Indexes 200-character leaf chunks while keeping the 1200-character parent section for context." },
+              { name: "Vectors", text: "OpenAI text-embedding-3, open models or local normalized embeddings, 1536 dimensions by default." },
+              { name: "Hybrid ranking", text: "Combines pgvector cosine distance (<=>) with sparse full-text keyword ranking using Reciprocal Rank Fusion." },
+              { name: "Quality audit", text: "Scores context relevance, groundedness and answer relevance on every answered query." },
+            ].map((step, i) => (
+              <li key={step.name} className="grid gap-1 px-5 py-4 sm:grid-cols-12 sm:gap-6">
+                <div className="flex items-baseline gap-3 sm:col-span-4">
+                  <span className={META}>{i + 1}</span>
+                  <span className="font-sans text-sm font-medium text-[var(--text-primary)]">{step.name}</span>
+                </div>
+                <p className="font-sans text-[13px] leading-5 text-[var(--text-secondary)] sm:col-span-8">{step.text}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
       )}
     </div>
   );

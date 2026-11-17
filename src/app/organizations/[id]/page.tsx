@@ -2,13 +2,10 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { 
-  Building2, 
-  ArrowLeft,
-  Loader2
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { OrganizationSettings } from "@/components/organizations/OrganizationSettings";
 import { toast } from "@/stores/toastStore";
+import { PageHeader, plural } from "@/components/ui/surfaces";
 
 // ────────────── Types ──────────────
 
@@ -55,8 +52,8 @@ export default function OrganizationDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+      <div role="status" className="flex min-h-[400px] items-center justify-center font-sans text-sm text-[var(--text-muted)]">
+        Loading organization
       </div>
     );
   }
@@ -66,32 +63,22 @@ export default function OrganizationDetailPage() {
   }
 
   return (
-    <div className="space-y-6 w-full font-mono">
-      {/* Header */}
-      <div className="mb-8">
-        <button
-          type="button"
-          onClick={() => router.push("/organizations")}
-          className="inline-flex items-center gap-2 text-sm font-mono text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 mb-4"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Organizations
-        </button>
-        
-        <h1 className="text-2xl font-mono font-bold text-slate-900 dark:text-slate-100 flex items-center gap-3">
-          <Building2 className="h-6 w-6 text-indigo-500" />
-          {organization.name}
-        </h1>
-        <p className="text-sm font-mono text-slate-500 mt-1">
-          {organization.memberCount} member{organization.memberCount !== 1 ? "s" : ""} · {organization.plan} plan
-        </p>
-      </div>
+    <div className="w-full space-y-6">
+      <button
+        type="button"
+        onClick={() => router.push("/organizations")}
+        className="inline-flex cursor-pointer items-center gap-2 rounded-[6px] font-sans text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+      >
+        <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
+        Organizations
+      </button>
 
-      {/* Organization Settings */}
-      <OrganizationSettings 
-        organizationId={organizationId}
-        onUpdate={loadOrganization}
+      <PageHeader
+        title={organization.name}
+        meta={`${plural(organization.memberCount, "member")} · ${organization.plan} plan`}
       />
+
+      <OrganizationSettings organizationId={organizationId} onUpdate={loadOrganization} />
     </div>
   );
 }

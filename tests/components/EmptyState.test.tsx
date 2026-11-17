@@ -15,14 +15,12 @@ describe("EmptyState", () => {
     expect(screen.getByText("Create your first skill to get started")).toBeInTheDocument();
   });
 
-  it("renders default Terminal icon when no icon provided", () => {
-    render(
+  it("renders no icon when none is provided", () => {
+    const { container } = render(
       <EmptyState title="Empty" description="Nothing here" />
     );
 
-    // The Terminal icon from lucide-react should be in the DOM
-    const iconContainer = document.querySelector(".text-indigo-600, .dark\\:text-indigo-400");
-    expect(iconContainer).toBeInTheDocument();
+    expect(container.querySelector("svg")).not.toBeInTheDocument();
   });
 
   it("renders custom icon when provided", () => {

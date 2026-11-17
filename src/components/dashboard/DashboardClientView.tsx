@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { RotateCw } from "lucide-react";
+import { clsx } from "clsx";
 import { CanvasBlueprintDTO, DashboardStatsDTO, TimeRangeFilter } from "@/types/dashboard";
 import { dashboardApi } from "@/lib/api/dashboard";
 import { SystemHealthStrip } from "./SystemHealthStrip";
@@ -16,11 +17,19 @@ import { KnowledgeBaseCard } from "./KnowledgeBaseCard";
 import { ToolPerformanceLeaderboard } from "./ToolPerformanceLeaderboard";
 import { EnhancedApprovalQueue } from "./EnhancedApprovalQueue";
 import { RecentExecutionsCard, SystemAuditActivityCard } from "./RecentExecutionsAndActivity";
+import { META } from "@/components/ui/surfaces";
 
 interface DashboardClientViewProps {
   initialStats: DashboardStatsDTO;
   blueprints: CanvasBlueprintDTO[];
 }
+
+const ranges: { id: TimeRangeFilter; label: string; long: string }[] = [
+  { id: "24h", label: "24h", long: "Last 24 hours" },
+  { id: "7d", label: "7d", long: "Last 7 days" },
+  { id: "30d", label: "30d", long: "Last 30 days" },
+  { id: "all", label: "All", long: "All time" },
+];
 
 export function DashboardClientView({ initialStats, blueprints }: DashboardClientViewProps) {
   const [timeRange, setTimeRange] = useState<TimeRangeFilter>(initialStats.timeRange || "7d");
@@ -38,86 +47,77 @@ export function DashboardClientView({ initialStats, blueprints }: DashboardClien
     initialData: timeRange === initialStats.timeRange ? initialStats : undefined,
     // Keep showing the previous range's numbers while a newly selected range loads
     placeholderData: keepPreviousData,
-    refetchInterval: 12000, // 12-second live pulse auto-refresh
+    refetchInterval: 12000, // 12-second live auto-refresh
   });
 
   const currentStats = stats || initialStats;
+  const busy = isRefetching || isFetching;
 
   const handleOpenQuickRun = (skillId?: string) => {
     setSelectedSkillForRun(skillId);
     setQuickRunModalOpen(true);
   };
 
-  const ranges: { id: TimeRangeFilter; label: string }[] = [
-    { id: "24h", label: "24H" },
-    { id: "7d", label: "7D" },
-    { id: "30d", label: "30D" },
-    { id: "all", label: "ALL" },
-  ];
-
   return (
-    <div className="space-y-5 sm:space-y-6 w-full max-w-[1600px] mx-auto pb-12">
-      {/* 1. Header with Controls & Action Hub */}
-      <div className="relative z-30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-[hsl(var(--border))] pb-5">
+    <div className="mx-auto w-full max-w-[1600px] space-y-6 pb-12">
+      {/* Header: title, range, refresh, actions */}
+      <div className="relative z-30 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
         <div className="space-y-1">
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-xl sm:text-2xl font-sans font-bold text-[var(--text-primary)] tracking-tight">
-              Dashboard
-            </h1>
-            <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900/40">
-              Live
-            </span>
-          </div>
-          <p className="text-sm text-[var(--text-secondary)] font-sans">
-            Real-time multi-agent orchestration, telemetry, RAG knowledge &amp; tool reliability.
+          <h1 className="font-sans text-2xl font-medium text-[var(--text-primary)]">Dashboard</h1>
+          <p className={META}>
+            {ranges.find((r) => r.id === timeRange)?.long} · refreshes every 12 s
           </p>
         </div>
 
-        <div className="relative z-30 flex flex-wrap items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-          {/* Time Range Filter Bar */}
-          <div className="inline-flex items-center rounded-[10px] border border-[hsl(var(--border))] bg-[var(--surface-raised)] p-1 text-xs font-sans shadow-sm">
-            {ranges.map((r) => (
-              <button
-                key={r.id}
-                type="button"
-                onClick={() => setTimeRange(r.id)}
-                className={`px-3 py-1.5 rounded-[8px] text-[11px] font-semibold transition-all cursor-pointer ${
-                  timeRange === r.id
-                    ? "bg-indigo-600 text-white shadow-sm"
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-sunken)]"
-                }`}
-              >
-                {r.label}
-              </button>
-            ))}
+        <div className="relative z-30 flex w-full flex-wrap items-center justify-between gap-2 md:w-auto md:justify-end">
+          <div className="flex items-center gap-2">
+            {/* Time range */}
+            <div
+              role="group"
+              aria-label="Time range"
+              className="inline-flex h-9 items-center rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-0.5"
+            >
+              {ranges.map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  aria-pressed={timeRange === r.id}
+                  onClick={() => setTimeRange(r.id)}
+                  className={clsx(
+                    "h-8 min-w-10 rounded-[6px] px-2.5 font-mono text-xs transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
+                    timeRange === r.id
+                      ? "bg-[var(--text-primary)]/10 text-[var(--text-primary)]"
+                      : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                  )}
+                >
+                  {r.label}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => refetch()}
+              title="Refresh"
+              aria-label="Refresh"
+              disabled={busy}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-muted)] transition-colors cursor-pointer hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+            >
+              <RotateCw className={clsx("h-4 w-4", busy && "animate-spin")} strokeWidth={1.5} />
+            </button>
           </div>
 
-          {/* Manual Refresh Button */}
-          <button
-            type="button"
-            onClick={() => refetch()}
-            title="Refresh telemetry"
-            disabled={isRefetching || isFetching}
-            className="p-2 rounded-[10px] border border-[hsl(var(--border))] bg-[var(--surface-raised)] text-[var(--text-muted)] hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-300 transition-all cursor-pointer shadow-sm"
-          >
-            <RotateCw className={`h-4 w-4 ${isRefetching || isFetching ? "animate-spin text-indigo-500" : ""}`} />
-          </button>
-
-          {/* Quick Action Hub */}
           <QuickActionHub onOpenQuickRun={() => handleOpenQuickRun()} />
         </div>
       </div>
 
-      {/* 2. Runtime Status & Integration Strip */}
-      <SystemHealthStrip
-        health={currentStats.systemHealth}
-        liveCount={currentStats.liveExecutions.length}
-      />
+      {/* Runtime and integration readout */}
+      <SystemHealthStrip health={currentStats.systemHealth} liveCount={currentStats.liveExecutions.length} />
 
-      {/* 3. Live Active In-flight Executions Monitor (only rendered while runs are in flight) */}
+      {/* Runs in flight (only while any are running) */}
       <LiveExecutionTracker liveExecutions={currentStats.liveExecutions} />
 
-      {/* 4. High-Level Telemetry & Operational Metrics */}
+      {/* Key numbers */}
       <TelemetryMetricsGrid
         telemetry={currentStats.telemetry}
         activeSkillsCount={currentStats.totalSkillsCount}
@@ -126,32 +126,41 @@ export function DashboardClientView({ initialStats, blueprints }: DashboardClien
         pendingApprovalsCount={currentStats.pendingApprovalsCount}
       />
 
-      {/* 5. Human Review Queue, Recent Executions & System Audit (Equal 3-Column Grid) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <EnhancedApprovalQueue
-          approvals={currentStats.pendingApprovals}
-          totalCount={currentStats.pendingApprovalsCount}
-        />
-        <RecentExecutionsCard executions={currentStats.recentExecutions} />
-        <SystemAuditActivityCard activity={currentStats.recentActivity} />
+      {/* Review queue, recent runs, audit log */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-12">
+        <div className="xl:col-span-5">
+          <EnhancedApprovalQueue
+            approvals={currentStats.pendingApprovals}
+            totalCount={currentStats.pendingApprovalsCount}
+          />
+        </div>
+        <div className="xl:col-span-4">
+          <RecentExecutionsCard executions={currentStats.recentExecutions} />
+        </div>
+        <div className="lg:col-span-2 xl:col-span-3">
+          <SystemAuditActivityCard activity={currentStats.recentActivity} />
+        </div>
       </div>
 
-      {/* 6. Pinned Skills & 1-Click Launchpad */}
+      {/* Skills */}
       <PinnedSkillsLaunchpad
         skills={currentStats.pinnedSkills}
         onQuickRun={(skillId) => handleOpenQuickRun(skillId)}
       />
 
-      {/* 7. Multi-Agent Canvas Architectures Showcase */}
+      {/* Canvas templates and graphs */}
       <MultiAgentCanvasShowcase agentGraphs={currentStats.agentGraphs} blueprints={blueprints} />
 
-      {/* 8. Knowledge Base (RAG) & Tool Performance Leaderboard */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <KnowledgeBaseCard insights={currentStats.ragInsights} />
-        <ToolPerformanceLeaderboard tools={currentStats.toolLeaderboard} />
+      {/* Knowledge base and tools */}
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
+        <div className="xl:col-span-5">
+          <KnowledgeBaseCard insights={currentStats.ragInsights} />
+        </div>
+        <div className="xl:col-span-7">
+          <ToolPerformanceLeaderboard tools={currentStats.toolLeaderboard} />
+        </div>
       </div>
 
-      {/* 9. Interactive Quick Run Modal */}
       <QuickRunSkillModal
         isOpen={quickRunModalOpen}
         onClose={() => setQuickRunModalOpen(false)}

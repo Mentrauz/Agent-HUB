@@ -206,7 +206,7 @@ These were found while verifying, and are worth fixing or knowing about:
 |---|---|
 | [`src/app/docs/page.tsx`](src/app/docs/page.tsx) | Server page that sets the API docs metadata and renders `ApiDocsClient`. |
 | [`src/app/docs/ApiDocsClient.tsx`](src/app/docs/ApiDocsClient.tsx) | Loads Swagger UI 5 from unpkg at runtime and points it at `/api/docs` with try-it-out enabled. |
-| [`src/app/organizations/page.tsx`](src/app/organizations/page.tsx) | Lists the user's orgs (`GET /api/organizations`) and creates them in a modal (`POST`). |
+| [`src/app/organizations/page.tsx`](src/app/organizations/page.tsx) | Lists the user's orgs (`GET /api/organizations`) as rows linking to the detail page, and creates them in a modal (`POST`). |
 | [`src/app/organizations/[id]/page.tsx`](src/app/organizations/[id]/page.tsx) | Loads one org, shows a summary, and delegates everything else to `OrganizationSettings`. |
 | [`src/app/invitations/[token]/page.tsx`](src/app/invitations/[token]/page.tsx) | Accept page. It shows hard-coded invitation details, accepts via `POST /api/invitations/{token}/accept`, then redirects to `/dashboard`. |
 
@@ -249,11 +249,11 @@ These were found while verifying, and are worth fixing or knowing about:
 ### dashboard/executions, history, review, compare, audit
 | File | Purpose |
 |---|---|
-| [`src/app/dashboard/executions/page.tsx`](src/app/dashboard/executions/page.tsx) | Run table: debounced search, status filter, sort, and per-row replay and JSON export. |
+| [`src/app/dashboard/executions/page.tsx`](src/app/dashboard/executions/page.tsx) | Run list (one hairline-divided panel): debounced search, status filter, sort, and per-row Replay and Export JSON buttons, always visible. |
 | [`src/app/dashboard/executions/loading.tsx`](src/app/dashboard/executions/loading.tsx) | `SkeletonExecutions`. |
 | [`src/app/dashboard/executions/[id]/page.tsx`](src/app/dashboard/executions/[id]/page.tsx) | Run detail: timeline, steps, tool calls, logs and input/output JSON. Actions: cancel, retry, replay, export. Refresh is manual. |
 | [`src/app/dashboard/executions/[id]/loading.tsx`](src/app/dashboard/executions/[id]/loading.tsx) | `SkeletonExecutionDetail`. |
-| [`src/app/dashboard/history/page.tsx`](src/app/dashboard/history/page.tsx) | Four metric tiles (`executionsApi.metrics`) and a searchable table of the last 50 runs. |
+| [`src/app/dashboard/history/page.tsx`](src/app/dashboard/history/page.tsx) | "Observability": four key numbers (`executionsApi.metrics`), a one-line status breakdown, ranked lists of most used skills and tools, and a searchable table of the last 50 runs. |
 | [`src/app/dashboard/history/loading.tsx`](src/app/dashboard/history/loading.tsx) | `SkeletonHistory`. |
 | [`src/app/dashboard/review/page.tsx`](src/app/dashboard/review/page.tsx) | HITL queue with Pending and History tabs. Each call sends the request's idempotency key:<br>• **Approve:** `POST /api/approvals`, then `executionsApi.resume`.<br>• **Reject:** `POST /api/approvals` with a reason.<br>• **Cancel:** `POST /api/approvals/{id}/cancel`. |
 | [`src/app/dashboard/review/loading.tsx`](src/app/dashboard/review/loading.tsx) | `SkeletonReview`. |
@@ -279,10 +279,10 @@ These were found while verifying, and are worth fixing or knowing about:
 ### dashboard (other areas)
 | File | Purpose |
 |---|---|
-| [`src/app/dashboard/a2a/page.tsx`](src/app/dashboard/a2a/page.tsx) | A2A console with Discovery, Delegation, Auction and Debate tabs. |
-| [`src/app/dashboard/evals/page.tsx`](src/app/dashboard/evals/page.tsx) | Runs, Datasets and Compare tabs over `/api/evals/*`, falling back to the built-in datasets. |
-| [`src/app/dashboard/benchmarks/page.tsx`](src/app/dashboard/benchmarks/page.tsx) | Benchmark suites, run modal and scorecard. "Compare" runs 4 hard-coded Groq models. |
-| [`src/app/dashboard/knowledge/page.tsx`](src/app/dashboard/knowledge/page.tsx) | RAG workbench with 5 tabs:<br>• **Ingest:** text, file or URL, with chunk preview<br>• **Search:** search and QA, plus triad evaluation<br>• **Cluster map**<br>• **Documents**<br>• **Architecture:** an explainer |
+| [`src/app/dashboard/a2a/page.tsx`](src/app/dashboard/a2a/page.tsx) | A2A console with Discovery, Task delegation, Task auction and Debate tabs (underline tabs, `PageHeader`).  Panels use the shared `surfaces.tsx` styles: forms with labelled fields, a bids table, a transcript list with an accent rule on human turns. |
+| [`src/app/dashboard/evals/page.tsx`](src/app/dashboard/evals/page.tsx) | "Evals": key-number panel, then Runs (one divided list), Datasets and Regression compare tabs over `/api/evals/*`, falling back to the built-in datasets. |
+| [`src/app/dashboard/benchmarks/page.tsx`](src/app/dashboard/benchmarks/page.tsx) | "Benchmarks": key-number panel, latest scorecard, suite cards, run modal. "Model comparison" runs 4 hard-coded Groq models. |
+| [`src/app/dashboard/knowledge/page.tsx`](src/app/dashboard/knowledge/page.tsx) | RAG workbench (`PageHeader`, underline tabs, shared `surfaces.tsx` styles, a local `Segmented` control) with 5 tabs:<br>• **Ingest:** text, file or URL, with chunk preview<br>• **Search:** search and QA, plus triad evaluation<br>• **Cluster map**<br>• **Documents**<br>• **Architecture:** an explainer |
 | [`src/app/dashboard/settings/page.tsx`](src/app/dashboard/settings/page.tsx) | Theme toggle, provider status and model rosters, custom OpenAI-compatible model test, Clerk `UserProfile`, and `SecretVault`. |
 | [`src/app/dashboard/settings/loading.tsx`](src/app/dashboard/settings/loading.tsx) | `SkeletonSettings`. |
 | [`src/app/dashboard/workflows/page.tsx`](src/app/dashboard/workflows/page.tsx) | Redirects to `/dashboard/skills`. |
@@ -340,29 +340,29 @@ These were found while verifying, and are worth fixing or knowing about:
 ### dashboard
 | File | Purpose |
 |---|---|
-| [`src/components/dashboard/DashboardClientView.tsx`](src/components/dashboard/DashboardClientView.tsx) | Dashboard cockpit. Starts from the server's stats, then polls every 12s. Has range filter and refresh controls, lays out all the widgets, and owns `QuickRunSkillModal`. |
-| [`src/components/dashboard/EnhancedApprovalQueue.tsx`](src/components/dashboard/EnhancedApprovalQueue.tsx) | First 3 pending approvals, with inline approve (then resume) and reject. |
-| [`src/components/dashboard/KnowledgeBaseCard.tsx`](src/components/dashboard/KnowledgeBaseCard.tsx) | RAG summary: document and chunk totals, top collections, recent documents. |
-| [`src/components/dashboard/LiveExecutionTracker.tsx`](src/components/dashboard/LiveExecutionTracker.tsx) | Up to 5 runs in progress (PENDING, RUNNING or PAUSED_FOR_APPROVAL), linking to their trace or to review. Renders nothing when there are none. |
-| [`src/components/dashboard/MultiAgentCanvasShowcase.tsx`](src/components/dashboard/MultiAgentCanvasShowcase.tsx) | Links to the 3 template `blueprints` passed in by the dashboard page and up to 3 of the user's graphs. |
-| [`src/components/dashboard/PinnedSkillsLaunchpad.tsx`](src/components/dashboard/PinnedSkillsLaunchpad.tsx) | Skills grid with Quick Run and edit links. There is no real pinning: it shows the 4 most recently updated active skills. |
-| [`src/components/dashboard/QuickActionHub.tsx`](src/components/dashboard/QuickActionHub.tsx) | Quick Run, New Canvas and New Skill, plus a dropdown of shortcuts. |
+| [`src/components/dashboard/DashboardClientView.tsx`](src/components/dashboard/DashboardClientView.tsx) | Dashboard cockpit. Starts from the server's stats, then polls every 12s. Has range filter (24h/7d/30d/All) and refresh controls, lays out all the widgets on a 12-column grid with uneven widths, and owns `QuickRunSkillModal`. All dashboard widgets use theme tokens via [`ui/surfaces.tsx`](src/components/ui/surfaces.tsx), not hard-coded slate/indigo. |
+| [`src/components/dashboard/EnhancedApprovalQueue.tsx`](src/components/dashboard/EnhancedApprovalQueue.tsx) | "Human review" card: first 3 pending approvals (accent rule on each), with inline approve (then resume) and reject with an optional reason. |
+| [`src/components/dashboard/KnowledgeBaseCard.tsx`](src/components/dashboard/KnowledgeBaseCard.tsx) | RAG summary: document and chunk totals, top collections as a ranked list with thin bars, recent documents. |
+| [`src/components/dashboard/LiveExecutionTracker.tsx`](src/components/dashboard/LiveExecutionTracker.tsx) | "In flight" card: up to 5 runs in progress (PENDING, RUNNING or PAUSED_FOR_APPROVAL) with a step-progress bar, linking to their trace or to review. Renders nothing when there are none. |
+| [`src/components/dashboard/MultiAgentCanvasShowcase.tsx`](src/components/dashboard/MultiAgentCanvasShowcase.tsx) | "Canvas graphs": the 3 template `blueprints` passed in by the dashboard page as cards, and up to 3 of the user's graphs as list rows. |
+| [`src/components/dashboard/PinnedSkillsLaunchpad.tsx`](src/components/dashboard/PinnedSkillsLaunchpad.tsx) | "Recent skills" grid with Quick run and Edit. There is no real pinning: it shows the 4 most recently updated active skills. |
+| [`src/components/dashboard/QuickActionHub.tsx`](src/components/dashboard/QuickActionHub.tsx) | Quick run (the page's one primary button), New graph and New skill, plus a "More" dropdown of shortcuts. |
 | [`src/components/dashboard/QuickRunSkillModal.tsx`](src/components/dashboard/QuickRunSkillModal.tsx) | Pick a skill, edit the prefilled input JSON, start the run, and go to the execution. |
-| [`src/components/dashboard/RecentExecutionsAndActivity.tsx`](src/components/dashboard/RecentExecutionsAndActivity.tsx) | `RecentExecutionsCard` (last 5 runs) and `SystemAuditActivityCard`. |
-| [`src/components/dashboard/SystemHealthStrip.tsx`](src/components/dashboard/SystemHealthStrip.tsx) | Badges for MCP servers connected, RAG chunks, A2A agents, vault keys and permitted tools. |
-| [`src/components/dashboard/TelemetryMetricsGrid.tsx`](src/components/dashboard/TelemetryMetricsGrid.tsx) | Six KPI tiles: skills, graphs, executions, success rate, average latency, pending approvals. |
+| [`src/components/dashboard/RecentExecutionsAndActivity.tsx`](src/components/dashboard/RecentExecutionsAndActivity.tsx) | `RecentExecutionsCard` ("Recent runs": last 5 runs, each row links to its trace and shows a `StatusDot`) and `SystemAuditActivityCard` ("Audit log"). |
+| [`src/components/dashboard/SystemHealthStrip.tsx`](src/components/dashboard/SystemHealthStrip.tsx) | One mono readout line: runtime idle or runs in flight, then MCP servers connected, RAG chunks, A2A agents, vault keys and permitted tools as quiet links. |
+| [`src/components/dashboard/TelemetryMetricsGrid.tsx`](src/components/dashboard/TelemetryMetricsGrid.tsx) | Six KPI cells in one hairline-divided panel: skills, graphs, executions, success rate, average run time, review queue (accent when non-zero). |
 | [`src/components/dashboard/ToolPerformanceLeaderboard.tsx`](src/components/dashboard/ToolPerformanceLeaderboard.tsx) | Tool table (top 6 by calls): READ/WRITE type, calls, average latency and error-rate status. With no calls yet, it lists up to 5 tool definitions at 0 calls. |
 
 ### benchmarks, evals, executions
 | File | Purpose |
 |---|---|
 | [`src/components/benchmarks/BenchmarkScorecardView.tsx`](src/components/benchmarks/BenchmarkScorecardView.tsx) | Scorecard: overall score and grade, pass rate, bars for 6 dimensions, per-test assertions and recommendations. |
-| [`src/components/benchmarks/BenchmarkSuiteCard.tsx`](src/components/benchmarks/BenchmarkSuiteCard.tsx) | Suite card with category icon, test-case chips, recommended model and a Run button. |
+| [`src/components/benchmarks/BenchmarkSuiteCard.tsx`](src/components/benchmarks/BenchmarkSuiteCard.tsx) | Suite card: category, test count, description, the first three test names, recommended model and a Run suite button. No icons or chips. |
 | [`src/components/benchmarks/ModelComparisonMatrix.tsx`](src/components/benchmarks/ModelComparisonMatrix.tsx) | Model comparison table: grade, score, pass rate, latency, cost and strengths. |
 | [`src/components/benchmarks/RunBenchmarkModal.tsx`](src/components/benchmarks/RunBenchmarkModal.tsx) | Choose a suite and model, then call `POST /api/benchmarks/run`. |
-| [`src/components/evals/EvalComparisonView.tsx`](src/components/evals/EvalComparisonView.tsx) | Compare two eval runs via `/api/evals/compare`. |
+| [`src/components/evals/EvalComparisonView.tsx`](src/components/evals/EvalComparisonView.tsx) | Compare two eval runs via `/api/evals/compare`: key-change panel (red or amber only on a regression), score change per metric, findings. |
 | [`src/components/evals/EvalDatasetsTab.tsx`](src/components/evals/EvalDatasetsTab.tsx) | Dataset list with expandable items, and a modal to create a dataset from JSON. |
-| [`src/components/evals/EvalRunDetailsDrawer.tsx`](src/components/evals/EvalRunDetailsDrawer.tsx) | Run report: summary, metric bars, and verdicts you can filter and expand to see the judge's reasoning. |
+| [`src/components/evals/EvalRunDetailsDrawer.tsx`](src/components/evals/EvalRunDetailsDrawer.tsx) | Run report: summary, quality alerts (amber rule), metric bars with the weakest in amber, and verdicts you can filter (`Segmented`) and expand to see the judge's reasoning. |
 | [`src/components/evals/EvalRunModal.tsx`](src/components/evals/EvalRunModal.tsx) | Configure a run (dataset, target MODEL/SKILL/GRAPH, judge, metrics), then call `POST /api/evals/run`. |
 | [`src/components/executions/ExecutionStatusBadge.tsx`](src/components/executions/ExecutionStatusBadge.tsx) | Colored badge for each `ExecutionStatus` (RUNNING pulses; PAUSED_FOR_APPROVAL shows as "AWAITING APPROVAL"). |
 | [`src/components/executions/ExecutionTimeline.tsx`](src/components/executions/ExecutionTimeline.tsx) | Static vertical list of `TimelineEvent`s for the execution detail page. Not the same component as the canvas timeline. |
@@ -378,10 +378,10 @@ These were found while verifying, and are worth fixing or knowing about:
 | [`src/components/effects/PixelThemeTransition.tsx`](src/components/effects/PixelThemeTransition.tsx) | `PixelThemeTransitionProvider` and `usePixelThemeTransition()`: a canvas pixel-dissolve that plays when the theme changes. |
 | [`src/components/feedback/AgentStudioPreloader.tsx`](src/components/feedback/AgentStudioPreloader.tsx) | Full-screen fake Linux boot log with an ASCII progress bar. It either runs on a timer (3200 ms by default) or is controlled by the `isLoading` prop, and can be skipped with Esc or Space. |
 | [`src/components/feedback/ConfirmDialog.tsx`](src/components/feedback/ConfirmDialog.tsx) | Confirm modal with danger and warning variants and a pending state. |
-| [`src/components/feedback/EmptyState.tsx`](src/components/feedback/EmptyState.tsx) | Dashed empty-state box with an icon, title, description and an action slot. |
+| [`src/components/feedback/EmptyState.tsx`](src/components/feedback/EmptyState.tsx) | Dashed empty-state box with an optional icon (none by default), title, description and an action slot. Neutral tokens only. |
 | [`src/components/feedback/ErrorBoundary.tsx`](src/components/feedback/ErrorBoundary.tsx) | Class error boundary with an optional fallback and a "Try Again" reset. |
 | [`src/components/feedback/SignOutModal.tsx`](src/components/feedback/SignOutModal.tsx) | Sign-out confirmation; the Sidebar performs the actual Clerk `signOut`. |
-| [`src/components/feedback/Skeleton.tsx`](src/components/feedback/Skeleton.tsx) | `Skeleton` shimmer, generic `SkeletonGrid`/`List`/`Table`/`Panels`, and page-specific skeletons (Dashboard, Skills, Executions, Review, Settings, ToolRegistry, …). |
+| [`src/components/feedback/Skeleton.tsx`](src/components/feedback/Skeleton.tsx) | `Skeleton` shimmer (neutral tokens), generic `SkeletonGrid`/`List`/`Table`/`Panels`, and page-specific skeletons (Dashboard, Skills, Executions, Review, Settings, ToolRegistry, …). |
 | [`src/components/feedback/Toaster.tsx`](src/components/feedback/Toaster.tsx) | Bottom-right toast stack read from `useToastStore`, with an optional link or button action. |
 
 ### landing, layout
@@ -394,7 +394,7 @@ These were found while verifying, and are worth fixing or knowing about:
 | [`src/components/landing/LiveAgentCanvasDemo.tsx`](src/components/landing/LiveAgentCanvasDemo.tsx) | Standalone landing demo with no backend: 3 preset graphs, simulated runs at 1/2/4× speed, a heatmap, zoom and pan, and inspector tabs. |
 | [`src/components/landing/data/canvasNodes.ts`](src/components/landing/data/canvasNodes.ts) | `canvasNodeCategories`: the node catalog shown on the landing page (category, then name, icon and description per node). |
 | [`src/components/layout/Header.tsx`](src/components/layout/Header.tsx) | Sticky header: pixel wordmark, landing anchors, mobile sidebar toggle, `ThemePicker`, and Clerk sign-in or `UserButton`. |
-| [`src/components/layout/Sidebar.tsx`](src/components/layout/Sidebar.tsx) | 15 app links in a sidebar that collapses on desktop and becomes a drawer on mobile, plus sign-out. Renders only for signed-in users on app routes. |
+| [`src/components/layout/Sidebar.tsx`](src/components/layout/Sidebar.tsx) | 15 app links grouped as Dashboard, Build, Run, Evaluate and Workspace, in a sidebar that collapses on desktop (icons only, groups split by hairlines) and becomes a drawer on mobile, plus sign-out. Renders only for signed-in users on app routes. |
 
 ### mcp, organizations, vault, workflows
 | File | Purpose |
@@ -426,6 +426,7 @@ These were found while verifying, and are worth fixing or knowing about:
 | [`src/components/ui/Button.tsx`](src/components/ui/Button.tsx) | Button with primary, secondary, ghost and tertiary variants, sizes and a loading state. `asChild` is not implemented. *Unused.* |
 | [`src/components/ui/Card.tsx`](src/components/ui/Card.tsx) | `Card` and `FeatureCard`. *Unused.* |
 | [`src/components/ui/SectionHeader.tsx`](src/components/ui/SectionHeader.tsx) | Landing section heading: sentence-case title, optional subhead, and a mono readout with a status dot on the right. |
+| [`src/components/ui/surfaces.tsx`](src/components/ui/surfaces.tsx) | Shared app-page styles used by the dashboard and the pages behind the sidebar: class strings (`CARD`, `CARD_HEAD`, `FIELD`, `INPUT`, `LABEL`, `TH`, `META`, buttons `BTN_PRIMARY`/`BTN_SECONDARY` and `_SM`), `plural()`, and the components `PageHeader`, `StatGrid` (key numbers in one divided panel), `Segmented` (small option switch), `StatusDot` (an `ExecutionStatus` as dot plus label) and `Tag` (dot plus label for any other status). All colours come from theme tokens. |
 | [`src/components/ui/ThemePicker.tsx`](src/components/ui/ThemePicker.tsx) | Header popover with Mode and Color tabs; switches theme through the pixel transition. |
 | [`src/components/Reveal.tsx`](src/components/Reveal.tsx) | Plays a fade-in-up animation when the content scrolls into view (via `IntersectionObserver`), and respects reduced motion. |
 

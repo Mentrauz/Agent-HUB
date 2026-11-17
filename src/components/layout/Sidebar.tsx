@@ -29,23 +29,51 @@ import { clsx } from "clsx";
 import { SignOutModal } from "@/components/feedback/SignOutModal";
 import { useSidebar } from "@/components/providers/SidebarContext";
 
-const navItems = [
-  { name: "Dashboard",    href: "/dashboard",            icon: LayoutDashboard },
-  { name: "Studio",       href: "/dashboard/skills",     icon: Workflow },
-  { name: "Agent Canvas", href: "/dashboard/canvas",     icon: Network },
-  { name: "Knowledge",    href: "/dashboard/knowledge",  icon: Database },
-  { name: "A2A Protocol", href: "/dashboard/a2a",        icon: Bot },
-  { name: "Benchmarks",   href: "/dashboard/benchmarks", icon: Award },
-  { name: "MLOps Evals",  href: "/dashboard/evals",      icon: Scale },
-  { name: "Executions",   href: "/dashboard/executions", icon: Play },
-  { name: "Observability",href: "/dashboard/history",    icon: Gauge },
-  { name: "Audit Log",    href: "/dashboard/audit",      icon: ScrollText },
-  { name: "Compare",      href: "/dashboard/compare",    icon: GitCompare },
-  { name: "Tool Registry",href: "/dashboard/tools",      icon: Wrench },
-  { name: "Human Review", href: "/dashboard/review",     icon: Shield },
-  { name: "Organizations",href: "/organizations",        icon: Building2 },
-  { name: "Settings",     href: "/dashboard/settings",   icon: Settings },
+type NavItem = { name: string; href: string; icon: React.ComponentType<{ className?: string; strokeWidth?: number }> };
+
+const navGroups: { label: string | null; items: NavItem[] }[] = [
+  {
+    label: null,
+    items: [{ name: "Dashboard", href: "/dashboard", icon: LayoutDashboard }],
+  },
+  {
+    label: "Build",
+    items: [
+      { name: "Studio",        href: "/dashboard/skills",    icon: Workflow },
+      { name: "Agent canvas",  href: "/dashboard/canvas",    icon: Network },
+      { name: "Knowledge",     href: "/dashboard/knowledge", icon: Database },
+      { name: "Tool registry", href: "/dashboard/tools",     icon: Wrench },
+    ],
+  },
+  {
+    label: "Run",
+    items: [
+      { name: "Executions",   href: "/dashboard/executions", icon: Play },
+      { name: "Human review", href: "/dashboard/review",     icon: Shield },
+      { name: "A2A protocol", href: "/dashboard/a2a",        icon: Bot },
+    ],
+  },
+  {
+    label: "Evaluate",
+    items: [
+      { name: "Observability", href: "/dashboard/history",    icon: Gauge },
+      { name: "Benchmarks",    href: "/dashboard/benchmarks", icon: Award },
+      { name: "Evals",         href: "/dashboard/evals",      icon: Scale },
+      { name: "Compare",       href: "/dashboard/compare",    icon: GitCompare },
+      { name: "Audit log",     href: "/dashboard/audit",      icon: ScrollText },
+    ],
+  },
+  {
+    label: "Workspace",
+    items: [
+      { name: "Organizations", href: "/organizations",      icon: Building2 },
+      { name: "Settings",      href: "/dashboard/settings", icon: Settings },
+    ],
+  },
 ];
+
+const ICON_BUTTON =
+  "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] text-[var(--text-muted)] transition-colors hover:bg-[var(--text-primary)]/[0.06] hover:text-[var(--text-primary)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -65,112 +93,83 @@ export function Sidebar() {
 
   if (!isLoaded || !isSignedIn || pathname === "/" || !isAppRoute) return null;
 
-  const sidebarContent = (
-    <div className="flex flex-col h-full min-h-0 select-none">
+  const iconOnly = collapsed && !mobileOpen;
 
-      {/* ── Top: Section label + collapse toggle ── */}
-      <div
-        className={clsx(
-          "shrink-0 flex items-center pb-3 border-b border-[var(--border-subtle)]",
-          collapsed ? "justify-center" : "justify-between px-1"
-        )}
-      >
-        {!collapsed && (
-          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">
-            Navigation
-          </span>
-        )}
-        {/* Desktop collapse toggle */}
+  const rowClass = (active: boolean) =>
+    clsx(
+      "flex h-8 items-center gap-2.5 rounded-[8px] font-sans text-sm transition-colors",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
+      iconOnly ? "mx-auto w-9 justify-center" : "px-2.5",
+      active
+        ? "bg-[var(--text-primary)]/[0.08] text-[var(--text-primary)] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+        : "text-[var(--text-secondary)] hover:bg-[var(--text-primary)]/[0.05] hover:text-[var(--text-primary)]"
+    );
+
+  const sidebarContent = (
+    <div className="flex h-full min-h-0 select-none flex-col">
+      {/* Collapse toggle (desktop) / close (mobile) */}
+      <div className={clsx("flex shrink-0 items-center pb-2", iconOnly ? "justify-center" : "justify-end")}>
         <button
           type="button"
           onClick={toggleCollapsed}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="hidden md:inline-flex items-center justify-center h-7 w-7 rounded-[8px] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-all duration-150 cursor-pointer shrink-0"
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           aria-expanded={!collapsed}
+          className={clsx(ICON_BUTTON, "hidden md:inline-flex")}
         >
-          {collapsed ? <ChevronsRight className="h-4 w-4" /> : <ChevronsLeft className="h-4 w-4" />}
+          {collapsed ? <ChevronsRight className="h-4 w-4" strokeWidth={1.5} /> : <ChevronsLeft className="h-4 w-4" strokeWidth={1.5} />}
         </button>
-        {/* Mobile close button */}
-        <button
-          type="button"
-          onClick={closeMobile}
-          title="Close sidebar"
-          className="md:hidden inline-flex items-center justify-center h-7 w-7 rounded-[8px] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-all cursor-pointer"
-        >
-          <X className="h-4 w-4" />
+        <button type="button" onClick={closeMobile} title="Close sidebar" aria-label="Close sidebar" className={clsx(ICON_BUTTON, "md:hidden")}>
+          <X className="h-4 w-4" strokeWidth={1.5} />
         </button>
       </div>
 
-      {/* ── Middle: Scrollable nav ── */}
-      <nav
-        className="flex-1 min-h-0 overflow-y-auto py-3 space-y-0.5 custom-scrollbar"
-        aria-label="Dashboard navigation"
-      >
-        {navItems.map((item) => {
-          const isActive =
-            pathname === item.href ||
-            (item.href !== "/dashboard" && pathname.startsWith(`${item.href}/`));
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={closeMobile}
-              title={collapsed ? item.name : undefined}
-              className={clsx(
-                "flex items-center gap-3 rounded-[10px] text-sm font-medium font-sans",
-                "transition-all duration-150",
-                collapsed
-                  ? "h-10 w-10 mx-auto justify-center"
-                  : "px-3 py-2.5",
-                isActive
-                  ? [
-                      "bg-[var(--accent-primary)]/15",
-                      "text-[var(--accent-primary)]",
-                      "border-l-2 border-[var(--accent-primary)]",
-                      collapsed ? "border-l-0" : "pl-[10px]",
-                    ]
-                  : [
-                      "text-[var(--text-secondary)]",
-                      "hover:text-[var(--text-primary)]",
-                      "hover:bg-[var(--surface-sunken)]",
-                    ]
-              )}
-            >
-              <Icon
-                className={clsx(
-                  "h-4 w-4 shrink-0",
-                  isActive
-                    ? "text-[var(--accent-primary)]"
-                    : "text-[var(--text-muted)]"
-                )}
-              />
-              {(!collapsed || mobileOpen) && (
-                <span className="truncate">{item.name}</span>
-              )}
-            </Link>
-          );
-        })}
+      {/* Navigation */}
+      <nav className="custom-scrollbar min-h-0 flex-1 overflow-y-auto pb-3" aria-label="Dashboard navigation">
+        {navGroups.map((group, gi) => (
+          <div key={group.label ?? "home"} className={clsx(gi > 0 && (iconOnly ? "mt-3 border-t border-[var(--border-subtle)] pt-3" : "mt-6"))}>
+            {group.label && !iconOnly && (
+              <div className="px-2.5 pb-2 font-sans text-xs text-[var(--text-muted)]">{group.label}</div>
+            )}
+            <ul className="space-y-0.5">
+              {group.items.map((item) => {
+                const isActive =
+                  pathname === item.href ||
+                  (item.href !== "/dashboard" && pathname.startsWith(`${item.href}/`));
+                const Icon = item.icon;
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={closeMobile}
+                      title={iconOnly ? item.name : undefined}
+                      aria-current={isActive ? "page" : undefined}
+                      className={rowClass(isActive)}
+                    >
+                      <Icon
+                        className={clsx("h-4 w-4 shrink-0", isActive ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]")}
+                        strokeWidth={1.5}
+                      />
+                      {!iconOnly && <span className="truncate">{item.name}</span>}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </nav>
 
-      {/* ── Bottom: Sign out ── */}
-      <div className="shrink-0 pt-3 border-t border-[var(--border-subtle)]">
+      {/* Sign out */}
+      <div className="shrink-0 border-t border-[var(--border-subtle)] pt-3">
         <button
           type="button"
           onClick={() => { closeMobile(); setIsSignOutModalOpen(true); }}
-          title={collapsed ? "Sign out" : undefined}
-          className={clsx(
-            "flex items-center gap-3 rounded-[10px] text-sm font-medium font-sans",
-            "text-[var(--text-muted)] hover:text-red-600 dark:hover:text-red-400",
-            "hover:bg-red-50 dark:hover:bg-red-950/20",
-            "transition-all duration-150 cursor-pointer w-full",
-            collapsed && !mobileOpen
-              ? "h-10 w-10 mx-auto justify-center"
-              : "px-3 py-2.5"
-          )}
+          title={iconOnly ? "Sign out" : undefined}
+          className={clsx(rowClass(false), "w-full cursor-pointer", iconOnly && "w-9")}
         >
-          <LogOut className="h-4 w-4 shrink-0" />
-          {(!collapsed || mobileOpen) && <span>Sign out</span>}
+          <LogOut className="h-4 w-4 shrink-0 text-[var(--text-muted)]" strokeWidth={1.5} />
+          {!iconOnly && <span>Sign out</span>}
         </button>
       </div>
     </div>
@@ -181,7 +180,7 @@ export function Sidebar() {
       {/* Mobile backdrop */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm md:hidden animate-fadeIn"
+          className="fixed inset-0 z-40 bg-black/40 md:hidden animate-fadeIn"
           onClick={closeMobile}
           aria-hidden="true"
         />
@@ -191,10 +190,9 @@ export function Sidebar() {
       <aside
         className={clsx(
           "fixed inset-y-0 left-0 z-50 w-72 flex flex-col",
-          "bg-[var(--surface-raised)] p-4",
+          "bg-[var(--surface-raised)] p-3",
           "border-r border-[var(--border-subtle)]",
-          "shadow-elevated",
-          "transition-transform duration-300 ease-in-out md:hidden overflow-hidden h-full"
+          "transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden overflow-hidden h-full"
         )}
         style={{ transform: mobileOpen ? "translateX(0)" : "translateX(-100%)" }}
       >
@@ -205,10 +203,9 @@ export function Sidebar() {
       <aside
         className={clsx(
           "hidden md:flex flex-col shrink-0 h-full overflow-hidden",
-          "bg-[var(--surface-raised)]/80 backdrop-blur-md",
+          "bg-[var(--surface-raised)]",
           "border-r border-[var(--border-subtle)]",
-          "transition-all duration-300 ease-in-out",
-          collapsed ? "w-16 p-2" : "w-60 p-4"
+          collapsed ? "w-16 p-2" : "w-60 p-3"
         )}
       >
         {sidebarContent}
