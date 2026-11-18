@@ -201,13 +201,13 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
   const enabledCount = endpoints.filter((e) => e.enabled).length;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--surface-sunken)]/70 font-sans animate-in fade-in duration-100">
-      <div className="relative w-full max-w-3xl max-h-[85vh] rounded-lg border border-[var(--border-strong)] bg-[var(--surface-raised)] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--surface-sunken)]/70 font-sans duration-100">
+      <div className="relative w-full max-w-3xl max-h-[85vh] rounded-[8px] border border-[var(--border-strong)] bg-[var(--surface-raised)] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
           <div className="flex items-center gap-2">
-            <Globe className="h-4 w-4 text-[var(--accent-primary)]" />
-            <h2 className="text-xs text-[var(--accent-primary)]">
+            <Globe className="h-4 w-4 text-[var(--text-secondary)]" />
+            <h2 className="text-xs text-[var(--text-secondary)]">
               Import OpenAPI specification
             </h2>
           </div>
@@ -252,7 +252,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                     "flex-1 py-2 px-3 rounded border text-xs font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer",
                     sourceType === "URL"
                       ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] shadow-xs"
-                      : "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40"
+                      : "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:border-[var(--border-subtle)]"
                   )}
                 >
                   <Globe className="w-3.5 h-3.5" /> Spec URL (JSON / YAML)
@@ -264,7 +264,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                     "flex-1 py-2 px-3 rounded border text-xs font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer",
                     sourceType === "RAW"
                       ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] shadow-xs"
-                      : "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40"
+                      : "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:border-[var(--border-subtle)]"
                   )}
                 >
                   <FileCode className="w-3.5 h-3.5" /> Paste Raw Payload
@@ -282,7 +282,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                       placeholder="https://petstore.swagger.io/v2/swagger.json"
                       value={specUrl}
                       onChange={(e) => setSpecUrl(e.target.value)}
-                      className="w-full px-3 py-2 text-xs bg-[var(--surface-sunken)] border border-[var(--border-strong)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]/40 font-sans"
+                      className="w-full px-3 py-2 text-xs bg-[var(--surface-sunken)] border border-[var(--border-strong)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-subtle)] font-sans"
                     />
                   </div>
 
@@ -296,7 +296,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                           key={preset.name}
                           type="button"
                           onClick={() => setSpecUrl(preset.url)}
-                          className="p-2.5 text-left bg-[var(--surface-sunken)] hover:bg-[var(--accent-primary)]/10 border border-[var(--border-subtle)] rounded transition-colors cursor-pointer"
+                          className="p-2.5 text-left bg-[var(--surface-sunken)] hover:bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded transition-colors cursor-pointer"
                         >
                           <p className="text-xs font-medium text-[var(--text-primary)] truncate">
                             {preset.name}
@@ -317,7 +317,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                     placeholder='{ "openapi": "3.0.0", "info": { "title": "My API", "version": "1.0.0" }, "paths": { ... } }'
                     value={rawSpecText}
                     onChange={(e) => setRawSpecText(e.target.value)}
-                    className="w-full font-sans text-xs p-3 bg-[var(--surface-sunken)] border border-[var(--border-strong)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]/40"
+                    className="w-full font-sans text-xs p-3 bg-[var(--surface-sunken)] border border-[var(--border-strong)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-subtle)]"
                   />
                 </div>
               )}
@@ -341,7 +341,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                     placeholder="Search endpoints by path or operation..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-8 pr-3 py-1.5 text-xs bg-[var(--surface-sunken)] border border-[var(--border-strong)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]/40"
+                    className="w-full pl-8 pr-3 py-1.5 text-xs bg-[var(--surface-sunken)] border border-[var(--border-strong)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-subtle)]"
                   />
                 </div>
 
@@ -364,7 +364,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                       const allSelected = endpoints.every((e) => e.enabled);
                       setEndpoints(endpoints.map((e) => ({ ...e, enabled: !allSelected })));
                     }}
-                    className="px-2.5 py-1.5 text-xs font-sans font-medium rounded border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] cursor-pointer"
+                    className="px-2.5 py-1.5 text-xs font-sans font-medium rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] cursor-pointer"
                   >
                     {endpoints.every((e) => e.enabled) ? "Deselect All" : "Select All"}
                   </button>
@@ -397,7 +397,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                               )
                             );
                           }}
-                          className="w-3.5 h-3.5 rounded text-[var(--accent-primary)] border-[var(--border-strong)]"
+                          className="w-3.5 h-3.5 rounded text-[var(--text-secondary)] border-[var(--border-strong)]"
                         />
                         <span
                           className={`px-1.5 py-0.5 text-xs font-sans font-medium rounded border ${getMethodBadge(
@@ -438,7 +438,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                         <button
                           type="button"
                           onClick={() => setTestingEndpoint(ep)}
-                          className="px-2 py-0.5 text-xs font-sans font-medium text-[var(--accent-primary)] bg-[var(--accent-primary)]/10 border border-[var(--accent-primary)]/25 rounded flex items-center gap-1 cursor-pointer"
+                          className="px-2 py-0.5 text-xs font-sans font-medium text-[var(--text-secondary)] bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded flex items-center gap-1 cursor-pointer"
                         >
                           <Play className="w-2.5 h-2.5 fill-current" /> Test
                         </button>
@@ -462,7 +462,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs bg-[var(--surface-sunken)] border border-[var(--border-strong)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]/40 font-sans"
+                    className="w-full px-3 py-1.5 text-xs bg-[var(--surface-sunken)] border border-[var(--border-strong)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-subtle)] font-sans"
                   />
                 </div>
 
@@ -474,7 +474,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                     type="url"
                     value={baseUrl}
                     onChange={(e) => setBaseUrl(e.target.value)}
-                    className="w-full px-3 py-1.5 text-xs bg-[var(--surface-sunken)] border border-[var(--border-strong)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]/40 font-sans"
+                    className="w-full px-3 py-1.5 text-xs bg-[var(--surface-sunken)] border border-[var(--border-strong)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-subtle)] font-sans"
                   />
                 </div>
               </div>
@@ -494,7 +494,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                         "py-1.5 px-2 rounded border text-xs font-medium transition-colors cursor-pointer",
                         authType === type
                           ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] shadow-xs"
-                          : "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40"
+                          : "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] hover:border-[var(--border-subtle)]"
                       )}
                     >
                       {type.replace("_", " ")}
@@ -639,12 +639,12 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
           {/* STEP 4: REVIEW & SAVE */}
           {step === 4 && (
             <div className="space-y-3">
-              <div className="p-4 bg-[var(--accent-primary)]/10 border border-[var(--accent-primary)]/25 rounded space-y-2">
+              <div className="p-4 bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded space-y-2">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-medium text-[var(--accent-primary)]">
+                  <h3 className="text-xs font-medium text-[var(--text-secondary)]">
                     {name}
                   </h3>
-                  <span className="px-2 py-0.5 text-xs font-sans font-medium rounded bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25">
+                  <span className="px-2 py-0.5 text-xs font-sans font-medium rounded bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">
                     {pad(enabledCount)} Tools to mount
                   </span>
                 </div>
@@ -697,7 +697,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                 type="button"
                 onClick={handleParse}
                 disabled={isParsing || (sourceType === "URL" ? !specUrl : !rawSpecText)}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
               >
                 {isParsing ? (
                   <>
@@ -716,7 +716,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                 type="button"
                 onClick={() => setStep(3)}
                 disabled={enabledCount === 0}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
               >
                 Next <ArrowRight className="w-3 h-3" />
               </button>
@@ -726,7 +726,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
               <button
                 type="button"
                 onClick={() => setStep(4)}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] cursor-pointer"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] cursor-pointer"
               >
                 Next <ArrowRight className="w-3 h-3" />
               </button>
@@ -737,7 +737,7 @@ export function OpenApiImportModal({ isOpen, initialSpecUrl, onClose, onSuccess 
                 type="button"
                 onClick={handleSaveIntegration}
                 disabled={isSaving}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
               >
                 {isSaving ? (
                   <>
@@ -784,7 +784,7 @@ function getMethodBadge(method: string) {
       return "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]";
     case "PUT":
     case "PATCH":
-      return "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]";
+      return "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]";
     case "DELETE":
       return "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]";
     default:

@@ -125,8 +125,8 @@ export function OpenApiEndpointTesterModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--surface-sunken)]/70 font-sans animate-in fade-in duration-100">
-      <div className="relative w-full max-w-2xl max-h-[85vh] rounded-lg border border-[var(--border-strong)] bg-[var(--surface-raised)] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--surface-sunken)]/70 font-sans duration-100">
+      <div className="relative w-full max-w-2xl max-h-[85vh] rounded-[8px] border border-[var(--border-strong)] bg-[var(--surface-raised)] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
           <div className="flex items-center gap-2.5 min-w-0">
@@ -175,7 +175,7 @@ export function OpenApiEndpointTesterModal({
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-medium text-[var(--text-primary)]">
                         {param.name}
-                        <span className="ml-1 text-xs text-[var(--accent-primary)] font-medium">
+                        <span className="ml-1 text-xs text-[var(--text-secondary)] font-medium">
                           ({param.in})
                         </span>
                         {param.required && <span className="text-[var(--state-error)] ml-1 font-medium">*</span>}
@@ -218,7 +218,7 @@ export function OpenApiEndpointTesterModal({
                             );
                           }
                         }}
-                        className="text-xs text-[var(--accent-primary)] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                        className="text-xs text-[var(--text-secondary)] hover:underline flex items-center gap-1 font-medium cursor-pointer"
                       >
                         <Sparkles className="w-3 h-3" /> Auto-fill Sample
                       </button>
@@ -269,7 +269,7 @@ export function OpenApiEndpointTesterModal({
 
               {/* Terminal View */}
               <div className="p-3 bg-[var(--surface-raised)] border border-[var(--border-strong)] rounded font-sans text-xs space-y-2 overflow-x-auto">
-                <div className="flex items-center gap-2 text-[var(--accent-primary)]">
+                <div className="flex items-center gap-2 text-[var(--text-secondary)]">
                   <span className="font-medium text-[var(--state-warning)]">{testResult.requestDetails.method}</span>
                   <span className="text-[var(--text-muted)]">{testResult.requestDetails.url}</span>
                 </div>
@@ -307,7 +307,7 @@ export function OpenApiEndpointTesterModal({
               type="button"
               onClick={handleRunTest}
               disabled={isRunning}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
             >
               {isRunning ? (
                 <>
@@ -334,7 +334,7 @@ function getMethodBadge(method: string) {
       return "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]";
     case "PUT":
     case "PATCH":
-      return "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]";
+      return "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]";
     case "DELETE":
       return "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]";
     default:

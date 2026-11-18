@@ -802,7 +802,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
           onClick={onDelete}
           className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--state-error)]/25 text-xs font-mono text-[var(--state-error)] hover:bg-[var(--state-error)]/10 transition-colors cursor-pointer"
         >
-          <Trash2 className="h-3 w-3" /> DELETE
+          <Trash2 className="h-3 w-3" /> Delete
         </button>
       </div>
 

@@ -177,7 +177,7 @@ export function OpenApiDirectoryBrowser({ onSelectSpecUrl }: OpenApiDirectoryBro
       {metrics && (
         <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-md border border-[var(--border-subtle)] bg-[var(--surface-raised)] shadow-xs">
           <div className="flex items-center gap-2">
-            <Globe className="h-4 w-4 text-[var(--accent-primary)]" />
+            <Globe className="h-4 w-4 text-[var(--text-secondary)]" />
             <span className="text-xs font-medium text-[var(--text-primary)]">
               APIs.guru Registry Index
             </span>
@@ -207,7 +207,7 @@ export function OpenApiDirectoryBrowser({ onSelectSpecUrl }: OpenApiDirectoryBro
               "px-2.5 py-1 rounded text-xs font-medium whitespace-nowrap transition-colors border cursor-pointer",
               provider === p.id
                 ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] shadow-xs"
-                : "border-[var(--border-strong)] bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40"
+                : "border-[var(--border-strong)] bg-[var(--surface-raised)] text-[var(--text-secondary)] hover:border-[var(--border-subtle)]"
             )}
           >
             {p.label}
@@ -239,7 +239,7 @@ export function OpenApiDirectoryBrowser({ onSelectSpecUrl }: OpenApiDirectoryBro
             placeholder="Search 2,500+ APIs (e.g. Spotify, Stripe, NASA, Google, Weather)..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 text-xs bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]/40 font-sans"
+            className="w-full pl-8 pr-3 py-1.5 text-xs bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-subtle)] font-sans"
           />
         </div>
 
@@ -247,7 +247,7 @@ export function OpenApiDirectoryBrowser({ onSelectSpecUrl }: OpenApiDirectoryBro
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full sm:w-auto px-3 py-1.5 text-xs bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]/40 font-sans"
+            className="w-full sm:w-auto px-3 py-1.5 text-xs bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-subtle)] font-sans"
           >
             <option value="all">All Categories ({totalCount})</option>
             {categories.map((cat) => (
@@ -262,7 +262,7 @@ export function OpenApiDirectoryBrowser({ onSelectSpecUrl }: OpenApiDirectoryBro
       {/* Directory Grid */}
       {loading ? (
         <div className="flex items-center justify-center py-20 text-[var(--text-muted)] text-xs">
-          <Loader2 className="w-4 h-4 animate-spin mr-2 text-[var(--accent-primary)]" /> Searching apis.guru index...
+          <Loader2 className="w-4 h-4 animate-spin mr-2 text-[var(--text-secondary)]" /> Searching apis.guru index...
         </div>
       ) : filteredItems.length === 0 ? (
         <div className="p-8 text-center border border-dashed border-[var(--border-strong)] rounded-md space-y-1 bg-[var(--surface-raised)]/40">
@@ -278,7 +278,7 @@ export function OpenApiDirectoryBrowser({ onSelectSpecUrl }: OpenApiDirectoryBro
               <div
                 key={item.id}
                 onClick={() => setDetailItem(item)}
-                className="p-3.5 rounded-md border border-[var(--border-subtle)] bg-[var(--surface-raised)] flex flex-col justify-between gap-3 hover:border-[var(--accent-primary)]/40 transition-colors group shadow-xs cursor-pointer"
+                className="p-3.5 rounded-md border border-[var(--border-subtle)] bg-[var(--surface-raised)] flex flex-col justify-between gap-3 hover:border-[var(--border-subtle)] transition-colors group shadow-xs cursor-pointer"
               >
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
@@ -291,10 +291,10 @@ export function OpenApiDirectoryBrowser({ onSelectSpecUrl }: OpenApiDirectoryBro
                         size="sm"
                       />
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-xs font-medium text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors truncate">
+                        <h4 className="text-xs font-medium text-[var(--text-primary)] group-hover:text-[var(--text-secondary)] transition-colors truncate">
                           {item.name}
                         </h4>
-                        <p className="text-xs font-sans text-[var(--accent-primary)] truncate">
+                        <p className="text-xs font-sans text-[var(--text-secondary)] truncate">
                           {item.provider} · v{item.version}
                         </p>
                       </div>
@@ -331,7 +331,7 @@ export function OpenApiDirectoryBrowser({ onSelectSpecUrl }: OpenApiDirectoryBro
                 </div>
 
                 <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between">
-                  <span className="text-xs font-sans text-[var(--text-muted)] hover:text-[var(--accent-primary)] flex items-center gap-1">
+                  <span className="text-xs font-sans text-[var(--text-muted)] hover:text-[var(--text-secondary)] flex items-center gap-1">
                     Inspect Details <ArrowRight className="w-2.5 h-2.5" />
                   </span>
 
@@ -342,7 +342,7 @@ export function OpenApiDirectoryBrowser({ onSelectSpecUrl }: OpenApiDirectoryBro
                         e.stopPropagation();
                         onSelectSpecUrl(item.specUrl);
                       }}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] active:scale-95 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] active:scale-95 transition-colors cursor-pointer"
                     >
                       <Download className="w-3 h-3" /> Import spec
                     </button>
@@ -441,11 +441,11 @@ function DirectoryApiDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--surface-sunken)]/70 font-sans animate-in fade-in duration-100"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--surface-sunken)]/70 font-sans duration-100"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-2xl max-h-[85vh] rounded-lg border border-[var(--border-strong)] bg-[var(--surface-raised)] flex flex-col overflow-hidden text-[var(--text-primary)]"
+        className="relative w-full max-w-2xl max-h-[85vh] rounded-[8px] border border-[var(--border-strong)] bg-[var(--surface-raised)] flex flex-col overflow-hidden text-[var(--text-primary)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -460,7 +460,7 @@ function DirectoryApiDetailModal({
             />
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="text-xs text-[var(--accent-primary)] truncate">
+                <h3 className="text-xs text-[var(--text-secondary)] truncate">
                   {item.name}
                 </h3>
                 <span className="px-1.5 py-0.2 rounded text-xs font-sans font-medium bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)] shrink-0">
@@ -541,7 +541,7 @@ function DirectoryApiDetailModal({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div className="p-3 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 space-y-1">
                   <span className="text-xs text-[var(--text-muted)] font-medium">Provider / host</span>
-                  <p className="text-xs font-medium text-[var(--accent-primary)]">{item.provider}</p>
+                  <p className="text-xs font-medium text-[var(--text-secondary)]">{item.provider}</p>
                 </div>
 
                 <div className="p-3 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 space-y-1">
@@ -554,7 +554,7 @@ function DirectoryApiDetailModal({
                 {item.license && (
                   <div className="p-3 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 space-y-1">
                     <span className="text-xs text-[var(--text-muted)] font-medium">License</span>
-                    <p className="text-xs font-medium text-[var(--accent-primary)]">{item.license}</p>
+                    <p className="text-xs font-medium text-[var(--text-secondary)]">{item.license}</p>
                   </div>
                 )}
 
@@ -594,7 +594,7 @@ function DirectoryApiDetailModal({
             <div className="space-y-3">
               {specLoading ? (
                 <div className="flex flex-col items-center justify-center py-16 space-y-2">
-                  <Loader2 className="w-5 h-5 animate-spin text-[var(--accent-primary)]" />
+                  <Loader2 className="w-5 h-5 animate-spin text-[var(--text-secondary)]" />
                   <p className="text-xs text-[var(--text-muted)]">Introspecting OpenAPI specification endpoints...</p>
                 </div>
               ) : specError ? (
@@ -610,7 +610,7 @@ function DirectoryApiDetailModal({
                       placeholder="Filter endpoints by path or operation..."
                       value={endpointSearch}
                       onChange={(e) => setEndpointSearch(e.target.value)}
-                      className="w-full pl-8 pr-3 py-1.5 text-xs bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]/40"
+                      className="w-full pl-8 pr-3 py-1.5 text-xs bg-[var(--surface-sunken)] border border-[var(--border-subtle)] rounded text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-subtle)]"
                     />
                   </div>
 
@@ -680,10 +680,10 @@ function DirectoryApiDetailModal({
                     href={item.externalDocsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 hover:border-[var(--accent-primary)]/40 flex items-center justify-between text-xs transition-colors"
+                    className="p-3 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 hover:border-[var(--border-subtle)] flex items-center justify-between text-xs transition-colors"
                   >
                     <span className="font-medium text-[var(--text-primary)] flex items-center gap-1.5">
-                      <BookOpen className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> View Documentation
+                      <BookOpen className="w-3.5 h-3.5 text-[var(--text-secondary)]" /> View Documentation
                     </span>
                     <ExternalLink className="w-3 h-3 text-[var(--text-muted)]" />
                   </a>
@@ -694,7 +694,7 @@ function DirectoryApiDetailModal({
                     href={item.specYamlUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 hover:border-[var(--accent-primary)]/40 flex items-center justify-between text-xs transition-colors"
+                    className="p-3 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 hover:border-[var(--border-subtle)] flex items-center justify-between text-xs transition-colors"
                   >
                     <span className="font-medium text-[var(--text-primary)] flex items-center gap-1.5">
                       <FileCode className="w-3.5 h-3.5 text-[var(--state-warning)]" /> View YAML Spec
@@ -708,7 +708,7 @@ function DirectoryApiDetailModal({
                     href={item.originUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-3 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 hover:border-[var(--accent-primary)]/40 flex items-center justify-between text-xs transition-colors"
+                    className="p-3 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 hover:border-[var(--border-subtle)] flex items-center justify-between text-xs transition-colors"
                   >
                     <span className="font-medium text-[var(--text-primary)] flex items-center gap-1.5">
                       <Globe className="w-3.5 h-3.5 text-[var(--state-success)]" /> Original Source Spec
@@ -720,10 +720,10 @@ function DirectoryApiDetailModal({
                 {item.contactEmail && (
                   <a
                     href={`mailto:${item.contactEmail}`}
-                    className="p-3 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 hover:border-[var(--accent-primary)]/40 flex items-center justify-between text-xs transition-colors"
+                    className="p-3 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 hover:border-[var(--border-subtle)] flex items-center justify-between text-xs transition-colors"
                   >
                     <span className="font-medium text-[var(--text-primary)] flex items-center gap-1.5">
-                      <Mail className="w-3.5 h-3.5 text-[var(--accent-primary)]" /> Contact Developer
+                      <Mail className="w-3.5 h-3.5 text-[var(--text-secondary)]" /> Contact Developer
                     </span>
                     <ExternalLink className="w-3 h-3 text-[var(--text-muted)]" />
                   </a>
@@ -747,7 +747,7 @@ function DirectoryApiDetailModal({
             <button
               type="button"
               onClick={onImport}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] shadow-xs transition-colors cursor-pointer active:scale-95"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] shadow-xs transition-colors cursor-pointer active:scale-95"
             >
               <Download className="w-3.5 h-3.5" /> 1-Click Import Specification
             </button>
@@ -766,7 +766,7 @@ function getMethodBadge(method: string) {
       return "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]";
     case "PUT":
     case "PATCH":
-      return "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]";
+      return "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]";
     case "DELETE":
       return "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]";
     default:

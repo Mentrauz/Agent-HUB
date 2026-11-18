@@ -99,13 +99,13 @@ const LANGUAGES = [
 ];
 
 const LANGUAGE_COLORS: Record<string, string> = {
-  typescript: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  typescript: "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
   python: "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]",
-  go: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  go: "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
   rust: "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
-  csharp: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  csharp: "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
   java: "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
-  cpp: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  cpp: "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
   ruby: "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]",
 };
 
@@ -324,7 +324,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
   return (
     <div className="space-y-4">
       {/* Search and Filters Header */}
-      <div className="space-y-3 bg-[var(--surface-sunken)]/50 p-3.5 rounded-lg border border-[var(--border-subtle)] shadow-xs">
+      <div className="space-y-3 bg-[var(--surface-sunken)]/50 p-3.5 rounded-[8px] border border-[var(--border-subtle)] shadow-xs">
         {/* Top Row: Search Bar + Refresh + Transport Selector */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
           {/* Search Bar with Quick Refresh */}
@@ -336,7 +336,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search 100K+ servers (e.g. Supabase, Notion, Obsidian, Postgres, GitHub, Playwright)..."
-                className="w-full pl-9 pr-8 py-2 text-xs font-sans rounded-md border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)]/40 focus:ring-1 focus:ring-[var(--accent-primary)]/40 transition-colors"
+                className="w-full pl-9 pr-8 py-2 text-xs font-sans rounded-md border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--border-subtle)] focus:ring-1 focus:ring-[var(--accent-primary)]/40 transition-colors"
               />
               {search && (
                 <button
@@ -359,10 +359,10 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                 "p-2 rounded-md border text-xs font-sans transition-colors cursor-pointer shrink-0 flex items-center justify-center",
                 loading
                   ? "border-[var(--accent-primary)]/40 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]"
-                  : "border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-muted)] hover:text-[var(--accent-primary)] hover:border-[var(--accent-primary)]/40"
+                  : "border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--border-subtle)]"
               )}
             >
-              <RefreshCw className={clsx("h-4 w-4", loading && "animate-spin text-[var(--accent-primary)]")} />
+              <RefreshCw className={clsx("h-4 w-4", loading && "animate-spin text-[var(--text-secondary)]")} />
             </button>
           </div>
 
@@ -389,7 +389,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
         {/* Bottom Row: Source Registries */}
         <div className="flex flex-wrap items-center gap-1.5 pt-1.5 border-t border-[var(--border-subtle)] scrollbar-none">
           <span className="text-xs font-sans text-[var(--text-muted)] font-medium shrink-0 flex items-center gap-1 mr-1">
-            <Globe className="h-3 w-3 text-[var(--accent-primary)]" /> Registry
+            <Globe className="h-3 w-3 text-[var(--text-secondary)]" /> Registry
           </span>
           {SOURCES.map((s) => {
             const active = source === s.id;
@@ -409,7 +409,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                   "inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-sans font-medium border transition-colors cursor-pointer shrink-0 whitespace-nowrap",
                   active
                     ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)]"
-                    : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--text-primary)]"
+                    : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-secondary)] hover:border-[var(--border-subtle)] hover:text-[var(--text-primary)]"
                 )}
               >
                 <Globe className="h-3 w-3" />
@@ -424,7 +424,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
       {/* Language Filter */}
       <div className="flex flex-wrap items-center gap-1.5 pb-1 scrollbar-none">
         <span className="text-xs font-sans text-[var(--text-muted)] font-medium shrink-0 flex items-center gap-1 mr-1">
-          <Code className="h-3 w-3 text-[var(--accent-primary)]" /> Lang
+          <Code className="h-3 w-3 text-[var(--text-secondary)]" /> Lang
         </span>
         {LANGUAGES.map((lang) => (
           <button
@@ -435,7 +435,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
               "px-2 py-0.5 rounded text-xs font-sans font-medium border transition-colors cursor-pointer shrink-0",
               language === lang.id
                 ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
-                : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-muted)] hover:border-[var(--accent-primary)]/40"
+                : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-muted)] hover:border-[var(--border-subtle)]"
             )}
           >
             {lang.label}
@@ -459,7 +459,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                   "inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-sans font-medium border transition-colors cursor-pointer",
                   active
                     ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
-                    : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40"
+                    : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-secondary)] hover:border-[var(--border-subtle)]"
                 )}
               >
                 <Icon className="h-3 w-3" />
@@ -534,7 +534,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
         <div className="flex items-center gap-3">
           <span className="text-xs hidden sm:block">GLAMA.AI • MCP.SO • SMITHERY</span>
           {!loading && processedServers.length > 0 && (
-            <div className="flex items-center rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-0.5">
+            <div className="flex items-center rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-0.5">
               <button
                 type="button"
                 onClick={() => setDirViewMode("grid")}
@@ -544,7 +544,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                     ? "bg-[var(--surface-raised)] text-[var(--accent-primary)] "
                     : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                 )}
-                title="Card Grid View"
+                title="Card grid view"
               >
                 <LayoutGrid className="h-3.5 w-3.5" />
               </button>
@@ -557,7 +557,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                     ? "bg-[var(--surface-raised)] text-[var(--accent-primary)] "
                     : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                 )}
-                title="Row List View"
+                title="Row list view"
               >
                 <List className="h-3.5 w-3.5" />
               </button>
@@ -576,12 +576,12 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
       {/* Grid of Servers */}
       {loading && servers.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 space-y-3">
-          <Loader2 className="h-6 w-6 animate-spin text-[var(--accent-primary)]" />
+          <Loader2 className="h-6 w-6 animate-spin text-[var(--text-secondary)]" />
           <p className="text-xs font-sans text-[var(--text-muted)]">Querying Glama Directory &amp; mcp.so...</p>
         </div>
       ) : processedServers.length === 0 ? (
         <div className="rounded border border-dashed border-[var(--border-strong)] p-12 text-center space-y-2">
-          <Globe className="h-8 w-8 text-[var(--accent-primary)] mx-auto" />
+          <Globe className="h-8 w-8 text-[var(--text-secondary)] mx-auto" />
           <p className="text-sm font-sans font-medium text-[var(--text-primary)]">No directory servers found</p>
           <p className="text-xs font-sans text-[var(--text-muted)]">
             {showFavoritesOnly
@@ -603,7 +603,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                 <div
                   key={server.id}
                   onClick={() => setDetailServer(server)}
-                  className="group rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 transition-colors p-4 flex flex-col justify-between space-y-3 cursor-pointer"
+                  className="group rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--border-subtle)] transition-colors p-4 flex flex-col justify-between space-y-3 cursor-pointer"
                 >
                   {/* Card Top */}
                   <div className="space-y-2">
@@ -619,16 +619,16 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                         />
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
-                            <h4 className="text-xs font-sans font-medium text-[var(--text-primary)] truncate group-hover:text-[var(--accent-primary)] transition-colors">
+                            <h4 className="text-xs font-sans font-medium text-[var(--text-primary)] truncate group-hover:text-[var(--text-secondary)] transition-colors">
                               {server.name}
                             </h4>
                             {server.isVerified && (
-                              <span title="Verified Server">
+                              <span title="Verified server">
                                 <ShieldCheck className="h-3.5 w-3.5 text-[var(--state-success)] shrink-0" />
                               </span>
                             )}
                             {isMounted && (
-                              <span title="Already mounted" className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25">
+                              <span title="Already mounted" className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">
                                 <Check className="h-2.5 w-2.5" /> Mounted
                               </span>
                             )}
@@ -696,7 +696,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
 
                         {/* License Tag */}
                         {server.license && (
-                          <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]">
+                          <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]">
                             {server.license}
                           </span>
                         )}
@@ -756,7 +756,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                             target="_blank"
                             rel="noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            className="inline-flex items-center gap-0.5 hover:text-[var(--accent-primary)]"
+                            className="inline-flex items-center gap-0.5 hover:text-[var(--text-secondary)]"
                           >
                             Repo <ExternalLink className="h-2.5 w-2.5" />
                           </a>
@@ -775,7 +775,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                             e.stopPropagation();
                             onMount(server);
                           }}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] disabled:opacity-60 text-[var(--cta-primary-text)] text-xs font-sans font-medium active:scale-95 transition-colors cursor-pointer disabled:cursor-not-allowed"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] disabled:opacity-60 text-[var(--cta-primary-text)] text-xs font-sans font-medium active:scale-95 transition-colors cursor-pointer disabled:cursor-not-allowed"
                         >
                           {busyServerId === server.id ? (
                             <>
@@ -807,7 +807,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                 <div
                   key={server.id}
                   onClick={() => setDetailServer(server)}
-                  className="group rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 transition-colors p-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3.5 cursor-pointer"
+                  className="group rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--border-subtle)] transition-colors p-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3.5 cursor-pointer"
                 >
                   {/* Left: Info, Badges */}
                   <div className="min-w-0 flex-1 space-y-1.5">
@@ -820,14 +820,14 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                         repoUrl={server.repoUrl}
                         size="xs"
                       />
-                      <h3 className="text-xs font-sans font-medium text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">
+                      <h3 className="text-xs font-sans font-medium text-[var(--text-primary)] group-hover:text-[var(--text-secondary)] transition-colors">
                         {server.name}
                       </h3>
                       {server.isVerified && (
                         <ShieldCheck className="h-3.5 w-3.5 text-[var(--state-success)] shrink-0" />
                       )}
                       {isMounted && (
-                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25 shrink-0">
+                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)] shrink-0">
                           <Check className="h-2.5 w-2.5" /> Mounted
                         </span>
                       )}
@@ -863,7 +863,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                         </span>
                       )}
                       {server.license && (
-                        <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]">
+                        <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]">
                           {server.license}
                         </span>
                       )}
@@ -917,7 +917,7 @@ export function McpDirectoryBrowser({ onMount, mountedServerIds = [], busyServer
                           e.stopPropagation();
                           onMount(server);
                         }}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] disabled:opacity-60 text-[var(--cta-primary-text)] text-xs font-sans font-medium active:scale-95 transition-colors cursor-pointer shrink-0 min-w-[90px] disabled:cursor-not-allowed"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] disabled:opacity-60 text-[var(--cta-primary-text)] text-xs font-sans font-medium active:scale-95 transition-colors cursor-pointer shrink-0 min-w-[90px] disabled:cursor-not-allowed"
                       >
                         {busyServerId === server.id ? (
                           <>
@@ -1053,7 +1053,7 @@ function ServerDetailModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 animate-fadeIn" onClick={onClose}>
       <div
-        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]"
+        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[12px] border border-[var(--border-subtle)] bg-[var(--surface-raised)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -1073,7 +1073,7 @@ function ServerDetailModal({
                   {server.name}
                 </h3>
                 {isMounted && (
-                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25">
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">
                     <Check className="h-2.5 w-2.5" /> Already mounted
                   </span>
                 )}
@@ -1088,14 +1088,14 @@ function ServerDetailModal({
               type="button"
               onClick={onToggleFavorite}
               title={isFavorite ? "Remove from favorites" : "Add to favorites"}
-              className="p-1.5 rounded-lg hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
+              className="p-1.5 rounded-[8px] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
             >
               <Heart className={clsx("h-4 w-4", isFavorite ? "text-[var(--state-error)] fill-[var(--text-muted)]" : "text-[var(--text-muted)] hover:text-[var(--state-error)]")} />
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-lg hover:bg-[var(--surface-sunken)] text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors cursor-pointer"
+              className="p-1.5 rounded-[8px] hover:bg-[var(--surface-sunken)] text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors cursor-pointer"
             >
               <X className="h-4 w-4" />
             </button>
@@ -1122,7 +1122,7 @@ function ServerDetailModal({
                 {server.tags.map((t, idx) => (
                   <span
                     key={idx}
-                    className="px-2 py-0.5 rounded text-xs font-sans bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25 font-medium"
+                    className="px-2 py-0.5 rounded text-xs font-sans bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)] font-medium"
                   >
                     #{t}
                   </span>
@@ -1172,7 +1172,7 @@ function ServerDetailModal({
               </span>
             )}
             {server.license && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] text-xs font-sans font-medium">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] text-xs font-sans font-medium">
                 LICENSE: {server.license}
               </span>
             )}
@@ -1184,7 +1184,7 @@ function ServerDetailModal({
               <div className="text-xs font-sans text-[var(--text-muted)] font-medium flex items-center gap-1.5">
                 <Activity className="h-3 w-3" /> Endpoint health
               </div>
-              <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60 p-3">
+              <div className="rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60 p-3">
                 {healthLoading ? (
                   <div className="flex items-center gap-2 text-xs font-sans text-[var(--text-muted)]">
                     <Loader2 className="h-3 w-3 animate-spin" /> Pinging endpoint...
@@ -1223,7 +1223,7 @@ function ServerDetailModal({
                   <Star className="h-3 w-3" /> Quality score
                   <QualityBadge grade={score.overall} score={score.overallScore} />
                 </div>
-                <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60 p-3.5 space-y-2">
+                <div className="rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60 p-3.5 space-y-2">
                   {Object.entries(score.dimensions as Record<string, { score: number; grade: QualityGrade }>).map(([key, dim]) => (
                     <div key={key} className="flex items-center justify-between">
                       <span className="text-xs font-sans text-[var(--text-secondary)] capitalize">
@@ -1246,7 +1246,7 @@ function ServerDetailModal({
                   {score.badges.length > 0 && (
                     <div className="pt-2 border-t border-[var(--border-subtle)] flex flex-wrap gap-1.5">
                       {score.badges.map((badge) => (
-                        <span key={badge.id} className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-sans font-medium bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25">
+                        <span key={badge.id} className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-sans font-medium bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">
                           {badge.icon} {badge.label}
                         </span>
                       ))}
@@ -1262,7 +1262,7 @@ function ServerDetailModal({
             <div className="text-xs font-sans text-[var(--text-muted)] font-medium flex items-center gap-1.5">
               <KeyRound className="h-3 w-3" /> Auth & permissions
             </div>
-            <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60 p-3.5 space-y-2.5">
+            <div className="rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60 p-3.5 space-y-2.5">
               {/* Auth Required */}
               <div className="flex items-center justify-between">
                 <span className="text-xs font-sans text-[var(--text-secondary)]">Requires Auth Token</span>
@@ -1297,7 +1297,7 @@ function ServerDetailModal({
               <div className="flex items-center justify-between pt-1 border-t border-[var(--border-subtle)]">
                 <span className="text-xs font-sans text-[var(--text-secondary)]">Compatibility</span>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-sans font-medium border border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]">
-                  <CheckCircle2 className="h-2.5 w-2.5" /> COMPATIBLE — {isSse ? "Remote SSE Endpoint" : "Local stdio Process"}
+                  <CheckCircle2 className="h-2.5 w-2.5" /> COMPATIBLE. {isSse ? "Remote SSE Endpoint" : "Local stdio Process"}
                 </span>
               </div>
 
@@ -1339,7 +1339,7 @@ function ServerDetailModal({
               href={server.repoUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-sans text-[var(--accent-primary)] hover:underline font-medium"
+              className="inline-flex items-center gap-1.5 text-xs font-sans text-[var(--text-secondary)] hover:underline font-medium"
             >
               <ExternalLink className="h-3 w-3" /> View Source Repository
             </a>
@@ -1361,7 +1361,7 @@ function ServerDetailModal({
                     "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-t text-xs font-sans font-medium border border-b-0 transition-colors cursor-pointer",
                     githubTab === "readme"
                       ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
-                      : "border-transparent text-[var(--text-muted)] hover:text-[var(--accent-primary)]"
+                      : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                   )}
                 >
                   <FileText className="h-3 w-3" /> Readme
@@ -1373,14 +1373,14 @@ function ServerDetailModal({
                     "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-t text-xs font-sans font-medium border border-b-0 transition-colors cursor-pointer",
                     githubTab === "changelog"
                       ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
-                      : "border-transparent text-[var(--text-muted)] hover:text-[var(--accent-primary)]"
+                      : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                   )}
                 >
                   <Clock className="h-3 w-3" /> Changelog
                 </button>
               </div>
 
-              <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60 p-3.5 min-h-[80px]">
+              <div className="rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60 p-3.5 min-h-[80px]">
                 {githubLoading ? (
                   <div className="flex items-center gap-2 text-xs font-sans text-[var(--text-muted)]">
                     <Loader2 className="h-3 w-3 animate-spin" /> Fetching from GitHub...
@@ -1398,7 +1398,7 @@ function ServerDetailModal({
                         <button
                           type="button"
                           onClick={() => setReadmeExpanded((prev) => !prev)}
-                          className="text-xs font-sans text-[var(--accent-primary)] hover:underline cursor-pointer flex items-center gap-1"
+                          className="text-xs font-sans text-[var(--text-secondary)] hover:underline cursor-pointer flex items-center gap-1"
                         >
                           {readmeExpanded ? <><ChevronUp className="h-3 w-3" /> Show less</> : <><ChevronDown className="h-3 w-3" /> Read full README</>}
                         </button>
@@ -1418,7 +1418,7 @@ function ServerDetailModal({
                           {new Date(githubInfo.release.publishedAt).toLocaleDateString()}
                         </span>
                       </div>
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-sans font-medium bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-sans font-medium bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">
                         {githubInfo.release.version}
                       </span>
                       {githubInfo.release.body && (
@@ -1430,7 +1430,7 @@ function ServerDetailModal({
                         href={githubInfo.release.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1 text-xs font-sans text-[var(--accent-primary)] hover:underline"
+                        className="inline-flex items-center gap-1 text-xs font-sans text-[var(--text-secondary)] hover:underline"
                       >
                         View on GitHub <ExternalLink className="h-2.5 w-2.5" />
                       </a>
@@ -1463,7 +1463,7 @@ function ServerDetailModal({
                 ? "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-muted)] cursor-not-allowed"
                 : isBusy
                 ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] opacity-60 text-[var(--cta-primary-text)] cursor-not-allowed"
-                : "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] active:scale-95"
+                : "border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] active:scale-95"
             )}
           >
             {isMounted ? (
@@ -1491,8 +1491,8 @@ function ServerDetailModal({
 const GRADE_COLORS: Record<QualityGrade, string> = {
   "A+": "border-[var(--state-success)]/40 bg-[var(--state-success)]/10 text-[var(--state-success)]",
   "A": "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]",
-  "B+": "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  "B": "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+  "B+": "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
+  "B": "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
   "C+": "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
   "C": "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
   "D": "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",

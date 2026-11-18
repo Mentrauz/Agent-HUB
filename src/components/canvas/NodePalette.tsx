@@ -83,18 +83,13 @@ export function NodePalette({ onDragStart, disabled = false }: NodePaletteProps)
   return (
     <div className="flex h-full select-none flex-col">
       <div className="shrink-0 space-y-2 px-1 pb-3">
-        <div className="flex items-baseline justify-between">
-          <h2 className="font-sans text-sm font-medium text-[var(--text-primary)]">Nodes</h2>
-          <span className="font-mono text-xs tabular-nums text-[var(--text-muted)]">{filteredNodes.length}</span>
-        </div>
-
         <div className="relative">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             aria-label="Search nodes"
-            placeholder="Search nodes"
+            placeholder={`Search ${filteredNodes.length} nodes`}
             className="h-8 w-full rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] px-2.5 pr-14 font-sans text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)] focus:outline-none"
           />
           {search && (
@@ -134,7 +129,7 @@ export function NodePalette({ onDragStart, disabled = false }: NodePaletteProps)
               key={meta.type}
               draggable={!disabled}
               onDragStart={(e) => onDragStart(e, meta.type)}
-              title={meta.description}
+              title={`${meta.description} (${meta.tag})`}
               className={clsx(
                 "flex items-center gap-2.5 rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-2.5 py-2 transition-colors hover:border-[var(--border-strong)]",
                 disabled ? "cursor-not-allowed opacity-40" : "cursor-grab active:cursor-grabbing"
@@ -145,7 +140,6 @@ export function NodePalette({ onDragStart, disabled = false }: NodePaletteProps)
                 <div className="truncate font-sans text-[13px] text-[var(--text-primary)]">{meta.label}</div>
                 <div className="truncate font-sans text-xs text-[var(--text-muted)]">{meta.description}</div>
               </div>
-              <span className="shrink-0 font-mono text-xs text-[var(--text-muted)]">{meta.tag}</span>
             </div>
           );
         })}

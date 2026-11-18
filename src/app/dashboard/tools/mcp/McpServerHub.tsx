@@ -4,12 +4,10 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Plug,
   Server,
-  Plus,
   X,
   Zap,
   RefreshCw,
   Trash2,
-  Unplug,
   PlugZap,
   ChevronDown,
   ChevronRight,
@@ -18,12 +16,12 @@ import {
   ShieldCheck,
   CircleAlert,
   Loader2,
+  ArrowUpCircle,
   Terminal,
   Globe,
   KeyRound,
   Download,
   Upload,
-  Search,
   Sparkles,
   Code,
   Database,
@@ -31,10 +29,7 @@ import {
   BookOpen,
   Cpu,
   Wrench,
-  Check,
   Brain,
-  LayoutGrid,
-  List,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { ItemIcon } from "@/components/common/ItemIcon";
@@ -51,24 +46,7 @@ import { PublicMcpServer } from "@/types/mcp-directory";
 import { MCP_PRESETS } from "@/modules/mcp/presets";
 import { McpDirectoryBrowser } from "./McpDirectoryBrowser";
 import { ToolUpdateDiffViewer } from "@/components/mcp/ToolUpdateDiffViewer";
-import { ArrowUpCircle } from "lucide-react";
-
-const pad = (n: number) => String(n).padStart(2, "0");
-
-const statusTheme: Record<string, { chip: string; dot: string }> = {
-  CONNECTED: {
-    chip: "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)] font-medium",
-    dot: "bg-[var(--state-success)]",
-  },
-  DISCONNECTED: {
-    chip: "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] font-medium",
-    dot: "bg-[var(--surface-elevated)]",
-  },
-  ERROR: {
-    chip: "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)] font-medium",
-    dot: "bg-[var(--state-error)]",
-  },
-};
+import { BTN_PRIMARY_SM, BTN_SECONDARY_SM, CARD, FIELD, META, ROW_HOVER, SECTION_TITLE, Segmented, Tag, plural } from "@/components/ui/surfaces";
 
 async function api<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -399,13 +377,11 @@ export function McpServerHub() {
   });
 
   return (
-    <div className="space-y-6 w-full">
-      {/* Stats + actions */}
+    <div className="w-full space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-2 text-xs font-sans text-[var(--text-secondary)] px-3 py-2 rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 font-medium">
-          <Server className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
-          {pad(servers?.length ?? 0)} Servers ·{pad(connectedCount)} Connected ·{pad(totalTools)} TOOLS
-        </div>
+        <p className={META}>
+          {servers?.length ?? 0} servers · {connectedCount} connected · {totalTools} tools
+        </p>
 
         <div className="flex flex-wrap items-center gap-2">
           {servers && servers.length > 0 && (
@@ -414,20 +390,13 @@ export function McpServerHub() {
                 type="button"
                 onClick={handleBatchHealth}
                 disabled={Boolean(batchBusy)}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] text-xs font-sans font-medium hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer disabled:opacity-50"
+                className={BTN_SECONDARY_SM}
                 title="Run live latency probes across all connected servers"
               >
-                {batchBusy === "health" ? <Loader2 className="h-3 w-3 animate-spin" /> : <Activity className="h-3 w-3" />}
-                Probe all
+                {batchBusy === "health" ? "Probing" : "Probe all"}
               </button>
-
-              <button
-                type="button"
-                onClick={handleExport}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] text-xs font-sans font-medium hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer"
-                title="Export all server configs as a portable JSON bundle"
-              >
-                <Download className="h-3 w-3" /> Export
+              <button type="button" onClick={handleExport} className={BTN_SECONDARY_SM} title="Export all server configs as a portable JSON bundle">
+                Export
               </button>
             </>
           )}
@@ -439,19 +408,14 @@ export function McpServerHub() {
               const el = document.getElementById("mcp-catalog-section");
               if (el) el.scrollIntoView({ behavior: "smooth" });
             }}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] text-xs font-sans font-medium hover:border-[var(--accent-primary)]/40 hover:bg-[var(--accent-primary)]/10 transition-colors cursor-pointer shadow-xs"
-            title="Browse 120K+ MCP servers from Glama, mcp.so & Smithery"
+            className={BTN_SECONDARY_SM}
+            title="Browse MCP servers from Glama, mcp.so and Smithery"
           >
-            <Globe className="h-3 w-3 text-[var(--accent-primary)]" /> Browse registry
+            Browse registry
           </button>
 
-          <button
-            type="button"
-            onClick={() => setImportOpen(true)}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)] text-xs font-sans font-medium hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer"
-            title="Import MCP server configurations from JSON"
-          >
-            <Upload className="h-3 w-3" /> Import
+          <button type="button" onClick={() => setImportOpen(true)} className={BTN_SECONDARY_SM} title="Import MCP server configurations from JSON">
+            Import
           </button>
 
           <button
@@ -460,71 +424,46 @@ export function McpServerHub() {
               setConnectPreset(null);
               setConnectOpen(true);
             }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] transition-colors cursor-pointer"
+            className={BTN_PRIMARY_SM}
           >
-            <Plus className="h-3.5 w-3.5" /> Connect MCP Server
+            Connect MCP server
           </button>
         </div>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded border border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)] text-xs font-sans font-medium">
-          <CircleAlert className="h-3.5 w-3.5 shrink-0" /> {error}
-          <button type="button" onClick={() => setError(null)} className="ml-auto cursor-pointer hover:opacity-70">
-            <X className="h-3.5 w-3.5" />
+        <div role="alert" className="flex items-center justify-between gap-3 font-sans text-[13px] text-[var(--state-error)]">
+          <span>{error}</span>
+          <button type="button" onClick={() => setError(null)} className={BTN_SECONDARY_SM}>
+            Dismiss
           </button>
         </div>
       )}
 
       {successMessage && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded border border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)] text-xs font-sans font-medium animate-fadeIn">
-          <Check className="h-3.5 w-3.5 shrink-0" /> {successMessage}
-          <button type="button" onClick={() => setSuccessMessage(null)} className="ml-auto cursor-pointer hover:opacity-70">
-            <X className="h-3.5 w-3.5" />
+        <div role="status" className="flex items-center justify-between gap-3 font-sans text-[13px] text-[var(--state-success)]">
+          <span>{successMessage}</span>
+          <button type="button" onClick={() => setSuccessMessage(null)} className={BTN_SECONDARY_SM}>
+            Dismiss
           </button>
         </div>
       )}
 
-      {/* Presets & Directory Discovery Section */}
-      <div id="mcp-catalog-section" className="space-y-4 rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 p-4">
-        {/* Navigation Tabs */}
-        <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3 gap-2 flex-wrap">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setHubCatalogMode("PRESETS")}
-              className={clsx(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer",
-                hubCatalogMode === "PRESETS"
-                  ? "bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)]"
-                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-sunken)]/60"
-              )}
-            >
-              <Zap className={clsx("h-3.5 w-3.5", hubCatalogMode === "PRESETS" ? "fill-[var(--text-muted)] text-[var(--state-warning)]" : "text-[var(--state-warning)]")} />
-              Presets ({presets.length})
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setHubCatalogMode("DIRECTORY")}
-              className={clsx(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer relative",
-                hubCatalogMode === "DIRECTORY"
-                  ? "bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)]"
-                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-sunken)]/60"
-              )}
-            >
-              <Globe className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
-              Public registry (glama & mcp.so)
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-xs bg-[var(--state-warning)] text-[var(--text-primary)] font-medium">
-                120K+
-              </span>
-            </button>
-          </div>            <div className="text-xs font-sans text-[var(--text-muted)] hidden sm:block">
-            {hubCatalogMode === "PRESETS"
-              ? "Curated zero-config reference presets"
-              : "Live discovery from glama.ai, mcp.so & smithery"}
-          </div>
+      <section id="mcp-catalog-section" className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Segmented
+            label="Catalog"
+            hideLabel
+            value={hubCatalogMode}
+            onChange={setHubCatalogMode}
+            options={[
+              { id: "PRESETS", label: `Presets ${presets.length}` },
+              { id: "DIRECTORY", label: "Public registry (Glama, mcp.so)" },
+            ]}
+          />
+          <span className="hidden font-sans text-[13px] text-[var(--text-muted)] sm:block">
+            {hubCatalogMode === "PRESETS" ? "Curated zero-config presets" : "Live discovery from glama.ai, mcp.so and Smithery"}
+          </span>
         </div>
 
         {hubCatalogMode === "DIRECTORY" ? (
@@ -538,66 +477,46 @@ export function McpServerHub() {
             ]}
           />
         ) : (
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="text-xs font-sans text-[var(--accent-primary)] font-medium">
-                Select a local or cloud template to prefill connection
-              </div>
-
-              {/* Search box for presets */}
-              <div className="relative w-full sm:w-64">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--text-muted)]" />
-                <input
-                  type="text"
-                  value={presetSearch}
-                  onChange={(e) => setPresetSearch(e.target.value)}
-                  placeholder="Search 22+ presets..."
-                  className="w-full pl-8 pr-3 py-1 text-xs font-sans rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)]/40"
-                />
-                {presetSearch && (
-                  <button
-                    type="button"
-                    onClick={() => setPresetSearch("")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                )}
-              </div>
+          <div className="space-y-4">
+            <div className="flex w-full max-w-sm items-center gap-2">
+              <input
+                type="text"
+                aria-label="Search presets"
+                value={presetSearch}
+                onChange={(e) => setPresetSearch(e.target.value)}
+                placeholder={`Search ${presets.length} presets`}
+                className={clsx(FIELD, "h-9 w-full px-3")}
+              />
+              {presetSearch && (
+                <button type="button" onClick={() => setPresetSearch("")} className={BTN_SECONDARY_SM}>
+                  Clear
+                </button>
+              )}
             </div>
 
-            {/* Category Pills */}
-            <div className="flex flex-wrap items-center gap-1.5 pt-1 overflow-x-auto pb-1">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-sm" role="group" aria-label="Preset category">
               {PRESET_CATEGORIES.map((cat) => {
-                const Icon = cat.icon;
-                const count =
-                  cat.id === "ALL"
-                    ? presets.length
-                    : presets.filter((p) => p.category === cat.id).length;
+                const count = cat.id === "ALL" ? presets.length : presets.filter((p) => p.category === cat.id).length;
                 if (count === 0 && cat.id !== "ALL") return null;
                 const active = presetCategory === cat.id;
-
                 return (
                   <button
                     key={cat.id}
                     type="button"
+                    aria-pressed={active}
                     onClick={() => setPresetCategory(cat.id)}
                     className={clsx(
-                      "inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-sans font-medium border transition-colors cursor-pointer",
-                      active
-                        ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
-                        : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40"
+                      "cursor-pointer rounded-[6px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
+                      active ? "text-[var(--text-primary)]" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                     )}
                   >
-                    <Icon className="h-3 w-3" />
-                    {cat.label} <span className="opacity-75 font-normal">({count})</span>
+                    {cat.label} <span className="font-mono text-xs tabular-nums text-[var(--text-muted)]">{count}</span>
                   </button>
                 );
               })}
             </div>
 
-            {/* Presets Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-2.5 pt-1">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
               {filteredPresets.map((preset) => (
                 <PresetCard
                   key={preset.id}
@@ -609,98 +528,71 @@ export function McpServerHub() {
                 />
               ))}
               {filteredPresets.length === 0 && (
-                <div className="col-span-full text-center py-6 text-xs font-sans text-[var(--text-muted)]">
-                  No presets matching &quot;{presetSearch}&quot; in this category.
-                </div>
+                <p className="col-span-full py-6 text-center font-sans text-[13px] text-[var(--text-muted)]">
+                  No presets match &quot;{presetSearch}&quot; in this category.
+                </p>
               )}
             </div>
           </div>
         )}
-      </div>
+      </section>
 
-      {/* Server list */}
-      <div className="space-y-3 pt-2">
-        <div className="text-xs font-sans text-[var(--text-secondary)] font-medium flex items-center justify-between">
-          <span className="flex items-center gap-1.5">
-            <Server className="h-4 w-4 text-[var(--accent-primary)]" />
-            Configured MCP servers
-          </span>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-normal text-[var(--text-muted)] hidden sm:block">
-              Discovered tools are auto-registered in workflow runtimes
-            </span>
-            {servers && servers.length > 0 && (
-              <div className="flex items-center rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-0.5">
-                <button
-                  type="button"
-                  onClick={() => setServerViewMode("list")}
-                  className={clsx(
-                    "p-1.5 rounded text-xs font-sans transition-colors cursor-pointer",
-                    serverViewMode === "list"
-                      ? "bg-[var(--surface-raised)] text-[var(--accent-primary)] "
-                      : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
-                  )}
-                  title="List View"
-                >
-                  <List className="h-3.5 w-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setServerViewMode("grid")}
-                  className={clsx(
-                    "p-1.5 rounded text-xs font-sans transition-colors cursor-pointer",
-                    serverViewMode === "grid"
-                      ? "bg-[var(--surface-raised)] text-[var(--accent-primary)] "
-                      : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
-                  )}
-                  title="Grid View"
-                >
-                  <LayoutGrid className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            )}
+      <section className="space-y-3">
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <div className="space-y-0.5">
+            <h2 className={SECTION_TITLE}>Configured MCP servers</h2>
+            <p className="hidden font-sans text-[13px] text-[var(--text-muted)] sm:block">Discovered tools are registered in workflow runtimes automatically</p>
           </div>
+          {servers && servers.length > 0 && (
+            <Segmented
+              label="View"
+              hideLabel
+              value={serverViewMode}
+              onChange={setServerViewMode}
+              options={[
+                { id: "list", label: "List" },
+                { id: "grid", label: "Grid" },
+              ]}
+            />
+          )}
         </div>
 
         {servers === null ? (
-          <div className="flex items-center gap-2 text-xs font-sans text-[var(--text-muted)] px-3 py-6">
-            <Loader2 className="h-4 w-4 animate-spin text-[var(--accent-primary)]" /> Loading MCP servers…
-          </div>
+          <p className="py-8 font-sans text-sm text-[var(--text-muted)]">Loading MCP servers</p>
         ) : servers.length === 0 ? (
-          <div className="rounded border border-dashed border-[var(--border-strong)] p-8 text-center space-y-2">
-            <Plug className="h-6 w-6 text-[var(--accent-primary)] mx-auto" />
-            <p className="text-sm font-sans font-medium text-[var(--text-primary)]">No MCP servers configured</p>
-            <p className="text-xs font-sans text-[var(--text-muted)]">
-              Select one of the 22+ 1-click presets above or connect a custom SSE endpoint or local stdio command.
+          <div className="space-y-1 py-12 text-center">
+            <p className="font-sans text-sm text-[var(--text-primary)]">No MCP servers configured</p>
+            <p className="font-sans text-[13px] text-[var(--text-muted)]">
+              Pick a preset above, or connect a custom SSE endpoint or local stdio command.
             </p>
           </div>
+        ) : serverViewMode === "grid" ? (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {servers.map((server) => (
+              <ServerGridCard
+                key={server.id}
+                server={server}
+                health={health[server.id]}
+                busy={busy === server.id}
+                expanded={expanded === server.id}
+                hasUpdate={pendingUpdates.some((u) => u.serverId === server.id)}
+                pendingUpdate={pendingUpdates.find((u) => u.serverId === server.id) || undefined}
+                onConnect={() => refresh(server.id)}
+                onDisconnect={() => disconnect(server.id)}
+                onDelete={() => setDeleteTarget(server)}
+                onHealth={() => probe(server.id)}
+                onInspect={() => setExpanded((prev) => (prev === server.id ? null : server.id))}
+                onViewUpdate={() => {
+                  const update = pendingUpdates.find((u) => u.serverId === server.id);
+                  if (update) setDiffViewerUpdate(update);
+                }}
+              />
+            ))}
+          </div>
         ) : (
-          serverViewMode === "grid" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-              {servers.map((server) => (
-                <ServerGridCard
-                  key={server.id}
-                  server={server}
-                  health={health[server.id]}
-                  busy={busy === server.id}
-                  expanded={expanded === server.id}
-                  hasUpdate={pendingUpdates.some((u) => u.serverId === server.id)}
-                  pendingUpdate={pendingUpdates.find((u) => u.serverId === server.id) || undefined}
-                  onConnect={() => refresh(server.id)}
-                  onDisconnect={() => disconnect(server.id)}
-                  onDelete={() => setDeleteTarget(server)}
-                  onHealth={() => probe(server.id)}
-                  onInspect={() => setExpanded((prev) => (prev === server.id ? null : server.id))}
-                  onViewUpdate={() => {
-                    const update = pendingUpdates.find((u) => u.serverId === server.id);
-                    if (update) setDiffViewerUpdate(update);
-                  }}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {servers.map((server) => (<ServerCard
+          <div className={clsx(CARD, "divide-y divide-[var(--border-subtle)] overflow-hidden")}>
+            {servers.map((server) => (
+              <ServerCard
                 key={server.id}
                 server={server}
                 health={health[server.id]}
@@ -719,11 +611,10 @@ export function McpServerHub() {
                   if (update) setDiffViewerUpdate(update);
                 }}
               />
-              ))}
-            </div>
-          )
+            ))}
+          </div>
         )}
-      </div>
+      </section>
 
       {connectOpen && (
         <ConnectModal
@@ -784,6 +675,14 @@ export function McpServerHub() {
   );
 }
 
+function serverTone(status: string): "good" | "bad" | "neutral" {
+  return status === "CONNECTED" ? "good" : status === "ERROR" ? "bad" : "neutral";
+}
+
+function healthTone(status: string): "good" | "warn" | "bad" {
+  return status === "healthy" ? "good" : status === "degraded" ? "warn" : "bad";
+}
+
 function ServerGridCard(props: {
   server: McpServerDTO;
   health?: McpHealth;
@@ -799,127 +698,70 @@ function ServerGridCard(props: {
   onViewUpdate?: () => void;
 }) {
   const { server, health, busy, expanded } = props;
-  const theme = statusTheme[server.status] ?? statusTheme.DISCONNECTED;
   const isConnected = server.status === "CONNECTED";
   const toolCount = server.cachedTools?.length ?? 0;
 
   return (
-    <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 transition-colors flex flex-col justify-between overflow-hidden">
-      <div className="p-4 flex flex-col justify-between space-y-3 flex-1">
-        {/* Top */}
-        <div className="space-y-2">
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-              <ItemIcon
-                name={server.name}
-                size="sm"
-              />
+    <div className={clsx(CARD, "flex flex-col justify-between overflow-hidden")}>
+      <div className="flex flex-1 flex-col justify-between gap-4 p-5">
+        <div className="space-y-3">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex min-w-0 flex-1 items-center gap-3">
+              <ItemIcon name={server.name} size="sm" />
               <div className="min-w-0 flex-1">
-                <h3 className="text-xs font-sans font-medium text-[var(--text-primary)] truncate">
-                  {server.name}
-                </h3>
-                <p className="text-xs font-sans text-[var(--text-muted)] truncate">
-                  {server.transport === "SSE" ? server.endpointUrl : server.command}
-                </p>
+                <h3 className="truncate font-sans text-sm font-medium text-[var(--text-primary)]">{server.name}</h3>
+                <p className="truncate font-mono text-xs text-[var(--text-muted)]">{server.transport === "SSE" ? server.endpointUrl : server.command}</p>
               </div>
             </div>
-            <span className={clsx(
-              "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-sans font-medium border shrink-0",
-              theme.chip
-            )}>
-              <span className={clsx("h-1.5 w-1.5 rounded-full", theme.dot)} />
-              {server.status}
-            </span>
+            <Tag tone={serverTone(server.status)}>{server.status.toLowerCase()}</Tag>
           </div>
 
-          {/* Badges */}
-          <div className="flex flex-wrap gap-1">
-            <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-secondary)]">
-              {server.transport}
-            </span>
-            <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-secondary)]">
-              {toolCount} TOOLS
-            </span>
-            {props.hasUpdate && (
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]">
-                <ArrowUpCircle className="h-2.5 w-2.5" /> Update
-              </span>
-            )}
+          <p className={clsx(META, "flex flex-wrap items-center gap-x-3 gap-y-1")}>
+            <span>{server.transport.toLowerCase()}</span>
+            <span>{plural(toolCount, "tool")}</span>
             {health && (
-              <span className={clsx(
-                "px-1.5 py-0.5 rounded text-xs font-sans font-medium border",
-                health.status === "healthy" ? "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]" :
-                  health.status === "degraded" ? "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]" :
-                    "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]"
-              )}>
-                {health.status} · {health.latencyMs}ms
+              <span className="inline-flex items-center gap-2">
+                <Tag tone={healthTone(health.status)}>{health.status}</Tag>
+                {health.latencyMs}ms
               </span>
             )}
-          </div>
+            {props.hasUpdate && <Tag tone="warn">Update available</Tag>}
+          </p>
         </div>
 
-        {/* Actions */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-[var(--border-subtle)]">
+        <div className="flex flex-wrap items-center gap-2 border-t border-[var(--border-subtle)] pt-4">
           {isConnected ? (
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); props.onDisconnect(); }}
-              disabled={busy}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer disabled:opacity-50"
-            >
-              <Unplug className="h-2.5 w-2.5" /> Disconnect
+            <button type="button" onClick={(e) => { e.stopPropagation(); props.onDisconnect(); }} disabled={busy} className={BTN_SECONDARY_SM}>
+              Disconnect
             </button>
           ) : (
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); props.onConnect(); }}
-              disabled={busy}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] transition-colors cursor-pointer disabled:opacity-50"
-            >
-              <PlugZap className="h-2.5 w-2.5" /> Connect
+            <button type="button" onClick={(e) => { e.stopPropagation(); props.onConnect(); }} disabled={busy} className={BTN_PRIMARY_SM}>
+              Connect
             </button>
           )}
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); props.onHealth(); }}
-            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer"
-          >
-            <Activity className="h-2.5 w-2.5" /> Probe
+          <button type="button" onClick={(e) => { e.stopPropagation(); props.onHealth(); }} className={BTN_SECONDARY_SM}>
+            Probe
           </button>
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); props.onInspect(); }}
-            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer"
-          >
-            <Braces className="h-2.5 w-2.5" /> {expanded ? "COLLAPSE" : "INSPECT"}
+          <button type="button" onClick={(e) => { e.stopPropagation(); props.onInspect(); }} aria-expanded={Boolean(expanded)} className={BTN_SECONDARY_SM}>
+            {expanded ? "Collapse" : "Inspect"}
           </button>
           {props.hasUpdate && props.onViewUpdate && (
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); props.onViewUpdate?.(); }}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-xs font-sans font-medium text-[var(--state-warning)] hover:bg-[var(--state-warning)]/10 transition-colors cursor-pointer"
-            >
-              <ArrowUpCircle className="h-2.5 w-2.5" /> Update
+            <button type="button" onClick={(e) => { e.stopPropagation(); props.onViewUpdate?.(); }} className={BTN_SECONDARY_SM}>
+              View update
             </button>
           )}
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); props.onDelete(); }}
             disabled={busy}
-            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--state-error)]/25 text-xs font-sans font-medium text-[var(--state-error)] hover:border-[var(--state-error)]/40 hover:bg-[var(--state-error)]/10 transition-colors cursor-pointer disabled:opacity-50 ml-auto"
+            className={clsx(BTN_SECONDARY_SM, "ml-auto text-[var(--state-error)]")}
           >
-            <Trash2 className="h-2.5 w-2.5" />
+            Delete
           </button>
         </div>
       </div>
 
-      {expanded && (
-        <ToolInspector
-          server={server}
-          pendingUpdate={props.pendingUpdate}
-          onViewUpdate={props.onViewUpdate}
-        />
-      )}
+      {expanded && <ToolInspector server={server} pendingUpdate={props.pendingUpdate} onViewUpdate={props.onViewUpdate} />}
     </div>
   );
 }
@@ -930,37 +772,20 @@ function PresetCard({ preset, onUse }: { preset: McpPreset; onUse: () => void })
       type="button"
       onClick={onUse}
       title={preset.description}
-      className="text-left rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 p-3 space-y-1.5 hover:border-[var(--accent-primary)]/40 transition-colors cursor-pointer group"
+      className={clsx(
+        CARD,
+        "cursor-pointer space-y-2 p-4 text-left transition-colors hover:border-[var(--border-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+      )}
     >
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0 flex-1">
-          <ItemIcon
-            name={preset.name}
-            category={preset.category}
-            size="xs"
-          />
-          <span className="text-xs font-sans font-medium text-[var(--text-primary)] truncate">{preset.name}</span>
-        </div>
-        {preset.requiresAuthToken ? (
-          <KeyRound className="h-3 w-3 text-[var(--state-warning)] shrink-0" />
-        ) : (
-          <Globe className="h-3 w-3 text-[var(--accent-primary)] shrink-0" />
-        )}
+      <div className="flex items-center gap-2.5">
+        <ItemIcon name={preset.name} category={preset.category} size="xs" />
+        <span className="truncate font-sans text-sm font-medium text-[var(--text-primary)]">{preset.name}</span>
       </div>
-      <div className="flex items-center gap-1.5 text-xs font-sans">
-        <span
-          className={clsx(
-            "px-1.5 py-0.5 rounded border font-medium",
-            preset.transport === "SSE"
-              ? "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]"
-              : "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]"
-          )}
-        >
-          {preset.transport}
-        </span>
-        <span className="text-[var(--text-muted)]">{preset.transport === "SSE" ? "REMOTE" : "LOCAL"}</span>
-      </div>
-      <p className="text-xs font-sans text-[var(--text-muted)] leading-relaxed line-clamp-2">{preset.description}</p>
+      <p className={META}>
+        {preset.transport === "SSE" ? "remote" : "local"} · {preset.transport.toLowerCase()}
+        {preset.requiresAuthToken ? " · needs token" : ""}
+      </p>
+      <p className="line-clamp-2 font-sans text-[13px] leading-5 text-[var(--text-secondary)]">{preset.description}</p>
     </button>
   );
 }
@@ -981,91 +806,47 @@ function ServerCard(props: {
   onViewUpdate: () => void;
 }) {
   const { server, health, busy, expanded } = props;
-  const theme = statusTheme[server.status] ?? statusTheme.DISCONNECTED;
   const isConnected = server.status === "CONNECTED";
   const toolCount = server.cachedTools?.length ?? 0;
 
   return (
-    <div className="group rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 transition-colors overflow-hidden flex flex-col">
-      {/* Header Row */}
-      <div className="p-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3.5">
-        {/* Left: Info, Badges */}
-        <div className="min-w-0 flex-1 space-y-1.5">
-          <div className="flex flex-wrap items-center gap-2">
-            <ItemIcon
-              name={server.name}
-              size="xs"
-            />
-            <h3 className="text-xs font-sans font-medium text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">
-              {server.name}
-            </h3>
-            <span className={clsx(
-              "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-sans font-medium border",
-              theme.chip
-            )}>
-              <span className={clsx("h-1.5 w-1.5 rounded-full", theme.dot)} />
-              {server.status}
+    <div>
+      <div className={clsx(ROW_HOVER, "flex flex-col items-start justify-between gap-3 px-5 py-3 md:flex-row md:items-center")}>
+        <div className="min-w-0 flex-1 space-y-1">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <ItemIcon name={server.name} size="xs" />
+            <h3 className="font-sans text-sm font-medium text-[var(--text-primary)]">{server.name}</h3>
+            <Tag tone={serverTone(server.status)}>{server.status.toLowerCase()}</Tag>
+            <span className={META}>
+              {server.transport.toLowerCase()} · {plural(toolCount, "tool")}
             </span>
-            <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-secondary)]">
-              {server.transport}
-            </span>
-            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-secondary)]">
-              <Braces className="h-2.5 w-2.5" /> {toolCount} TOOLS
-            </span>
-            {props.hasUpdate && (
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium border border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]">
-                <ArrowUpCircle className="h-2.5 w-2.5" /> Update available
-              </span>
-            )}
+            {props.hasUpdate && <Tag tone="warn">Update available</Tag>}
             {health && (
-              <span className={clsx(
-                "px-1.5 py-0.5 rounded text-xs font-sans font-medium border",
-                health.status === "healthy" ? "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]" :
-                  health.status === "degraded" ? "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]" :
-                    "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]"
-              )}>
-                {health.status} · {health.latencyMs}ms
+              <span className="inline-flex items-center gap-2">
+                <Tag tone={healthTone(health.status)}>{health.status}</Tag>
+                <span className={META}>{health.latencyMs}ms</span>
               </span>
             )}
           </div>
 
-          <p className="text-xs font-sans text-[var(--text-muted)] truncate">
-            {server.transport === "SSE" ? server.endpointUrl : server.command}
-          </p>
+          <p className="truncate font-mono text-xs text-[var(--text-muted)]">{server.transport === "SSE" ? server.endpointUrl : server.command}</p>
 
           {server.lastError && server.status === "ERROR" && (
-            <p className="flex items-center gap-1 text-xs font-sans text-[var(--state-error)] font-medium break-all">
-              <CircleAlert className="h-3 w-3 shrink-0" />
-              <span>{server.lastError}</span>
-            </p>
+            <p className="break-all font-sans text-[13px] text-[var(--state-error)]">{server.lastError}</p>
           )}
         </div>
 
-        {/* Right: Actions */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-2">
           {isConnected ? (
-            <ActionButton icon={Unplug} label="Disconnect" onClick={props.onDisconnect} disabled={busy} tone="neutral" />
+            <ActionButton label="Disconnect" onClick={props.onDisconnect} disabled={busy} tone="neutral" />
           ) : (
-            <ActionButton icon={PlugZap} label="Connect" onClick={props.onConnect} disabled={busy} tone="primary" />
+            <ActionButton label="Connect" onClick={props.onConnect} disabled={busy} tone="primary" />
           )}
-          <ActionButton icon={RefreshCw} label="Rediscover" onClick={props.onRediscover} disabled={busy} tone="neutral" />
-          {props.hasUpdate && (
-            <button
-              type="button"
-              onClick={props.onViewUpdate}
-              className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-xs font-sans font-medium text-[var(--state-warning)] hover:bg-[var(--state-warning)]/10 transition-colors cursor-pointer"
-            >
-              <ArrowUpCircle className="h-3 w-3" /> View update
-            </button>
-          )}
-          <ActionButton icon={Trash2} label="Delete" onClick={props.onDelete} disabled={busy} tone="danger" />
-          <button
-            type="button"
-            onClick={props.onToggle}
-            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 transition-colors cursor-pointer"
-          >
-            {expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-            Inspect
+          <ActionButton label="Rediscover" onClick={props.onRediscover} disabled={busy} tone="neutral" />
+          {props.hasUpdate && <ActionButton label="View update" onClick={props.onViewUpdate} tone="neutral" />}
+          <ActionButton label="Delete" onClick={props.onDelete} disabled={busy} tone="danger" />
+          <button type="button" onClick={props.onToggle} aria-expanded={expanded} className={BTN_SECONDARY_SM}>
+            {expanded ? "Collapse" : "Inspect"}
           </button>
         </div>
       </div>
@@ -1076,29 +857,19 @@ function ServerCard(props: {
 }
 
 function ActionButton(props: {
-  icon: React.ComponentType<{ className?: string }>;
   label: string;
   onClick: () => void;
   disabled?: boolean;
   tone: "primary" | "neutral" | "danger";
 }) {
-  const Icon = props.icon;
   return (
     <button
       type="button"
       onClick={props.onClick}
       disabled={props.disabled}
-      className={clsx(
-        "inline-flex items-center gap-1 px-2 py-1 rounded border text-xs font-sans font-medium transition-colors cursor-pointer disabled:opacity-50",
-        props.tone === "primary" &&
-        "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] hover:bg-[var(--cta-primary-hover)]",
-        props.tone === "neutral" &&
-        "border-[var(--border-strong)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)]",
-        props.tone === "danger" &&
-        "border-[var(--state-error)]/25 text-[var(--state-error)] hover:border-[var(--state-error)]/40 hover:bg-[var(--state-error)]/10"
-      )}
+      className={clsx(props.tone === "primary" ? BTN_PRIMARY_SM : BTN_SECONDARY_SM, props.tone === "danger" && "text-[var(--state-error)]")}
     >
-      <Icon className="h-3 w-3" /> {props.label}
+      {props.label}
     </button>
   );
 }
@@ -1172,7 +943,7 @@ function ToolInspector({ server, pendingUpdate, onViewUpdate }: { server: McpSer
                 "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-t text-xs font-sans font-medium border border-b-0 transition-colors cursor-pointer",
                 isActive
                   ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
-                  : "border-transparent text-[var(--text-muted)] hover:text-[var(--accent-primary)] hover:border-[var(--border-strong)]"
+                  : "border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--border-strong)]"
               )}
             >
               <Icon className="h-3 w-3" />
@@ -1234,7 +1005,7 @@ function ToolsTab({ server, activeTestTool, setActiveTestTool, schemaOpen, setSc
           )}
         </div>
       )}
-      <div className="text-xs font-sans text-[var(--accent-primary)] font-medium flex items-center justify-between">
+      <div className="text-xs font-sans text-[var(--text-secondary)] font-medium flex items-center justify-between">
         <span className="flex items-center gap-1.5">
           <Braces className="h-3.5 w-3.5" /> DISCOVERED TOOLS ({tools.length})
         </span>
@@ -1272,7 +1043,7 @@ function ToolsTab({ server, activeTestTool, setActiveTestTool, schemaOpen, setSc
                   <button
                     type="button"
                     onClick={() => setSchemaOpen((prev) => (prev === tool.name ? null : tool.name))}
-                    className="inline-flex items-center gap-1 text-xs font-sans font-medium text-[var(--accent-primary)] hover:text-[var(--accent-primary)] cursor-pointer min-w-0"
+                    className="inline-flex items-center gap-1 text-xs font-sans font-medium text-[var(--text-secondary)] hover:text-[var(--text-secondary)] cursor-pointer min-w-0"
                   >
                     {isSchemaOpen ? <ChevronDown className="h-3.5 w-3.5 shrink-0" /> : <ChevronRight className="h-3.5 w-3.5 shrink-0" />}
                     <span className="truncate">{tool.name}</span>
@@ -1283,7 +1054,7 @@ function ToolsTab({ server, activeTestTool, setActiveTestTool, schemaOpen, setSc
                       "px-1.5 py-0.5 rounded border text-xs font-sans font-medium",
                       tool.isWrite
                         ? "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]"
-                        : "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]"
+                        : "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]"
                     )}
                   >
                     {tool.isWrite ? "WRITE" : "READ"}
@@ -1302,7 +1073,7 @@ function ToolsTab({ server, activeTestTool, setActiveTestTool, schemaOpen, setSc
                       "ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded border text-xs font-sans font-medium transition-colors cursor-pointer",
                       isTesting
                         ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
-                        : "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] hover:bg-[var(--cta-primary-hover)]"
+                        : "border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] hover:bg-[var(--cta-primary-hover)]"
                     )}
                   >
                     <Terminal className="h-3 w-3" />
@@ -1401,11 +1172,11 @@ function ToolTestConsole({
   const propKeys = Object.keys(properties);
 
   return (
-    <div className="rounded border border-[var(--accent-primary)]/40 bg-[var(--accent-primary)]/10 p-3.5 space-y-3 mt-2 animate-fadeInUp">
-      <div className="flex items-center justify-between border-b border-[var(--accent-primary)]/25 pb-2">
+    <div className="rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-3.5 space-y-3 mt-2 animate-fadeInUp">
+      <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-2">
         <div className="flex items-center gap-2">
-          <Terminal className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
-          <span className="text-xs font-sans font-medium text-[var(--accent-primary)]">
+          <Terminal className="h-3.5 w-3.5 text-[var(--text-secondary)]" />
+          <span className="text-xs font-sans font-medium text-[var(--text-secondary)]">
             INTERACTIVE RUNTIME TEST // {tool.name}
           </span>
         </div>
@@ -1413,14 +1184,14 @@ function ToolTestConsole({
           <button
             type="button"
             onClick={handlePrettify}
-            className="text-xs font-sans text-[var(--accent-primary)] hover:underline cursor-pointer"
+            className="text-xs font-sans text-[var(--text-secondary)] hover:underline cursor-pointer"
           >
             Format JSON
           </button>
           <button
             type="button"
             onClick={handleReset}
-            className="text-xs font-sans text-[var(--accent-primary)] hover:underline cursor-pointer"
+            className="text-xs font-sans text-[var(--text-secondary)] hover:underline cursor-pointer"
           >
             Reset sample
           </button>
@@ -1465,14 +1236,14 @@ function ToolTestConsole({
       <div className="space-y-1">
         <label className="text-xs font-sans text-[var(--text-secondary)] font-medium flex items-center justify-between">
           <span>Call arguments (JSON payload)</span>
-          <span className="text-xs text-[var(--accent-primary)]">Passed directly to MCP calltool</span>
+          <span className="text-xs text-[var(--text-secondary)]">Passed directly to MCP calltool</span>
         </label>
         <textarea
           value={args}
           onChange={(e) => setArgs(e.target.value)}
           spellCheck={false}
           rows={Math.min(8, Math.max(3, args.split("\n").length))}
-          className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2.5 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 focus:ring-1 focus:ring-[var(--accent-primary)]/40 outline-none resize-y"
+          className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2.5 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--border-subtle)] focus:ring-1 focus:ring-[var(--accent-primary)]/40 outline-none resize-y"
           placeholder='{"param": "value"}'
         />
       </div>
@@ -1482,7 +1253,7 @@ function ToolTestConsole({
           type="button"
           onClick={() => void run()}
           disabled={running}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer active:scale-95 transition-colors"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer active:scale-95 transition-colors"
         >
           {running ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Zap className="h-3.5 w-3.5 fill-current" />}
           {running ? "Calling MCP tool…" : "Execute MCP call"}
@@ -1588,11 +1359,11 @@ function ResourcesTab({ server }: { server: McpServerDTO }) {
 
   return (
     <div className="space-y-3">
-      <div className="text-xs font-sans text-[var(--accent-primary)] font-medium flex items-center justify-between">
+      <div className="text-xs font-sans text-[var(--text-secondary)] font-medium flex items-center justify-between">
         <span className="flex items-center gap-1.5">
           <Database className="h-3.5 w-3.5" /> MCP resources
         </span>
-        <button type="button" onClick={loadResources} disabled={loading} className="inline-flex items-center gap-1 hover:text-[var(--accent-primary)] cursor-pointer">
+        <button type="button" onClick={loadResources} disabled={loading} className="inline-flex items-center gap-1 hover:text-[var(--text-secondary)] cursor-pointer">
           {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />} REFRESH
         </button>
       </div>
@@ -1603,7 +1374,7 @@ function ResourcesTab({ server }: { server: McpServerDTO }) {
 
       {resources === null || (loading && resources.length === 0) ? (
         <div className="flex items-center gap-2 text-xs font-sans text-[var(--text-muted)] py-4">
-          <Loader2 className="h-4 w-4 animate-spin text-[var(--accent-primary)]" /> Loading resources...
+          <Loader2 className="h-4 w-4 animate-spin text-[var(--text-secondary)]" /> Loading resources...
         </div>
       ) : resources.length === 0 ? (
         <div className="text-center py-6 space-y-1">
@@ -1612,12 +1383,12 @@ function ResourcesTab({ server }: { server: McpServerDTO }) {
         </div>
       ) : (
         <div className="space-y-2">
-          <div className="text-xs font-sans text-[var(--text-muted)]">{resources.length} resource(s) available — click to read content</div>
+          <div className="text-xs font-sans text-[var(--text-muted)]">{resources.length} resource(s) available. click to read content</div>
           {resources.map((res) => (
             <div key={res.uri} className="rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 p-3 space-y-2">
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0">
-                  <div className="text-xs font-sans font-medium text-[var(--accent-primary)] truncate">{res.name ?? res.uri}</div>
+                  <div className="text-xs font-sans font-medium text-[var(--text-secondary)] truncate">{res.name ?? res.uri}</div>
                   <div className="text-xs font-sans text-[var(--text-muted)] truncate" title={res.uri}>{res.uri}</div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -1628,7 +1399,7 @@ function ResourcesTab({ server }: { server: McpServerDTO }) {
                     type="button"
                     onClick={() => readResource(res.uri)}
                     disabled={readingUri === res.uri}
-                    className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
                   >
                     {readingUri === res.uri ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Download className="h-2.5 w-2.5" />} READ
                   </button>
@@ -1637,8 +1408,8 @@ function ResourcesTab({ server }: { server: McpServerDTO }) {
               {res.description && <p className="text-xs font-sans text-[var(--text-secondary)]">{res.description}</p>}
 
               {selectedUri === res.uri && resourceContent && (
-                <div className="mt-2 rounded border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 p-3 animate-fadeInUp">
-                  <div className="text-xs font-sans text-[var(--accent-primary)] font-medium mb-2">Resource content</div>
+                <div className="mt-2 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-3 animate-fadeInUp">
+                  <div className="text-xs font-sans text-[var(--text-secondary)] font-medium mb-2">Resource content</div>
                   <pre className="rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-muted)] p-3 text-xs font-sans overflow-x-auto max-h-72 overflow-y-auto whitespace-pre">
                     {typeof resourceContent === "string"
                       ? resourceContent
@@ -1734,11 +1505,11 @@ function PromptsTab({ server }: { server: McpServerDTO }) {
 
   return (
     <div className="space-y-3">
-      <div className="text-xs font-sans text-[var(--accent-primary)] font-medium flex items-center justify-between">
+      <div className="text-xs font-sans text-[var(--text-secondary)] font-medium flex items-center justify-between">
         <span className="flex items-center gap-1.5">
           <BookOpen className="h-3.5 w-3.5" /> MCP prompt templates
         </span>
-        <button type="button" onClick={loadPrompts} disabled={loading} className="inline-flex items-center gap-1 hover:text-[var(--accent-primary)] cursor-pointer">
+        <button type="button" onClick={loadPrompts} disabled={loading} className="inline-flex items-center gap-1 hover:text-[var(--text-secondary)] cursor-pointer">
           {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />} REFRESH
         </button>
       </div>
@@ -1749,7 +1520,7 @@ function PromptsTab({ server }: { server: McpServerDTO }) {
 
       {prompts === null || (loading && prompts.length === 0) ? (
         <div className="flex items-center gap-2 text-xs font-sans text-[var(--text-muted)] py-4">
-          <Loader2 className="h-4 w-4 animate-spin text-[var(--accent-primary)]" /> Loading prompts...
+          <Loader2 className="h-4 w-4 animate-spin text-[var(--text-secondary)]" /> Loading prompts...
         </div>
       ) : prompts.length === 0 ? (
         <div className="text-center py-6 space-y-1">
@@ -1763,14 +1534,14 @@ function PromptsTab({ server }: { server: McpServerDTO }) {
             <div key={prompt.name} className="rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 p-3 space-y-2">
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0">
-                  <div className="text-xs font-sans font-medium text-[var(--accent-primary)]">{prompt.name}</div>
+                  <div className="text-xs font-sans font-medium text-[var(--text-secondary)]">{prompt.name}</div>
                   {prompt.description && <div className="text-xs font-sans text-[var(--text-muted)] truncate">{prompt.description}</div>}
                 </div>
                 <button
                   type="button"
                   onClick={() => getPrompt(prompt.name)}
                   disabled={fetchingPrompt && selectedPrompt === prompt.name}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
                 >
                   {fetchingPrompt && selectedPrompt === prompt.name ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Sparkles className="h-2.5 w-2.5" />} GET
                 </button>
@@ -1791,7 +1562,7 @@ function PromptsTab({ server }: { server: McpServerDTO }) {
                           value={promptArgs[arg.name] ?? ""}
                           onChange={(e) => setPromptArgs((prev) => ({ ...prev, [arg.name]: e.target.value }))}
                           placeholder={arg.description ?? arg.name}
-                          className="flex-1 rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2 py-0.5 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
+                          className="flex-1 rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2 py-0.5 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--border-subtle)] outline-none"
                         />
                       </div>
                     ))}
@@ -1801,8 +1572,8 @@ function PromptsTab({ server }: { server: McpServerDTO }) {
 
               {/* Prompt result */}
               {selectedPrompt === prompt.name && promptResult && (
-                <div className="mt-2 rounded border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 p-3 animate-fadeInUp">
-                  <div className="text-xs font-sans text-[var(--accent-primary)] font-medium mb-2">Prompt result</div>
+                <div className="mt-2 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-3 animate-fadeInUp">
+                  <div className="text-xs font-sans text-[var(--text-secondary)] font-medium mb-2">Prompt result</div>
                   {promptResult.messages ? (
                     <div className="space-y-2">
                       {promptResult.messages.map((msg, i: number) => (
@@ -1902,7 +1673,7 @@ function SamplingTab({ server }: { server: McpServerDTO }) {
 
   return (
     <div className="space-y-3">
-      <div className="text-xs font-sans text-[var(--accent-primary)] font-medium flex items-center gap-1.5">
+      <div className="text-xs font-sans text-[var(--text-secondary)] font-medium flex items-center gap-1.5">
         <Brain className="h-3.5 w-3.5" /> MCP SAMPLING (sampling/createMessage)
       </div>
 
@@ -1919,7 +1690,7 @@ function SamplingTab({ server }: { server: McpServerDTO }) {
             onChange={(e) => setMessages(e.target.value)}
             spellCheck={false}
             rows={5}
-            className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2.5 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 focus:ring-1 focus:ring-[var(--accent-primary)]/40 outline-none resize-y"
+            className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2.5 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--border-subtle)] focus:ring-1 focus:ring-[var(--accent-primary)]/40 outline-none resize-y"
           />
         </div>
 
@@ -1931,7 +1702,7 @@ function SamplingTab({ server }: { server: McpServerDTO }) {
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
               placeholder="Optional system prompt"
-              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2 py-1 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
+              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2 py-1 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--border-subtle)] outline-none"
             />
           </div>
           <div className="space-y-1">
@@ -1940,7 +1711,7 @@ function SamplingTab({ server }: { server: McpServerDTO }) {
               type="number"
               value={maxTokens}
               onChange={(e) => setMaxTokens(e.target.value)}
-              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2 py-1 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
+              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2 py-1 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--border-subtle)] outline-none"
             />
           </div>
           <div className="space-y-1">
@@ -1952,7 +1723,7 @@ function SamplingTab({ server }: { server: McpServerDTO }) {
               max="2"
               value={temperature}
               onChange={(e) => setTemperature(e.target.value)}
-              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2 py-1 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
+              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2 py-1 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--border-subtle)] outline-none"
             />
           </div>
         </div>
@@ -1961,7 +1732,7 @@ function SamplingTab({ server }: { server: McpServerDTO }) {
           type="button"
           onClick={handleSample}
           disabled={running}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer active:scale-95 transition-colors"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer active:scale-95 transition-colors"
         >
           {running ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Brain className="h-3.5 w-3.5" />}
           {running ? "Sampling…" : "Send sampling request"}
@@ -2057,15 +1828,15 @@ function ProgressTab({ server }: { server: McpServerDTO }) {
   }
 
   const typeColors: Record<string, string> = {
-    started: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-    progress: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
+    started: "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
+    progress: "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
     completed: "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]",
     failed: "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]",
   };
 
   return (
     <div className="space-y-3">
-      <div className="text-xs font-sans text-[var(--accent-primary)] font-medium flex items-center justify-between">
+      <div className="text-xs font-sans text-[var(--text-secondary)] font-medium flex items-center justify-between">
         <span className="flex items-center gap-1.5">
           <Activity className="h-3.5 w-3.5" /> Progress notifications (SSE)
         </span>
@@ -2084,7 +1855,7 @@ function ProgressTab({ server }: { server: McpServerDTO }) {
               <X className="h-2.5 w-2.5" /> STOP
             </button>
           ) : (
-            <button type="button" onClick={startListening} className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium cursor-pointer hover:bg-[var(--cta-primary-hover)]">
+            <button type="button" onClick={startListening} className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium cursor-pointer hover:bg-[var(--cta-primary-hover)]">
               <Activity className="h-2.5 w-2.5" /> Start listening
             </button>
           )}
@@ -2248,7 +2019,7 @@ function ConnectModal({
       >
         <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-4 py-3">
           <h2 className="text-sm font-medium text-[var(--text-primary)] flex items-center gap-2">
-            <Plug className="h-4 w-4 text-[var(--accent-primary)]" /> Connect MCP Server
+            <Plug className="h-4 w-4 text-[var(--text-secondary)]" /> Connect MCP Server
           </h2>
           <button type="button" onClick={onClose} className="text-[var(--text-muted)] hover:text-[var(--state-error)] cursor-pointer">
             <X className="h-4 w-4" />
@@ -2258,7 +2029,7 @@ function ConnectModal({
         <div className="p-4 space-y-4">
           {/* Presets */}
           <div className="space-y-1.5">
-            <div className="text-xs font-sans text-[var(--accent-primary)] font-medium flex items-center gap-1">
+            <div className="text-xs font-sans text-[var(--text-secondary)] font-medium flex items-center gap-1">
               <Zap className="h-3 w-3" /> 1-Click presets
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
@@ -2267,7 +2038,7 @@ function ConnectModal({
                   key={preset.id}
                   type="button"
                   onClick={() => applyPreset(preset)}
-                  className="text-left px-2 py-1.5 rounded border border-[var(--border-subtle)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 transition-colors cursor-pointer truncate"
+                  className="text-left px-2 py-1.5 rounded border border-[var(--border-subtle)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--border-subtle)] transition-colors cursor-pointer truncate"
                 >
                   {preset.name}
                 </button>
@@ -2281,7 +2052,7 @@ function ConnectModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. GitHub MCP"
-              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
+              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--border-subtle)] outline-none"
             />
           </div>
 
@@ -2297,7 +2068,7 @@ function ConnectModal({
                     "px-3 py-2 rounded border text-xs font-sans font-medium transition-colors cursor-pointer",
                     transport === t
                       ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)]"
-                      : "border-[var(--border-strong)] text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40"
+                      : "border-[var(--border-strong)] text-[var(--text-secondary)] hover:border-[var(--border-subtle)]"
                   )}
                 >
                   {t === "SSE" ? "SSE / HTTP" : "STDIO"}
@@ -2306,8 +2077,8 @@ function ConnectModal({
             </div>
             <p className="text-xs font-sans text-[var(--text-muted)]">
               {transport === "SSE"
-                ? "Remote server — Streamable HTTP with legacy SSE fallback."
-                : "Local process — e.g. npx -y @modelcontextprotocol/server-postgres <DATABASE_URL>"}
+                ? "Remote server. Streamable HTTP with legacy SSE fallback."
+                : "Local process. e.g. npx -y @modelcontextprotocol/server-postgres <DATABASE_URL>"}
             </p>
           </div>
 
@@ -2318,7 +2089,7 @@ function ConnectModal({
                 value={endpointUrl}
                 onChange={(e) => setEndpointUrl(e.target.value)}
                 placeholder="https://mcp.example.com/sse"
-                className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
+                className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--border-subtle)] outline-none"
               />
             </div>
           ) : (
@@ -2328,7 +2099,7 @@ function ConnectModal({
                 value={command}
                 onChange={(e) => setCommand(e.target.value)}
                 placeholder="npx -y @modelcontextprotocol/server-filesystem ./data"
-                className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
+                className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--border-subtle)] outline-none"
               />
               {command.includes("<") && command.includes(">") && (
                 <p className="text-xs font-sans text-[var(--state-warning)] flex items-center gap-1">
@@ -2359,7 +2130,7 @@ function ConnectModal({
                     ? "BSA_xxxxxxxxxxxxxxxxxxxx (Brave Search API Key)"
                     : "Bearer token sent as an Authorization header"
               }
-              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--accent-primary)]/40 outline-none"
+              className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] p-2 text-xs font-sans text-[var(--text-primary)] focus:border-[var(--border-subtle)] outline-none"
             />
           </div>
 
@@ -2373,7 +2144,7 @@ function ConnectModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-2 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 cursor-pointer"
+              className="px-3 py-2 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--border-subtle)] cursor-pointer"
             >
               Cancel
             </button>
@@ -2381,7 +2152,7 @@ function ConnectModal({
               type="button"
               onClick={() => void submit()}
               disabled={submitting || !name.trim() || (transport === "SSE" ? !endpointUrl.trim() : !command.trim())}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer"
             >
               {submitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <PlugZap className="h-3.5 w-3.5" />}
               {submitting ? "Connecting…" : "Connect & Discover"}
@@ -2452,14 +2223,14 @@ function DeleteMcpServerModal({
           <div className="flex items-center justify-between">
             <span className="text-xs text-[var(--text-muted)] font-medium">Server name</span>
             <span className="font-medium text-[var(--text-primary)] flex items-center gap-1.5">
-              <Server className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
+              <Server className="h-3.5 w-3.5 text-[var(--text-secondary)]" />
               {server.name}
             </span>
           </div>
 
           <div className="flex items-center justify-between">
             <span className="text-xs text-[var(--text-muted)] font-medium">Transport</span>
-            <span className="px-1.5 py-0.5 rounded text-xs font-medium border border-[var(--border-strong)] bg-[var(--surface-raised)] text-[var(--accent-primary)]">
+            <span className="px-1.5 py-0.5 rounded text-xs font-medium border border-[var(--border-strong)] bg-[var(--surface-raised)] text-[var(--text-secondary)]">
               {server.transport} ({server.transport === "SSE" ? "REMOTE" : "LOCAL"})
             </span>
           </div>
@@ -2468,7 +2239,7 @@ function DeleteMcpServerModal({
             <span className="text-xs text-[var(--text-muted)] font-medium">
               {server.transport === "SSE" ? "Endpoint" : "Command"}
             </span>
-            <span className="font-sans text-xs text-[var(--accent-primary)] max-w-[260px] truncate">
+            <span className="font-sans text-xs text-[var(--text-secondary)] max-w-[260px] truncate">
               {server.transport === "SSE" ? server.endpointUrl : server.command}
             </span>
           </div>
@@ -2488,7 +2259,7 @@ function DeleteMcpServerModal({
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="px-4 py-2 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:bg-[var(--surface-sunken)] cursor-pointer disabled:opacity-50 transition-colors"
+            className="px-4 py-2 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--border-subtle)] hover:bg-[var(--surface-sunken)] cursor-pointer disabled:opacity-50 transition-colors"
           >
             Cancel
           </button>
@@ -2578,7 +2349,7 @@ function ImportMcpModal({
       >
         <div className="flex items-start justify-between border-b border-[var(--border-subtle)] pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded border border-[var(--accent-primary)]/40 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]">
+            <div className="p-2 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]">
               <Upload className="h-4 w-4" />
             </div>
             <div>
@@ -2611,7 +2382,7 @@ function ImportMcpModal({
             <label className="text-xs text-[var(--text-muted)] font-medium">
               Paste JSON or upload .JSON bundle
             </label>
-            <label className="inline-flex items-center gap-1 text-xs text-[var(--accent-primary)] hover:underline cursor-pointer">
+            <label className="inline-flex items-center gap-1 text-xs text-[var(--text-secondary)] hover:underline cursor-pointer">
               <Upload className="h-3 w-3" />
               <span>Choose file</span>
               <input type="file" accept=".json,application/json" onChange={handleFileUpload} className="hidden" />
@@ -2626,7 +2397,7 @@ function ImportMcpModal({
             }}
             placeholder={`{\n  "version": "1.0",\n  "servers": [\n    {\n      "name": "Playwright MCP",\n      "transport": "STDIO",\n      "command": "npx -y @playwright/mcp@latest"\n    }\n  ]\n}`}
             rows={8}
-            className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)]/50 p-3 text-xs font-sans text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)]/40"
+            className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)]/50 p-3 text-xs font-sans text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--border-subtle)]"
           />
         </div>
 
@@ -2635,7 +2406,7 @@ function ImportMcpModal({
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="px-4 py-2 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:bg-[var(--surface-sunken)] cursor-pointer disabled:opacity-50 transition-colors"
+            className="px-4 py-2 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--border-subtle)] hover:bg-[var(--surface-sunken)] cursor-pointer disabled:opacity-50 transition-colors"
           >
             Cancel
           </button>
@@ -2643,7 +2414,7 @@ function ImportMcpModal({
             type="button"
             onClick={() => void handleImport()}
             disabled={isPending || !jsonText.trim()}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer transition-colors active:scale-95"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-sans font-medium hover:bg-[var(--cta-primary-hover)] disabled:opacity-50 cursor-pointer transition-colors active:scale-95"
           >
             {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
             {isPending ? "Importing…" : "Import servers"}

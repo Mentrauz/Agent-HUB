@@ -24,20 +24,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "google_a2a_cross_swarm",
     name: "Google A2A Cross-Company Agent Swarm",
-    badge: "GOOGLE A2A PROTOCOL",
-    category: "ORCHESTRATION",
+    badge: "Google A2A protocol",
+    category: "Orchestration",
     description:
       "Visual orchestration of Google A2A Protocol: A local supervisor analyzes task requirements, delegates deep research to a remote Gemini A2A agent, executes an A2A debate channel, and synthesizes output.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "supervisor",
           type: "supervisor",
           position: { x: NODE_X, y: GRID_Y - 50 },
           data: {
-            label: "LOCAL SUPERVISOR",
+            label: "Local supervisor",
             prompt: "You are the local orchestrator. Analyze the incoming user task, structure delegation parameters, and route execution to the remote A2A Gemini research agent.",
           },
         },
@@ -58,7 +58,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "a2a_channel",
           position: { x: NODE_X * 3, y: GRID_Y - 50 },
           data: {
-            label: "A2A SWARM DEBATE",
+            label: "A2A swarm debate",
             a2aChannelMode: "debate",
             a2aChannelTopic: "Evaluate research findings and synthesize strategic recommendations",
             a2aMaxTurns: 2,
@@ -73,11 +73,11 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 4, y: GRID_Y - 50 },
           data: {
-            label: "EXECUTIVE PUBLISHER",
+            label: "Executive publisher",
             prompt: "Synthesize the cross-agent A2A dialogue and research briefs into an executive final presentation with actionable deliverables.",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 5, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 5, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "supervisor", label: "" },
@@ -91,20 +91,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "supervisor_research_code_review",
     name: "Supervisor → Researcher → Coder → Critic",
-    badge: "FULL MULTI-AGENT LOOP",
-    category: "ORCHESTRATION",
+    badge: "Full multi-agent loop",
+    category: "Orchestration",
     description:
       "A supervisor delegates to a research agent, hands findings to a coding agent, then a critic verifies the output. Critic failures route back to the coder for another pass.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "supervisor",
           type: "supervisor",
           position: { x: NODE_X, y: GRID_Y - 150 },
           data: {
-            label: "SUPERVISOR",
+            label: "Supervisor",
             prompt:
               "You are the supervisor of a software engineering crew. Analyze the incoming task and decide which specialist should act first: the researcher (to gather context) or the coder (to write code directly). Route by returning the matching edge label.",
           },
@@ -114,7 +114,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 2, y: GRID_Y - 230 },
           data: {
-            label: "RESEARCHER",
+            label: "Researcher",
             prompt:
               "You are a research specialist. Investigate the task context, identify requirements, constraints, and risks. Produce a structured research brief with: 1) requirements 2) constraints 3) recommended approach. Be thorough and specific.",
           },
@@ -124,7 +124,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 3, y: GRID_Y - 150 },
           data: {
-            label: "CODER",
+            label: "Coder",
             prompt:
               "You are a senior software engineer. Using the research brief and task context, write complete, production-quality code. Include explanations of key design decisions and note any assumptions. Output your code in a clearly delimited code block.",
           },
@@ -134,7 +134,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 4, y: GRID_Y - 230 },
           data: {
-            label: "CRITIC / VERIFIER",
+            label: "Critic / verifier",
             prompt:
               "You are a rigorous code reviewer. Verify the implementation for correctness, edge cases, security issues, and completeness against the requirements. Respond with a verdict: either APPROVED (ready) or CHANGES_REQUIRED (list concrete fixes).",
           },
@@ -144,12 +144,12 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "router",
           position: { x: NODE_X * 5, y: GRID_Y - 150 },
           data: {
-            label: "VERDICT",
+            label: "Verdict",
             routerMode: "deterministic",
             condition: 'results.critic contains "APPROVED"',
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 6 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 6 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "supervisor" },
@@ -165,26 +165,26 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "map_reduce_invoice_screening",
     name: "Map-Reduce Invoice Screening",
-    badge: "PARALLEL FAN-OUT · LOOP",
-    category: "COMPLIANCE",
+    badge: "Parallel fan-out · loop",
+    category: "Compliance",
     description:
       "Fans every invoice line item out to a parallel extraction worker, then reduces the results through a deterministic compliance router with a retry loop for flagged lines.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "parallel",
           type: "parallel",
           position: { x: NODE_X, y: GRID_Y },
-          data: { label: "MAP · LINE ITEMS", parallelMode: "map", mapField: "input.lineItems" },
+          data: { label: "Map · line items", parallelMode: "map", mapField: "input.lineItems" },
         },
         {
           id: "extractor",
           type: "tool",
           position: { x: NODE_X * 2, y: GRID_Y - 150 },
           data: {
-            label: "AI EXTRACTOR",
+            label: "AI extractor",
             toolName: "ai_extraction",
             action: "extract",
             inputTemplate: { text: "{{ item }}" },
@@ -195,7 +195,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "tool",
           position: { x: NODE_X * 3, y: GRID_Y - 150 },
           data: {
-            label: "RISK CLASSIFIER",
+            label: "Risk classifier",
             toolName: "ai_classification",
             action: "classify_risk",
             inputTemplate: { text: "{{ item }}" },
@@ -206,7 +206,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "router",
           position: { x: NODE_X * 4, y: GRID_Y - 150 },
           data: {
-            label: "RISK ROUTER",
+            label: "Risk router",
             routerMode: "deterministic",
             condition: 'results.classifier.riskLevel == "URGENT"',
           },
@@ -215,20 +215,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           id: "loop",
           type: "loop",
           position: { x: NODE_X * 5, y: GRID_Y - 150 },
-          data: { label: "RETRY LOOP", maxIterations: 3 },
+          data: { label: "Retry loop", maxIterations: 3 },
         },
         {
           id: "recheck",
           type: "tool",
           position: { x: NODE_X * 5, y: GRID_Y - 300 },
           data: {
-            label: "RECHECK",
+            label: "Recheck",
             toolName: "deterministic_condition",
             action: "check_threshold",
             inputTemplate: { amount: "{{ item.amount }}", threshold: 1000 },
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 6 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 6 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "parallel" },
@@ -245,20 +245,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "hitl_disbursement",
     name: "HITL-Gated Disbursement",
-    badge: "APPROVAL GATE · CONDITIONAL",
-    category: "FINANCE",
+    badge: "Approval gate · conditional",
+    category: "Finance",
     description:
       "Extracts payment details, routes small amounts straight through and large amounts through a human approval gate before the disbursement action fires.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "extractor",
           type: "tool",
           position: { x: NODE_X, y: GRID_Y },
           data: {
-            label: "PAYMENT EXTRACTOR",
+            label: "Payment extractor",
             toolName: "ai_extraction",
             action: "extract_payment",
             inputTemplate: { text: "{{ input.requestText }}" },
@@ -269,7 +269,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "router",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "AMOUNT ROUTER",
+            label: "Amount router",
             routerMode: "deterministic",
             condition: "input.amount > 500",
           },
@@ -279,7 +279,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "approval",
           position: { x: NODE_X * 3, y: GRID_Y - 150 },
           data: {
-            label: "MANAGER APPROVAL",
+            label: "Manager approval",
             approvalReason: "Disbursement exceeds the $500 auto-approval threshold and requires manager sign-off.",
           },
         },
@@ -288,13 +288,13 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "tool",
           position: { x: NODE_X * 4, y: GRID_Y },
           data: {
-            label: "DISBURSE",
+            label: "Disburse",
             toolName: "mock_task_creator",
             action: "disburse_funds",
             inputTemplate: { amount: "{{ input.amount }}", recipient: "{{ input.recipient }}" },
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "extractor" },
@@ -314,20 +314,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "trending_tech_hackathon_radar",
     name: "Trending Tech & Hackathon Radar",
-    badge: "ZERO-KEY · HACKER NEWS & GITHUB",
-    category: "ZERO-KEY PUBLIC APIS",
+    badge: "Zero-key · hacker news & github",
+    category: "Zero-key public apis",
     description:
       "Fetches live top stories from Hacker News and trending GitHub repositories, runs an AI Tech Scout to synthesize breakthroughs, and delivers an executive tech radar briefing via Webhook.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "fetch_hn",
           type: "http",
           position: { x: NODE_X, y: GRID_Y - 120 },
           data: {
-            label: "HACKER NEWS API",
+            label: "Hacker news API",
             description: "Fetches top hacker news stories",
             httpMethod: "GET",
             httpUrl: "https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty",
@@ -339,7 +339,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "http",
           position: { x: NODE_X, y: GRID_Y + 120 },
           data: {
-            label: "GITHUB SEARCH API",
+            label: "Github search API",
             description: "Fetches trending repositories",
             httpMethod: "GET",
             httpUrl: "https://api.github.com/search/repositories?q=stars:>1000+pushed:>2026-01-01&sort=updated&order=desc&per_page=8",
@@ -351,7 +351,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "aggregate",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "COMBINE FEEDS",
+            label: "Combine feeds",
             aggregateMode: "merge",
           },
         },
@@ -360,7 +360,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 3, y: GRID_Y },
           data: {
-            label: "AI TECH SCOUT",
+            label: "AI tech scout",
             prompt:
               "You are a Principal Technology Scout. Analyze the live Hacker News discussions and trending GitHub repositories in the context. Synthesize an Executive Tech Radar Briefing with: 1) Breakthrough Emerging Tech Themes, 2) Notable Open Source Repositories with architecture highlights, 3) Hackathon/Project Inspiration with suggested tech stacks.",
           },
@@ -370,12 +370,12 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "notification_dispatcher",
           position: { x: NODE_X * 4, y: GRID_Y },
           data: {
-            label: "DISCORD/SLACK DISPATCH",
+            label: "Discord/slack dispatch",
             dispatchDestination: "discord",
             dispatchMessage: "**Daily Tech Radar & Hackathon Radar Briefing:**\n\n{{ results.tech_scout_agent }}",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "fetch_hn" },
@@ -392,20 +392,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "web_page_intel_summarizer",
     name: "Web Page Intel & Summarizer",
-    badge: "ZERO-KEY · JINA READER",
-    category: "ZERO-KEY PUBLIC APIS",
+    badge: "Zero-key · jina reader",
+    category: "Zero-key public apis",
     description:
       "Converts any live website URL into clean LLM-ready markdown using Jina Reader (r.jina.ai) without browser scrapers, extracts core intelligence, and structures an executive dossier.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "jina_reader",
           type: "web_reader",
           position: { x: NODE_X, y: GRID_Y },
           data: {
-            label: "JINA WEB READER",
+            label: "Jina web reader",
             readerUrl: "{{ input.targetUrl }}",
             readerFormat: "markdown",
           },
@@ -415,7 +415,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "data_mapper",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "MAP ARTICLE DATA",
+            label: "Map article data",
             mapperSchema: {
               targetUrl: "results.jina_reader.url",
               markdownLength: "results.jina_reader.length",
@@ -428,7 +428,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 3, y: GRID_Y },
           data: {
-            label: "INTEL ANALYST AGENT",
+            label: "Intel analyst agent",
             prompt:
               "You are an Elite Intelligence Analyst. Analyze the markdown webpage content provided. Output a high-impact Structured Intel Memo: 1) Executive Summary (3 sentences), 2) Key Metrics & Data Points, 3) Strategic Implications / SWOT, 4) Notable Quotes & Citations.",
           },
@@ -438,11 +438,11 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "output",
           position: { x: NODE_X * 4, y: GRID_Y },
           data: {
-            label: "STRUCTURED DOSSIER",
+            label: "Structured dossier",
             outputTemplate: "### Intelligence Dossier for {{ results.jina_reader.url }}\n\n{{ results.intel_agent }}",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "jina_reader" },
@@ -457,20 +457,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "arxiv_ai_research_paper_scout",
     name: "ArXiv AI Research Paper Scout",
-    badge: "ZERO-KEY · ARXIV PUBLIC API",
-    category: "ZERO-KEY PUBLIC APIS",
+    badge: "Zero-key · arxiv public API",
+    category: "Zero-key public apis",
     description:
       "Queries recent research papers in cs.AI / cs.CL from ArXiv's public API, runs a Researcher Agent to evaluate model architecture innovations, and produces a structured research memo.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "arxiv_api",
           type: "rss_feed",
           position: { x: NODE_X, y: GRID_Y },
           data: {
-            label: "ARXIV PUBLIC FEED",
+            label: "Arxiv public feed",
             rssUrl: "https://export.arxiv.org/rss/cs.AI",
             rssMaxItems: 10,
           },
@@ -480,7 +480,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "AI RESEARCH SCIENTIST",
+            label: "AI research scientist",
             prompt:
               "You are an AI Research Scientist. Review the newly published ArXiv papers in cs.AI. Filter for breakthroughs in: 1) LLM reasoning and agent architectures, 2) Test-time compute / RLHF, 3) Multimodal efficiency. For each standout paper, provide: Title, Core Innovation, Methodology, and Practical Engineering Takeaway.",
           },
@@ -490,11 +490,11 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "output",
           position: { x: NODE_X * 3, y: GRID_Y },
           data: {
-            label: "RESEARCH MEMO",
+            label: "Research memo",
             outputTemplate: "## ArXiv Breakthrough Radar\n\n{{ results.researcher_agent }}",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "arxiv_api" },
@@ -508,20 +508,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "extreme_weather_disaster_alert",
     name: "Extreme Weather & Disaster Alert",
-    badge: "ZERO-KEY · OPEN-METEO & USGS",
-    category: "ZERO-KEY PUBLIC APIS",
+    badge: "Zero-key · open-meteo & usgs",
+    category: "Zero-key public apis",
     description:
       "Monitors live seismic data from USGS and weather forecasts from Open-Meteo without authentication; triggers emergency response advisory when thresholds are exceeded.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "weather_api",
           type: "http",
           position: { x: NODE_X, y: GRID_Y - 120 },
           data: {
-            label: "OPEN-METEO API",
+            label: "Open-meteo API",
             httpMethod: "GET",
             httpUrl: "https://api.open-meteo.com/v1/forecast?latitude=37.77&longitude=-122.42&current_weather=true&hourly=temperature_2m,wind_speed_10m",
             httpResponseType: "json",
@@ -532,7 +532,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "http",
           position: { x: NODE_X, y: GRID_Y + 120 },
           data: {
-            label: "USGS SEISMIC API",
+            label: "Usgs seismic API",
             httpMethod: "GET",
             httpUrl: "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&minmagnitude=4.5&limit=5",
             httpResponseType: "json",
@@ -543,7 +543,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "router",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "RISK ROUTER",
+            label: "Risk router",
             routerMode: "deterministic",
             condition: 'results.weather_api.current_weather.windspeed > 20 || (results.usgs_api.features && results.usgs_api.features.length > 0)',
           },
@@ -553,7 +553,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 3, y: GRID_Y - 100 },
           data: {
-            label: "EMERGENCY ADVISORY AGENT",
+            label: "Emergency advisory agent",
             prompt:
               "You are an Emergency Response Coordinator. Given the live weather conditions and seismic data, formulate a clear, actionable Civil Safety Bulletin with hazard levels, precautionary measures, and emergency hotline contact protocol.",
           },
@@ -563,12 +563,12 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "notification_dispatcher",
           position: { x: NODE_X * 4, y: GRID_Y - 100 },
           data: {
-            label: "EMERGENCY BROADCAST",
+            label: "Emergency broadcast",
             dispatchDestination: "discord",
             dispatchMessage: "**CIVIL SAFETY ADVISORY ALERT:**\n\n{{ results.disaster_agent }}",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "weather_api" },
@@ -586,20 +586,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "subreddit_sentiment_bug_sentinel",
     name: "Subreddit Sentiment & Bug Sentinel",
-    badge: "ZERO-KEY · REDDIT PUBLIC JSON",
-    category: "ZERO-KEY PUBLIC APIS",
+    badge: "Zero-key · reddit public JSON",
+    category: "Zero-key public apis",
     description:
       "Ingests open community posts from Reddit's public JSON feeds, runs sentiment and bug-detection agents, and flags critical issues to engineering queues.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "reddit_feed",
           type: "http",
           position: { x: NODE_X, y: GRID_Y },
           data: {
-            label: "REDDIT PUBLIC JSON",
+            label: "Reddit public JSON",
             httpMethod: "GET",
             httpUrl: "https://www.reddit.com/r/reactjs/hot.json?limit=15",
             httpResponseType: "json",
@@ -610,7 +610,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "data_mapper",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "EXTRACT POSTS",
+            label: "Extract posts",
             mapperSchema: {
               posts: "results.reddit_feed.data.children",
             },
@@ -621,7 +621,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 3, y: GRID_Y },
           data: {
-            label: "BUG & SENTIMENT AGENT",
+            label: "Bug & sentiment agent",
             prompt:
               "You are a Product Quality Sentinel. Analyze the community posts from the subreddit feed. 1) Identify recurring user pain points and reported bugs, 2) Compute an overall Community Sentiment Score (-100 to +100), 3) Extract Top 3 Feature Requests.",
           },
@@ -631,11 +631,11 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "output",
           position: { x: NODE_X * 4, y: GRID_Y },
           data: {
-            label: "COMMUNITY REPORT",
+            label: "Community report",
             outputTemplate: "## Community Sentinel Report\n\n{{ results.sentinel_agent }}",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "reddit_feed" },
@@ -650,20 +650,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "wikipedia_fact_checker_enricher",
     name: "Wikipedia Fact-Checker & Enricher",
-    badge: "ZERO-KEY · WIKIMEDIA REST API",
-    category: "ZERO-KEY PUBLIC APIS",
+    badge: "Zero-key · wikimedia REST API",
+    category: "Zero-key public apis",
     description:
       "Performs autonomous grounding against Wikimedia REST endpoints to verify user statements, flag hallucinations, and generate citation-backed explanations.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "wiki_api",
           type: "http",
           position: { x: NODE_X, y: GRID_Y },
           data: {
-            label: "WIKIMEDIA REST API",
+            label: "Wikimedia REST API",
             httpMethod: "GET",
             httpUrl: "https://en.wikipedia.org/api/rest_v1/page/summary/Artificial_intelligence",
             httpResponseType: "json",
@@ -674,7 +674,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "GROUNDING & FACT CHECKER",
+            label: "Grounding & fact checker",
             prompt:
               "You are a Rigorous Fact-Checking Agent. Ground the context claims using the authoritative Wikimedia summary text. Verify dates, definitions, key people, and historical milestones. Output: 1) Fact-Check Verdict (VERIFIED / DISPUTED / UNCONFIRMED), 2) Corrected Claims with citations, 3) In-Depth Context Expansion.",
           },
@@ -684,11 +684,11 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "output",
           position: { x: NODE_X * 3, y: GRID_Y },
           data: {
-            label: "VERIFICATION REPORT",
+            label: "Verification report",
             outputTemplate: "## Wikipedia Fact-Check & Knowledge Enrichment\n\n{{ results.fact_checker_agent }}",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "wiki_api" },
@@ -706,20 +706,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "zero_day_cve_watcher",
     name: "Zero-Day & CVE Vulnerability Watcher",
-    badge: "DEVSEC · CIRCL CVE & HITL GATE",
-    category: "SECURITY & DEVOPS",
+    badge: "Devsec · circl cve & HITL gate",
+    category: "Security & devops",
     description:
       "Monitors newly published CVE vulnerabilities via CIRCL/OSV.dev, filters high severity (CVSS > 7.0), triggers a SecOps Impact Agent, and requires human approval before dispatching incident alerts.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "fetch_cve",
           type: "http",
           position: { x: NODE_X, y: GRID_Y },
           data: {
-            label: "CIRCL CVE API",
+            label: "Circl cve API",
             httpMethod: "GET",
             httpUrl: "https://cve.circl.lu/api/last/10",
             httpResponseType: "json",
@@ -730,7 +730,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "router",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "CVSS SEVERITY FILTER",
+            label: "Cvss severity filter",
             routerMode: "deterministic",
             condition: 'results.fetch_cve.length > 0',
           },
@@ -740,7 +740,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 3, y: GRID_Y - 120 },
           data: {
-            label: "SECOPS IMPACT AGENT",
+            label: "Secops impact agent",
             prompt:
               "You are a Lead Security Operations (SecOps) Engineer. Analyze the incoming CVE vulnerability feed. Assess the impact on web applications, Node.js/Python microservices, and container infrastructure. Produce an Urgent Incident Mitigation Plan.",
           },
@@ -750,7 +750,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "approval",
           position: { x: NODE_X * 4, y: GRID_Y - 120 },
           data: {
-            label: "SECURITY LEAD SIGN-OFF",
+            label: "Security lead sign-off",
             approvalReason: "High-severity CVE vulnerability detected. Security lead approval required before dispatching team alert.",
           },
         },
@@ -759,12 +759,12 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "notification_dispatcher",
           position: { x: NODE_X * 5, y: GRID_Y - 120 },
           data: {
-            label: "SLACK INCIDENT ALERT",
+            label: "Slack incident alert",
             dispatchDestination: "slack",
             dispatchMessage: "**CRITICAL SECURITY CVE ALERT:**\n\n{{ results.secops_agent }}",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 6 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 6 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "fetch_cve" },
@@ -781,20 +781,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "seo_core_web_vitals_auditor",
     name: "SEO & Core Web Vitals Auditor",
-    badge: "DEVTOOLS · GOOGLE PAGESPEED",
-    category: "SECURITY & DEVOPS",
+    badge: "Devtools · google pagespeed",
+    category: "Security & devops",
     description:
       "Runs Google PageSpeed Insights & Wayback Machine snapshots, extracts LCP, FID, CLS scores, and has an AI Performance Architect generate a step-by-step remediation guide.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "pagespeed_http",
           type: "http",
           position: { x: NODE_X, y: GRID_Y - 100 },
           data: {
-            label: "PAGESPEED INSIGHTS",
+            label: "Pagespeed insights",
             httpMethod: "GET",
             httpUrl: "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://web.dev&strategy=mobile",
             httpResponseType: "json",
@@ -805,7 +805,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "http",
           position: { x: NODE_X, y: GRID_Y + 100 },
           data: {
-            label: "WAYBACK MACHINE API",
+            label: "Wayback machine API",
             httpMethod: "GET",
             httpUrl: "https://archive.org/wayback/available?url=https://web.dev",
             httpResponseType: "json",
@@ -816,7 +816,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "data_mapper",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "EXTRACT VITALS",
+            label: "Extract vitals",
             mapperSchema: {
               lighthouse: "results.pagespeed_http.lighthouseResult",
               history: "results.wayback_http.archived_snapshots",
@@ -828,12 +828,12 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 3, y: GRID_Y },
           data: {
-            label: "PERFORMANCE ARCHITECT",
+            label: "Performance architect",
             prompt:
               "You are a Senior Web Performance Architect. Analyze the Google PageSpeed Core Web Vitals (LCP, FID, CLS, TTFB, Speed Index). Produce a structured Technical SEO & Performance Remediation Blueprint: 1) Executive Performance Score, 2) Critical Bottlenecks, 3) Code-Level Fixes (CSS/JS splitting, image optimization, caching).",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "pagespeed_http" },
@@ -849,20 +849,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "package_release_changelog_notifier",
     name: "Package Release & Changelog Notifier",
-    badge: "DEVOPS · NPM & PYPI REGISTRIES",
-    category: "SECURITY & DEVOPS",
+    badge: "Devops · npm & pypi registries",
+    category: "Security & devops",
     description:
       "Monitors package releases on NPM and PyPI, compares version bumps, and generates breaking change migration steps for engineering teams.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "npm_api",
           type: "http",
           position: { x: NODE_X, y: GRID_Y - 100 },
           data: {
-            label: "NPM REGISTRY API",
+            label: "Npm registry API",
             httpMethod: "GET",
             httpUrl: "https://registry.npmjs.org/next/latest",
             httpResponseType: "json",
@@ -873,7 +873,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "http",
           position: { x: NODE_X, y: GRID_Y + 100 },
           data: {
-            label: "PYPI REGISTRY API",
+            label: "Pypi registry API",
             httpMethod: "GET",
             httpUrl: "https://pypi.org/pypi/fastapi/json",
             httpResponseType: "json",
@@ -884,7 +884,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "MIGRATION ENGINEER AGENT",
+            label: "Migration engineer agent",
             prompt:
               "You are a Staff Software Engineer. Analyze the latest package releases from NPM (Next.js) and PyPI (FastAPI). Extract version identifiers, detect breaking architectural changes, and draft migration instructions for team codebases.",
           },
@@ -894,12 +894,12 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "notification_dispatcher",
           position: { x: NODE_X * 3, y: GRID_Y },
           data: {
-            label: "DISCORD CHANGELOG DISPATCH",
+            label: "Discord changelog dispatch",
             dispatchDestination: "discord",
             dispatchMessage: "**New Package Releases & Migration Guide:**\n\n{{ results.migration_agent }}",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "npm_api" },
@@ -919,20 +919,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "crypto_momentum_arbitrage_pulse",
     name: "Crypto Momentum & Arbitrage Pulse",
-    badge: "FINTECH · COINGECKO & BINANCE",
-    category: "FINANCE & INTEL",
+    badge: "Fintech · coingecko & binance",
+    category: "Finance & intel",
     description:
       "Fetches real-time price changes from CoinGecko and Binance public ticker endpoints, routes on high volatility (> 5% 24h delta), and triggers an AI Quant Analyst.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "coingecko_api",
           type: "http",
           position: { x: NODE_X, y: GRID_Y - 100 },
           data: {
-            label: "COINGECKO PUBLIC API",
+            label: "Coingecko public API",
             httpMethod: "GET",
             httpUrl: "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true",
             httpResponseType: "json",
@@ -943,7 +943,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "http",
           position: { x: NODE_X, y: GRID_Y + 100 },
           data: {
-            label: "BINANCE TICKER API",
+            label: "Binance ticker API",
             httpMethod: "GET",
             httpUrl: "https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT",
             httpResponseType: "json",
@@ -964,7 +964,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 3, y: GRID_Y },
           data: {
-            label: "QUANTITATIVE ANALYST AGENT",
+            label: "Quantitative analyst agent",
             prompt:
               "You are a Senior Quantitative Crypto Analyst. Analyze the real-time prices, 24h momentum deltas, and cross-venue spreads between CoinGecko and Binance. Identify momentum breakouts, support/resistance levels, and cross-exchange arbitrage opportunities.",
           },
@@ -974,12 +974,12 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "notification_dispatcher",
           position: { x: NODE_X * 4, y: GRID_Y },
           data: {
-            label: "TELEGRAM/DISCORD DISPATCH",
+            label: "Telegram/discord dispatch",
             dispatchDestination: "telegram",
             dispatchMessage: "[ALERT] **Crypto Momentum & Arbitrage Alert:**\n\n{{ results.quant_agent }}",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "coingecko_api" },
@@ -997,20 +997,20 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
   {
     id: "global_fx_inflation_monitor",
     name: "Global FX & Inflation Monitor",
-    badge: "FINTECH · FRANKFURTER & WORLD BANK",
-    category: "FINANCE & INTEL",
+    badge: "Fintech · frankfurter & world bank",
+    category: "Finance & intel",
     description:
       "Pulls live cross-currency foreign exchange rates from Frankfurter and macroeconomic inflation indicators from the World Bank to generate currency risk and hedging reports.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "fx_api",
           type: "http",
           position: { x: NODE_X, y: GRID_Y - 100 },
           data: {
-            label: "FRANKFURTER FX API",
+            label: "Frankfurter fx API",
             httpMethod: "GET",
             httpUrl: "https://api.frankfurter.app/latest?from=USD",
             httpResponseType: "json",
@@ -1021,7 +1021,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "http",
           position: { x: NODE_X, y: GRID_Y + 100 },
           data: {
-            label: "WORLD BANK DATA API",
+            label: "World bank data API",
             httpMethod: "GET",
             httpUrl: "https://api.worldbank.org/v2/country/US/indicator/FP.CPI.TOTL.ZG?format=json",
             httpResponseType: "json",
@@ -1032,7 +1032,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "MACRO ECONOMIST AGENT",
+            label: "Macro economist agent",
             prompt:
               "You are a Chief Global Macroeconomist. Analyze the latest USD foreign exchange conversion rates (EUR, GBP, JPY, CAD) and World Bank Consumer Price Index (CPI) inflation figures. Formulate an actionable Executive FX & Purchasing Power Strategy Report for cross-border commerce.",
           },
@@ -1042,11 +1042,11 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "output",
           position: { x: NODE_X * 3, y: GRID_Y },
           data: {
-            label: "MACROECONOMIC REPORT",
+            label: "Macroeconomic report",
             outputTemplate: "## Global Macroeconomic & FX Strategy Report\n\n{{ results.macro_agent }}",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "fx_api" },
@@ -1067,19 +1067,19 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
     id: "open_source_deep_research_studio",
     name: "Open-Source Deep Research & Report Studio",
     badge: "OPEN SOURCE · SEARXNG + CRAWL4AI + GOTENBERG",
-    category: "OPEN SOURCE & SELF-HOSTED",
+    category: "Open source & self-hosted",
     description:
       "Performs privacy-first web research via SearXNG, extracts clean markdown via Crawl4AI, synthesizes an executive brief, and compiles a publication-ready PDF via Gotenberg.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "searxng_node",
           type: "searxng_search",
           position: { x: NODE_X, y: GRID_Y },
           data: {
-            label: "SEARXNG SEARCH",
+            label: "Searxng search",
             searxngHost: "https://searx.be",
             searxngQuery: "{{ input.query }}",
             searxngLimit: 5,
@@ -1090,7 +1090,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "crawl4ai_scrape",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "CRAWL4AI SCRAPER",
+            label: "Crawl4ai scraper",
             crawl4aiUrl: "{{ results.searxng_node.results[0].url }}",
             crawl4aiWordCountThreshold: 20,
           },
@@ -1100,7 +1100,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 3, y: GRID_Y },
           data: {
-            label: "RESEARCH SCIENTIST",
+            label: "Research scientist",
             prompt:
               "You are a Principal AI Research Scientist. Analyze the web search results and deep markdown extracted by Crawl4AI. Produce an exhaustive Executive Research Briefing with: 1) Executive Summary, 2) Technical Innovations & Architecture, 3) Benchmark Comparisons, 4) Recommended Deployment Strategy.",
           },
@@ -1110,13 +1110,13 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "gotenberg_pdf_exporter",
           position: { x: NODE_X * 4, y: GRID_Y },
           data: {
-            label: "GOTENBERG PDF EXPORTER",
+            label: "Gotenberg PDF exporter",
             gotenbergHost: "http://localhost:3000",
             gotenbergPaperSize: "A4",
             gotenbergHtmlContent: "<h1>Executive Deep Research Report</h1><p>{{ results.researcher_agent }}</p>",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "searxng_node" },
@@ -1132,19 +1132,19 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
     id: "docling_paper_knowledge_pipeline",
     name: "Docling Paper & Document Knowledge Pipeline",
     badge: "OPEN SOURCE · DOCLING + NOCODB",
-    category: "OPEN SOURCE & SELF-HOSTED",
+    category: "Open source & self-hosted",
     description:
       "Ingests complex research PDFs or corporate documents with Docling (IBM), extracts structured tables and insights with an AI Analyst, and persists the structured record into NocoDB.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "docling_node",
           type: "docling_pdf_parser",
           position: { x: NODE_X, y: GRID_Y },
           data: {
-            label: "DOCLING PDF PARSER",
+            label: "Docling PDF parser",
             doclingDocumentUrl: "{{ input.documentUrl }}",
             doclingOutputFormat: "markdown",
           },
@@ -1154,7 +1154,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "DOCUMENT INTEL AGENT",
+            label: "Document intel agent",
             prompt:
               "You are a Technical Document Analyst. Parse the structured markdown and tables generated by Docling. Extract key claims, authors, baseline comparisons, and novel contributions in a structured JSON object.",
           },
@@ -1164,7 +1164,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "nocodb_record",
           position: { x: NODE_X * 3, y: GRID_Y },
           data: {
-            label: "NOCODB KNOWLEDGE LOG",
+            label: "Nocodb knowledge log",
             nocodbHost: "http://localhost:8080",
             nocodbTableId: "tbl_research_papers",
             nocodbOperation: "create",
@@ -1175,7 +1175,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
             },
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "docling_node" },
@@ -1190,19 +1190,19 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
     id: "voice_dispatcher_whisper_piper",
     name: "Multi-Agent Voice Dispatch & Transcription",
     badge: "LOCAL AI · FASTER-WHISPER + PIPER TTS",
-    category: "OPEN SOURCE & SELF-HOSTED",
+    category: "Open source & self-hosted",
     description:
       "Transcribes customer voice recordings with Faster-Whisper, runs an AI Triage Agent to classify intent, synthesizes a voice response with Piper TTS, and dispatches alerts.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "whisper_node",
           type: "audio_transcriber",
           position: { x: NODE_X, y: GRID_Y },
           data: {
-            label: "FASTER-WHISPER STT",
+            label: "Faster-whisper STT",
             audioSourceUrl: "{{ input.audioUrl }}",
             audioLanguage: "auto",
           },
@@ -1212,7 +1212,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "VOICE TRIAGE AGENT",
+            label: "Voice triage agent",
             prompt:
               "You are an Elite Customer Support Voice Dispatcher. Analyze the transcribed audio message. Formulate a polite, helpful spoken response answering the user's inquiry directly.",
           },
@@ -1222,7 +1222,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "piper_tts",
           position: { x: NODE_X * 3, y: GRID_Y - 100 },
           data: {
-            label: "PIPER VOICE SYNTHESIS",
+            label: "Piper voice synthesis",
             piperVoice: "en_US-lessac-medium",
             piperText: "{{ results.triage_agent }}",
           },
@@ -1232,12 +1232,12 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "notification_dispatcher",
           position: { x: NODE_X * 4, y: GRID_Y },
           data: {
-            label: "DISCORD/SLACK DISPATCH",
+            label: "Discord/slack dispatch",
             dispatchDestination: "discord",
             dispatchMessage: "**Voice Dispatch Processed:**\n\n**Transcript:** {{ results.whisper_node.text }}\n\n**Agent Answer:** {{ results.triage_agent }}",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 5 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "whisper_node" },
@@ -1253,19 +1253,19 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
     id: "qdrant_vector_memory_rag",
     name: "Vector Memory & Persistent Long-Term RAG",
     badge: "SELF-HOSTED · QDRANT + POCKETBASE",
-    category: "OPEN SOURCE & SELF-HOSTED",
+    category: "Open source & self-hosted",
     description:
       "Performs semantic recall over self-hosted Qdrant vector collections, grounds the AI reasoner with past conversation history, and stores state in PocketBase.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "qdrant_node",
           type: "qdrant_vector_memory",
           position: { x: NODE_X, y: GRID_Y },
           data: {
-            label: "QDRANT VECTOR RECALL",
+            label: "Qdrant vector recall",
             qdrantCollection: "knowledge_base",
             qdrantQuery: "{{ input.query }}",
             qdrantTopK: 3,
@@ -1276,7 +1276,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "CONTEXT REASONER AGENT",
+            label: "Context reasoner agent",
             prompt:
               "You are a Context-Aware Knowledge Agent. Use the retrieved context vectors from Qdrant to formulate a comprehensive, factually grounded response for the user inquiry.",
           },
@@ -1286,7 +1286,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "pocketbase_store",
           position: { x: NODE_X * 3, y: GRID_Y },
           data: {
-            label: "POCKETBASE LOG STORE",
+            label: "Pocketbase log store",
             pocketbaseCollection: "agent_sessions",
             pocketbaseAction: "create",
             pocketbaseData: {
@@ -1295,7 +1295,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
             },
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 4 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "qdrant_node" },
@@ -1310,19 +1310,19 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
     id: "windmill_activepieces_orchestrator",
     name: "Windmill & Activepieces Distributed Orchestration",
     badge: "OPEN WORKFLOWS · CRON + HTTP + AGENT",
-    category: "OPEN SOURCE & SELF-HOSTED",
+    category: "Open source & self-hosted",
     description:
       "Triggers self-hosted Windmill Python scripts or Activepieces webhooks on a schedule, evaluates data anomalies with a Router, and delegates remediation to an AI Operator.",
     graph: {
       version: 1,
       nodes: [
-        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "START" } },
+        { id: "start", type: "start", position: { x: 40, y: GRID_Y }, data: { label: "Start" } },
         {
           id: "cron_trigger",
           type: "schedule_trigger",
           position: { x: NODE_X, y: GRID_Y },
           data: {
-            label: "DAILY CRON TRIGGER",
+            label: "Daily cron trigger",
             cronExpression: "0 8 * * *",
             scheduleInterval: "Every day at 8:00 AM UTC",
           },
@@ -1332,7 +1332,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "http",
           position: { x: NODE_X * 2, y: GRID_Y },
           data: {
-            label: "WINDMILL / ACTIVEPIECES API",
+            label: "Windmill / activepieces API",
             httpMethod: "POST",
             httpUrl: "http://localhost:8000/api/w/main/jobs/run/f/sync_database",
             httpResponseType: "json",
@@ -1343,7 +1343,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "router",
           position: { x: NODE_X * 3, y: GRID_Y },
           data: {
-            label: "HEALTH ROUTER",
+            label: "Health router",
             routerMode: "deterministic",
             condition: "results.windmill_http.status == 'SUCCESS'",
           },
@@ -1353,7 +1353,7 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "agent",
           position: { x: NODE_X * 4, y: GRID_Y - 120 },
           data: {
-            label: "OPS REMEDIATION AGENT",
+            label: "Ops remediation agent",
             prompt:
               "You are an Autonomous Site Reliability Operator. The upstream automation script reported an anomaly. Diagnose the error log and generate a concrete mitigation action.",
           },
@@ -1363,12 +1363,12 @@ export const CANVAS_TEMPLATES: CanvasTemplate[] = [
           type: "notification_dispatcher",
           position: { x: NODE_X * 5, y: GRID_Y },
           data: {
-            label: "SLACK OPS BROADCAST",
+            label: "Slack ops broadcast",
             dispatchDestination: "slack",
             dispatchMessage: "**Distributed Orchestrator Run Complete:**\n\n{{ results }}",
           },
         },
-        { id: "end", type: "end", position: { x: NODE_X * 6 + 40, y: GRID_Y }, data: { label: "END" } },
+        { id: "end", type: "end", position: { x: NODE_X * 6 + 40, y: GRID_Y }, data: { label: "End" } },
       ],
       edges: [
         { id: "e1", source: "start", target: "cron_trigger" },

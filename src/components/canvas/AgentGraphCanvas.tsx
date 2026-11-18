@@ -52,14 +52,14 @@ import { clsx } from "clsx";
 const labelClass = "text-xs font-mono text-[var(--accent-primary)] font-medium";
 
 const toolbarGroupClass =
-  "inline-flex shrink-0 items-center rounded-lg border border-[var(--border-strong)] bg-[var(--surface-raised)]/95 overflow-hidden";
+  "inline-flex shrink-0 items-center rounded-[8px] border border-[var(--border-strong)] bg-[var(--surface-raised)]/95 overflow-hidden";
 const toolbarIconBtnClass =
   "p-1.5 text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] transition-colors disabled:opacity-30 cursor-pointer";
 const toolbarTextBtnClass =
   "inline-flex items-center gap-1 px-2 py-1 text-xs font-medium whitespace-nowrap transition-colors cursor-pointer disabled:opacity-30";
-const toolbarIdleClass = "text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] hover:text-[var(--accent-primary)]";
+const toolbarIdleClass = "text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] hover:text-[var(--text-primary)]";
 const toolbarPillClass =
-  "inline-flex shrink-0 items-center gap-1 rounded-lg border border-[var(--border-strong)] bg-[var(--surface-raised)]/95 px-2.5 py-1 text-xs font-medium whitespace-nowrap text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer";
+  "inline-flex shrink-0 items-center gap-1 rounded-[8px] border border-[var(--border-strong)] bg-[var(--surface-raised)]/95 px-2.5 py-1 text-xs font-medium whitespace-nowrap text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--accent-primary)] transition-colors cursor-pointer";
 const toolbarDivider = <div className="w-px h-3.5 bg-[var(--surface-sunken)]" />;
 const sidePanelClass =
   "shrink-0 transition-colors duration-200 overflow-hidden rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]/90 flex flex-col";
@@ -1035,11 +1035,11 @@ function CanvasInner({
     <button
       type="button"
       onClick={toggleFullScreen}
-      className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] px-2.5 py-1 text-xs font-medium whitespace-nowrap hover:bg-[var(--cta-primary-hover)] transition-colors cursor-pointer"
+      className="inline-flex shrink-0 items-center gap-1 rounded-[8px] border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2.5 py-1 text-xs font-medium whitespace-nowrap text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
       title={isFullScreen ? "Exit full-screen (Esc / F11)" : "Full-screen (F11)"}
     >
       {isFullScreen ? <Minimize className="h-3 w-3" /> : <Maximize className="h-3 w-3" />}
-      {isFullScreen ? "EXIT" : "FULLSCREEN"}
+      {isFullScreen ? "Exit" : "Fullscreen"}
     </button>
   );
   const graphStats = (
@@ -1123,7 +1123,7 @@ function CanvasInner({
                     </button>
                     {toolbarDivider}
                     <button type="button" onClick={() => setShowNodeSearch((s) => !s)} className={clsx(toolbarTextBtnClass, toolbarIdleClass)} title="Find node (⌘+F)">
-                      <Search className="h-3 w-3" /> FIND
+                      <Search className="h-3 w-3" /> Find
                     </button>
                   </div>
 
@@ -1148,7 +1148,7 @@ function CanvasInner({
                       type="button"
                       onClick={() => setShowMacroLibrary((p) => !p)}
                       className={clsx(toolbarTextBtnClass, showMacroLibrary ? "text-[var(--accent-primary)] bg-[var(--accent-primary)]/10" : toolbarIdleClass)}
-                      title="Toggle My Components library"
+                      title="Toggle the components library"
                     >
                       <Package className="h-3 w-3" /> Components
                     </button>
@@ -1156,7 +1156,7 @@ function CanvasInner({
                     <button
                       type="button"
                       onClick={() => setShowDebugger((p) => !p)}
-                      className={clsx(toolbarTextBtnClass, showDebugger ? "text-[var(--accent-primary)] bg-[var(--accent-primary)]/10" : toolbarIdleClass)}
+                      className={clsx(toolbarTextBtnClass, showDebugger ? "bg-[var(--surface-sunken)] text-[var(--text-primary)]" : toolbarIdleClass)}
                       title="Toggle debugger panel"
                     >
                       <Bug className="h-3 w-3" /> Debug
@@ -1165,19 +1165,19 @@ function CanvasInner({
                     <button
                       type="button"
                       onClick={() => setShowA2ADirectory(true)}
-                      className={clsx(toolbarTextBtnClass, "text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10")}
-                      title="Open Google A2A Agent Directory"
+                      className={clsx(toolbarTextBtnClass, toolbarIdleClass)}
+                      title="Open the A2A agent directory"
                     >
-                      <Network className="h-3 w-3 text-[var(--accent-primary)]" /> A2A directory
+                      <Network className="h-3 w-3" /> A2A directory
                     </button>
                     {toolbarDivider}
                     <button
                       type="button"
                       onClick={() => setShowMarketplace((p) => !p)}
-                      className={clsx(toolbarTextBtnClass, showMarketplace ? "text-[var(--state-warning)] bg-[var(--state-warning)]/10" : toolbarIdleClass)}
-                      title="Marketplace Templates"
+                      className={clsx(toolbarTextBtnClass, showMarketplace ? "bg-[var(--surface-sunken)] text-[var(--text-primary)]" : toolbarIdleClass)}
+                      title="Marketplace templates"
                     >
-                      <Sparkles className="h-3 w-3 text-[var(--state-warning)]" /> Marketplace
+                      <Sparkles className="h-3 w-3" /> Marketplace
                     </button>
                     {coverage && coverage.length > 0 && (
                       <>
@@ -1185,10 +1185,10 @@ function CanvasInner({
                         <button
                           type="button"
                           onClick={() => setCoverageMode((c) => !c)}
-                          className={clsx(toolbarTextBtnClass, coverageMode ? "bg-[var(--state-success)]/10 text-[var(--state-success)]" : toolbarIdleClass)}
+                          className={clsx(toolbarTextBtnClass, coverageMode ? "bg-[var(--surface-sunken)] text-[var(--text-primary)]" : toolbarIdleClass)}
                           title="Branch coverage highlights"
                         >
-                          <GitBranch className="h-3 w-3" /> {coverageMode ? "Coverage on" : "COVERAGE"}
+                          <GitBranch className="h-3 w-3" /> {coverageMode ? "Coverage on" : "Coverage"}
                         </button>
                       </>
                     )}
@@ -1205,7 +1205,7 @@ function CanvasInner({
                         <Keyboard className="h-3 w-3" /> <span className="hidden xl:inline">Shortcuts</span>
                       </button>
                       {showShortcuts && (
-                        <div className="absolute right-0 top-8 z-[100] w-64 space-y-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]/95 p-3">
+                        <div className="absolute right-0 top-8 z-[100] w-64 space-y-1.5 rounded-[12px] border border-[var(--border-subtle)] bg-[var(--surface-raised)]/95 p-3">
                           <div className="mb-1 text-xs font-medium text-[var(--text-primary)]">Shortcuts</div>
                           {SHORTCUTS.map(([key, desc]) => (
                             <div key={key} className="flex items-center justify-between gap-2 text-xs">
@@ -1216,8 +1216,8 @@ function CanvasInner({
                         </div>
                       )}
                     </div>
-                    <button type="button" onClick={cycleTheme} className={toolbarPillClass} title={`Theme: ${canvasTheme} — click to cycle`}>
-                      <Copy className="h-3 w-3" /> {canvasTheme?.toUpperCase() ?? "THEME"}
+                    <button type="button" onClick={cycleTheme} className={toolbarPillClass} title={`Theme: ${canvasTheme}. Click to cycle`}>
+                      <Copy className="h-3 w-3" /> <span className="capitalize">{canvasTheme ?? "theme"}</span>
                     </button>
                   </>
                 )}
@@ -1382,7 +1382,7 @@ function CanvasInner({
             {/* Node search overlay */}
             {showNodeSearch && (
               <div className="absolute left-1/2 top-2 z-30 -translate-x-1/2 w-72 max-w-[calc(100%-1rem)]">
-                <div className="rounded-lg border border-[var(--accent-primary)]/25 bg-[var(--surface-raised)]/95 p-2">
+                <div className="rounded-[8px] border border-[var(--accent-primary)]/25 bg-[var(--surface-raised)]/95 p-2">
                   <div className="flex items-center gap-2">
                     <Search className="h-3.5 w-3.5 text-[var(--accent-primary)] shrink-0" />
                     <input
@@ -1425,7 +1425,7 @@ function CanvasInner({
               <div className="absolute bottom-3 left-14 z-20 font-mono">
                 <div className="relative">
                   {showValidationDetails && (
-                    <div className="absolute bottom-9 left-0 w-80 max-h-52 overflow-y-auto rounded-xl border border-[var(--state-warning)]/40 bg-[var(--surface-raised)]/95 p-3 space-y-1.5 z-30">
+                    <div className="absolute bottom-9 left-0 w-80 max-h-52 overflow-y-auto rounded-[12px] border border-[var(--state-warning)]/40 bg-[var(--surface-raised)]/95 p-3 space-y-1.5 z-30">
                       <div className="flex items-center justify-between border-b border-[var(--state-warning)]/25 pb-1.5 mb-1">
                         <span className="text-xs font-medium text-[var(--state-warning)]">
                           Graph issues ({issues.length})
@@ -1441,7 +1441,7 @@ function CanvasInner({
                       {issues.map((issue, i) => (
                         <div key={i} className="flex items-start gap-1.5 text-xs leading-tight text-[var(--text-primary)]">
                           <span className={clsx("shrink-0 font-medium", issue.severity === "error" ? "text-[var(--state-error)]" : "text-[var(--state-warning)]")}>
-                            [{issue.severity.toUpperCase()}]
+                            {issue.severity}
                           </span>
                           <span>{issue.message}</span>
                         </div>
@@ -1452,7 +1452,7 @@ function CanvasInner({
                   <button
                     type="button"
                     onClick={() => setShowValidationDetails((p) => !p)}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-[var(--state-warning)] hover:bg-[var(--state-warning)]/10 transition-colors text-xs font-medium cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] border border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-[var(--state-warning)] hover:bg-[var(--state-warning)]/10 transition-colors text-xs font-medium cursor-pointer"
                   >
                     <AlertTriangle className="h-3.5 w-3.5 text-[var(--state-warning)] shrink-0" />
                     <span>
@@ -1603,7 +1603,7 @@ function CanvasInner({
                   setScrubIndex(Number(e.target.value));
                   setScrubPlaying(false);
                 }}
-                className="flex-1 accent-[var(--text-muted)] dark:accent-[var(--text-muted)] h-1 bg-[var(--surface-elevated)] rounded-lg cursor-pointer"
+                className="flex-1 accent-[var(--text-muted)] dark:accent-[var(--text-muted)] h-1 bg-[var(--surface-elevated)] rounded-[8px] cursor-pointer"
               />
               <span className="text-[var(--text-secondary)] shrink-0 font-mono text-xs tabular-nums">
                 {clampedScrubIndex}/{totalEvents}

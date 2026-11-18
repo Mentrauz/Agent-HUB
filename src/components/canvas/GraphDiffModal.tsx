@@ -30,94 +30,46 @@ function Section({ icon, title, items, tone }: { icon: React.ReactNode; title: s
   );
 }
 
+const STATE_DOT = {
+  added: "var(--state-success)",
+  removed: "var(--state-error)",
+  changed: "var(--state-warning)",
+} as const;
+
 function DiffNodeCard({ type, label, status, details }: { type: string; label: string; status: "added" | "removed" | "changed"; details?: string }) {
   const meta = CANVAS_NODE_TYPE_MAP[type as GraphNodeType];
   const Icon = meta?.icon;
 
-  const statusConfig = {
-    added: {
-      border: "border-[var(--state-success)]/40",
-      bg: "bg-[var(--state-success)]/10",
-      badge: "bg-[var(--state-success)]/10 text-[var(--state-success)] border-[var(--state-success)]/25",
-      icon: <Plus className="h-2 w-2" />,
-      label: "ADDED",
-    },
-    removed: {
-      border: "border-[var(--state-error)]/40",
-      bg: "bg-[var(--state-error)]/10",
-      badge: "bg-[var(--state-error)]/10 text-[var(--state-error)] border-[var(--state-error)]/25",
-      icon: <Minus className="h-2 w-2" />,
-      label: "REMOVED",
-    },
-    changed: {
-      border: "border-[var(--state-warning)]/40",
-      bg: "bg-[var(--state-warning)]/10",
-      badge: "bg-[var(--state-warning)]/10 text-[var(--state-warning)] border-[var(--state-warning)]/25",
-      icon: <Pencil className="h-2 w-2" />,
-      label: "CHANGED",
-    },
-  };
-
-  const config = statusConfig[status];
-
   return (
-    <div className={clsx("flex items-center gap-2 p-2 rounded-[8px] border transition-colors", config.border, config.bg)}>
+    <div className="flex items-center gap-2.5 rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-2.5">
       <div className="shrink-0">
-        {Icon ? (
-          <Icon className={clsx("h-3.5 w-3.5", meta?.accent?.split(" ")[1] ?? "text-[var(--text-muted)]")} />
-        ) : (
-          <div className="h-3.5 w-3.5 rounded bg-[var(--surface-sunken)]" />
-        )}
+        {Icon ? <Icon className="h-3.5 w-3.5 text-[var(--text-secondary)]" /> : <div className="h-3.5 w-3.5 rounded bg-[var(--surface-sunken)]" />}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs font-medium text-[var(--text-primary)] truncate">{label}</span>
-          <span className="text-xs text-[var(--text-muted)] font-mono">[{type}]</span>
+        <div className="flex items-baseline gap-2">
+          <span className="truncate font-sans text-[13px] text-[var(--text-primary)]">{label}</span>
+          <span className="font-mono text-xs text-[var(--text-muted)]">{type}</span>
         </div>
-        {details && (
-          <div className="text-xs text-[var(--text-muted)] truncate mt-0.5">
-            {details}
-          </div>
-        )}
+        {details && <div className="mt-0.5 truncate font-sans text-xs text-[var(--text-muted)]">{details}</div>}
       </div>
-      <span className={clsx("shrink-0 px-1.5 py-0.5 rounded border text-xs font-medium inline-flex items-center gap-0.5", config.badge)}>
-        {config.icon}
-        {config.label}
+      <span className="inline-flex shrink-0 items-center gap-1.5 font-sans text-xs text-[var(--text-secondary)]">
+        <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full" style={{ background: STATE_DOT[status] }} />
+        {status}
       </span>
     </div>
   );
 }
 
 function DiffEdgeCard({ source, target, label, status }: { source: string; target: string; label?: string; status: "added" | "removed" }) {
-  const statusConfig = {
-    added: {
-      border: "border-[var(--border-subtle)]",
-      bg: "bg-[var(--surface-sunken)]",
-      badge: "bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
-      label: "NEW",
-    },
-    removed: {
-      border: "border-[var(--state-warning)]/25",
-      bg: "bg-[var(--state-warning)]/10",
-      badge: "bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
-      label: "DEL",
-    },
-  };
-
-  const config = statusConfig[status];
-
   return (
-    <div className={clsx("flex items-center gap-1.5 p-1.5 rounded border text-xs font-mono", config.border, config.bg)}>
-      <span className="text-[var(--text-secondary)] truncate">{source}</span>
-      <ArrowRight className="h-2.5 w-2.5 text-[var(--text-muted)] shrink-0" />
-      <span className="text-[var(--text-secondary)] truncate">{target}</span>
-      {label && (
-        <span className="px-1 py-0.5 rounded bg-[var(--surface-sunken)] text-xs text-[var(--text-muted)] shrink-0">
-          [{label}]
-        </span>
-      )}
-      <span className={clsx("ml-auto shrink-0 px-1 py-0.5 rounded text-xs font-medium", config.badge)}>
-        {config.label}
+    <div className="flex items-center gap-2 rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-2 font-mono text-xs">
+      <span className="truncate text-[var(--text-secondary)]">{source}</span>
+      <ArrowRight className="h-2.5 w-2.5 shrink-0 text-[var(--text-muted)]" />
+      <span className="truncate text-[var(--text-secondary)]">{target}</span>
+      {label && <span className="shrink-0 text-[var(--text-muted)]">{label}</span>}
+      <span className="ml-auto inline-flex shrink-0 items-center gap-1.5 font-sans text-xs text-[var(--text-secondary)]">
+        <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full" style={{ background: STATE_DOT[status === "added" ? "added" : "removed"] }} />
+        {status === "added" ? "added" : "removed"}
       </span>
     </div>
   );
