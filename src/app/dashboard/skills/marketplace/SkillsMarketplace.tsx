@@ -1,32 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import {
-  Search,
-  X,
-  Loader2,
-  Star,
-  Download,
-  Clock,
-  Zap,
-  Code,
-  Database,
-  Brain,
-  BookOpen,
-  Globe,
-  Wrench,
-  MessageSquare,
-  BarChart3,
-  Plus,
-  Check,
-  ExternalLink,
-  Shield,
-  Sparkles,
-  LayoutGrid,
-  List,
-  Trash2,
-  Play,
-} from "lucide-react";
 import { clsx } from "clsx";
 import { useQueryClient } from "@tanstack/react-query";
 import { ItemIcon } from "@/components/common/ItemIcon";
@@ -35,6 +9,18 @@ import { AgentSkill, SkillCategory } from "@/types/agent-studio-registry";
 import { SkillDTO } from "@/types/skill";
 import { toast } from "@/stores/toastStore";
 import { LiveSandbox } from "@/components/mcp/LiveSandbox";
+import {
+  BTN_PRIMARY,
+  BTN_SECONDARY,
+  BTN_SECONDARY_SM,
+  CARD,
+  FIELD,
+  META,
+  ROW_HOVER,
+  SECTION_TITLE,
+  Segmented,
+  Tag,
+} from "@/components/ui/surfaces";
 
 /** Persistent map of marketplace skill IDs → database Skill IDs */
 const INSTALLED_MAP_KEY = "skill-installed-map";
@@ -114,17 +100,17 @@ function buildAllowedTools(skill: AgentSkill, mountedServerIds: string[]): strin
   return Array.from(tools).slice(0, 20);
 }
 
-const CATEGORIES: { id: SkillCategory | "ALL"; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { id: "ALL", label: "All", icon: Sparkles },
-  { id: "RESEARCH", label: "Research", icon: BookOpen },
-  { id: "CODING", label: "Coding", icon: Code },
-  { id: "DATA", label: "Data", icon: Database },
-  { id: "ANALYSIS", label: "Analysis", icon: BarChart3 },
-  { id: "COMMUNICATION", label: "Communication", icon: MessageSquare },
-  { id: "AUTOMATION", label: "Automation", icon: Zap },
-  { id: "KNOWLEDGE", label: "Knowledge", icon: Brain },
-  { id: "PRODUCTIVITY", label: "Productivity", icon: Wrench },
-  { id: "CREATIVE", label: "Creative", icon: Globe },
+const CATEGORIES: { id: SkillCategory | "ALL"; label: string }[] = [
+  { id: "ALL", label: "All" },
+  { id: "RESEARCH", label: "Research" },
+  { id: "CODING", label: "Coding" },
+  { id: "DATA", label: "Data" },
+  { id: "ANALYSIS", label: "Analysis" },
+  { id: "COMMUNICATION", label: "Communication" },
+  { id: "AUTOMATION", label: "Automation" },
+  { id: "KNOWLEDGE", label: "Knowledge" },
+  { id: "PRODUCTIVITY", label: "Productivity" },
+  { id: "CREATIVE", label: "Creative" },
 ];
 
 const DIFFICULTIES = [
@@ -134,24 +120,6 @@ const DIFFICULTIES = [
   { id: "ADVANCED", label: "Advanced" },
 ];
 
-const DIFFICULTY_COLORS: Record<string, string> = {
-  BEGINNER: "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]",
-  INTERMEDIATE: "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
-  ADVANCED: "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]",
-};
-
-const CATEGORY_COLORS: Record<string, string> = {
-  RESEARCH: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  CODING: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  DATA: "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]",
-  ANALYSIS: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  COMMUNICATION: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  AUTOMATION: "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
-  KNOWLEDGE: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  PRODUCTIVITY: "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
-  CREATIVE: "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]",
-};
-
 const SOURCES = [
   { id: "ALL", label: "All sources" },
   { id: "glama", label: "Glama.ai" },
@@ -160,14 +128,37 @@ const SOURCES = [
   { id: "composio", label: "Composio" },
 ];
 
-const SOURCE_COLORS: Record<string, string> = {
-  glama: "border-[var(--accent-primary)]/40 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  "mcp.so": "border-[var(--state-success)]/40 bg-[var(--state-success)]/10 text-[var(--state-success)]",
-  smithery: "border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
-  composio: "border-[var(--state-success)]/40 bg-[var(--state-success)]/10 text-[var(--state-success)]",
-  "awesome-mcp": "border-[var(--accent-primary)]/40 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  community: "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
-};
+function FilterRow({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: { id: string; label: string }[];
+}) {
+  return (
+  <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-sm" role="group" aria-label={label}>
+    <span className="font-sans text-[13px] text-[var(--text-muted)]">{label}</span>
+    {options.map((o) => (
+      <button
+        key={o.id}
+        type="button"
+        aria-pressed={value === o.id}
+        onClick={() => onChange(o.id)}
+        className={clsx(
+          "cursor-pointer rounded-[6px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
+          value === o.id ? "text-[var(--text-primary)]" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+        )}
+      >
+        {o.label}
+      </button>
+    ))}
+  </div>
+);
+}
 
 export function SkillsMarketplace() {
   const queryClient = useQueryClient();
@@ -700,419 +691,188 @@ export function SkillsMarketplace() {
     }
   }, [installedMap, installedDbSkills, queryClient, refreshInstalledSkills]);
 
+  const sourceLabel = (s: string) => SOURCES.find((x) => x.id === s)?.label ?? s;
+
+  const actionButton = (skill: AgentSkill, isInstalled: boolean) => {
+    const busy = installing === skill.id;
+    return isInstalled ? (
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleUninstall(skill);
+        }}
+        disabled={busy}
+        className={clsx(BTN_SECONDARY_SM, "shrink-0 text-[var(--state-error)]")}
+      >
+        {busy ? "Removing" : "Uninstall"}
+      </button>
+    ) : (
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleInstall(skill);
+        }}
+        disabled={busy}
+        className={clsx(BTN_SECONDARY_SM, "shrink-0")}
+      >
+        {busy ? "Installing" : "Install skill"}
+      </button>
+    );
+  };
+
   return (
-    <div className="space-y-5">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div>
-          <h2 className="text-sm font-sans font-medium text-[var(--text-primary)] flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-[var(--state-warning)]" />
-            Skills marketplace
-          </h2>
-          <p className="text-xs font-sans text-[var(--text-muted)] mt-0.5">
-            Discover and install pre-configured agent skills from Glama, MCP.SO &amp; Smithery
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <div className="space-y-1">
+          <h2 className={SECTION_TITLE}>Skills marketplace</h2>
+          <p className="font-sans text-[13px] text-[var(--text-muted)]">
+            Install preconfigured agent skills from Glama, mcp.so, Smithery and Composio
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-sans text-[var(--text-muted)] px-2 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
-            {skills.length} OF {totalCount > 0 ? totalCount.toLocaleString() : skills.length} Skills loaded
+        <div className="flex items-center gap-4">
+          <span className={META}>
+            {skills.length} of {totalCount > 0 ? totalCount.toLocaleString() : skills.length} loaded
           </span>
-
-          {/* View Mode Toggle */}
-          <div className="flex items-center rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-0.5">
-            <button
-              type="button"
-              onClick={() => handleToggleViewMode("grid")}
-              className={clsx(
-                "p-1.5 rounded text-xs font-sans transition-colors cursor-pointer",
-                viewMode === "grid"
-                  ? "bg-[var(--surface-raised)] text-[var(--accent-primary)] "
-                  : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
-              )}
-              title="Card Grid View"
-            >
-              <LayoutGrid className="h-3.5 w-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => handleToggleViewMode("list")}
-              className={clsx(
-                "p-1.5 rounded text-xs font-sans transition-colors cursor-pointer",
-                viewMode === "list"
-                  ? "bg-[var(--surface-raised)] text-[var(--accent-primary)] "
-                  : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
-              )}
-              title="Row List View"
-            >
-              <List className="h-3.5 w-3.5" />
-            </button>
-          </div>
+          <Segmented
+            label="View"
+            hideLabel
+            value={viewMode}
+            onChange={(v) => handleToggleViewMode(v)}
+            options={[
+              { id: "grid", label: "Grid" },
+              { id: "list", label: "List" },
+            ]}
+          />
         </div>
       </div>
 
-      {/* Search + Filters */}
       <div className="space-y-3">
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
+        <div className="flex w-full max-w-lg items-center gap-2">
           <input
             type="text"
+            aria-label="Search skills"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search skills (e.g. research, database, github, slack)..."
-            className="w-full pl-9 pr-8 py-2 text-xs font-sans rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)]/40 transition-colors"
+            placeholder="Search skills, for example research, database or slack"
+            className={clsx(FIELD, "h-9 w-full px-3")}
           />
           {search && (
-            <button
-              type="button"
-              onClick={() => setSearch("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] cursor-pointer"
-            >
-              <X className="h-3.5 w-3.5" />
+            <button type="button" onClick={() => setSearch("")} className={BTN_SECONDARY_SM}>
+              Clear
             </button>
           )}
         </div>
 
-        {/* Source Pills + Installed Filter */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          <span className="text-xs font-sans text-[var(--text-muted)] font-medium">Source</span>
-          {SOURCES.map((src) => {
-            const active = source === src.id;
-            return (
-              <button
-                key={src.id}
-                type="button"
-                onClick={() => setSource(src.id)}
-                className={clsx(
-                  "px-2 py-0.5 rounded text-xs font-sans font-medium border transition-colors cursor-pointer",
-                  active
-                    ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
-                    : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-muted)] hover:border-[var(--accent-primary)]/40"
-                )}
-              >
-                {src.label}
-              </button>              )
-            ;
-          })}
-          <div className="w-px h-4 bg-[var(--surface-sunken)] mx-0.5" />
+        <FilterRow label="Source" value={source} onChange={setSource} options={SOURCES} />
+        <FilterRow
+          label="Category"
+          value={category}
+          onChange={(v) => setCategory(v as SkillCategory | "ALL")}
+          options={CATEGORIES}
+        />
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
+          <FilterRow label="Level" value={difficulty} onChange={setDifficulty} options={DIFFICULTIES} />
           <button
             type="button"
+            aria-pressed={showInstalledOnly}
             onClick={() => setShowInstalledOnly((p) => !p)}
             className={clsx(
-              "inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-sans font-medium border transition-colors cursor-pointer",
-              showInstalledOnly
-                ? "border-[var(--state-success)]/40 bg-[var(--state-success)] text-[var(--cta-primary-text)] "
-                : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-muted)] hover:border-[var(--state-success)]/40"
+              "cursor-pointer rounded-[6px] font-sans text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
+              showInstalledOnly ? "text-[var(--text-primary)]" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
             )}
           >
-            <Check className="h-3 w-3" />
-            INSTALLED
-            {installedMap.size > 0 && (
-              <span className="opacity-75 font-normal">({installedMap.size})</span>
-            )}
+            Installed only{installedMap.size > 0 ? ` (${installedMap.size})` : ""}
           </button>
-        </div>
-
-        {/* Category Pills */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          {CATEGORIES.map((cat) => {
-            const Icon = cat.icon;
-            const active = category === cat.id;
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setCategory(cat.id)}
-                className={clsx(
-                  "inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-sans font-medium border transition-colors cursor-pointer",
-                  active
-                    ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
-                    : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40"
-                )}
-              >
-                <Icon className="h-3 w-3" />
-                {cat.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Difficulty Filter */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs font-sans text-[var(--text-muted)] font-medium">Level</span>
-          {DIFFICULTIES.map((d) => (
-            <button
-              key={d.id}
-              type="button"
-              onClick={() => setDifficulty(d.id)}
-              className={clsx(
-                "px-2 py-0.5 rounded text-xs font-sans font-medium border transition-colors cursor-pointer",
-                difficulty === d.id
-                  ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
-                  : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-muted)] hover:border-[var(--accent-primary)]/40"
-              )}
-            >
-              {d.label}
-            </button>
-          ))}
         </div>
       </div>
 
-      {/* Loading State */}
-      {loading && (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-5 w-5 animate-spin text-[var(--accent-primary)]" />
-          <span className="ml-2 text-xs font-sans text-[var(--text-muted)]">Loading skills...</span>
-        </div>
-      )}
+      {loading && <p className="py-12 text-center font-sans text-sm text-[var(--text-muted)]">Loading skills</p>}
 
-      {/* Error State */}
       {error && (
-        <div className="rounded border border-[var(--state-error)]/25 bg-[var(--state-error)]/10 p-3 text-xs font-sans text-[var(--state-error)]">
+        <p role="alert" className="font-sans text-[13px] text-[var(--state-error)]">
           {error}
-        </div>
+        </p>
       )}
 
-      {/* Skills Grid / Row List */}
       {!loading && !error && (
         <>
           {viewMode === "grid" ? (
-            /* ────────────── Grid / Card View ────────────── */
-            <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div ref={gridRef} className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {filteredSkills.map((skill) => {
                 const isInstalled = isSkillInstalled(skill);
-                const catColor = CATEGORY_COLORS[skill.category] || CATEGORY_COLORS.PRODUCTIVITY;
-                const diffColor = DIFFICULTY_COLORS[skill.difficulty] || DIFFICULTY_COLORS.BEGINNER;
-                const srcColor = SOURCE_COLORS[skill.source] || SOURCE_COLORS.glama;
-
                 return (
-                  <div
-                    key={skill.id}
-                    onClick={() => setDetailSkill(skill)}
-                    className="group rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 transition-colors p-4 flex flex-col justify-between space-y-3 cursor-pointer"
-                  >
-                    {/* Top */}
-                    <div className="space-y-2">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                          <ItemIcon
-                            name={skill.name}
-                            category={skill.category}
-                            tags={skill.tags}
-                            owner={skill.author}
-                            size="sm"
-                          />
-                          <div className="min-w-0 flex-1">
-                            <h3 className="text-xs font-sans font-medium text-[var(--text-primary)] truncate group-hover:text-[var(--accent-primary)] transition-colors">
-                              {skill.name}
-                            </h3>
-                            <p className="text-xs font-sans text-[var(--text-muted)]">
-                              by <span className="font-medium text-[var(--text-secondary)]">{skill.author}</span>
-                            </p>
+                  <div key={skill.id} className={clsx(CARD, "flex flex-col gap-4 p-5")}>
+                    <button
+                      type="button"
+                      onClick={() => setDetailSkill(skill)}
+                      className="flex-1 cursor-pointer space-y-3 rounded-[8px] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+                    >
+                      <div className="flex items-start gap-3">
+                        <ItemIcon name={skill.name} category={skill.category} tags={skill.tags} owner={skill.author} size="sm" />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-baseline justify-between gap-3">
+                            <h3 className="truncate font-sans text-sm font-medium text-[var(--text-primary)]">{skill.name}</h3>
+                            {isInstalled && <Tag tone="good">Installed</Tag>}
                           </div>
+                          <p className="font-sans text-[13px] text-[var(--text-muted)]">by {skill.author}</p>
                         </div>
-                        {isInstalled && (
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--state-success)]/10 text-[var(--state-success)] border border-[var(--state-success)]/25 shrink-0">
-                            <Check className="h-2.5 w-2.5" /> Installed
-                          </span>
-                        )}
                       </div>
-
-                      {/* Description */}
-                      <p className="text-xs font-sans text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
-                        {skill.description}
+                      <p className="line-clamp-2 font-sans text-[13px] leading-5 text-[var(--text-secondary)]">{skill.description}</p>
+                      <p className="font-mono text-xs leading-5 text-[var(--text-muted)]">
+                        {[sourceLabel(skill.source), skill.category.toLowerCase(), skill.difficulty.toLowerCase(), ...skill.tags.slice(0, 2)].join(" · ")}
                       </p>
-
-                      {/* Tags & Source */}
-                      <div className="flex flex-wrap items-center gap-1">
-                        <span className={clsx("px-1.5 py-0.5 rounded text-xs font-sans font-medium border", srcColor)}>
-                          {skill.source === "smithery" ? "SMITHERY" : skill.source === "glama" ? "GLAMA" : skill.source === "mcp.so" ? "mcp.so" : skill.source}
-                        </span>
-                        <span className={clsx("px-1.5 py-0.5 rounded text-xs font-sans font-medium border", catColor)}>
-                          {skill.category}
-                        </span>
-                        <span className={clsx("px-1.5 py-0.5 rounded text-xs font-sans font-medium border", diffColor)}>
-                          {skill.difficulty}
-                        </span>
-                        {skill.tags.slice(0, 2).map((t, i) => (
-                          <span key={i} className="px-1.5 py-0.5 rounded text-xs font-sans bg-[var(--surface-sunken)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
-                            #{t}
-                          </span>
-                        ))}
-                      </div>
+                    </button>
+                    <div className="flex items-center justify-between gap-3 border-t border-[var(--border-subtle)] pt-4">
+                      <span className={clsx(META, "flex items-center gap-3")}>
+                        {typeof skill.rating === "number" && <span>{skill.rating} rating</span>}
+                        {typeof skill.installs === "number" && <span>{skill.installs.toLocaleString()} installs</span>}
+                        <span>{skill.steps.length} steps</span>
+                      </span>
+                      {actionButton(skill, isInstalled)}
                     </div>
-
-                    {/* Stats */}
-                    <div className="flex items-center justify-between text-xs font-sans text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)]">
-                      <div className="flex items-center gap-2">
-                        <span className="flex items-center gap-0.5 text-[var(--state-warning)] font-medium">
-                          {typeof skill.rating === "number" && (<><Star className="h-3 w-3 fill-[var(--text-muted)]" /> {skill.rating}</>)}
-                        </span>
-                        <span className="flex items-center gap-0.5">
-                          {typeof skill.installs === "number" && (<><Download className="h-3 w-3" /> {skill.installs.toLocaleString()}</>)}
-                        </span>
-                        <span className="flex items-center gap-0.5">
-                          <Clock className="h-3 w-3" /> {skill.estimatedTime}
-                        </span>
-                      </div>
-                      <span className="text-xs text-[var(--text-muted)]">{skill.steps.length} steps</span>
-                    </div>
-
-                    {/* Install / Uninstall Buttons */}
-                    {isInstalled ? (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleUninstall(skill);
-                        }}
-                        disabled={installing === skill.id}
-                        className={clsx(
-                          "w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer",
-                          installing === skill.id ? "opacity-60 cursor-wait" : "",
-                          "border border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)] hover:bg-[var(--state-error)]/10"
-                        )}
-                      >
-                        {installing === skill.id ? <><Loader2 className="h-3 w-3 animate-spin" /> Removing...</> : <><Trash2 className="h-3 w-3" /> Uninstall</>}
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleInstall(skill);
-                        }}
-                        disabled={installing === skill.id}
-                        className={clsx(
-                          "w-full inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer",
-                          installing === skill.id ? "opacity-60 cursor-wait" : "",
-                          "border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] active:scale-95"
-                        )}
-                      >
-                        {installing === skill.id ? <><Loader2 className="h-3 w-3 animate-spin" /> Installing...</> : <><Plus className="h-3 w-3" /> Install skill</>}
-                      </button>
-                    )}
                   </div>
                 );
               })}
             </div>
           ) : (
-            /* ────────────── Row / List View ────────────── */
-            <div ref={gridRef} className="space-y-2.5">
+            <ul ref={gridRef as unknown as React.RefObject<HTMLUListElement>} className={clsx(CARD, "divide-y divide-[var(--border-subtle)] overflow-hidden")}>
               {filteredSkills.map((skill) => {
                 const isInstalled = isSkillInstalled(skill);
-                const catColor = CATEGORY_COLORS[skill.category] || CATEGORY_COLORS.PRODUCTIVITY;
-                const diffColor = DIFFICULTY_COLORS[skill.difficulty] || DIFFICULTY_COLORS.BEGINNER;
-                const srcColor = SOURCE_COLORS[skill.source] || SOURCE_COLORS.glama;
-
                 return (
-                  <div
-                    key={skill.id}
-                    onClick={() => setDetailSkill(skill)}
-                    className="group rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 transition-colors p-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3.5 cursor-pointer"
-                  >
-                    {/* Left: Info, Badges, Description */}
-                    <div className="min-w-0 flex-1 space-y-1.5">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <ItemIcon
-                          name={skill.name}
-                          category={skill.category}
-                          tags={skill.tags}
-                          owner={skill.author}
-                          size="xs"
-                        />
-                        <h3 className="text-xs font-sans font-medium text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">
-                          {skill.name}
-                        </h3>
-                        <span className="text-xs font-sans text-[var(--text-muted)]">
-                          by <span className="font-medium text-[var(--text-secondary)]">{skill.author}</span>
-                        </span>
-                        <span className={clsx("px-1.5 py-0.5 rounded text-xs font-sans font-medium border", srcColor)}>
-                          {skill.source === "smithery" ? "SMITHERY" : skill.source === "glama" ? "GLAMA" : skill.source === "mcp.so" ? "mcp.so" : skill.source}
-                        </span>
-                        <span className={clsx("px-1.5 py-0.5 rounded text-xs font-sans font-medium border", catColor)}>
-                          {skill.category}
-                        </span>
-                        <span className={clsx("px-1.5 py-0.5 rounded text-xs font-sans font-medium border", diffColor)}>
-                          {skill.difficulty}
-                        </span>
-                        {isInstalled && (
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--state-success)]/10 text-[var(--state-success)] border border-[var(--state-success)]/25 shrink-0">
-                            <Check className="h-2.5 w-2.5" /> Installed
+                  <li key={skill.id} className={clsx(ROW_HOVER, "flex flex-col justify-between gap-3 px-5 py-3 md:flex-row md:items-center")}>
+                    <button
+                      type="button"
+                      onClick={() => setDetailSkill(skill)}
+                      className="flex min-w-0 flex-1 cursor-pointer items-start gap-3 rounded-[8px] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+                    >
+                      <ItemIcon name={skill.name} category={skill.category} tags={skill.tags} owner={skill.author} size="xs" />
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                          <h3 className="font-sans text-sm font-medium text-[var(--text-primary)]">{skill.name}</h3>
+                          <span className={META}>
+                            {sourceLabel(skill.source)} · {skill.category.toLowerCase()} · {skill.difficulty.toLowerCase()}
                           </span>
-                        )}
+                          {isInstalled && <Tag tone="good">Installed</Tag>}
+                        </div>
+                        <p className="line-clamp-1 font-sans text-[13px] text-[var(--text-muted)]">{skill.description}</p>
                       </div>
-
-                      <p className="text-xs font-sans text-[var(--text-secondary)] line-clamp-1 leading-relaxed">
-                        {skill.description}
-                      </p>
-
-                      <div className="flex flex-wrap items-center gap-1.5 text-xs font-sans text-[var(--text-muted)]">
-                        {skill.tags.slice(0, 3).map((t, i) => (
-                          <span key={i} className="px-1.5 py-0.5 rounded bg-[var(--surface-sunken)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
-                            #{t}
-                          </span>
-                        ))}
-                        <span>•</span>
-                        <span>{skill.steps.length} workflow steps</span>
-                      </div>
+                    </button>
+                    <div className="flex shrink-0 items-center justify-between gap-4 md:justify-end">
+                      <span className={clsx(META, "flex items-center gap-3")}>
+                        {typeof skill.rating === "number" && <span>{skill.rating} rating</span>}
+                        {typeof skill.installs === "number" && <span>{skill.installs.toLocaleString()} installs</span>}
+                        <span>{skill.estimatedTime}</span>
+                      </span>
+                      {actionButton(skill, isInstalled)}
                     </div>
-
-                    {/* Right: Stats & Action */}
-                    <div className="flex items-center justify-between md:justify-end gap-3.5 w-full md:w-auto shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-[var(--border-subtle)]">
-                      <div className="flex items-center gap-3 text-xs font-sans text-[var(--text-muted)]">
-                        <span className="flex items-center gap-0.5 text-[var(--state-warning)] font-medium">
-                          {typeof skill.rating === "number" && (<><Star className="h-3 w-3 fill-[var(--text-muted)]" /> {skill.rating}</>)}
-                        </span>
-                        <span className="flex items-center gap-0.5">
-                          {typeof skill.installs === "number" && (<><Download className="h-3 w-3" /> {skill.installs.toLocaleString()}</>)}
-                        </span>
-                        <span className="flex items-center gap-0.5">
-                          <Clock className="h-3 w-3" /> {skill.estimatedTime}
-                        </span>
-                      </div>
-
-                      {isInstalled ? (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleUninstall(skill);
-                          }}
-                          disabled={installing === skill.id}
-                          className={clsx(
-                            "inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer shrink-0 min-w-[90px]",
-                            installing === skill.id ? "opacity-60 cursor-wait" : "",
-                            "border border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)] hover:bg-[var(--state-error)]/10"
-                          )}
-                        >
-                          {installing === skill.id ? <><Loader2 className="h-3 w-3 animate-spin" /> ...</> : <><Trash2 className="h-3 w-3" /> Remove</>}
-                        </button>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleInstall(skill);
-                          }}
-                          disabled={installing === skill.id}
-                          className={clsx(
-                            "inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer shrink-0 min-w-[90px]",
-                            installing === skill.id ? "opacity-60 cursor-wait" : "",
-                            "border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] active:scale-95"
-                          )}
-                        >
-                          {installing === skill.id ? <><Loader2 className="h-3 w-3 animate-spin" /> ...</> : <><Plus className="h-3 w-3" /> Install</>}
-                        </button>
-                      )}
-                    </div>
-                  </div>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           )}
 
-          {/* Pagination */}
           {!showInstalledOnly && (
             <Pagination
               currentPage={currentPage}
@@ -1127,23 +887,20 @@ export function SkillsMarketplace() {
         </>
       )}
 
-      {/* Empty State */}
       {!loading && !error && filteredSkills.length === 0 && (
-        <div className="text-center py-12">
-          <Sparkles className="h-8 w-8 text-[var(--accent-primary)] mx-auto" />
-          <p className="text-xs font-sans font-medium text-[var(--text-primary)] mt-3">No skills found</p>
-          <p className="text-xs font-sans text-[var(--text-muted)] mt-1">
-            {showInstalledOnly ? "No installed skills match this filter." : `No skills matching "${search}" in this category.`}
+        <div className="space-y-1 py-12 text-center">
+          <p className="font-sans text-sm text-[var(--text-primary)]">No skills found</p>
+          <p className="font-sans text-[13px] text-[var(--text-muted)]">
+            {showInstalledOnly ? "No installed skills match these filters." : search ? `Nothing matches "${search}" with these filters.` : "Nothing matches these filters."}
           </p>
         </div>
       )}
 
-      {/* Skill Detail Modal */}
       {detailSkill && (
         <SkillDetailModal
           skill={detailSkill}
           isInstalled={isSkillInstalled(detailSkill)}
-          onInstall={() => isSkillInstalled(detailSkill) ? handleUninstall(detailSkill) : handleInstall(detailSkill)}
+          onInstall={() => (isSkillInstalled(detailSkill) ? handleUninstall(detailSkill) : handleInstall(detailSkill))}
           onClose={() => setDetailSkill(null)}
         />
       )}
@@ -1164,170 +921,104 @@ function SkillDetailModal({
   onInstall: () => void;
   onClose: () => void;
 }) {
-  const catColor = CATEGORY_COLORS[skill.category] || CATEGORY_COLORS.PRODUCTIVITY;
-  const diffColor = DIFFICULTY_COLORS[skill.difficulty] || DIFFICULTY_COLORS.BEGINNER;
   const [sandboxOpen, setSandboxOpen] = useState(false);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 animate-fadeIn" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex animate-fadeIn items-center justify-center bg-black/60 p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="skill-modal-title"
+    >
       <div
-        className="relative w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]"
+        className="relative flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-[16px] border border-[var(--border-subtle)] bg-[var(--surface-elevated)] shadow-[0_8px_24px_rgba(0,0,0,0.24)]"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between gap-3 px-5 py-4 border-b border-[var(--border-subtle)] bg-[var(--surface-raised)]/90 rounded-t-xl">
-          <div className="flex items-center gap-3 min-w-0">
-            <ItemIcon
-              name={skill.name}
-              category={skill.category}
-              tags={skill.tags}
-              owner={skill.author}
-              size="lg"
-            />
-            <div className="min-w-0">
-              <h3 className="text-sm font-sans font-medium text-[var(--text-primary)] truncate">
+        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-[var(--border-subtle)] px-5 py-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <ItemIcon name={skill.name} category={skill.category} tags={skill.tags} owner={skill.author} size="lg" />
+            <div className="min-w-0 space-y-0.5">
+              <h3 id="skill-modal-title" className="truncate font-sans text-base font-medium text-[var(--text-primary)]">
                 {skill.name}
               </h3>
-              <p className="text-xs font-sans text-[var(--text-muted)]">
-                by <span className="font-medium text-[var(--text-secondary)]">{skill.author}</span>
-              </p>
+              <p className="font-sans text-[13px] text-[var(--text-muted)]">by {skill.author}</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-[var(--surface-sunken)] text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors cursor-pointer"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-
-        {/* Body */}
-        <div className="px-5 py-4 space-y-5">
-          {/* Description */}
-          <div className="space-y-1.5">
-            <div className="text-xs font-sans text-[var(--text-muted)] font-medium">Description</div>
-            <p className="text-xs font-sans text-[var(--text-secondary)] leading-relaxed">
-              {skill.description}
-            </p>
-          </div>
-
-          {/* Tags & Stats */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className={clsx("px-2 py-0.5 rounded text-xs font-sans font-medium border", SOURCE_COLORS[skill.source] || SOURCE_COLORS.glama)}>
-              {skill.source === "smithery" ? "Smithery.ai" : skill.source === "glama" ? "Glama.ai" : skill.source === "mcp.so" ? "mcp.so" : skill.source}
-            </span>
-            <span className={clsx("px-2 py-0.5 rounded text-xs font-sans font-medium border", catColor)}>
-              {skill.category}
-            </span>
-            <span className={clsx("px-2 py-0.5 rounded text-xs font-sans font-medium border", diffColor)}>
-              {skill.difficulty}
-            </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-sans font-medium border border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]">
-              {typeof skill.rating === "number" && (<><Star className="h-3 w-3 fill-[var(--text-muted)]" /> {skill.rating}</>)}
-            </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]">
-              {typeof skill.installs === "number" && (<><Download className="h-3 w-3" /> {skill.installs.toLocaleString()} installs</>)}
-            </span>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-sans font-medium border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]">
-              <Clock className="h-3 w-3" /> {skill.estimatedTime}
-            </span>
-          </div>
-
-          {/* Required Servers */}
-          {skill.requiredServers.length > 0 && (
-            <div className="space-y-1.5">
-              <div className="text-xs font-sans text-[var(--text-muted)] font-medium flex items-center gap-1.5">
-                <Shield className="h-3 w-3" /> Required MCP servers
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {skill.requiredServers.map((s, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded text-xs font-sans font-medium bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25">
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Steps */}
-          <div className="space-y-2">
-            <div className="text-xs font-sans text-[var(--text-muted)] font-medium flex items-center gap-1.5">
-              <Zap className="h-3 w-3" /> SKILL STEPS ({skill.steps.length})
-            </div>
-            <div className="space-y-2">
-              {skill.steps.map((step) => (
-                <div
-                  key={step.order}
-                  className="flex items-start gap-3 p-2.5 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/60"
-                >
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] text-xs font-sans font-medium shrink-0">
-                    {step.order}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-xs font-sans font-medium text-[var(--text-primary)]">
-                      {step.description}
-                    </p>
-                    {step.requiredTool && (
-                      <p className="text-xs font-sans text-[var(--text-muted)] mt-0.5">
-                        Tool: <span className="font-medium text-[var(--accent-primary)]">{step.requiredTool}</span>
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Source */}
-          <div className="flex items-center gap-2 text-xs font-sans text-[var(--text-muted)]">
-            <span className="">Source:</span>
-            <span className="font-medium text-[var(--text-secondary)]">{skill.source}</span>
-            {skill.sourceUrl && (
-              <a href={skill.sourceUrl} target="_blank" rel="noreferrer" className="text-[var(--accent-primary)] hover:underline inline-flex items-center gap-0.5">
-                View <ExternalLink className="h-2.5 w-2.5" />
-              </a>
-            )}
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="sticky bottom-0 flex items-center justify-end gap-2 px-5 py-3.5 border-t border-[var(--border-subtle)] bg-black/60 rounded-b-xl">
-          <button
-            type="button"
-            onClick={() => setSandboxOpen(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded border text-xs font-sans font-medium transition-colors cursor-pointer border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-[var(--state-warning)] hover:bg-[var(--state-warning)]/10"
-          >
-            <Play className="h-3 w-3" /> Test run
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-4 py-2 rounded border border-[var(--border-strong)] text-xs font-sans font-medium text-[var(--text-secondary)] hover:border-[var(--border-strong)] transition-colors cursor-pointer"
+            className="h-8 shrink-0 cursor-pointer rounded-[8px] px-2 font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
           >
             Close
           </button>
-          {isInstalled ? (
-            <button
-              type="button"
-              onClick={onInstall}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded border text-xs font-sans font-medium transition-colors cursor-pointer border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)] hover:bg-[var(--state-error)]/10"
+        </div>
+
+        <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
+          <p className="font-sans text-sm leading-6 text-[var(--text-secondary)]">{skill.description}</p>
+
+          <p className={clsx(META, "flex flex-wrap items-center gap-x-4 gap-y-1")}>
+            <span>{skill.source}</span>
+            <span>{skill.category.toLowerCase()}</span>
+            <span>{skill.difficulty.toLowerCase()}</span>
+            {typeof skill.rating === "number" && <span>{skill.rating} rating</span>}
+            {typeof skill.installs === "number" && <span>{skill.installs.toLocaleString()} installs</span>}
+            <span>{skill.estimatedTime}</span>
+          </p>
+
+          {skill.requiredServers.length > 0 && (
+            <section className="space-y-1.5">
+              <h4 className="font-sans text-[13px] text-[var(--text-muted)]">Required MCP servers</h4>
+              <p className="font-mono text-xs leading-5 text-[var(--text-secondary)]">{skill.requiredServers.join(" · ")}</p>
+            </section>
+          )}
+
+          <section className="space-y-2">
+            <h4 className="font-sans text-[13px] text-[var(--text-muted)]">Steps ({skill.steps.length})</h4>
+            <ol className="divide-y divide-[var(--border-subtle)] rounded-[10px] border border-[var(--border-subtle)]">
+              {skill.steps.map((step) => (
+                <li key={step.order} className="flex items-baseline gap-3 px-3 py-2.5">
+                  <span className={clsx(META, "w-4 shrink-0")}>{step.order}</span>
+                  <div className="min-w-0">
+                    <p className="font-sans text-[13px] leading-5 text-[var(--text-primary)]">{step.description}</p>
+                    {step.requiredTool && <p className={META}>tool: {step.requiredTool}</p>}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          {skill.sourceUrl && (
+            <a
+              href={skill.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-block font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
             >
-              <Trash2 className="h-3 w-3" /> Uninstall
+              View on {skill.source}
+            </a>
+          )}
+        </div>
+
+        <div className="flex shrink-0 items-center justify-end gap-2 border-t border-[var(--border-subtle)] px-5 py-4">
+          <button type="button" onClick={() => setSandboxOpen(true)} className={BTN_SECONDARY}>
+            Test run
+          </button>
+          <button type="button" onClick={onClose} className={BTN_SECONDARY}>
+            Close
+          </button>
+          {isInstalled ? (
+            <button type="button" onClick={onInstall} className={clsx(BTN_SECONDARY, "text-[var(--state-error)]")}>
+              Uninstall
             </button>
           ) : (
-            <button
-              type="button"
-              onClick={onInstall}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded border text-xs font-sans font-medium transition-colors cursor-pointer border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] active:scale-95"
-            >
-              <Plus className="h-3 w-3" /> Install skill
+            <button type="button" onClick={onInstall} className={BTN_PRIMARY}>
+              Install skill
             </button>
           )}
         </div>
       </div>
 
-      {/* Live Sandbox Drawer */}
       <LiveSandbox
         skillName={skill.name}
         skillDescription={skill.description}

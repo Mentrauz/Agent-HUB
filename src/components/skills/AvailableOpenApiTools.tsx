@@ -2,16 +2,19 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Globe, Loader2, CircleAlert, Check, ShieldCheck } from "lucide-react";
 import { clsx } from "clsx";
 import { OpenApiIntegrationDTO } from "@/types/openapi";
 import { openApiToolRegistryName } from "@/modules/openapi/dynamicTool";
+import { META } from "@/components/ui/surfaces";
 
 interface AvailableOpenApiToolsProps {
   /** Currently selected allowedTools (registry names). */
   selected: string[];
   onAdd: (registryName: string) => void;
 }
+
+const HEAD = "font-sans text-[13px] text-[var(--text-muted)]";
+const LINK = "text-[var(--text-secondary)] underline decoration-[var(--border-strong)] underline-offset-4 hover:text-[var(--text-primary)]";
 
 /**
  * OpenAPI tool allow-listing picker for the skill and workflow editor.
@@ -41,17 +44,17 @@ export function AvailableOpenApiTools({ selected, onAdd }: AvailableOpenApiTools
 
   if (error) {
     return (
-      <div className="flex items-center gap-1.5 pt-2 border-t border-[var(--border-subtle)] text-xs font-sans text-[var(--state-error)]">
-        <CircleAlert className="h-3 w-3 shrink-0" /> {error}
-      </div>
+      <p role="alert" className="border-t border-[var(--border-subtle)] pt-4 font-sans text-[13px] text-[var(--state-error)]">
+        {error}
+      </p>
     );
   }
 
   if (integrations === null) {
     return (
-      <div className="flex items-center gap-1.5 pt-2 border-t border-[var(--border-subtle)] text-xs font-sans text-[var(--text-muted)]">
-        <Loader2 className="h-3 w-3 animate-spin text-[var(--accent-primary)]" /> Loading OpenAPI tools…
-      </div>
+      <p role="status" className={clsx(HEAD, "border-t border-[var(--border-subtle)] pt-4")}>
+        Loading OpenAPI tools
+      </p>
     );
   }
 
@@ -61,17 +64,12 @@ export function AvailableOpenApiTools({ selected, onAdd }: AvailableOpenApiTools
 
   if (activeIntegrations.length === 0) {
     return (
-      <div className="pt-2 border-t border-[var(--border-subtle)] space-y-1">
-        <div className="text-xs font-sans text-[var(--text-secondary)] font-medium">
-          OpenAPI & REST tools
-        </div>
-        <p className="text-xs font-sans text-[var(--text-muted)]">
-          No OpenAPI integrations connected yet. Enable presets in the{" "}
-          <Link
-            href="/dashboard/tools?tab=openapi"
-            className="text-[var(--accent-primary)] underline decoration-dotted hover:text-[var(--accent-primary)]"
-          >
-            OpenAPI Hub
+      <div className="space-y-1 border-t border-[var(--border-subtle)] pt-4">
+        <div className={HEAD}>OpenAPI and REST tools</div>
+        <p className="font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
+          None connected yet. Enable presets in the{" "}
+          <Link href="/dashboard/tools?tab=openapi" className={LINK}>
+            OpenAPI hub
           </Link>{" "}
           to pick them here.
         </p>
@@ -80,24 +78,19 @@ export function AvailableOpenApiTools({ selected, onAdd }: AvailableOpenApiTools
   }
 
   return (
-    <div className="space-y-2 pt-2 border-t border-[var(--border-subtle)]">
-      <div className="text-xs font-sans text-[var(--text-secondary)] font-medium flex items-center gap-1">
-        <Globe className="h-3 w-3 text-[var(--accent-primary)]" /> OpenAPI REST tools
-      </div>
+    <div className="space-y-3 border-t border-[var(--border-subtle)] pt-4">
+      <div className={HEAD}>OpenAPI and REST tools</div>
       {activeIntegrations.map((integration) => {
         const validEndpoints = integration.endpoints.filter((e) => e.enabled !== false);
         if (validEndpoints.length === 0) return null;
 
         return (
-          <div key={integration.id} className="space-y-1">
-            <div className="flex items-center gap-1.5 text-xs font-sans text-[var(--accent-primary)] font-medium">
-              <Globe className="h-3 w-3" />
-              {integration.name}
-              <span className="text-[var(--text-muted)] normal-case tracking-normal font-medium">
-                · {validEndpoints.length} endpoints
-              </span>
+          <div key={integration.id} className="space-y-2">
+            <div className="flex items-baseline gap-3">
+              <span className="font-sans text-sm text-[var(--text-primary)]">{integration.name}</span>
+              <span className={META}>{validEndpoints.length} endpoints</span>
             </div>
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-2">
               {validEndpoints.map((endpoint) => {
                 const registryName = openApiToolRegistryName(integration.id, endpoint.operationId);
                 const isSelected = selected.includes(registryName);
@@ -111,20 +104,18 @@ export function AvailableOpenApiTools({ selected, onAdd }: AvailableOpenApiTools
                     disabled={isSelected}
                     title={endpoint.description || `${endpoint.method} ${endpoint.path}`}
                     className={clsx(
-                      "inline-flex items-center gap-1 px-2 py-0.5 rounded border text-xs font-sans transition-colors cursor-pointer font-medium max-w-full",
+                      "inline-flex h-7 max-w-full cursor-pointer items-center gap-2 rounded-[6px] border px-2.5 font-sans text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
                       isSelected
-                        ? "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)] opacity-80"
-                        : "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] hover:border-[var(--accent-primary)]/40"
+                        ? "cursor-default border-[var(--border-subtle)] bg-[var(--text-primary)]/10 text-[var(--text-muted)]"
+                        : "border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
                     )}
                   >
-                    {isSelected && <Check className="h-2.5 w-2.5 text-[var(--state-success)]" />}
-                    <span className="font-medium text-xs px-1 rounded bg-[var(--surface-sunken)] text-[var(--text-secondary)]">
-                      {endpoint.method}
-                    </span>
+                    <span className="shrink-0 font-mono text-[var(--text-muted)]">{endpoint.method}</span>
                     <span className="truncate">{endpoint.summary || endpoint.operationId}</span>
                     {isWrite && (
-                      <span className="inline-flex items-center gap-0.5 text-xs font-medium px-1 rounded bg-[var(--state-warning)]/10 text-[var(--state-warning)]">
-                        <ShieldCheck className="h-2 w-2" /> HITL
+                      <span className="flex shrink-0 items-center gap-1 text-[var(--state-warning)]" title="Needs approval">
+                        <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[var(--state-warning)]" />
+                        write
                       </span>
                     )}
                   </button>

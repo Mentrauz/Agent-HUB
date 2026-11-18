@@ -1,18 +1,16 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  Zap,
-  ShieldCheck,
-  Search,
-  Wand2,
-} from "lucide-react";
 import { clsx } from "clsx";
 import { OpenApiIntegrationDTO } from "@/types/openapi";
 import { McpServerDTO } from "@/types/mcp";
 import { openApiToolRegistryName } from "@/modules/openapi/dynamicTool";
 import { mcpToolRegistryName } from "@/modules/mcp/toolAdapter";
 import { toast } from "@/stores/toastStore";
+import { BTN_SECONDARY_SM, FIELD, INPUT, META } from "@/components/ui/surfaces";
+
+const PILL =
+  "h-7 cursor-pointer rounded-[6px] border border-[var(--border-subtle)] px-2.5 font-mono text-xs text-[var(--text-secondary)] transition-colors hover:border-[var(--border-strong)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]";
 
 interface ActionMarketplaceItem {
   id: string;
@@ -390,7 +388,7 @@ export function ApprovalActionMarketplace({
     if (!trimmed) return;
     if (!selected.includes(trimmed)) {
       onChange([...selected, trimmed]);
-      toast.success("Action Added", `Added "${trimmed}" to approval locks.`);
+      toast.success("Action added", `Added "${trimmed}" to approval locks.`);
     }
     setCustomInput("");
   };
@@ -399,7 +397,7 @@ export function ApprovalActionMarketplace({
     const names = discoveredActions.map((d) => d.name);
     const combined = Array.from(new Set([...selected, ...names]));
     onChange(combined);
-    toast.success("All Active Write Tools Locked", `Applied ${names.length} approval gates.`);
+    toast.success("Write tools locked", `Applied ${names.length} approval gates.`);
   };
 
   const allItems = [...discoveredActions, ...MARKETPLACE_PRESETS];
@@ -419,67 +417,43 @@ export function ApprovalActionMarketplace({
   });
 
   return (
-    <div className="space-y-3 font-sans">
-      {/* ─── SECTION 1: LIVE WRITE TOOL AUTO-BINDING BANNER ─── */}
+    <div className="space-y-4">
+      {/* Write actions found on the tools in the chain */}
       {discoveredActions.length > 0 && (
-        <div className="p-2.5 rounded-lg border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 flex items-center justify-between gap-2 text-xs">
-          <div className="flex items-center gap-2">
-            <Zap className="h-4 w-4 text-[var(--accent-primary)] shrink-0" />
-            <div>
-              <span className="text-xs font-medium text-[var(--accent-primary)]">
-                {discoveredActions.length} Write Actions Detected from Active Tools
-              </span>
-              <p className="text-xs text-[var(--text-secondary)] font-serif leading-tight">
-                Tools in your chain contain destructive or mutative operations.
-              </p>
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[10px] border border-[var(--border-subtle)] px-4 py-3">
+          <div className="space-y-0.5">
+            <div className="font-sans text-sm text-[var(--text-primary)]">
+              {discoveredActions.length} write {discoveredActions.length === 1 ? "action" : "actions"} found on your tools
             </div>
+            <p className="font-sans text-[13px] text-[var(--text-muted)]">These can change or delete data.</p>
           </div>
-          <button
-            type="button"
-            onClick={lockAllDiscovered}
-            className="shrink-0 px-2.5 py-1 rounded bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-medium hover:bg-[var(--cta-primary-hover)] transition-colors cursor-pointer"
-          >
-            Lock Active Write Tools
+          <button type="button" onClick={lockAllDiscovered} className={BTN_SECONDARY_SM}>
+            Lock all of them
           </button>
         </div>
       )}
 
-      {/* ─── SECTION 3: AI PROMPT SMART RECOMMENDATION ─── */}
+      {/* Suggestions from the instructions */}
       {detectedPromptSuggestions.length > 0 && (
-        <div className="p-2.5 rounded-lg border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-          <div className="flex items-center gap-2">
-            <Wand2 className="h-3.5 w-3.5 text-[var(--accent-primary)] shrink-0" />
-            <span className="text-xs text-[var(--accent-primary)] font-medium">
-              AI Detected Intent in Instructions:
-            </span>
-          </div>
-          <div className="flex flex-wrap items-center gap-1.5">
-            {detectedPromptSuggestions.map((act) => (
-              <button
-                key={act}
-                type="button"
-                onClick={() => toggleAction(act)}
-                className="px-2 py-0.5 rounded-md bg-[var(--accent-primary)]/10 border border-[var(--accent-primary)]/25 text-xs font-sans font-medium text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10 cursor-pointer transition-colors"
-              >
-                + Lock {act}
-              </button>
-            ))}
-          </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-sans text-[13px] text-[var(--text-muted)]">Mentioned in your instructions</span>
+          {detectedPromptSuggestions.map((act) => (
+            <button key={act} type="button" onClick={() => toggleAction(act)} className={PILL}>
+              + lock {act}
+            </button>
+          ))}
         </div>
       )}
 
-      {/* ─── SECTION 4: ACTIVE LOCKED GATES CHIPS ─── */}
-      <div>
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-xs font-medium text-[var(--state-warning)] flex items-center gap-1.5">
-            <ShieldCheck className="h-3.5 w-3.5 text-[var(--state-warning)]" />
-            Active Approval Gates ({selected.length})
-          </span>
+      {/* Locked actions */}
+      <div className="space-y-2">
+        <div className="flex items-baseline justify-between gap-3">
+          <span className="font-sans text-[13px] text-[var(--text-muted)]">Locked actions ({selected.length})</span>
           {selected.length > 0 && (
             <button
               type="button"
               onClick={() => onChange([])}
-              className="text-xs text-[var(--text-muted)] hover:text-[var(--state-error)] transition-colors cursor-pointer"
+              className="cursor-pointer font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--state-error)]"
             >
               Clear all
             </button>
@@ -487,21 +461,23 @@ export function ApprovalActionMarketplace({
         </div>
 
         {selected.length === 0 ? (
-          <p className="text-xs text-[var(--text-muted)] p-2.5 rounded-lg border border-dashed border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10">
-            No write actions locked. All tool executions will run autonomously without human pauses.
+          <p className="rounded-[10px] border border-dashed border-[var(--border-strong)] px-4 py-3 font-sans text-[13px] leading-5 text-[var(--text-muted)]">
+            Nothing is locked, so every tool call runs without a human pause.
           </p>
         ) : (
-          <div className="flex flex-wrap gap-1.5 p-2.5 rounded-lg border border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10">
+          <div className="relative flex flex-wrap gap-1.5 rounded-[10px] border border-[var(--border-subtle)] px-4 py-3">
+            <span aria-hidden="true" className="absolute bottom-3 left-0 top-3 w-0.5 rounded-full bg-[var(--state-warning)]" />
             {selected.map((action) => (
               <span
                 key={action}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-[var(--state-warning)] text-xs font-medium"
+                className="inline-flex items-center gap-1.5 rounded-[6px] bg-[var(--text-primary)]/10 px-2 py-0.5 font-mono text-xs text-[var(--text-primary)]"
               >
-                <code>{action}</code>
+                {action}
                 <button
                   type="button"
                   onClick={() => toggleAction(action)}
-                  className="text-[var(--state-warning)] hover:text-[var(--state-error)] transition-colors cursor-pointer ml-1 font-medium"
+                  aria-label={`Unlock ${action}`}
+                  className="cursor-pointer text-[var(--text-muted)] transition-colors hover:text-[var(--state-error)]"
                 >
                   ×
                 </button>
@@ -511,7 +487,7 @@ export function ApprovalActionMarketplace({
         )}
       </div>
 
-      {/* ─── SECTION 5: CUSTOM ACTION INPUT ─── */}
+      {/* Custom action */}
       <div className="flex gap-2">
         <input
           value={customInput}
@@ -522,113 +498,82 @@ export function ApprovalActionMarketplace({
               handleAddCustom();
             }
           }}
-          placeholder="Type custom action name (e.g. charge_stripe, send_slack) & press enter…"
-          className="w-full rounded-lg border border-[var(--state-warning)]/25 bg-[var(--surface-raised)] px-3 py-1.5 text-xs text-[var(--text-primary)] font-sans placeholder:text-[var(--text-muted)] focus:border-[var(--state-warning)]/40 focus:outline-none transition-colors"
+          aria-label="Custom action name"
+          placeholder="Add a custom action, for example charge_stripe"
+          className={clsx(INPUT, "w-full font-mono text-xs")}
         />
-        <button
-          type="button"
-          onClick={handleAddCustom}
-          className="shrink-0 px-3 py-1.5 rounded-lg border border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-xs font-medium text-[var(--state-warning)] hover:bg-[var(--state-warning)] transition-colors cursor-pointer"
-        >
-          + ADD
+        <button type="button" onClick={handleAddCustom} className={BTN_SECONDARY_SM}>
+          Add
         </button>
       </div>
 
-      {/* ─── SECTION 6: CATEGORIZED MARKETPLACE GRID ─── */}
-      <div className="pt-2 border-t border-[var(--state-warning)]/25 space-y-2">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-          <div className="flex flex-wrap gap-1">
-            {[
-              { id: "ALL", label: "All presets" },
-              { id: "DISCOVERED", label: `DISCOVERED (${discoveredActions.length})` },
-              { id: "FINTECH", label: "Fintech & payments" },
-              { id: "DEVOPS", label: "DevOps & cloud" },
-              { id: "CRM_WEBHOOKS", label: "Crm & comms" },
-              { id: "SECURITY", label: "Security & compliance" },
-            ].map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setActiveCategory(cat.id as typeof activeCategory)}
-                className={clsx(
-                  "px-2 py-0.5 rounded text-xs font-medium transition-colors cursor-pointer",
-                  activeCategory === cat.id
-                    ? "bg-[var(--state-warning)] text-[var(--cta-primary-text)] "
-                    : "bg-[var(--surface-sunken)] text-[var(--state-warning)] hover:bg-[var(--state-warning)]/10 border border-[var(--state-warning)]/25"
-                )}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="relative w-full sm:w-48">
-            <Search className="h-3 w-3 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-            <input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search actions…"
-              className="w-full pl-7 pr-2 py-1 rounded-md border border-[var(--state-warning)]/25 bg-[var(--surface-raised)] text-xs placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--state-warning)]/40"
-            />
-          </div>
+      {/* Presets */}
+      <div className="space-y-3 border-t border-[var(--border-subtle)] pt-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <select
+            value={activeCategory}
+            onChange={(e) => setActiveCategory(e.target.value as typeof activeCategory)}
+            aria-label="Filter presets by category"
+            className={clsx(FIELD, "h-8 cursor-pointer px-2 text-[13px]")}
+          >
+            <option value="ALL">All presets</option>
+            <option value="DISCOVERED">Found on your tools ({discoveredActions.length})</option>
+            <option value="FINTECH">Fintech and payments</option>
+            <option value="DEVOPS">DevOps and cloud</option>
+            <option value="CRM_WEBHOOKS">CRM and comms</option>
+            <option value="SECURITY">Security and compliance</option>
+          </select>
+          <input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Search actions"
+            placeholder="Search actions"
+            className={clsx(FIELD, "h-8 flex-1 px-3 text-[13px]")}
+          />
         </div>
 
-        {/* Action Preset Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
+        <ul className="max-h-60 divide-y divide-[var(--border-subtle)] overflow-y-auto rounded-[10px] border border-[var(--border-subtle)]">
           {filteredItems.map((item) => {
             const isSelected = selected.includes(item.name);
             return (
-              <div
-                key={item.id}
-                onClick={() => toggleAction(item.name)}
-                className={clsx(
-                  "p-2.5 rounded-lg border cursor-pointer transition-colors text-xs flex flex-col justify-between space-y-1 select-none",
-                  isSelected
-                    ? "border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 "
-                    : "border-[var(--state-warning)]/25 bg-[var(--surface-raised)]/70 hover:border-[var(--state-warning)]/40 hover:bg-[var(--state-warning)]/10"
-                )}
-              >
-                <div className="flex items-center justify-between gap-1">
-                  <div className="flex items-center gap-1.5 truncate">
-                    <span className="font-medium text-xs text-[var(--text-primary)] truncate">
-                      {item.name}
+              <li key={item.id}>
+                <label className="flex cursor-pointer items-start gap-3 px-3 py-2.5 transition-colors hover:bg-[var(--text-primary)]/[0.04]">
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => toggleAction(item.name)}
+                    className="mt-1 h-3.5 w-3.5 accent-[var(--accent-primary)]"
+                  />
+                  <span className="min-w-0 flex-1 space-y-0.5">
+                    <span className="flex items-baseline justify-between gap-3">
+                      <span className="truncate font-mono text-xs text-[var(--text-primary)]">{item.name}</span>
+                      <span
+                        className="shrink-0 font-sans text-[13px]"
+                        style={{
+                          color:
+                            item.riskLevel === "CRITICAL"
+                              ? "var(--state-error)"
+                              : item.riskLevel === "HIGH"
+                              ? "var(--state-warning)"
+                              : "var(--text-muted)",
+                        }}
+                      >
+                        {item.riskLevel.toLowerCase()}
+                      </span>
                     </span>
-                  </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <span
-                      className={clsx(
-                        "text-xs font-medium px-1 rounded",
-                        item.riskLevel === "CRITICAL"
-                          ? "bg-[var(--state-error)]/10 text-[var(--state-error)]"
-                          : item.riskLevel === "HIGH"
-                          ? "bg-[var(--state-warning)]/10 text-[var(--state-warning)]"
-                          : "bg-[var(--surface-sunken)] text-[var(--text-secondary)]"
-                      )}
-                    >
-                      {item.riskLevel}
+                    <span className="block line-clamp-1 font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
+                      {item.description}
                     </span>
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={() => {}}
-                      className="accent-[var(--text-muted)] pointer-events-none h-3 w-3"
-                    />
-                  </div>
-                </div>
-
-                <p className="text-xs text-[var(--text-muted)] font-serif line-clamp-1 leading-tight">
-                  {item.description}
-                </p>
-
-                {item.source && (
-                  <span className="text-xs text-[var(--accent-primary)] font-sans truncate">
-                    {item.source}
+                    {item.source && <span className={clsx(META, "block truncate")}>{item.source}</span>}
                   </span>
-                )}
-              </div>
+                </label>
+              </li>
             );
           })}
-        </div>
+          {filteredItems.length === 0 && (
+            <li className="px-3 py-6 text-center font-sans text-[13px] text-[var(--text-muted)]">No actions match</li>
+          )}
+        </ul>
       </div>
     </div>
   );

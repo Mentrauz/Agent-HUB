@@ -2,31 +2,21 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import {
-  Search,
-  X,
-  Loader2,
-  GitBranch,
-  ExternalLink,
-  LayoutGrid,
-  List,
-  Eye,
-  Layers,
-  ArrowRight,
-  Copy,
-  Check,
-  Zap,
-  Workflow,
-  Flame,
-  Tag,
-  Puzzle,
-  BookOpen,
-  Filter,
-} from "lucide-react";
 import { clsx } from "clsx";
 import { toast } from "@/stores/toastStore";
 import { Pagination } from "@/components/common/Pagination";
-import { N8nOfficialLogo, DifyOfficialLogo } from "@/components/common/BrandLogos";
+import {
+  BTN_PRIMARY,
+  BTN_SECONDARY,
+  BTN_SECONDARY_SM,
+  CARD,
+  FIELD,
+  META,
+  ROW_HOVER,
+  SECTION_TITLE,
+  Segmented,
+  plural,
+} from "@/components/ui/surfaces";
 
 type WorkflowProvider = "all" | "n8n" | "dify" | "studio";
 
@@ -34,47 +24,11 @@ const PROVIDERS: Array<{
   id: WorkflowProvider;
   name: string;
   statsKey: "total" | "n8n" | "dify" | "studio";
-  icon: React.ComponentType<{ className?: string }>;
-  colorClass: string;
-  activeClass: string;
-  pillClass: string;
 }> = [
-  {
-    id: "all",
-    name: "All providers",
-    statsKey: "total",
-    icon: Layers,
-    colorClass: "text-[var(--text-muted)]",
-    activeClass: "bg-[var(--surface-elevated)] text-[var(--text-primary)] border-[var(--border-strong)] ",
-    pillClass: "border-[var(--border-strong)] bg-[var(--surface-elevated)]/10 text-[var(--text-muted)]",
-  },
-  {
-    id: "n8n",
-    name: "n8n workflows",
-    statsKey: "n8n",
-    icon: N8nOfficialLogo,
-    colorClass: "text-[var(--state-error)]",
-    activeClass: "bg-[var(--state-error)] text-[var(--cta-primary-text)] border-[var(--state-error)]/40",
-    pillClass: "border-[var(--state-error)]/40 bg-[var(--state-error)]/10 text-[var(--state-error)]",
-  },
-  {
-    id: "dify",
-    name: "Dify.ai workflows",
-    statsKey: "dify",
-    icon: DifyOfficialLogo,
-    colorClass: "text-[var(--accent-primary)]",
-    activeClass: "bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] border-[var(--accent-primary)]/40",
-    pillClass: "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)]",
-  },
-  {
-    id: "studio",
-    name: "Studio blueprints",
-    statsKey: "studio",
-    icon: Zap,
-    colorClass: "text-[var(--accent-primary)]",
-    activeClass: "bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] border-[var(--accent-primary)]/40",
-    pillClass: "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)]",
-  },
+  { id: "all", name: "All providers", statsKey: "total" },
+  { id: "n8n", name: "n8n", statsKey: "n8n" },
+  { id: "dify", name: "Dify.ai", statsKey: "dify" },
+  { id: "studio", name: "Studio blueprints", statsKey: "studio" },
 ];
 
 /** Formats a live-fetched count for the provider tab pills (e.g. 11950 -> "12.0K+"). */
@@ -303,175 +257,97 @@ export function UnifiedWorkflowsMarketplace() {
     const textToCopy = typeof content === "string" ? content : JSON.stringify(content, null, 2);
     navigator.clipboard.writeText(textToCopy);
     setCopiedId(id);
-    toast.success("Workflow copied!", "Workflow definition copied to clipboard");
+    toast.success("Workflow copied", "Workflow definition copied to clipboard");
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const resetFilters = () => {
+    setSearch("");
+    setActiveCategory("ALL");
+    setActiveTag(null);
+    setActiveProvider("all");
+  };
+
+  const summary = (wf: UnifiedMarketplaceWorkflow) =>
+    wf.description?.replace(/#+\s*/g, "")?.slice(0, 160) || "Workflow ready for one-click import.";
+
+  const usage = (wf: UnifiedMarketplaceWorkflow) =>
+    wf.usageCount && wf.usageCount > 0
+      ? `${Number(wf.usageCount).toLocaleString()} uses`
+      : wf.viewsCount && wf.viewsCount > 0
+      ? `${Number(wf.viewsCount).toLocaleString()} views`
+      : wf.nodeCount && wf.nodeCount > 0
+      ? `${wf.nodeCount} nodes`
+      : "";
+
   return (
     <div className="space-y-6">
-      {/* Top Banner with Provider Breakdown */}
-      <div className="bg-[var(--surface-raised)] relative overflow-hidden rounded-xl border border-[var(--accent-primary)]/40 p-5 sm:p-6">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 h-48 w-48 rounded-full bg-[var(--cta-primary-bg)]/10 blur-3xl pointer-events-none" />
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
-          <div className="space-y-1.5 max-w-2xl">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-sans font-medium bg-[var(--cta-primary-bg)]/20 text-[var(--accent-primary)] border border-[var(--accent-primary)]/40">
-                <Workflow className="h-3 w-3 text-[var(--accent-primary)]" />
-                Unified workflow ecosystem
-              </span>
-              <span className="text-xs font-sans text-[var(--text-muted)]">
-                {stats.total.toLocaleString()}+ Community &amp; Enterprise Workflows
-              </span>
-            </div>
-            <h2 className="text-lg sm:text-xl font-medium tracking-tight text-[var(--text-primary)] flex items-center gap-2">
-              Workflows &amp; AI Automations Marketplace
-            </h2>
-            <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-sans">
-              Discover, search, and import verified automation workflows from <strong>n8n</strong>, <strong>Dify.ai</strong>, and <strong>Agent Hub</strong>. 1-click import converts any workflow into an interactive visual canvas graph.
-            </p>
-          </div>
-
-          {/* Quick Stats Counter Chips */}
-          <div className="grid grid-cols-3 gap-2 shrink-0 self-stretch sm:self-auto font-sans">
-            <div className="p-2.5 rounded-lg border border-[var(--state-error)]/40 bg-[var(--state-error)]/20 text-center">
-              <div className="text-xs text-[var(--state-error)] font-medium">n8n</div>
-              <div className="text-xs font-medium text-[var(--state-error)]">{stats.n8n.toLocaleString()}+</div>
-            </div>
-            <div className="p-2.5 rounded-lg border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/20 text-center">
-              <div className="text-xs text-[var(--accent-primary)] font-medium">Dify.ai</div>
-              <div className="text-xs font-medium text-[var(--accent-primary)]">{stats.dify.toLocaleString()}+</div>
-            </div>
-            <div className="p-2.5 rounded-lg border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/20 text-center">
-              <div className="text-xs text-[var(--accent-primary)] font-medium">Studio</div>
-              <div className="text-xs font-medium text-[var(--accent-primary)]">{stats.studio}+</div>
-            </div>
-          </div>
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <div className="space-y-1">
+          <h2 className={SECTION_TITLE}>Workflows marketplace</h2>
+          <p className="font-sans text-[13px] text-[var(--text-muted)]">
+            Search and import automation workflows from n8n, Dify.ai and Agent Hub. Each import becomes a canvas graph.
+          </p>
         </div>
-      </div>
-
-      {/* Provider Tabs Selector */}
-      <div className="flex flex-wrap items-center gap-2 font-sans">
-        <span className="text-xs font-medium text-[var(--text-muted)] mr-1 flex items-center gap-1">
-          <Filter className="h-3 w-3 text-[var(--accent-primary)]" /> Source:
+        <span className={META}>
+          n8n {stats.n8n.toLocaleString()} · dify {stats.dify.toLocaleString()} · studio {stats.studio.toLocaleString()}
         </span>
-        {PROVIDERS.map((p) => {
-          const isActive = activeProvider === p.id;
-          const Icon = p.icon;
-          return (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => setActiveProvider(p.id)}
-              className={clsx(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer ",
-                isActive
-                  ? p.activeClass
-                  : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
-              )}
-            >
-              <Icon className={clsx("h-3.5 w-3.5", isActive ? "text-[var(--text-primary)]" : p.colorClass)} />
-              <span>{p.name}</span>
-              <span
-                className={clsx(
-                  "ml-1 px-1.5 py-0.2 rounded-full text-xs font-medium",
-                  isActive
-                    ? "bg-[var(--surface-raised)]/20 text-[var(--text-primary)]"
-                    : "bg-[var(--surface-sunken)] text-[var(--text-secondary)]"
-                )}
-              >
-                {formatProviderCount(stats[p.statsKey])}
-              </span>
-            </button>
-          );
-        })}
       </div>
 
-      {/* Search, View Mode, Categories & Integration Filters */}
-      <div className="space-y-3 font-sans">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          {/* Search Input */}
-          <div className="relative flex-1 max-w-lg">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--text-muted)]" />
+      <div className="space-y-4">
+        <Segmented
+          label="Source"
+          value={activeProvider}
+          onChange={(v) => setActiveProvider(v)}
+          options={PROVIDERS.map((p) => ({ id: p.id, label: `${p.name} ${formatProviderCount(stats[p.statsKey])}` }))}
+        />
+
+        <div className="flex flex-col items-stretch justify-between gap-3 sm:flex-row sm:items-center">
+          <div className="flex w-full max-w-lg items-center gap-2">
             <input
               type="text"
-              placeholder={`Search ${activeProvider === "all" ? `${formatProviderCount(stats.total)} workflows` : activeProvider.toUpperCase()} (e.g. RAG, Slack, OpenAI, Stripe, Scraper)...`}
+              aria-label="Search workflows"
+              placeholder="Search workflows, for example RAG, Slack or Stripe"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-8 py-2 rounded border border-[var(--border-strong)] bg-[var(--surface-raised)]/90 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)]/40 focus:ring-1 focus:ring-[var(--accent-primary)]/40 transition-colors"
+              className={clsx(FIELD, "h-9 w-full px-3")}
             />
             {search && (
-              <button
-                type="button"
-                onClick={() => setSearch("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-muted)] cursor-pointer"
-              >
-                <X className="h-3.5 w-3.5" />
+              <button type="button" onClick={() => setSearch("")} className={BTN_SECONDARY_SM}>
+                Clear
               </button>
             )}
           </div>
-
-          {/* View Mode & Count */}
-          <div className="flex items-center justify-between sm:justify-end gap-3 text-xs">
-            <span className="text-xs text-[var(--text-muted)]">
-              {loading ? (
-                <span className="flex items-center gap-1.5">
-                  <Loader2 className="h-3 w-3 animate-spin text-[var(--accent-primary)]" /> Loading...
-                </span>
-              ) : (
-                <>
-                  <strong className="text-[var(--text-muted)] font-medium">{totalWorkflows.toLocaleString()}</strong> workflows found
-                </>
-              )}
-            </span>
-
-            <div className="flex items-center border border-[var(--border-strong)] rounded bg-[var(--surface-raised)]/70 p-0.5">
-              <button
-                type="button"
-                onClick={() => setViewMode("grid")}
-                className={clsx(
-                  "p-1.5 rounded transition-colors cursor-pointer",
-                  viewMode === "grid"
-                    ? "bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
-                    : "text-[var(--text-muted)] hover:text-[var(--text-muted)]"
-                )}
-                title="Grid View"
-              >
-                <LayoutGrid className="h-3.5 w-3.5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode("list")}
-                className={clsx(
-                  "p-1.5 rounded transition-colors cursor-pointer",
-                  viewMode === "list"
-                    ? "bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] "
-                    : "text-[var(--text-muted)] hover:text-[var(--text-muted)]"
-                )}
-                title="List View"
-              >
-                <List className="h-3.5 w-3.5" />
-              </button>
-            </div>
+          <div className="flex items-center justify-between gap-4 sm:justify-end">
+            <span className={META}>{loading ? "Loading" : `${totalWorkflows.toLocaleString()} found`}</span>
+            <Segmented
+              label="View"
+              hideLabel
+              value={viewMode}
+              onChange={(v) => setViewMode(v)}
+              options={[
+                { id: "grid", label: "Grid" },
+                { id: "list", label: "List" },
+              ]}
+            />
           </div>
         </div>
 
-        {/* Categories Bar */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-sans text-sm">
           {UNIFIED_CATEGORIES.map((cat) => {
             const isActive = activeCategory.toLowerCase() === cat.id.toLowerCase();
             return (
               <button
                 key={cat.id}
                 type="button"
+                aria-pressed={isActive}
                 onClick={() => {
                   setActiveCategory(cat.id);
                   setActiveTag(null);
                 }}
                 className={clsx(
-                  "px-2.5 py-1 rounded text-xs font-medium border transition-colors cursor-pointer",
-                  isActive
-                    ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)]"
-                    : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/60 text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)]"
+                  "cursor-pointer rounded-[6px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
+                  isActive ? "text-[var(--text-primary)]" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                 )}
               >
                 {cat.label}
@@ -480,267 +356,109 @@ export function UnifiedWorkflowsMarketplace() {
           })}
         </div>
 
-        {/* Integration & Provider Tags */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-xs">
-          <span className="text-[var(--text-muted)] font-medium text-xs mr-1 flex items-center gap-1">
-            <Tag className="h-2.5 w-2.5" /> Integrations:
-          </span>
+        <div className="flex flex-wrap items-center gap-1.5">
           {POPULAR_INTEGRATION_TAGS.map((tag) => {
             const isTagActive = activeTag?.toLowerCase() === tag.toLowerCase();
             return (
               <button
                 key={tag}
                 type="button"
+                aria-pressed={isTagActive}
                 onClick={() => {
                   setActiveTag(isTagActive ? null : tag);
                   if (!isTagActive) setSearch("");
                 }}
                 className={clsx(
-                  "px-2 py-0.5 rounded text-xs border transition-colors cursor-pointer",
+                  "h-7 cursor-pointer rounded-[6px] border px-2.5 font-mono text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
                   isTagActive
-                    ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/20 text-[var(--accent-primary)] font-medium"
-                    : "border-[var(--border-subtle)] bg-[var(--surface-sunken)]/70 text-[var(--text-muted)] hover:border-[var(--border-strong)]"
+                    ? "border-[var(--accent-primary)] text-[var(--text-primary)]"
+                    : "border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--border-strong)] hover:text-[var(--text-primary)]"
                 )}
               >
-                #{tag}
+                {tag}
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Main Grid / List Views */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 space-y-3 font-sans">
-          <Loader2 className="h-8 w-8 animate-spin text-[var(--accent-primary)]" />
-          <span className="text-xs text-[var(--text-muted)]">Fetching unified workflow ecosystem...</span>
-        </div>
+        <p className="py-16 text-center font-sans text-sm text-[var(--text-muted)]">Loading workflows</p>
       ) : workflows.length === 0 ? (
-        <div className="text-center py-16 font-sans space-y-3 rounded-xl border border-dashed border-[var(--border-strong)] bg-[var(--surface-sunken)]/50">
-          <Workflow className="h-8 w-8 text-[var(--accent-primary)] mx-auto opacity-70" />
-          <p className="text-sm font-medium text-[var(--text-muted)]">No workflows found</p>
-          <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto">
-            Try adjusting your search query, provider selection, or category filter to discover more workflows.
-          </p>
-          <button
-            type="button"
-            onClick={() => {
-              setSearch("");
-              setActiveCategory("ALL");
-              setActiveTag(null);
-              setActiveProvider("all");
-            }}
-            className="px-3 py-1.5 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 hover:bg-[var(--cta-primary-hover)]/20 text-[var(--accent-primary)] text-xs font-medium transition-colors cursor-pointer"
-          >
-            Reset All Filters
+        <div className="space-y-3 py-16 text-center">
+          <p className="font-sans text-sm text-[var(--text-primary)]">No workflows found</p>
+          <p className="font-sans text-[13px] text-[var(--text-muted)]">Try a different search, source or category.</p>
+          <button type="button" onClick={resetFilters} className={BTN_SECONDARY_SM}>
+            Reset filters
           </button>
         </div>
       ) : (
-        <div className="space-y-6 font-sans">
+        <div className="space-y-6">
           {viewMode === "grid" ? (
-            /* Unified Grid View (18 items) */
-            <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {workflows.map((wf) => {
-                const isN8n = wf.provider === "n8n";
-                const isDify = wf.provider === "dify";
-
-                return (
-                  <div
-                    key={`${wf.provider}-${wf.id}`}
+            <div ref={gridRef} className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {workflows.map((wf) => (
+                <div key={`${wf.provider}-${wf.id}`} className={clsx(CARD, "flex flex-col gap-4 p-5")}>
+                  <button
+                    type="button"
                     onClick={() => loadWorkflowDetails(wf)}
-                    className="group rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 hover:shadow-indigo-500/5 transition-colors p-4 flex flex-col justify-between space-y-3 cursor-pointer relative overflow-hidden"
+                    className="flex-1 cursor-pointer space-y-2 rounded-[8px] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
                   >
-                    {/* Top Row: Author, Version & Provider Pill */}
-                    <div className="space-y-2.5">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0 flex-1">
-                          <span className="text-xs text-[var(--text-muted)] block truncate">
-                            by <span className="font-medium text-[var(--text-secondary)]">@{wf.author}</span>
-                          </span>
-                          <span className="text-xs text-[var(--text-muted)] block font-sans">
-                            v{wf.version || "1.0.0"}
-                          </span>
-                        </div>
-
-                        {/* Provider Brand Pill */}
-                        <div className="flex items-center gap-1 shrink-0">
-                          {wf.badges?.includes("zero-key") && (
-                            <span className="px-1.5 py-0.5 rounded-full text-[7.5px] font-medium border border-[var(--state-success)]/40 bg-[var(--state-success)]/10 text-[var(--state-success)] inline-flex items-center gap-0.5">
-                              <Zap className="h-2 w-2" /> No API key
-                            </span>
-                          )}
-                          <span
-                            className={clsx(
-                              "px-2 py-0.5 rounded-full text-xs font-medium border inline-flex items-center gap-1",
-                              isN8n
-                                ? "border-[var(--state-error)]/40 bg-[var(--state-error)]/10 text-[var(--state-error)]"
-                                : isDify
-                                ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)]"
-                                : "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)]"
-                            )}
-                          >
-                            {isN8n && <N8nOfficialLogo className="h-2.5 w-2.5 shrink-0" />}
-                            {isDify && <DifyOfficialLogo className="h-2.5 w-2.5 shrink-0" />}
-                            {wf.providerName}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Title */}
-                      <h3 className="text-xs font-medium text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors line-clamp-1">
-                        {wf.name}
-                      </h3>
-
-                      {/* Description */}
-                      <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed font-sans">
-                        {wf.description?.replace(/#+\s*/g, "")?.slice(0, 160) || "Workflow ready for 1-click import."}
+                    <div className="flex items-baseline justify-between gap-3">
+                      <h3 className="line-clamp-1 font-sans text-sm font-medium text-[var(--text-primary)]">{wf.name}</h3>
+                      <span className={clsx(META, "shrink-0")}>{wf.providerName}</span>
+                    </div>
+                    <p className="line-clamp-2 font-sans text-[13px] leading-5 text-[var(--text-secondary)]">{summary(wf)}</p>
+                    <p className={META}>
+                      @{wf.author} · v{wf.version || "1.0.0"}
+                    </p>
+                    {(wf.pluginTags?.length || wf.categories?.length || wf.badges?.includes("zero-key")) && (
+                      <p className="font-mono text-xs leading-5 text-[var(--text-muted)]">
+                        {[
+                          wf.badges?.includes("zero-key") ? "no api key" : null,
+                          ...(wf.pluginTags?.slice(0, 3) ?? []),
+                          ...(wf.categories?.slice(0, 2) ?? []),
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
                       </p>
-
-                      {/* Plugins & Category Tags */}
-                      <div className="flex flex-wrap items-center gap-1 pt-1">
-                        {wf.pluginTags?.slice(0, 3).map((p: string, i: number) => (
-                          <span
-                            key={i}
-                            className="px-1.5 py-0.5 rounded text-xs bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-subtle)]"
-                          >
-                            +{p}
-                          </span>
-                        ))}
-                        {wf.categories?.slice(0, 2).map((c: string, i: number) => (
-                          <span
-                            key={i}
-                            className="px-1.5 py-0.5 rounded text-xs bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25"
-                          >
-                            #{c}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Stats & Actions */}
-                    <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2.5 text-xs text-[var(--text-muted)]">
-                        {Boolean(wf.usageCount && wf.usageCount > 0) ? (
-                          <span className="flex items-center gap-1 text-[var(--state-warning)] font-medium">
-                            <Flame className="h-3 w-3 fill-[var(--text-muted)]" />
-                            {Number(wf.usageCount).toLocaleString()} uses
-                          </span>
-                        ) : Boolean(wf.viewsCount && wf.viewsCount > 0) ? (
-                          <span className="flex items-center gap-1 text-[var(--text-muted)]">
-                            <Eye className="h-3 w-3 text-[var(--text-muted)]" />
-                            {Number(wf.viewsCount).toLocaleString()}
-                          </span>
-                        ) : Boolean(wf.nodeCount && wf.nodeCount > 0) ? (
-                          <span>{wf.nodeCount} nodes</span>
-                        ) : null}
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <Link
-                          href={wf.canvasUrl || "/dashboard/canvas/new"}
-                          onClick={(e) => e.stopPropagation()}
-                          className={clsx(
-                            "inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium border text-[var(--text-primary)] transition-colors cursor-pointer",
-                            isN8n
-                              ? "border-[var(--state-error)]/40 bg-[var(--state-error)] hover:bg-[var(--state-error)]"
-                              : isDify
-                              ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)]"
-                              : "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)]"
-                          )}
-                        >
-                          <GitBranch className="h-3 w-3" />
-                          Canvas
-                        </Link>
-
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            loadWorkflowDetails(wf);
-                          }}
-                          className="px-2.5 py-1.5 rounded text-xs font-medium border border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
-                          title="View Details"
-                        >
-                          <ArrowRight className="h-3 w-3" />
-                        </button>
-                      </div>
-                    </div>
+                    )}
+                  </button>
+                  <div className="flex items-center justify-between gap-3 border-t border-[var(--border-subtle)] pt-4">
+                    <span className={META}>{usage(wf)}</span>
+                    <Link href={wf.canvasUrl || "/dashboard/canvas/new"} className={BTN_SECONDARY_SM}>
+                      Open in canvas
+                    </Link>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           ) : (
-            /* Unified List View */
-            <div className="space-y-2.5">
-              {workflows.map((wf) => {
-                const isN8n = wf.provider === "n8n";
-                const isDify = wf.provider === "dify";
-                return (
-                  <div
-                    key={`${wf.provider}-${wf.id}`}
+            <ul className={clsx(CARD, "divide-y divide-[var(--border-subtle)] overflow-hidden")}>
+              {workflows.map((wf) => (
+                <li key={`${wf.provider}-${wf.id}`} className={clsx(ROW_HOVER, "flex flex-col justify-between gap-3 px-5 py-3 sm:flex-row sm:items-center")}>
+                  <button
+                    type="button"
                     onClick={() => loadWorkflowDetails(wf)}
-                    className="group rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-raised)]/80 hover:border-[var(--accent-primary)]/40 transition-colors p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
+                    className="min-w-0 flex-1 cursor-pointer space-y-0.5 rounded-[8px] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
                   >
-                    <div className="min-w-0 flex-1 space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-xs font-medium text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors truncate">
-                          {wf.name}
-                        </h3>
-                        {wf.badges?.includes("zero-key") && (
-                          <span className="px-1.5 py-0.2 rounded text-[7.5px] font-medium border border-[var(--state-success)]/40 bg-[var(--state-success)]/10 text-[var(--state-success)] shrink-0 inline-flex items-center gap-0.5">
-                            <Zap className="h-2 w-2" /> No API key
-                          </span>
-                        )}
-                        <span
-                          className={clsx(
-                            "px-1.5 py-0.2 rounded text-xs font-medium border shrink-0",
-                            isN8n
-                              ? "border-[var(--state-error)]/40 bg-[var(--state-error)]/10 text-[var(--state-error)]"
-                              : isDify
-                              ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)]"
-                              : "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)]"
-                          )}
-                        >
-                          {wf.providerName}
-                        </span>
-                        <span className="text-xs text-[var(--text-muted)] truncate">
-                          by @{wf.author}
-                        </span>
-                      </div>
-                      <p className="text-xs text-[var(--text-secondary)] line-clamp-1 font-sans">
-                        {wf.description?.replace(/#+\s*/g, "")?.slice(0, 140)}
-                      </p>
+                    <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                      <h3 className="truncate font-sans text-sm font-medium text-[var(--text-primary)]">{wf.name}</h3>
+                      <span className={META}>{wf.providerName}</span>
+                      <span className={META}>@{wf.author}</span>
                     </div>
-
-                    <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
-                      {Boolean(wf.usageCount && wf.usageCount > 0) && (
-                        <span className="flex items-center gap-1 text-xs text-[var(--state-warning)] font-medium">
-                          <Flame className="h-3 w-3 fill-[var(--text-muted)]" />
-                          {Number(wf.usageCount).toLocaleString()}
-                        </span>
-                      )}
-                      <Link
-                        href={wf.canvasUrl || "/dashboard/canvas/new"}
-                        onClick={(e) => e.stopPropagation()}
-                        className={clsx(
-                          "inline-flex items-center gap-1 px-3 py-1 rounded text-xs font-medium text-[var(--text-primary)]",
-                          isN8n
-                            ? "bg-[var(--state-error)] hover:bg-[var(--state-error)]"
-                            : isDify
-                            ? "bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)]"
-                            : "bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)]"
-                        )}
-                      >
-                        <GitBranch className="h-3 w-3" /> Canvas
-                      </Link>
-                    </div>
+                    <p className="line-clamp-1 font-sans text-[13px] text-[var(--text-muted)]">{summary(wf)}</p>
+                  </button>
+                  <div className="flex shrink-0 items-center gap-4 self-end sm:self-auto">
+                    <span className={META}>{usage(wf)}</span>
+                    <Link href={wf.canvasUrl || "/dashboard/canvas/new"} className={BTN_SECONDARY_SM}>
+                      Open in canvas
+                    </Link>
                   </div>
-                );
-              })}
-            </div>
+                </li>
+              ))}
+            </ul>
           )}
 
-          {/* Unified Pagination */}
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -754,194 +472,108 @@ export function UnifiedWorkflowsMarketplace() {
         </div>
       )}
 
-      {/* Unified Workflow Detail Modal */}
       {detailWorkflow && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 animate-fadeIn"
+          className="fixed inset-0 z-50 flex animate-fadeIn items-center justify-center bg-black/60 p-4"
           onClick={() => setDetailWorkflow(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="workflow-modal-title"
         >
           <div
-            className="relative w-full max-w-2xl max-h-[88vh] overflow-y-auto rounded-xl border border-[var(--accent-primary)]/40 bg-[var(--surface-raised)] font-sans text-xs flex flex-col justify-between"
+            className="relative flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-[16px] border border-[var(--border-subtle)] bg-[var(--surface-elevated)] shadow-[0_8px_24px_rgba(0,0,0,0.24)]"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
-            <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 border-b border-[var(--border-subtle)] bg-[var(--surface-raised)]/95">
-              <div className="flex items-center gap-3 min-w-0">
-                <div
-                  className={clsx(
-                    "h-10 w-10 rounded-lg border flex items-center justify-center text-xl shrink-0",
-                    detailWorkflow.provider === "n8n"
-                      ? "border-[var(--state-error)]/40 bg-[var(--state-error)]/10 text-[var(--state-error)]"
-                      : detailWorkflow.provider === "dify"
-                      ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)]"
-                      : "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)]"
-                  )}
-                >
-                  {detailWorkflow.provider === "n8n" ? (
-                    <N8nOfficialLogo className="h-5 w-5" />
-                  ) : detailWorkflow.provider === "dify" ? (
-                    <DifyOfficialLogo className="h-5 w-5" />
-                  ) : (
-                    <Layers className="h-5 w-5 text-[var(--accent-primary)]" />
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <h3 className="text-sm font-medium text-[var(--text-primary)] truncate">
-                    {detailWorkflow.name}
-                  </h3>
-                  <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-                    <span className="font-medium text-[var(--accent-primary)]">{detailWorkflow.providerName}</span>
-                    <span>•</span>
-                    <span>by @{detailWorkflow.author}</span>
-                  </div>
-                </div>
+            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-[var(--border-subtle)] px-5 py-4">
+              <div className="min-w-0 space-y-1">
+                <h3 id="workflow-modal-title" className="truncate font-sans text-base font-medium text-[var(--text-primary)]">
+                  {detailWorkflow.name}
+                </h3>
+                <p className={META}>
+                  {detailWorkflow.providerName} · @{detailWorkflow.author}
+                </p>
               </div>
-
               <button
                 type="button"
                 onClick={() => setDetailWorkflow(null)}
-                className="p-1 rounded text-[var(--text-muted)] hover:text-[var(--text-muted)] hover:bg-[var(--surface-elevated)] transition-colors cursor-pointer"
+                className="h-8 shrink-0 cursor-pointer rounded-[8px] px-2 font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
               >
-                <X className="h-4 w-4" />
+                Close
               </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-5 space-y-5 flex-1 overflow-y-auto">
-              {detailLoading && (
-                <div className="flex items-center gap-2 text-[var(--accent-primary)] p-2 bg-[var(--cta-primary-bg)]/10 rounded border border-[var(--accent-primary)]/40">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  <span>Loading full workflow graph and setup guide...</span>
-                </div>
-              )}
+            <div className="flex-1 space-y-5 overflow-y-auto px-5 py-5">
+              {detailLoading && <p className="font-sans text-[13px] text-[var(--text-muted)]">Loading the full graph and setup guide</p>}
 
-              {/* Overview */}
-              <div className="space-y-1.5">
-                <h4 className="text-xs font-medium text-[var(--text-muted)]">Overview</h4>
-                <p className="text-[var(--text-secondary)] leading-relaxed font-sans text-xs bg-[var(--surface-sunken)] p-3 rounded border border-[var(--border-subtle)]">
+              <section className="space-y-1.5">
+                <h4 className="font-sans text-[13px] text-[var(--text-muted)]">Overview</h4>
+                <p className="font-sans text-sm leading-6 text-[var(--text-secondary)]">
                   {detailWorkflow.description || "No overview provided for this workflow."}
                 </p>
+              </section>
+
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <section className="space-y-1.5">
+                  <h4 className="font-sans text-[13px] text-[var(--text-muted)]">Categories</h4>
+                  <p className="font-mono text-xs leading-5 text-[var(--text-secondary)]">
+                    {(detailWorkflow.categories || []).join(" · ") || "None specified"}
+                  </p>
+                </section>
+                <section className="space-y-1.5">
+                  <h4 className="font-sans text-[13px] text-[var(--text-muted)]">Integrations</h4>
+                  <p className="font-mono text-xs leading-5 text-[var(--text-secondary)]">
+                    {(detailWorkflow.pluginTags || detailWorkflow.tags || []).join(" · ") || "None specified"}
+                  </p>
+                </section>
               </div>
 
-              {/* Categories & Included Integrations */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <h4 className="text-xs font-medium text-[var(--text-muted)] flex items-center gap-1">
-                    <Tag className="h-3 w-3 text-[var(--accent-primary)]" /> Categories
-                  </h4>
-                  <div className="flex flex-wrap gap-1">
-                    {(detailWorkflow.categories || []).map((c: string, idx: number) => (
-                      <span key={idx} className="px-2 py-0.5 rounded text-xs font-medium bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/40">
-                        {c}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <h4 className="text-xs font-medium text-[var(--text-muted)] flex items-center gap-1">
-                    <Puzzle className="h-3 w-3 text-[var(--accent-primary)]" /> Integrations &amp; Tools
-                  </h4>
-                  <div className="flex flex-wrap gap-1">
-                    {(() => {
-                      const tagsList = detailWorkflow.pluginTags || detailWorkflow.tags || [];
-                      return tagsList.length > 0 ? (
-                        tagsList.map((p: string, idx: number) => (
-                          <span key={idx} className="px-2 py-0.5 rounded text-xs bg-[var(--surface-sunken)] text-[var(--text-muted)] border border-[var(--border-strong)]">
-                            +{p}
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-xs text-[var(--text-muted)]">None specified</span>
-                      );
-                    })()}
-                  </div>
-                </div>
-              </div>
-
-              {/* Setup Guide (Readme) */}
               {detailWorkflow.readme && (
-                <div className="space-y-1.5">
-                  <h4 className="text-xs font-medium text-[var(--text-muted)] flex items-center gap-1.5">
-                    <BookOpen className="h-3.5 w-3.5 text-[var(--state-warning)]" />
-                    Setup Instructions
-                  </h4>
-                  <div className="p-3.5 rounded bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs text-[var(--text-secondary)] font-sans whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed">
+                <section className="space-y-1.5">
+                  <h4 className="font-sans text-[13px] text-[var(--text-muted)]">Setup instructions</h4>
+                  <div className="max-h-48 overflow-y-auto whitespace-pre-wrap rounded-[10px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-3 font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
                     {detailWorkflow.readme}
                   </div>
-                </div>
+                </section>
               )}
 
-              {/* Converted Canvas Nodes Preview */}
               {detailWorkflow.convertedGraph && (
-                <div className="space-y-1.5">
-                  <h4 className="text-xs font-medium text-[var(--text-muted)] flex items-center gap-1.5">
-                    <Layers className="h-3.5 w-3.5 text-[var(--accent-primary)]" />
-                    Canvas Graph Architecture ({detailWorkflow.convertedGraph.nodes?.length || 0} nodes · {detailWorkflow.convertedGraph.edges?.length || 0} edges)
+                <section className="space-y-1.5">
+                  <h4 className="font-sans text-[13px] text-[var(--text-muted)]">
+                    Canvas graph · {plural(detailWorkflow.convertedGraph.nodes?.length || 0, "node")} ·{" "}
+                    {plural(detailWorkflow.convertedGraph.edges?.length || 0, "edge")}
                   </h4>
-                  <div className="flex flex-wrap gap-1.5">
-                    {(detailWorkflow.convertedGraph.nodes || []).map((n, idx: number) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-1 rounded text-xs bg-[var(--surface-sunken)] border border-[var(--border-strong)] text-[var(--text-muted)]"
-                      >
-                        {n.data?.label || n.label || n.id}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                  <p className="font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
+                    {(detailWorkflow.convertedGraph.nodes || []).map((n) => n.data?.label || n.label || n.id).join(", ")}
+                  </p>
+                </section>
               )}
             </div>
 
-            {/* Modal Footer */}
-            <div className="sticky bottom-0 flex items-center justify-between gap-3 px-5 py-3.5 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)]/90 rounded-b-xl">
-              {detailWorkflow.sourceUrl && (
+            <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] px-5 py-4">
+              {detailWorkflow.sourceUrl ? (
                 <a
                   href={detailWorkflow.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors"
+                  className="font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
                 >
-                  <ExternalLink className="h-3 w-3" /> View on {detailWorkflow.providerName}
+                  View on {detailWorkflow.providerName}
                 </a>
+              ) : (
+                <span />
               )}
-
               <div className="flex items-center gap-2">
                 {Boolean(detailWorkflow.rawDsl || detailWorkflow.rawWorkflowJson) && (
                   <button
                     type="button"
-                    onClick={() =>
-                      copyDslOrJson(
-                        detailWorkflow.rawDsl || detailWorkflow.rawWorkflowJson,
-                        String(detailWorkflow.id)
-                      )
-                    }
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-[var(--border-strong)] text-[var(--text-muted)] hover:bg-[var(--surface-elevated)] transition-colors cursor-pointer text-xs font-medium"
+                    onClick={() => copyDslOrJson(detailWorkflow.rawDsl || detailWorkflow.rawWorkflowJson, String(detailWorkflow.id))}
+                    className={BTN_SECONDARY}
                   >
-                    {copiedId === String(detailWorkflow.id) ? (
-                      <>
-                        <Check className="h-3 w-3 text-[var(--state-success)]" /> Copied
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-3 w-3" /> Copy workflow
-                      </>
-                    )}
+                    {copiedId === String(detailWorkflow.id) ? "Copied" : "Copy workflow"}
                   </button>
                 )}
-
-                <Link
-                  href={detailWorkflow.canvasUrl || "/dashboard/canvas/new"}
-                  className={clsx(
-                    "inline-flex items-center gap-1.5 px-4 py-1.5 rounded border text-[var(--text-primary)] font-medium text-xs transition-colors cursor-pointer",
-                    detailWorkflow.provider === "n8n"
-                      ? "border-[var(--state-error)]/40 bg-[var(--state-error)] hover:bg-[var(--state-error)]"
-                      : detailWorkflow.provider === "dify"
-                      ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)]"
-                      : "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)]"
-                  )}
-                >
-                  <GitBranch className="h-3.5 w-3.5" /> Open in canvas
+                <Link href={detailWorkflow.canvasUrl || "/dashboard/canvas/new"} className={BTN_PRIMARY}>
+                  Open in canvas
                 </Link>
               </div>
             </div>

@@ -1,20 +1,6 @@
 "use client";
 
 import React from "react";
-import {
-  Layers,
-  Search,
-  Cpu,
-  SlidersHorizontal,
-  GitBranch,
-  CheckSquare,
-  Wrench,
-  FileText,
-  Calculator,
-  Database,
-  Plug,
-  ArrowRight,
-} from "lucide-react";
 import { clsx } from "clsx";
 
 interface WorkflowStepChainProps {
@@ -27,85 +13,19 @@ interface StepNodeDef {
   id: string;
   name: string;
   toolName?: string;
-  icon: React.ComponentType<{ className?: string }>;
-  colorClass: string;
-  borderClass: string;
-  bgClass: string;
+  /** Approval locks are the only step that gets a colour. */
+  approval?: boolean;
 }
 
 const STEP_TOOL_MAP: Record<string, StepNodeDef> = {
-  document_search: {
-    id: "doc_search",
-    name: "Doc Search",
-    toolName: "document_search",
-    icon: Search,
-    colorClass: "text-cyan-700 dark:text-cyan-400",
-    borderClass: "border-cyan-300 dark:border-cyan-700/50",
-    bgClass: "bg-cyan-50 dark:bg-cyan-950/40",
-  },
-  ai_extraction: {
-    id: "ai_extract",
-    name: "AI Extraction",
-    toolName: "ai_extraction",
-    icon: Cpu,
-    colorClass: "text-indigo-700 dark:text-indigo-400",
-    borderClass: "border-indigo-300 dark:border-indigo-700/50",
-    bgClass: "bg-indigo-50 dark:bg-indigo-950/40",
-  },
-  ai_classification: {
-    id: "ai_classify",
-    name: "AI Classification",
-    toolName: "ai_classification",
-    icon: SlidersHorizontal,
-    colorClass: "text-purple-700 dark:text-purple-400",
-    borderClass: "border-purple-300 dark:border-purple-700/50",
-    bgClass: "bg-purple-50 dark:bg-purple-950/40",
-  },
-  deterministic_condition: {
-    id: "condition",
-    name: "Condition Rule",
-    toolName: "deterministic_condition",
-    icon: GitBranch,
-    colorClass: "text-emerald-700 dark:text-emerald-400",
-    borderClass: "border-emerald-300 dark:border-emerald-700/50",
-    bgClass: "bg-emerald-50 dark:bg-emerald-950/40",
-  },
-  calculator: {
-    id: "calculator",
-    name: "Calculator",
-    toolName: "calculator",
-    icon: Calculator,
-    colorClass: "text-blue-700 dark:text-blue-400",
-    borderClass: "border-blue-300 dark:border-blue-700/50",
-    bgClass: "bg-blue-50 dark:bg-blue-950/40",
-  },
-  record_lookup: {
-    id: "record_lookup",
-    name: "Record Lookup",
-    toolName: "record_lookup",
-    icon: Database,
-    colorClass: "text-sky-700 dark:text-sky-400",
-    borderClass: "border-sky-300 dark:border-sky-700/50",
-    bgClass: "bg-sky-50 dark:bg-sky-950/40",
-  },
-  mock_task_creator: {
-    id: "mock_action",
-    name: "Action Dispatch",
-    toolName: "mock_task_creator",
-    icon: Wrench,
-    colorClass: "text-rose-700 dark:text-rose-400",
-    borderClass: "border-rose-300 dark:border-rose-700/50",
-    bgClass: "bg-rose-50 dark:bg-rose-950/40",
-  },
-  final_report: {
-    id: "final_report",
-    name: "Final Report",
-    toolName: "final_report",
-    icon: FileText,
-    colorClass: "text-teal-700 dark:text-teal-400",
-    borderClass: "border-teal-300 dark:border-teal-700/50",
-    bgClass: "bg-teal-50 dark:bg-teal-950/40",
-  },
+  document_search: { id: "doc_search", name: "Doc search", toolName: "document_search" },
+  ai_extraction: { id: "ai_extract", name: "AI extraction", toolName: "ai_extraction" },
+  ai_classification: { id: "ai_classify", name: "AI classification", toolName: "ai_classification" },
+  deterministic_condition: { id: "condition", name: "Condition rule", toolName: "deterministic_condition" },
+  calculator: { id: "calculator", name: "Calculator", toolName: "calculator" },
+  record_lookup: { id: "record_lookup", name: "Record lookup", toolName: "record_lookup" },
+  mock_task_creator: { id: "mock_action", name: "Action dispatch", toolName: "mock_task_creator" },
+  final_report: { id: "final_report", name: "Final report", toolName: "final_report" },
 };
 
 export function WorkflowStepChain({
@@ -114,16 +34,7 @@ export function WorkflowStepChain({
   compact = false,
 }: WorkflowStepChainProps) {
   // Construct ordered sequence
-  const steps: StepNodeDef[] = [
-    {
-      id: "input",
-      name: "Structured Input",
-      icon: Layers,
-      colorClass: "text-slate-700 dark:text-slate-300",
-      borderClass: "border-slate-300 dark:border-slate-700/50",
-      bgClass: "bg-slate-50 dark:bg-slate-900/40",
-    },
-  ];
+  const steps: StepNodeDef[] = [{ id: "input", name: "Structured input" }];
 
   // Map allowed tools
   for (const toolName of allowedTools) {
@@ -131,56 +42,46 @@ export function WorkflowStepChain({
       steps.push(STEP_TOOL_MAP[toolName]);
     } else if (toolName.startsWith("mcp_")) {
       // Dynamically discovered MCP tools render as a generic external step.
-      steps.push({
-        id: `mcp_${toolName}`,
-        name: "MCP Tool",
-        toolName,
-        icon: Plug,
-        colorClass: "text-amber-700 dark:text-amber-400",
-        borderClass: "border-amber-300 dark:border-amber-700/50",
-        bgClass: "bg-amber-50 dark:bg-amber-950/40",
-      });
+      steps.push({ id: `mcp_${toolName}`, name: "MCP tool", toolName });
     }
   }
 
-  // If there's an action requiring approval, inject HITL node
+  // If there's an action requiring approval, inject the approval step
   const hasHitl = actionsRequiringApproval.length > 0;
   if (hasHitl) {
     steps.splice(steps.length > 1 ? steps.length - 1 : 1, 0, {
       id: "hitl",
-      name: "HITL Approval Lock",
-      icon: CheckSquare,
-      colorClass: "text-amber-700 dark:text-amber-400",
-      borderClass: "border-amber-300 dark:border-amber-700/50",
-      bgClass: "bg-amber-50 dark:bg-amber-950/40",
+      name: "Approval lock",
+      approval: true,
     });
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5 font-mono text-[11px]">
+    <ol className="flex flex-wrap items-center gap-x-2 gap-y-1.5" aria-label="Pipeline steps">
       {steps.map((step, idx) => {
-        const Icon = step.icon;
         const isLast = idx === steps.length - 1;
         return (
           <React.Fragment key={`${step.id}-${idx}`}>
-            <div
+            <li
               className={clsx(
-                "inline-flex items-center gap-1.5 rounded border px-2 py-1 transition-colors shadow-2xl",
-                step.bgClass,
-                step.borderClass,
-                step.colorClass,
-                compact ? "text-[10px] py-0.5 px-1.5" : "text-xs"
+                "inline-flex items-center gap-1.5 rounded-[6px] border bg-[var(--surface-sunken)] font-sans",
+                step.approval ? "border-[var(--state-warning)]/50" : "border-[var(--border-subtle)]",
+                compact ? "px-1.5 py-0.5 text-xs" : "px-2.5 py-1 text-[13px]"
               )}
             >
-              <Icon className={compact ? "h-3 w-3 shrink-0" : "h-3.5 w-3.5 shrink-0"} />
-              <span className="font-semibold whitespace-nowrap">{step.name}</span>
-            </div>
+              {step.approval && (
+                <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--state-warning)]" />
+              )}
+              <span className="whitespace-nowrap text-[var(--text-secondary)]">{step.name}</span>
+            </li>
             {!isLast && (
-              <ArrowRight className="h-3 w-3 text-slate-400 dark:text-slate-600 shrink-0" />
+              <li aria-hidden="true" className="font-mono text-xs text-[var(--text-muted)]">
+                →
+              </li>
             )}
           </React.Fragment>
         );
       })}
-    </div>
+    </ol>
   );
 }

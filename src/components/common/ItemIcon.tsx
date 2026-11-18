@@ -86,7 +86,7 @@ export function ItemIcon({
     return (
       <div
         className={clsx(
-          "rounded border border-slate-200 dark:border-indigo-950/80 bg-white dark:bg-[#0c0c12] p-1 flex items-center justify-center overflow-hidden shrink-0 shadow-xs",
+          "rounded-[6px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] p-1 flex items-center justify-center overflow-hidden shrink-0",
           sizeClasses[size],
           className
         )}
@@ -106,7 +106,7 @@ export function ItemIcon({
   return (
     <div
       className={clsx(
-        "rounded border border-indigo-300 dark:border-indigo-800/60 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 shadow-xs",
+        "rounded-[6px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-muted)] flex items-center justify-center shrink-0",
         sizeClasses[size],
         className
       )}

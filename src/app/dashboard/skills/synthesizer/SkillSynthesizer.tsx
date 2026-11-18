@@ -2,29 +2,24 @@
 
 import React, { useState, useCallback, useRef } from "react";
 import Link from "next/link";
-import {
-  Wand2,
-  Loader2,
-  Sparkles,
-  Server,
-  FileCode2,
-  Check,
-  AlertTriangle,
-  ChevronDown,
-  ChevronRight,
-  ArrowRight,
-  GitBranch,
-  Zap,
-  Shield,
-  Bot,
-  Wrench,
-  RefreshCw,
-  Network,
-} from "lucide-react";
 import { clsx } from "clsx";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/stores/toastStore";
-import type { AgentGraphDefinition, GraphNodeType } from "@/types/graph";
+import type { AgentGraphDefinition } from "@/types/graph";
+import {
+  BTN_PRIMARY,
+  BTN_SECONDARY,
+  BTN_SECONDARY_SM,
+  CARD,
+  CARD_HEAD,
+  CARD_TITLE,
+  FIELD,
+  META,
+  ROW_HOVER,
+  SECTION_TITLE,
+  Tag,
+  plural,
+} from "@/components/ui/surfaces";
 
 // ────────────── Types ──────────────
 
@@ -62,33 +57,6 @@ interface SynthesisResult {
 }
 
 // ────────────── Helpers ──────────────
-
-const NODE_ICONS: Partial<Record<GraphNodeType, React.ComponentType<{ className?: string }>>> = {
-  start: Zap,
-  end: Zap,
-  agent: Bot,
-  supervisor: GitBranch,
-  tool: Wrench,
-  router: GitBranch,
-  approval: Shield,
-  mcp_tool: Server,
-  mcp_server: Server,
-  loop: RefreshCw,
-};
-
-const NODE_COLORS: Partial<Record<GraphNodeType, string>> = {
-  start: "border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-[var(--state-success)]",
-  end: "border-[var(--state-error)]/25 bg-[var(--state-error)]/10 text-[var(--state-error)]",
-  agent: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  supervisor: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  tool: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  router: "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
-  approval: "border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
-  mcp_tool: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  mcp_server: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  loop: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-  parallel: "border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]",
-};
 
 const EXAMPLE_PROMPTS = [
   {
@@ -160,7 +128,7 @@ export function SkillSynthesizer() {
             setInstalled(true);
             queryClient.invalidateQueries({ queryKey: ["skills"] });
             toast.success(
-              "Skill synthesized & installed!",
+              "Skill synthesized and installed",
               `${data.data.skillName} is ready in your Studio`,
               {
                 action: {
@@ -203,7 +171,7 @@ export function SkillSynthesizer() {
         setResult(data.data);
         setInstalled(true);
         queryClient.invalidateQueries({ queryKey: ["skills"] });
-        toast.success("Installed!", `${data.data.skillName} is now in your Studio`, {
+        toast.success("Installed", `${data.data.skillName} is now in your Studio`, {
           action: {
             label: "Open in canvas",
             href: `/dashboard/canvas/${data.data.skillId}`,
@@ -239,23 +207,24 @@ export function SkillSynthesizer() {
   };
 
   return (
-    <div className="space-y-5">
-      {/* Header */}
-      <div>
-        <h2 className="text-sm font-sans font-medium text-[var(--text-primary)] flex items-center gap-2">
-          <Wand2 className="h-4 w-4 text-[var(--accent-primary)]" />
-          Skill synthesizer
-        </h2>
-        <p className="text-xs font-sans text-[var(--text-muted)] mt-0.5">
-          Describe your goal in natural language — get a multi-agent graph with MCP servers auto-discovered
-        </p>
-      </div>
+    <div className="space-y-6">
+      <section className={CARD}>
+        <div className={CARD_HEAD}>
+          <div className="space-y-1">
+            <h2 className={CARD_TITLE}>Skill synthesizer</h2>
+            <p className="font-sans text-[13px] text-[var(--text-muted)]">
+              Describe a goal in plain language and get a multi-agent graph with MCP servers found for you
+            </p>
+          </div>
+        </div>
 
-      {/* Prompt Input */}
-      <div className="rounded-xl border border-[var(--accent-primary)]/25 bg-[var(--surface-raised)] overflow-hidden">
-        <div className="p-4 space-y-3">
-          <div className="relative">
+        <div className="space-y-4 p-5">
+          <div>
+            <label htmlFor="synth-prompt" className="sr-only">
+              Automation goal
+            </label>
             <textarea
+              id="synth-prompt"
               ref={inputRef}
               value={prompt}
               onChange={(e) => {
@@ -268,377 +237,241 @@ export function SkillSynthesizer() {
                   handleSynthesize(false);
                 }
               }}
-              placeholder="Describe your automation goal...&#10;&#10;e.g. &quot;Automate checking new GitHub issues, querying our Postgres DB for user tier, and posting high-priority alerts to Slack&quot;"
+              placeholder={'Describe your automation goal, for example "Check new GitHub issues, look up the user tier in Postgres and post high-priority alerts to Slack"'}
               rows={4}
-              className="w-full bg-transparent text-xs font-sans text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none resize-none"
+              className={clsx(FIELD, "w-full resize-none p-3 leading-6")}
               disabled={isSynthesizing}
             />
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => handleSynthesize(false)}
                 disabled={!prompt.trim() || isSynthesizing}
-                className={clsx(
-                  "inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-sans font-medium transition-colors cursor-pointer",
-                  prompt.trim() && !isSynthesizing
-                    ? "border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] hover:bg-[var(--cta-primary-hover)] active:scale-95"
-                    : "border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-muted)] cursor-not-allowed"
-                )}
+                className={BTN_PRIMARY}
               >
-                {isSynthesizing ? (
-                  <>
-                    <Loader2 className="h-3 w-3 animate-spin" /> Synthesizing…
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-3 w-3" /> Generate graph
-                  </>
-                )}
+                {isSynthesizing ? "Synthesizing" : "Generate graph"}
               </button>
-              <button
-                type="button"
-                onClick={() => setShowExamples(!showExamples)}
-                className="px-3 py-2 rounded-lg border border-[var(--border-subtle)] text-xs font-sans font-medium text-[var(--text-muted)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer"
-              >
+              <button type="button" onClick={() => setShowExamples(!showExamples)} aria-expanded={showExamples} className={BTN_SECONDARY}>
                 Examples
               </button>
             </div>
-            <span className="text-xs font-sans text-[var(--text-muted)]">
-              ⌘+Enter to generate
-            </span>
+            <span className={META}>⌘ or Ctrl + Enter to generate</span>
           </div>
 
-          {/* Examples */}
           {showExamples && (
-            <div className="space-y-1.5 pt-2 border-t border-[var(--border-subtle)]">
+            <ul className="divide-y divide-[var(--border-subtle)] rounded-[10px] border border-[var(--border-subtle)]">
               {EXAMPLE_PROMPTS.map((ex) => (
-                <button
-                  key={ex.label}
-                  type="button"
-                  onClick={() => {
-                    setPrompt(ex.prompt);
-                    setShowExamples(false);
-                    inputRef.current?.focus();
-                  }}
-                  className="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-[var(--accent-primary)]/10 border border-transparent hover:border-[var(--accent-primary)]/25 transition-colors cursor-pointer"
-                >
-                  <Sparkles className="h-3 w-3 text-[var(--accent-primary)] shrink-0" />
-                  <div className="min-w-0">
-                    <div className="text-xs font-sans font-medium text-[var(--accent-primary)]">
-                      {ex.label}
-                    </div>
-                    <div className="text-xs font-sans text-[var(--text-muted)] truncate">
-                      {ex.prompt}
-                    </div>
-                  </div>
-                </button>
+                <li key={ex.label}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPrompt(ex.prompt);
+                      setShowExamples(false);
+                      inputRef.current?.focus();
+                    }}
+                    className={clsx(
+                      ROW_HOVER,
+                      "w-full cursor-pointer space-y-0.5 px-4 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent-primary)]"
+                    )}
+                  >
+                    <div className="font-sans text-sm text-[var(--text-primary)]">{ex.label}</div>
+                    <div className="truncate font-sans text-[13px] text-[var(--text-muted)]">{ex.prompt}</div>
+                  </button>
+                </li>
               ))}
-            </div>
+            </ul>
+          )}
+
+          {error && (
+            <p role="alert" className="font-sans text-[13px] text-[var(--state-error)]">
+              {error}
+            </p>
           )}
         </div>
+      </section>
 
-        {/* Error */}
-        {error && (
-          <div className="px-4 py-2.5 border-t border-[var(--state-error)]/25 bg-[var(--state-error)]/10 flex items-center gap-2">
-            <AlertTriangle className="h-3.5 w-3.5 text-[var(--state-error)] shrink-0" />
-            <span className="text-xs font-sans text-[var(--state-error)]">{error}</span>
-          </div>
-        )}
-      </div>
-
-      {/* ──── Results ──── */}
       {result && (
-        <div className="space-y-4">
-          {/* Goal Summary */}
-          <div className="rounded-lg border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="space-y-2 flex-1">
-                <div className="text-xs font-sans font-medium text-[var(--accent-primary)]">
-                  Detected Goal
-                </div>
-                <p className="text-xs font-sans text-[var(--text-secondary)] leading-relaxed">
-                  {result.analysis?.goal || prompt}
-                </p>
-                {result.warning && (
-                  <p className="text-xs font-sans text-[var(--state-warning)] flex items-center gap-1">
-                    <AlertTriangle className="h-3 w-3" /> {result.warning}
-                  </p>
+        <div className="space-y-6">
+          {/* Goal and install */}
+          <section className={clsx(CARD, "flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-start")}>
+            <div className="min-w-0 space-y-2">
+              <div className="font-sans text-[13px] text-[var(--text-muted)]">Detected goal</div>
+              <p className="font-sans text-sm leading-6 text-[var(--text-primary)]">{result.analysis?.goal || prompt}</p>
+              {result.warning && <p className="font-sans text-[13px] text-[var(--state-warning)]">{result.warning}</p>}
+            </div>
+            {!installed ? (
+              <button type="button" onClick={handleInstallOnly} disabled={installing} className={clsx(BTN_PRIMARY, "shrink-0")}>
+                {installing ? "Installing" : "Install in one click"}
+              </button>
+            ) : (
+              <div className="flex shrink-0 flex-wrap items-center gap-3">
+                <Tag tone="good">Installed</Tag>
+                {result.skillId && (
+                  <Link href={`/dashboard/canvas/${result.skillId}`} className={BTN_SECONDARY}>
+                    Open in canvas
+                  </Link>
                 )}
               </div>
-              {!installed && (
-                <button
-                  type="button"
-                  onClick={handleInstallOnly}
-                  disabled={installing}
-                  className={clsx(
-                    "inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-sans font-medium transition-colors cursor-pointer shrink-0",
-                    "border border-[var(--state-success)]/40 bg-[var(--state-success)] text-[var(--cta-primary-text)] hover:bg-[var(--state-success)] active:scale-95"
-                  )}
-                >
-                  {installing ? (
-                    <>
-                      <Loader2 className="h-3 w-3 animate-spin" /> Installing…
-                    </>
-                  ) : (
-                    <>
-                      <Zap className="h-3 w-3" /> 1-Click install
-                    </>
-                  )}
-                </button>
-              )}
-              {installed && (
-                <div className="flex items-center gap-2 flex-wrap">
-                  <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-[var(--state-success)]/25 bg-[var(--state-success)]/10 text-xs font-sans font-medium text-[var(--state-success)] shrink-0">
-                    <Check className="h-3 w-3" /> Installed
-                  </div>
-                  {result.skillId && (
-                    <Link
-                      href={`/dashboard/canvas/${result.skillId}`}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] text-xs font-sans font-medium transition-colors shrink-0"
-                    >
-                      <Network className="h-3 w-3" /> Open in canvas
-                    </Link>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
+            )}
+          </section>
 
-          {/* Discovered Servers */}
+          {/* Servers */}
           {result.servers && result.servers.length > 0 && (
-            <div className="space-y-2">
-              <div className="text-xs font-sans font-medium text-[var(--text-muted)] flex items-center gap-1.5">
-                <Server className="h-3 w-3" />
-                DISCOVERED MCP SERVERS ({result.servers.length})
+            <section className="space-y-3">
+              <div className="flex items-baseline justify-between gap-3">
+                <h3 className={SECTION_TITLE}>MCP servers</h3>
+                <span className={META}>{result.servers.length}</span>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <ul className={clsx(CARD, "divide-y divide-[var(--border-subtle)] overflow-hidden")}>
                 {result.servers.map((server, idx) => {
                   const isExpanded = expandedServers.has(idx);
-                  const isMounted = result.mountedServerIds.includes(
-                    server.directoryMatch?.id || ""
-                  );
+                  const isMounted = result.mountedServerIds.includes(server.directoryMatch?.id || "");
                   return (
-                    <div
-                      key={idx}
-                      className="rounded-lg border border-[var(--border-subtle)] overflow-hidden"
-                    >
+                    <li key={idx}>
                       <button
                         type="button"
                         onClick={() => toggleServer(idx)}
-                        className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
+                        aria-expanded={isExpanded}
+                        className={clsx(
+                          ROW_HOVER,
+                          "flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent-primary)]"
+                        )}
                       >
-                        <div className="flex items-center gap-2 min-w-0">
-                          {isExpanded ? (
-                            <ChevronDown className="h-3 w-3 text-[var(--text-muted)] shrink-0" />
-                          ) : (
-                            <ChevronRight className="h-3 w-3 text-[var(--text-muted)] shrink-0" />
-                          )}
-                          <Server className="h-3 w-3 text-[var(--accent-primary)] shrink-0" />
-                          <span className="text-xs font-sans font-medium text-[var(--text-primary)] truncate">
-                            {server.name}
-                          </span>
-                          {server.directoryMatch && (
-                            <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--state-success)]/10 text-[var(--state-success)] border border-[var(--state-success)]/25 shrink-0">
-                              Found
-                            </span>
-                          )}
-                          {!server.directoryMatch && (
-                            <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--state-warning)]/10 text-[var(--state-warning)] border border-[var(--state-warning)]/25 shrink-0">
-                              Manual
-                            </span>
-                          )}
-                          {isMounted && (
-                            <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] border border-[var(--accent-primary)]/25 shrink-0">
-                              Mounted
-                            </span>
-                          )}
-                        </div>
+                        <span className="truncate font-sans text-sm text-[var(--text-primary)]">{server.name}</span>
+                        <span className="flex shrink-0 items-center gap-4">
+                          <Tag tone={server.directoryMatch ? "good" : "warn"}>{server.directoryMatch ? "Found" : "Manual setup"}</Tag>
+                          {isMounted && <Tag tone="accent">Mounted</Tag>}
+                        </span>
                       </button>
                       {isExpanded && (
-                        <div className="px-3 pb-3 pt-0 border-t border-[var(--border-subtle)] space-y-2 mt-1">
-                          <p className="text-xs font-sans text-[var(--text-muted)]">{server.purpose}</p>
-                          {server.directoryMatch && (
-                            <div className="space-y-1 text-xs font-sans text-[var(--text-muted)]">
-                              <div>Source: {server.directoryMatch.source} · {server.directoryMatch.transport}</div>
-                              <div>Stars: {server.directoryMatch.stars} · ID: {server.directoryMatch.id}</div>
+                        <div className="space-y-2 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)] px-5 py-4">
+                          <p className="font-sans text-[13px] leading-5 text-[var(--text-secondary)]">{server.purpose}</p>
+                          {server.directoryMatch ? (
+                            <div className="space-y-1">
+                              <p className={META}>
+                                {server.directoryMatch.source} · {server.directoryMatch.transport} · {server.directoryMatch.stars} stars
+                              </p>
+                              <p className={META}>{server.directoryMatch.id}</p>
                               {server.directoryMatch.description && (
-                                <p className="text-[var(--text-muted)]">{server.directoryMatch.description}</p>
+                                <p className="font-sans text-[13px] leading-5 text-[var(--text-muted)]">{server.directoryMatch.description}</p>
                               )}
                             </div>
-                          )}
-                          {!server.directoryMatch && (
-                            <p className="text-xs font-sans text-[var(--state-warning)]">
-                              No directory match found — will need manual configuration
+                          ) : (
+                            <p className="font-sans text-[13px] text-[var(--state-warning)]">
+                              No directory match. This server needs manual configuration.
                             </p>
                           )}
                         </div>
                       )}
-                    </div>
+                    </li>
                   );
                 })}
-              </div>
-            </div>
+              </ul>
+            </section>
           )}
 
-          {/* Workflow Steps */}
+          {/* Steps */}
           {result.analysis?.steps && result.analysis.steps.length > 0 && (
-            <div className="space-y-2">
-              <div className="text-xs font-sans font-medium text-[var(--text-muted)] flex items-center gap-1.5">
-                <ArrowRight className="h-3 w-3" />
-                WORKFLOW STEPS ({result.analysis.steps.length})
+            <section className="space-y-3">
+              <div className="flex items-baseline justify-between gap-3">
+                <h3 className={SECTION_TITLE}>Workflow steps</h3>
+                <span className={META}>{result.analysis.steps.length}</span>
               </div>
-              <div className="space-y-1.5">
+              <ol className={clsx(CARD, "divide-y divide-[var(--border-subtle)] overflow-hidden")}>
                 {result.analysis.steps.map((step, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-start gap-2 px-3 py-2 rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)]"
-                  >
-                    <span className="w-5 h-5 rounded-full bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] flex items-center justify-center text-xs font-medium shrink-0 mt-0.5">
-                      {idx + 1}
-                    </span>
-                    <span className="text-xs font-sans text-[var(--text-secondary)]">
-                      {step}
-                    </span>
-                  </div>
+                  <li key={idx} className="flex items-baseline gap-4 px-5 py-3">
+                    <span className={clsx(META, "w-5 shrink-0")}>{idx + 1}</span>
+                    <span className="font-sans text-sm text-[var(--text-secondary)]">{step}</span>
+                  </li>
                 ))}
-              </div>
-            </div>
+              </ol>
+            </section>
           )}
 
-          {/* Generated Graph Nodes */}
+          {/* Generated graph */}
           {result.graph?.nodes && result.graph.nodes.length > 0 && (
-            <div className="space-y-2">
-              <div className="text-xs font-sans font-medium text-[var(--text-muted)] flex items-center gap-1.5">
-                <GitBranch className="h-3 w-3" />
-                GENERATED GRAPH ({result.graph.nodes.length} nodes, {result.graph.edges.length} edges)
+            <section className="space-y-3">
+              <div className="flex items-baseline justify-between gap-3">
+                <h3 className={SECTION_TITLE}>Generated graph</h3>
+                <span className={META}>
+                  {plural(result.graph.nodes.length, "node")} · {plural(result.graph.edges.length, "edge")}
+                </span>
               </div>
-              <div className="space-y-1.5">
+              <ul className={clsx(CARD, "divide-y divide-[var(--border-subtle)] overflow-hidden")}>
                 {result.graph.nodes.map((node) => {
                   const isExpanded = expandedNodes.has(node.id);
-                  const Icon = NODE_ICONS[node.type] || Bot;
-                  const colorClass = NODE_COLORS[node.type] || "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]";
-
                   return (
-                    <div
-                      key={node.id}
-                      className={clsx(
-                        "rounded-lg border overflow-hidden transition-colors",
-                        colorClass
-                      )}
-                    >
+                    <li key={node.id}>
                       <button
                         type="button"
                         onClick={() => toggleNode(node.id)}
-                        className="w-full flex items-center justify-between px-3 py-2 hover:bg-[var(--surface-sunken)]/5 transition-colors cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2 min-w-0">
-                          {isExpanded ? (
-                            <ChevronDown className="h-3 w-3 opacity-50 shrink-0" />
-                          ) : (
-                            <ChevronRight className="h-3 w-3 opacity-50 shrink-0" />
-                          )}
-                          <Icon className="h-3 w-3 shrink-0" />
-                          <span className="text-xs font-sans font-medium truncate">
-                            {node.data.label}
-                          </span>
-                          <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--surface-raised)]/50 border border-current/20 shrink-0">
-                            {node.type}
-                          </span>
-                        </div>
-                        {node.type === "approval" && (
-                          <span className="px-1.5 py-0.5 rounded text-xs font-sans font-medium bg-[var(--state-warning)]/10 text-[var(--state-warning)] border border-[var(--state-warning)]/25 shrink-0">
-                            HITL
-                          </span>
+                        aria-expanded={isExpanded}
+                        className={clsx(
+                          ROW_HOVER,
+                          "flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent-primary)]"
                         )}
+                      >
+                        <span className="flex min-w-0 items-baseline gap-4">
+                          <span className="truncate font-sans text-sm text-[var(--text-primary)]">{node.data.label}</span>
+                          <span className={META}>{node.type}</span>
+                        </span>
+                        {node.type === "approval" && <Tag tone="warn">Needs approval</Tag>}
                       </button>
                       {isExpanded && (
-                        <div className="px-3 pb-3 pt-1 border-t border-current/10 space-y-2">
+                        <div className="space-y-3 border-t border-[var(--border-subtle)] bg-[var(--surface-sunken)] px-5 py-4">
                           {node.data.prompt && (
-                            <div>
-                              <div className="text-xs font-sans font-medium opacity-60 mb-1">
-                                System Prompt
+                            <div className="space-y-1">
+                              <div className="font-sans text-[13px] text-[var(--text-muted)]">System prompt</div>
+                              <p className="whitespace-pre-wrap font-sans text-[13px] leading-5 text-[var(--text-secondary)]">{node.data.prompt}</p>
+                            </div>
+                          )}
+                          {[
+                            node.data.mcpToolName && { k: "Tool", v: `${node.data.mcpToolServer}/${node.data.mcpToolName}` },
+                            node.data.condition && { k: "Condition", v: node.data.condition },
+                            node.data.routerPrompt && { k: "Router", v: node.data.routerPrompt },
+                            node.data.approvalReason && { k: "Approval", v: node.data.approvalReason },
+                            node.data.maxIterations && { k: "Max iterations", v: String(node.data.maxIterations) },
+                          ]
+                            .filter((row): row is { k: string; v: string } => Boolean(row))
+                            .map((row) => (
+                              <div key={row.k} className="font-sans text-[13px] leading-5 text-[var(--text-secondary)]">
+                                <span className="text-[var(--text-muted)]">{row.k}: </span>
+                                {row.v}
                               </div>
-                              <p className="text-xs font-sans opacity-80 leading-relaxed whitespace-pre-wrap">
-                                {node.data.prompt}
-                              </p>
-                            </div>
-                          )}
-                          {node.data.mcpToolName && (
-                            <div className="text-xs font-sans opacity-80">
-                              <span className="font-medium">Tool:</span> {node.data.mcpToolServer}/{node.data.mcpToolName}
-                            </div>
-                          )}
-                          {node.data.condition && (
-                            <div className="text-xs font-sans opacity-80">
-                              <span className="font-medium">Condition:</span> {node.data.condition}
-                            </div>
-                          )}
-                          {node.data.routerPrompt && (
-                            <div className="text-xs font-sans opacity-80">
-                              <span className="font-medium">Router:</span> {node.data.routerPrompt}
-                            </div>
-                          )}
-                          {node.data.approvalReason && (
-                            <div className="text-xs font-sans opacity-80">
-                              <span className="font-medium">Approval:</span> {node.data.approvalReason}
-                            </div>
-                          )}
-                          {node.data.maxIterations && (
-                            <div className="text-xs font-sans opacity-80">
-                              <span className="font-medium">Max Iterations:</span> {node.data.maxIterations}
-                            </div>
-                          )}
-                          {/* Edges from this node */}
+                            ))}
                           {result.graph.edges
                             .filter((e) => e.source === node.id)
                             .map((edge) => (
-                              <div
-                                key={edge.id}
-                                className="text-xs font-sans opacity-60 flex items-center gap-1"
-                              >
-                                <ArrowRight className="h-2.5 w-2.5" />
+                              <div key={edge.id} className={META}>
                                 → {edge.target}
-                                {edge.label && (
-                                  <span className="px-1 py-0.5 rounded bg-[var(--surface-raised)]/30 text-xs">
-                                    [{edge.label}]
-                                  </span>
-                                )}
+                                {edge.label && <> ({edge.label})</>}
                               </div>
                             ))}
                         </div>
                       )}
-                    </div>
+                    </li>
                   );
                 })}
-              </div>
-            </div>
+              </ul>
+            </section>
           )}
 
-          {/* Skill Name */}
+          {/* Skill name */}
           {result.skillName && (
-            <div className="rounded-lg border border-[var(--border-subtle)] p-3 flex items-center gap-3">
-              <FileCode2 className="h-4 w-4 text-[var(--accent-primary)] shrink-0" />
-              <div className="min-w-0 flex-1">
-                <div className="text-xs font-sans font-medium text-[var(--text-primary)]">
-                  {result.skillName}
-                </div>
-                <div className="text-xs font-sans text-[var(--text-muted)] truncate">
-                  {result.skillPurpose}
-                </div>
+            <section className={clsx(CARD, "flex items-center justify-between gap-4 px-5 py-4")}>
+              <div className="min-w-0 space-y-0.5">
+                <div className="font-sans text-sm font-medium text-[var(--text-primary)]">{result.skillName}</div>
+                <div className="truncate font-sans text-[13px] text-[var(--text-muted)]">{result.skillPurpose}</div>
               </div>
               {result.skillId && (
-                <a
-                  href={`/dashboard/skills/${result.skillId}`}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-sans font-medium text-[var(--accent-primary)] hover:text-[var(--accent-primary)] border border-[var(--accent-primary)]/25 hover:border-[var(--accent-primary)]/40 transition-colors"
-                >
-                  Open <ArrowRight className="h-2.5 w-2.5" />
-                </a>
+                <Link href={`/dashboard/skills/${result.skillId}`} className={BTN_SECONDARY_SM}>
+                  Open
+                </Link>
               )}
-            </div>
+            </section>
           )}
         </div>
       )}
