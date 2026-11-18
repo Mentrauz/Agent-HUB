@@ -28,6 +28,7 @@ import { clsx } from "clsx";
 import { BUILT_IN_TOOL_CATALOG } from "@/modules/tools";
 import type { CanvasNode, CanvasNodeData } from "./graphUtils";
 import { GraphNodeType } from "@/types/graph";
+import { CANVAS_NODE_TYPE_MAP } from "./nodeTypes";
 import { ConditionalBranchEditor } from "./ConditionalBranchEditor";
 import type { McpServerDTO } from "@/types/mcp";
 import {
@@ -51,15 +52,15 @@ interface NodeInspectorProps {
 }
 
 const inputClass =
-  "w-full rounded border border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a] px-2.5 py-1.5 text-[10px] text-slate-900 dark:text-slate-100 font-mono placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none transition-colors";
-const labelClass = "text-[9px] font-mono uppercase tracking-widest text-indigo-600 dark:text-indigo-400/80 font-semibold";
+  "w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2.5 py-1.5 text-xs text-[var(--text-primary)] font-mono placeholder:text-[var(--text-muted)] focus:border-[var(--border-subtle)] focus:outline-none transition-colors";
+const labelClass = "text-xs font-mono text-[var(--text-secondary)] font-medium";
 
 function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
     <div className="space-y-1">
       <label className={labelClass}>{label}</label>
       {children}
-      {hint && <p className="text-[8px] text-slate-500 leading-tight">{hint}</p>}
+      {hint && <p className="text-xs text-[var(--text-muted)] leading-tight">{hint}</p>}
     </div>
   );
 }
@@ -229,8 +230,8 @@ function ModelSelectField({
 
       {/* Model Name Input for Custom Model */}
       {isCustom && (
-        <div className="space-y-1 pl-2 border-l-2 border-indigo-500/60">
-          <label className="text-[8px] font-mono font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+        <div className="space-y-1 pl-2 border-l-2 border-[var(--border-subtle)]">
+          <label className="text-xs font-mono font-medium text-[var(--text-secondary)]">
             Custom Model Identifier
           </label>
           <input
@@ -248,25 +249,25 @@ function ModelSelectField({
         <button
           type="button"
           onClick={() => setShowApiConfig(!showApiConfig)}
-          className="flex items-center justify-between w-full px-2 py-1 rounded border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 text-[9px] font-bold text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
+          className="flex items-center justify-between w-full px-2 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/70 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-secondary)] transition-colors cursor-pointer"
         >
           <span className="flex items-center gap-1.5">
-            <Key className="h-3 w-3 text-indigo-500" />
-            <span>CUSTOM API & AUTH CONFIGURATION</span>
+            <Key className="h-3 w-3 text-[var(--text-secondary)]" />
+            <span>Custom API & auth configuration</span>
             {(customApiKey || customApiBaseUrl) && (
-              <span className="text-[7.5px] px-1 py-0.2 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-mono font-bold">
-                ACTIVE
+              <span className="text-[10px] px-1 py-0.2 rounded bg-[var(--surface-sunken)] text-[var(--text-secondary)] font-mono font-medium">
+                Active
               </span>
             )}
           </span>
-          <span className="text-slate-400">{showApiConfig ? "–" : "+"}</span>
+          <span className="text-[var(--text-muted)]">{showApiConfig ? "–" : "+"}</span>
         </button>
 
         {showApiConfig && (
-          <div className="mt-1.5 p-2 rounded-lg border border-indigo-200 dark:border-indigo-900/40 bg-indigo-50/30 dark:bg-indigo-950/20 space-y-2 text-[9px]">
+          <div className="mt-1.5 p-2 rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] space-y-2 text-xs">
             {/* Quick Endpoint Presets */}
             <div>
-              <span className="text-[8px] font-mono text-slate-500 block mb-1">Quick Endpoint Presets:</span>
+              <span className="text-xs font-mono text-[var(--text-muted)] block mb-1">Quick endpoint presets</span>
               <div className="flex flex-wrap gap-1">
                 {PRESET_ENDPOINTS.map((preset) => (
                   <button
@@ -280,10 +281,10 @@ function ModelSelectField({
                       });
                     }}
                     className={clsx(
-                      "px-1.5 py-0.5 rounded border text-[8px] font-mono transition-colors cursor-pointer",
+                      "px-1.5 py-0.5 rounded border text-xs font-mono transition-colors cursor-pointer",
                       customApiBaseUrl === preset.url
-                        ? "border-indigo-500 bg-indigo-600 text-white font-bold"
-                        : "border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 hover:border-indigo-400"
+                        ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] font-medium"
+                        : "border-[var(--border-subtle)] bg-[var(--surface-raised)]/70 text-[var(--text-secondary)] hover:border-[var(--border-subtle)]"
                     )}
                   >
                     {preset.label}
@@ -294,8 +295,8 @@ function ModelSelectField({
 
             {/* Custom API Base URL */}
             <div className="space-y-1">
-              <label className="text-[8px] font-mono text-slate-600 dark:text-slate-400 flex items-center gap-1">
-                <Globe className="h-2.5 w-2.5 text-indigo-400" /> API Base URL / Endpoint
+              <label className="text-xs font-mono text-[var(--text-secondary)] flex items-center gap-1">
+                <Globe className="h-2.5 w-2.5 text-[var(--text-secondary)]" /> API Base URL / Endpoint
               </label>
               <input
                 type="text"
@@ -304,15 +305,15 @@ function ModelSelectField({
                 placeholder="e.g. http://localhost:11434/v1, https://api.openai.com/v1"
                 className={inputClass}
               />
-              <p className="text-[7.5px] text-slate-500 font-mono">
+              <p className="text-[10px] text-[var(--text-muted)] font-mono">
                 OpenAI-compatible `/chat/completions` endpoint URL.
               </p>
             </div>
 
             {/* Custom API Key */}
             <div className="space-y-1">
-              <label className="text-[8px] font-mono text-slate-600 dark:text-slate-400 flex items-center gap-1">
-                <Key className="h-2.5 w-2.5 text-indigo-400" /> Model API Key (Optional)
+              <label className="text-xs font-mono text-[var(--text-secondary)] flex items-center gap-1">
+                <Key className="h-2.5 w-2.5 text-[var(--text-secondary)]" /> Model API Key (Optional)
               </label>
               <div className="relative">
                 <input
@@ -325,32 +326,32 @@ function ModelSelectField({
                 <button
                   type="button"
                   onClick={() => setShowKey(!showKey)}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-0.5"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] cursor-pointer p-0.5"
                   title={showKey ? "Hide API key" : "Reveal API key"}
                 >
                   {showKey ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                 </button>
               </div>
-              <p className="text-[7.5px] text-slate-500 font-mono">
+              <p className="text-[10px] text-[var(--text-muted)] font-mono">
                 Stored securely for this node. Overrides global environment keys.
               </p>
             </div>
 
             {/* Test Connection Button & Status */}
-            <div className="pt-1 flex items-center justify-between gap-2 border-t border-indigo-200/50 dark:border-indigo-900/40">
+            <div className="pt-1 flex items-center justify-between gap-2 border-t border-[var(--border-subtle)]">
               <button
                 type="button"
                 onClick={handleTestApi}
                 disabled={testing}
-                className="inline-flex items-center gap-1 px-2 py-1 rounded border border-indigo-400/60 bg-indigo-600 hover:bg-indigo-500 text-white text-[8.5px] font-bold tracking-wider uppercase transition-colors cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)] hover:bg-[var(--cta-primary-hover)] text-[var(--cta-primary-text)] text-[10px] font-medium transition-colors cursor-pointer disabled:opacity-50"
               >
                 {testing ? (
                   <>
-                    <Loader2 className="h-2.5 w-2.5 animate-spin" /> TESTING API…
+                    <Loader2 className="h-2.5 w-2.5 animate-spin" /> Testing API…
                   </>
                 ) : (
                   <>
-                    <Play className="h-2.5 w-2.5" /> TEST MODEL API
+                    <Play className="h-2.5 w-2.5" /> Test model API
                   </>
                 )}
               </button>
@@ -358,15 +359,15 @@ function ModelSelectField({
               {testResult && (
                 <div
                   className={clsx(
-                    "text-[8px] font-mono flex items-center gap-1 font-semibold truncate max-w-[170px]",
-                    testResult.ok ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
+                    "text-xs font-mono flex items-center gap-1 font-medium truncate max-w-[170px]",
+                    testResult.ok ? "text-[var(--state-success)]" : "text-[var(--state-error)]"
                   )}
                   title={testResult.message}
                 >
                   {testResult.ok ? (
-                    <Check className="h-2.5 w-2.5 shrink-0 text-emerald-500" />
+                    <Check className="h-2.5 w-2.5 shrink-0 text-[var(--state-success)]" />
                   ) : (
-                    <AlertCircle className="h-2.5 w-2.5 shrink-0 text-red-500" />
+                    <AlertCircle className="h-2.5 w-2.5 shrink-0 text-[var(--state-error)]" />
                   )}
                   <span className="truncate">{testResult.message}</span>
                 </div>
@@ -387,7 +388,7 @@ function EmbeddingModelSelectField({
   onChange: (model: string) => void;
 }) {
   return (
-    <Field label="Vector Embedding Model" hint="Dense embedding model used to compute vector embeddings for RAG">
+    <Field label="Vector embedding model" hint="Dense embedding model used to compute vector embeddings for RAG">
       <ModelDropdown
         value={value ?? "nvidia/nemotron-3-embed-1b:free"}
         onChange={onChange}
@@ -450,21 +451,21 @@ function HyperparametersField({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="rounded border border-slate-200 dark:border-indigo-950/60 bg-slate-50/50 dark:bg-black/30 p-2 space-y-2">
+    <div className="rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 p-2 space-y-2">
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex items-center justify-between w-full text-[9px] font-mono font-bold text-slate-600 dark:text-slate-400 hover:text-indigo-400 cursor-pointer"
+        className="flex items-center justify-between w-full text-xs font-mono font-medium text-[var(--text-secondary)] hover:text-[var(--text-secondary)] cursor-pointer"
       >
         <span className="flex items-center gap-1.5">
-          <Sliders className="h-3 w-3 text-indigo-400" />
-          <span>SAMPLING & LIMITS</span>
-          <span className="text-[8px] font-normal text-slate-400">({temperature ?? 0.2} temp · {maxTokens ?? 800} max)</span>
+          <Sliders className="h-3 w-3 text-[var(--text-secondary)]" />
+          <span>Sampling & limits</span>
+          <span className="text-xs font-normal text-[var(--text-muted)]">({temperature ?? 0.2} temp · {maxTokens ?? 800} max)</span>
         </span>
-        <span className="text-[8px]">{open ? "▲" : "▼"}</span>
+        <span className="text-xs">{open ? "▲" : "▼"}</span>
       </button>
       {open && (
-        <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-200 dark:border-indigo-950/50">
+        <div className="grid grid-cols-2 gap-2 pt-1 border-t border-[var(--border-subtle)]">
           <Field label="Temperature" hint="0 = deterministic, 1 = creative">
             <NumberInput
               step={0.05}
@@ -475,7 +476,7 @@ function HyperparametersField({
               onCommit={(v) => onChange({ temperature: v })}
             />
           </Field>
-          <Field label="Max Output Tokens" hint="Cap response length">
+          <Field label="Max output tokens" hint="Cap response length">
             <NumberInput
               step={100}
               min={50}
@@ -566,7 +567,7 @@ function PromptField({
       />
       {references.length > 0 && (
         <div className="flex flex-wrap gap-1">
-          <span className="inline-flex items-center gap-0.5 text-[8px] text-slate-500 self-center">
+          <span className="inline-flex items-center gap-0.5 text-xs text-[var(--text-muted)] self-center">
             <Braces className="h-2.5 w-2.5" /> refs:
           </span>
           {references.map((path) => (
@@ -574,7 +575,7 @@ function PromptField({
               key={path}
               type="button"
               onClick={() => insertReference(path)}
-              className="rounded border border-indigo-300 dark:border-indigo-500/40 bg-indigo-50 dark:bg-indigo-950/50 px-1 py-0.5 text-[8px] font-mono text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition-colors cursor-pointer"
+              className="rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] px-1 py-0.5 text-xs font-mono text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
               title={`Insert {{ ${path} }} at the cursor`}
             >
               {path}
@@ -584,16 +585,16 @@ function PromptField({
             <button
               type="button"
               onClick={() => setShowAllRefs((s) => !s)}
-              className="px-1 py-0.5 text-[8px] font-mono text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-300 hover:underline cursor-pointer"
+              className="px-1 py-0.5 text-xs font-mono text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:underline cursor-pointer"
             >
               {showAllRefs ? "show less" : `+${hiddenRefCount} more`}
             </button>
           )}
         </div>
       )}
-      <div className="text-[8px] text-slate-500 text-right">
+      <div className="text-xs text-[var(--text-muted)] text-right">
         ~{tokens} tokens
-        {tokens > 2000 && <span className="text-amber-500 font-bold"> · long prompt</span>}
+        {tokens > 2000 && <span className="text-[var(--state-warning)] font-medium"> · long prompt</span>}
       </div>
     </Field>
   );
@@ -684,9 +685,9 @@ function JsonTextarea({
         rows={rows}
         spellCheck={false}
         placeholder={placeholder}
-        className={clsx(className, error && "!border-red-500")}
+        className={clsx(className, error && "!border-[var(--state-error)]/40")}
       />
-      {error && <p className="text-[8px] text-red-500 leading-tight">{error}</p>}
+      {error && <p className="text-xs text-[var(--state-error)] leading-tight">{error}</p>}
     </>
   );
 }
@@ -793,13 +794,13 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <div className="text-[10px] uppercase tracking-widest text-indigo-600 dark:text-indigo-400/80 font-bold">
-          {type.toUpperCase()} NODE
+        <div className="text-xs text-[var(--text-secondary)] font-medium">
+          {CANVAS_NODE_TYPE_MAP[type]?.label ?? type} node
         </div>
         <button
           type="button"
           onClick={onDelete}
-          className="inline-flex items-center gap-1 px-2 py-1 rounded border border-red-300 dark:border-red-400/50 text-[9px] font-mono text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--state-error)]/25 text-xs font-mono text-[var(--state-error)] hover:bg-[var(--state-error)]/10 transition-colors cursor-pointer"
         >
           <Trash2 className="h-3 w-3" /> DELETE
         </button>
@@ -815,35 +816,32 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
 
       {/* ─── Real-Time Token Streaming & Trace Monitor ─── */}
       {node.data.traceTokenStream && (node.data.traceTokenStream.text || node.data.traceStatus === "RUNNING") && (
-        <div className="p-3 rounded-lg border border-cyan-500/40 bg-slate-950/95 dark:bg-black/95 font-mono space-y-2 shadow-lg shadow-cyan-950/40">
-          <div className="flex items-center justify-between border-b border-indigo-950/80 pb-1.5">
+        <div className="p-3 rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-elevated)]/95 font-mono space-y-2">
+          <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-1.5">
             <div className="flex items-center gap-1.5">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
-              </span>
-              <span className="flex items-center gap-1 text-[9px] font-pixel text-cyan-300 uppercase tracking-wide">
+              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[var(--accent-primary)]" />
+              <span className="flex items-center gap-1 text-xs text-[var(--text-secondary)]">
                 {node.data.traceTokenStream.isThinking ? (
                   <>
-                    <Brain className="h-3 w-3 text-violet-400" /> REASONING ACTIVE
+                    <Brain className="h-3 w-3 text-[var(--text-secondary)]" /> Reasoning active
                   </>
                 ) : (
                   <>
-                    <Zap className="h-3 w-3 text-cyan-400" /> LIVE TOKEN STREAM
+                    <Zap className="h-3 w-3 text-[var(--text-secondary)]" /> Live token stream
                   </>
                 )}
               </span>
             </div>
-            <div className="flex items-center gap-1.5 text-[8px] font-mono">
+            <div className="flex items-center gap-1.5 text-xs font-mono">
               {node.data.traceTokenStream.tokensPerSec ? (
-                <span className="px-1.5 py-0.5 rounded bg-cyan-950/80 border border-cyan-800/60 text-cyan-300 font-bold">
+                <span className="px-1.5 py-0.5 rounded bg-[var(--cta-primary-bg)]/80 border border-[var(--border-subtle)] text-[var(--text-secondary)] font-medium">
                   {node.data.traceTokenStream.tokensPerSec} tok/s
                 </span>
               ) : (
-                <span className="text-cyan-400 font-bold">STREAMING</span>
+                <span className="text-[var(--text-secondary)] font-medium">Streaming</span>
               )}
               {node.data.traceTokenStream.totalTokens !== undefined && (
-                <span className="text-slate-400">
+                <span className="text-[var(--text-muted)]">
                   {node.data.traceTokenStream.totalTokens} tokens
                 </span>
               )}
@@ -851,7 +849,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
           </div>
 
           {/* Stream Buffer Display */}
-          <div className="p-2 rounded bg-[#070709] border border-slate-800/80 max-h-48 overflow-y-auto font-mono text-[9px] text-slate-200 leading-relaxed custom-scrollbar whitespace-pre-wrap select-text break-words">
+          <div className="p-2 rounded bg-[var(--surface-raised)] border border-[var(--border-strong)] max-h-48 overflow-y-auto font-mono text-xs text-[var(--text-muted)] leading-relaxed custom-scrollbar whitespace-pre-wrap select-text break-words">
             {node.data.traceTokenStream.text ? (
               <>
                 {node.data.traceTokenStream.text.includes("<think>") ? (
@@ -860,9 +858,9 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
                     return (
                       <>
                         {parts[1] && (
-                          <div className="p-2 rounded bg-violet-950/40 border border-violet-800/40 text-violet-300 text-[8px] mb-2 font-mono">
-                            <span className="text-[7.5px] font-bold uppercase text-violet-400 flex items-center gap-1 mb-1">
-                              <BrainCircuit className="h-3 w-3 text-violet-400" /> Chain-of-Thought / Deep Reasoning:
+                          <div className="p-2 rounded bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-[var(--text-secondary)] text-xs mb-2 font-mono">
+                            <span className="text-[10px] font-medium text-[var(--text-secondary)] flex items-center gap-1 mb-1">
+                              <BrainCircuit className="h-3 w-3 text-[var(--text-secondary)]" /> Chain of thought
                             </span>
                             {parts[1]}
                           </div>
@@ -875,11 +873,11 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
                   <span>{node.data.traceTokenStream.text}</span>
                 )}
                 {node.data.traceTokenStream.active && (
-                  <span className="inline-block w-1.5 h-3.5 bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)] animate-pulse ml-0.5 align-middle" />
+                  <span className="inline-block w-1.5 h-3.5 bg-[var(--cta-primary-bg)] ml-0.5 align-middle" />
                 )}
               </>
             ) : (
-              <span className="text-slate-500 italic">Waiting for initial token chunk from provider...</span>
+              <span className="text-[var(--text-muted)]">Waiting for initial token chunk from provider...</span>
             )}
           </div>
         </div>
@@ -900,7 +898,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             onChange={(patch) => onUpdate(patch)}
           />
           <PromptField
-            label="Agent Prompt"
+            label="Agent prompt"
             hint="System prompt for this specialist agent. Receives the accumulated workflow context."
             value={node.data.prompt ?? ""}
             onChange={(v) => onUpdate({ prompt: v })}
@@ -913,26 +911,26 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               type="button"
               onClick={handleOptimizePrompt}
               disabled={optimizing}
-              className="inline-flex w-full items-center justify-center gap-1.5 rounded border border-purple-400/50 bg-purple-950/30 px-2 py-1.5 text-[9px] font-bold uppercase tracking-wider text-purple-300 hover:bg-purple-900/40 transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center gap-1.5 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)]/30 px-2 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--cta-primary-hover)]/40 transition-colors cursor-pointer disabled:opacity-50"
             >
               {optimizing ? (
                 <>
-                  <RefreshCw className="h-3 w-3 animate-spin" /> OPTIMIZING…
+                  <RefreshCw className="h-3 w-3 animate-spin" /> Optimizing…
                 </>
               ) : (
                 <>
-                  <Sparkles className="h-3 w-3" /> OPTIMIZE PROMPT
+                  <Sparkles className="h-3 w-3" /> Optimize prompt
                 </>
               )}
             </button>
           )}
           {optimizeStats && (
-            <div className="text-[8px] text-purple-400 font-mono">
+            <div className="text-xs text-[var(--text-secondary)] font-mono">
               {optimizeStats.originalTokens}→{optimizeStats.optimizedTokens} tokens ({optimizeStats.improvement})
             </div>
           )}
           {optimizeError && (
-            <div className="text-[8px] text-red-400 flex items-center gap-1">
+            <div className="text-xs text-[var(--state-error)] flex items-center gap-1">
               <X className="h-2.5 w-2.5 shrink-0" /> {optimizeError}
             </div>
           )}
@@ -954,7 +952,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             onChange={(patch) => onUpdate(patch)}
           />
           <PromptField
-            label="Supervisor Prompt"
+            label="Supervisor prompt"
             hint="The model picks the next node among the outgoing edge labels."
             value={node.data.prompt ?? ""}
             onChange={(v) => onUpdate({ prompt: v })}
@@ -967,31 +965,31 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               type="button"
               onClick={handleOptimizePrompt}
               disabled={optimizing}
-              className="inline-flex w-full items-center justify-center gap-1.5 rounded border border-purple-400/50 bg-purple-950/30 px-2 py-1.5 text-[9px] font-bold uppercase tracking-wider text-purple-300 hover:bg-purple-900/40 transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center gap-1.5 rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)]/30 px-2 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--cta-primary-hover)]/40 transition-colors cursor-pointer disabled:opacity-50"
             >
               {optimizing ? (
                 <>
-                  <RefreshCw className="h-3 w-3 animate-spin" /> OPTIMIZING…
+                  <RefreshCw className="h-3 w-3 animate-spin" /> Optimizing…
                 </>
               ) : (
                 <>
-                  <Sparkles className="h-3 w-3" /> OPTIMIZE PROMPT
+                  <Sparkles className="h-3 w-3" /> Optimize prompt
                 </>
               )}
             </button>
           )}
           {optimizeStats && (
-            <div className="text-[8px] text-purple-400 font-mono">
+            <div className="text-xs text-[var(--text-secondary)] font-mono">
               {optimizeStats.originalTokens}→{optimizeStats.optimizedTokens} tokens ({optimizeStats.improvement})
             </div>
           )}
           {optimizeError && (
-            <div className="text-[8px] text-red-400 flex items-center gap-1">
+            <div className="text-xs text-[var(--state-error)] flex items-center gap-1">
               <X className="h-2.5 w-2.5 shrink-0" /> {optimizeError}
             </div>
           )}
-          <Field label="Routing Hint" hint="Add label text to each outgoing edge — the supervisor returns one of them.">
-            <div className="rounded border border-violet-300 dark:border-violet-500/30 bg-violet-50 dark:bg-violet-950/20 p-2 text-[9px] text-violet-700 dark:text-violet-300">
+          <Field label="Routing hint" hint="Add label text to each outgoing edge. the supervisor returns one of them.">
+            <div className="rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-2 text-xs text-[var(--text-secondary)]">
               <GitBranch className="h-3 w-3 inline mr-1" />
               Supervisor routes by edge label. Click an edge to rename it.
             </div>
@@ -1033,9 +1031,9 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               rows={4}
               spellCheck={false}
               placeholder="{ }"
-              className={`${inputClass} resize-y text-[9px] leading-relaxed ${templateError ? "border-red-500/60" : ""}`}
+              className={`${inputClass} resize-y text-xs leading-relaxed ${templateError ? "border-[var(--state-error)]/40" : ""}`}
             />
-            {templateError && <p className="text-[8px] font-mono text-red-400">[ JSON ERROR ] {templateError}</p>}
+            {templateError && <p className="text-xs font-mono text-[var(--state-error)]">[ JSON ERROR ] {templateError}</p>}
           </Field>
         </>
       )}
@@ -1077,7 +1075,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
 
       {type === "approval" && (
         <>
-          <Field label="Approval Reason" hint="Shown to the human reviewer in the review queue.">
+          <Field label="Approval reason" hint="Shown to the human reviewer in the review queue.">
             <textarea
               value={node.data.approvalReason ?? ""}
               onChange={(e) => onUpdate({ approvalReason: e.target.value })}
@@ -1087,7 +1085,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
           </Field>
           <Field
             label="Auto-Approve Condition (optional)"
-            hint="Leave empty to always require approval. When set, the gate auto-passes if the condition is true — e.g. results.risk.decision == &quot;low&quot;"
+            hint="Leave empty to always require approval. When set, the gate auto-passes if the condition is true. e.g. results.risk.decision == &quot;low&quot;"
           >
             <input
               value={node.data.autoApproveCondition ?? ""}
@@ -1110,7 +1108,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
       )}
 
       {type === "loop" && (
-        <Field label="Max Iterations" hint="The body edge (labelled body or first edge) repeats up to N times; the exit edge (labelled exit or last edge) continues after.">
+        <Field label="Max iterations" hint="The body edge (labelled body or first edge) repeats up to N times; the exit edge (labelled exit or last edge) continues after.">
           <NumberInput
             min={1}
             max={100}
@@ -1124,18 +1122,18 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
 
       {type === "subgraph" && (
         <>
-          <Field label="Inner Graph">
-            <div className="rounded border border-slate-300 dark:border-indigo-900/50 bg-slate-50 dark:bg-black/40 p-2 space-y-1">
-              <div className="text-[9px] font-mono text-slate-700 dark:text-slate-300">
+          <Field label="Inner graph">
+            <div className="rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)] p-2 space-y-1">
+              <div className="text-xs font-mono text-[var(--text-secondary)]">
                 {node.data.subgraph?.nodes?.length ?? 0} nodes · {node.data.subgraph?.edges?.length ?? 0} edges
               </div>
               <button
                 type="button"
                 onClick={() => onOpenSubgraph?.(node)}
                 disabled={!node.data.subgraph || !onOpenSubgraph}
-                className="inline-flex w-full items-center justify-center gap-1.5 rounded border border-slate-400 dark:border-slate-600 bg-white dark:bg-[#0a0a0a] px-2 py-1.5 text-[9px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors cursor-pointer disabled:opacity-40"
+                className="inline-flex w-full items-center justify-center gap-1.5 rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:border-[var(--border-subtle)] hover:text-[var(--text-secondary)] transition-colors cursor-pointer disabled:opacity-40"
               >
-                <CornerUpRight className="h-3 w-3" /> OPEN SUBGRAPH EDITOR
+                <CornerUpRight className="h-3 w-3" /> Open subgraph editor
               </button>
             </div>
           </Field>
@@ -1149,9 +1147,9 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               rows={3}
               spellCheck={false}
               placeholder='{ "in_1": "{{ results.agent_1.output }}" }'
-              className={`${inputClass} resize-y text-[9px] leading-relaxed ${inputMap.error ? "border-red-500/60" : ""}`}
+              className={`${inputClass} resize-y text-xs leading-relaxed ${inputMap.error ? "border-[var(--state-error)]/40" : ""}`}
             />
-            {inputMap.error && <p className="text-[8px] font-mono text-red-400">[ JSON ERROR ] {inputMap.error}</p>}
+            {inputMap.error && <p className="text-xs font-mono text-[var(--state-error)]">[ JSON ERROR ] {inputMap.error}</p>}
           </Field>
           <Field
             label="Output Mapping (JSON)"
@@ -1163,11 +1161,11 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               rows={3}
               spellCheck={false}
               placeholder='{ "summary": "results.summarizer.content" }'
-              className={`${inputClass} resize-y text-[9px] leading-relaxed ${outputMap.error ? "border-red-500/60" : ""}`}
+              className={`${inputClass} resize-y text-xs leading-relaxed ${outputMap.error ? "border-[var(--state-error)]/40" : ""}`}
             />
-            {outputMap.error && <p className="text-[8px] font-mono text-red-400">[ JSON ERROR ] {outputMap.error}</p>}
+            {outputMap.error && <p className="text-xs font-mono text-[var(--state-error)]">[ JSON ERROR ] {outputMap.error}</p>}
           </Field>
-          <div className="flex items-center gap-1.5 text-[8px] text-slate-500">
+          <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
             <Boxes className="h-3 w-3" /> Inside, nodes reference inputs as <code>input.&lt;key&gt;</code> and outputs as{" "}
             <code>results.&lt;innerNodeId&gt;</code>.
           </div>
@@ -1176,7 +1174,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
 
       {type === "parallel" && (
         <>
-          <Field label="Parallel Mode">
+          <Field label="Parallel mode">
             <select
               value={node.data.parallelMode ?? "map"}
               onChange={(e) => onUpdate({ parallelMode: e.target.value as "map" | "reduce" })}
@@ -1188,7 +1186,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
           </Field>
           {node.data.parallelMode === "map" && (
             <Field
-              label="Map Field"
+              label="Map field"
               hint="Path to the array to iterate, e.g. input.items. Each item is available as {{ item }} inside the worker branch."
             >
               <input
@@ -1198,7 +1196,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               />
             </Field>
           )}
-          <p className="text-[8px] text-teal-500/80 leading-tight">
+          <p className="text-xs text-[var(--text-secondary)]/80 leading-tight">
             {'Edge labelled '}
             <code>worker</code>
             {' (or first edge) runs per item/branch; edge labelled '}
@@ -1221,7 +1219,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               >
                 <option value="">— select connected server —</option>
                 {mcpServers.length === 0 && (
-                  <option value="" disabled>No servers connected — go to Tools → MCP Hub</option>
+                  <option value="" disabled>No servers connected. go to Tools → MCP Hub</option>
                 )}
                 {mcpServers.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -1232,10 +1230,10 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               <button
                 type="button"
                 onClick={() => fetch("/api/mcp/servers").then(r => r.json()).then(j => { if (j.success) setMcpServers(j.data); }).catch(() => {})}
-                className="p-1.5 rounded border border-slate-300 dark:border-indigo-900/50 hover:bg-slate-100 dark:hover:bg-indigo-950/40 transition-colors cursor-pointer"
+                className="p-1.5 rounded border border-[var(--border-strong)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                 title="Refresh servers"
               >
-                <RefreshCw className="h-3 w-3 text-slate-500" />
+                <RefreshCw className="h-3 w-3 text-[var(--text-muted)]" />
               </button>
             </div>
           </Field>
@@ -1256,7 +1254,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               placeholder="https://... or npx -y ..."
               className={inputClass}
             />
-            <p className="text-[8px] text-slate-500 leading-tight">URL for SSE, command for STDIO</p>
+            <p className="text-xs text-[var(--text-muted)] leading-tight">URL for SSE, command for STDIO</p>
           </Field>
         </>
       )}
@@ -1281,7 +1279,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
                 ))}
             </select>
           </Field>
-          <Field label="Tool Name" hint={node.data.mcpToolServer ? `Tools from selected server` : "Select a server first"}>
+          <Field label="Tool name" hint={node.data.mcpToolServer ? `Tools from selected server` : "Select a server first"}>
             {node.data.mcpToolServer && mcpServerToolMap.has(node.data.mcpToolServer) ? (
               <select
                 value={node.data.mcpToolName ?? ""}
@@ -1312,7 +1310,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               emptyValue={{}}
               rows={4}
               placeholder="{ }"
-              className={`${inputClass} resize-y text-[9px] leading-relaxed`}
+              className={`${inputClass} resize-y text-xs leading-relaxed`}
             />
           </Field>
         </>
@@ -1327,7 +1325,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               placeholder="e.g. skill-web-research-pipeline"
               className={inputClass}
             />
-            <p className="text-[8px] text-slate-500 leading-tight">Find skills in the Skills Marketplace tab</p>
+            <p className="text-xs text-[var(--text-muted)] leading-tight">Find skills in the Skills Marketplace tab</p>
           </Field>
           <Field label="Skill Input (JSON)">
             <JsonTextarea
@@ -1337,7 +1335,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               emptyValue={{}}
               rows={4}
               placeholder="{ }"
-              className={`${inputClass} resize-y text-[9px] leading-relaxed`}
+              className={`${inputClass} resize-y text-xs leading-relaxed`}
             />
           </Field>
         </>
@@ -1374,7 +1372,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               emptyValue={{}}
               rows={3}
               placeholder={'{ "Authorization": "Bearer {{ input.token }}" }'}
-              className={`${inputClass} resize-y text-[9px] leading-relaxed`}
+              className={`${inputClass} resize-y text-xs leading-relaxed`}
             />
           </Field>
           <Field label="Body (JSON)">
@@ -1385,10 +1383,10 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               emptyValue={{}}
               rows={4}
               placeholder="{ }"
-              className={`${inputClass} resize-y text-[9px] leading-relaxed`}
+              className={`${inputClass} resize-y text-xs leading-relaxed`}
             />
           </Field>
-          <Field label="Response Type">
+          <Field label="Response type">
             <select
               value={node.data.httpResponseType ?? "json"}
               onChange={(e) => onUpdate({ httpResponseType: e.target.value as CanvasNodeData["httpResponseType"] })}
@@ -1428,7 +1426,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               rows={3}
               spellCheck={false}
               placeholder="(item) => ({ ...item, processed: true })"
-              className={`${inputClass} resize-y text-[9px] leading-relaxed font-mono`}
+              className={`${inputClass} resize-y text-xs leading-relaxed font-mono`}
             />
           </Field>
         </>
@@ -1463,18 +1461,18 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             </select>
           </Field>
           {node.data.aggregateMode === "custom" && (
-            <Field label="Custom Expression">
+            <Field label="Custom expression">
               <textarea
                 value={node.data.aggregateExpr ?? ""}
                 onChange={(e) => onUpdate({ aggregateExpr: e.target.value })}
                 rows={3}
                 spellCheck={false}
                 placeholder="(results) => results.flat()"
-                className={`${inputClass} resize-y text-[9px] leading-relaxed`}
+                className={`${inputClass} resize-y text-xs leading-relaxed`}
               />
             </Field>
           )}
-          <p className="text-[8px] text-amber-500/80 leading-tight">
+          <p className="text-xs text-[var(--state-warning)]/80 leading-tight">
             Connect multiple incoming edges — this node waits for all branches to complete before combining.
           </p>
         </>
@@ -1482,7 +1480,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
 
       {type === "variable" && (
         <>
-          <Field label="Variable Name">
+          <Field label="Variable name">
             <input
               value={node.data.varName ?? ""}
               onChange={(e) => onUpdate({ varName: e.target.value })}
@@ -1509,7 +1507,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
                 emptyValue={undefined}
                 rows={3}
                 placeholder="{{ results.agent_1.content }}"
-                className={`${inputClass} resize-y text-[9px] leading-relaxed`}
+                className={`${inputClass} resize-y text-xs leading-relaxed`}
               />
             </Field>
           )}
@@ -1518,16 +1516,16 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
 
       {type === "output" && (
         <>
-          <Field label="Output Template">
+          <Field label="Output template">
             <textarea
               value={node.data.outputTemplate ?? ""}
               onChange={(e) => onUpdate({ outputTemplate: e.target.value })}
               rows={4}
               spellCheck={false}
               placeholder="{{ results }}"
-              className={`${inputClass} resize-y text-[9px] leading-relaxed`}
+              className={`${inputClass} resize-y text-xs leading-relaxed`}
             />
-            <p className="text-[8px] text-slate-500 leading-tight">{`Template for the final output. Use {{ results }} for all node results.`}</p>
+            <p className="text-xs text-[var(--text-muted)] leading-tight">{`Template for the final output. Use {{ results }} for all node results.`}</p>
           </Field>
           <Field label="Field Mappings (JSON)">
             <JsonTextarea
@@ -1537,7 +1535,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               emptyValue={{}}
               rows={4}
               placeholder='{ "summary": "{{ results.agent_1.content }}", "data": "{{ results.tool_1.output }}" }'
-              className={`${inputClass} resize-y text-[9px] leading-relaxed`}
+              className={`${inputClass} resize-y text-xs leading-relaxed`}
             />
           </Field>
         </>
@@ -1546,7 +1544,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
       {/* ─── Schedule Trigger Inspector ─── */}
       {type === "schedule_trigger" && (
         <>
-          <Field label="Cron Expression" hint="Standard 5-field cron (min hour dom month dow)">
+          <Field label="Cron expression" hint="Standard 5-field cron (min hour dom month dow)">
             <input
               value={node.data.cronExpression ?? "0 9 * * *"}
               onChange={(e) => onUpdate({ cronExpression: e.target.value })}
@@ -1564,7 +1562,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
                   key={preset.label}
                   type="button"
                   onClick={() => onUpdate({ cronExpression: preset.expr, scheduleInterval: preset.desc })}
-                  className="px-1.5 py-0.5 rounded border border-blue-300 dark:border-blue-500/40 bg-blue-50 dark:bg-blue-950/40 text-[8px] font-mono text-blue-700 dark:text-blue-300 hover:bg-blue-100"
+                  className="px-1.5 py-0.5 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-xs font-mono text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"
                 >
                   {preset.label}
                 </button>
@@ -1579,7 +1577,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               className={inputClass}
             />
           </Field>
-          <Field label="Schedule Description">
+          <Field label="Schedule description">
             <input
               value={node.data.scheduleInterval ?? "Every day at 9:00 AM UTC"}
               onChange={(e) => onUpdate({ scheduleInterval: e.target.value })}
@@ -1593,7 +1591,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
       {/* ─── Webhook Trigger Inspector ─── */}
       {type === "webhook_trigger" && (
         <>
-          <Field label="Webhook Endpoint Path">
+          <Field label="Webhook endpoint path">
             <input
               value={node.data.webhookPath ?? "/api/webhooks/incoming"}
               onChange={(e) => onUpdate({ webhookPath: e.target.value })}
@@ -1645,7 +1643,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
                   key={feed.label}
                   type="button"
                   onClick={() => onUpdate({ rssUrl: feed.url })}
-                  className="px-1.5 py-0.5 rounded border border-orange-300 dark:border-orange-500/40 bg-orange-50 dark:bg-orange-950/40 text-[8px] font-mono text-orange-700 dark:text-orange-300 hover:bg-orange-100"
+                  className="px-1.5 py-0.5 rounded border border-[var(--state-warning)]/25 bg-[var(--state-warning)]/10 text-xs font-mono text-[var(--state-warning)] hover:bg-[var(--state-warning)]/10"
                 >
                   {feed.label}
                 </button>
@@ -1676,14 +1674,14 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               className={inputClass}
             />
           </Field>
-          <Field label="Reader Format Mode">
+          <Field label="Reader format mode">
             <select
               value={node.data.readerFormat ?? "markdown"}
               onChange={(e) => onUpdate({ readerFormat: e.target.value as "markdown" | "text" | "html" })}
               className={`${inputClass} cursor-pointer`}
             >
               <option value="markdown">Clean Markdown (Recommended for LLMs)</option>
-              <option value="text">Plain Text</option>
+              <option value="text">Plain text</option>
               <option value="html">Sanitized HTML</option>
             </select>
           </Field>
@@ -1701,21 +1699,21 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
       {/* ─── Notification Dispatcher Inspector ─── */}
       {type === "notification_dispatcher" && (
         <>
-          <Field label="Destination Platform">
+          <Field label="Destination platform">
             <select
               value={node.data.dispatchDestination ?? "discord"}
               onChange={(e) => onUpdate({ dispatchDestination: e.target.value as "discord" | "slack" | "telegram" | "webhook" })}
               className={`${inputClass} cursor-pointer`}
             >
-              <option value="discord">Discord Webhook</option>
-              <option value="slack">Slack Incoming Webhook</option>
-              <option value="telegram">Telegram Bot</option>
+              <option value="discord">Discord webhook</option>
+              <option value="slack">Slack incoming webhook</option>
+              <option value="telegram">Telegram bot</option>
               <option value="webhook">Generic HTTP Webhook</option>
             </select>
           </Field>
           {node.data.dispatchDestination === "telegram" ? (
             <>
-              <Field label="Telegram Bot Token">
+              <Field label="Telegram bot token">
                 <input
                   type="password"
                   value={node.data.telegramBotToken ?? ""}
@@ -1743,16 +1741,16 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               />
             </Field>
           )}
-          <Field label="Message Content Template">
+          <Field label="Message content template">
             <textarea
               value={node.data.dispatchMessage ?? ""}
               onChange={(e) => onUpdate({ dispatchMessage: e.target.value })}
               rows={4}
               spellCheck={false}
               placeholder="**Alert Report:**\n{{ results.agent_1 }}"
-              className={`${inputClass} resize-y text-[9px] leading-relaxed`}
+              className={`${inputClass} resize-y text-xs leading-relaxed`}
             />
-            <p className="text-[8px] text-slate-500 leading-tight">
+            <p className="text-xs text-[var(--text-muted)] leading-tight">
               Supports markdown and template variables (e.g. {`{{ results.<nodeId> }}`})
             </p>
           </Field>
@@ -1770,7 +1768,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               emptyValue={{}}
               rows={5}
               placeholder='{\n  "title": "item.title",\n  "url": "item.link",\n  "score": "item.score"\n}'
-              className={`${inputClass} resize-y text-[9px] leading-relaxed font-mono`}
+              className={`${inputClass} resize-y text-xs leading-relaxed font-mono`}
             />
           </Field>
           <Field label="Custom JSONPath / Transform Expression (Optional)">
@@ -1795,7 +1793,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               className={inputClass}
             />
           </Field>
-          <Field label="Search Query Template" hint="Supports template strings like {{ input.query }} or {{ results.agent.topic }}">
+          <Field label="Search query template" hint="Supports template strings like {{ input.query }} or {{ results.agent.topic }}">
             <input
               value={node.data.searxngQuery ?? ""}
               onChange={(e) => onUpdate({ searxngQuery: e.target.value })}
@@ -1803,7 +1801,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               className={inputClass}
             />
           </Field>
-          <Field label="Max Results Limit">
+          <Field label="Max results limit">
             <NumberInput
               min={1}
               max={20}
@@ -1861,7 +1859,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               className={inputClass}
             />
           </Field>
-          <Field label="Output Format">
+          <Field label="Output format">
             <select
               value={node.data.doclingOutputFormat ?? "markdown"}
               onChange={(e) => onUpdate({ doclingOutputFormat: e.target.value as "markdown" | "json" | "html" })}
@@ -1886,7 +1884,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
       {/* ─── Gotenberg PDF Exporter Inspector ─── */}
       {type === "gotenberg_pdf_exporter" && (
         <>
-          <Field label="Gotenberg Service Host" hint="Docker gotenberg/gotenberg endpoint">
+          <Field label="Gotenberg service host" hint="Docker gotenberg/gotenberg endpoint">
             <input
               value={node.data.gotenbergHost ?? "http://localhost:3000"}
               onChange={(e) => onUpdate({ gotenbergHost: e.target.value })}
@@ -1905,12 +1903,12 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
                 <option value="Letter">US Letter</option>
                 <option value="Legal">Legal</option>
               </select>
-              <label className="flex items-center gap-1.5 text-[9px] text-slate-700 dark:text-slate-300 font-mono">
+              <label className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] font-mono">
                 <input
                   type="checkbox"
                   checked={node.data.gotenbergLandscape ?? false}
                   onChange={(e) => onUpdate({ gotenbergLandscape: e.target.checked })}
-                  className="rounded border-slate-400"
+                  className="rounded border-[var(--border-strong)]"
                 />
                 Landscape
               </label>
@@ -1923,7 +1921,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               rows={5}
               spellCheck={false}
               placeholder="<h1>Executive Summary</h1>\n<p>{{ results.agent }}</p>"
-              className={`${inputClass} resize-y text-[9px] leading-relaxed font-mono`}
+              className={`${inputClass} resize-y text-xs leading-relaxed font-mono`}
             />
           </Field>
         </>
@@ -1948,7 +1946,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               className={inputClass}
             />
           </Field>
-          <Field label="Database Operation">
+          <Field label="Database operation">
             <select
               value={node.data.nocodbOperation ?? "create"}
               onChange={(e) => onUpdate({ nocodbOperation: e.target.value as "create" | "list" | "find" | "update" })}
@@ -1956,7 +1954,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             >
               <option value="create">CREATE (Insert New Record)</option>
               <option value="list">LIST (Query / Find Rows)</option>
-              <option value="find">FIND BY ID</option>
+              <option value="find">Find by ID</option>
               <option value="update">UPDATE (Patch Record)</option>
             </select>
           </Field>
@@ -1969,7 +1967,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               defaultText="{}"
               rows={4}
               placeholder='{\n  "title": "{{ results.agent.title }}",\n  "status": "APPROVED"\n}'
-              className={`${inputClass} resize-y text-[9px] leading-relaxed font-mono`}
+              className={`${inputClass} resize-y text-xs leading-relaxed font-mono`}
             />
           </Field>
         </>
@@ -1986,7 +1984,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               className={inputClass}
             />
           </Field>
-          <Field label="Collection Name">
+          <Field label="Collection name">
             <input
               value={node.data.pocketbaseCollection ?? "agent_state"}
               onChange={(e) => onUpdate({ pocketbaseCollection: e.target.value })}
@@ -1994,7 +1992,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               className={inputClass}
             />
           </Field>
-          <Field label="Store Action">
+          <Field label="Store action">
             <select
               value={node.data.pocketbaseAction ?? "create"}
               onChange={(e) => onUpdate({ pocketbaseAction: e.target.value as "create" | "get" | "list" | "update" })}
@@ -2033,7 +2031,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               className={inputClass}
             />
           </Field>
-          <Field label="Vector Collection Name">
+          <Field label="Vector collection name">
             <input
               value={node.data.qdrantCollection ?? "knowledge_base"}
               onChange={(e) => onUpdate({ qdrantCollection: e.target.value })}
@@ -2041,7 +2039,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               className={inputClass}
             />
           </Field>
-          <Field label="Semantic Search Query Template">
+          <Field label="Semantic search query template">
             <input
               value={node.data.qdrantQuery ?? ""}
               onChange={(e) => onUpdate({ qdrantQuery: e.target.value })}
@@ -2086,7 +2084,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               className={inputClass}
             />
           </Field>
-          <Field label="Audio Language Code">
+          <Field label="Audio language code">
             <input
               value={node.data.audioLanguage ?? "auto"}
               onChange={(e) => onUpdate({ audioLanguage: e.target.value })}
@@ -2108,7 +2106,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
       {/* ─── Piper TTS Voice Synthesizer Inspector ─── */}
       {type === "piper_tts" && (
         <>
-          <Field label="Speech Voice Model">
+          <Field label="Speech voice model">
             <input
               value={node.data.piperVoice ?? "en_US-lessac-medium"}
               onChange={(e) => onUpdate({ piperVoice: e.target.value })}
@@ -2123,7 +2121,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               rows={4}
               spellCheck={false}
               placeholder="{{ results.agent }} or Hello, how may I assist you today?"
-              className={`${inputClass} resize-y text-[9px] leading-relaxed`}
+              className={`${inputClass} resize-y text-xs leading-relaxed`}
             />
           </Field>
           <Field label="Piper Service Host (Optional)">
@@ -2175,16 +2173,16 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
                 onCommit={(v) => onUpdate({ a2aTimeoutMs: v })}
               />
             </Field>
-            <Field label="Fallback Strategy">
+            <Field label="Fallback strategy">
               <select
                 value={node.data.a2aFallbackStrategy ?? "retry"}
                 onChange={(e) => onUpdate({ a2aFallbackStrategy: e.target.value as "retry" | "fail" | "skip" | "local_agent" })}
                 className={`${inputClass} cursor-pointer`}
               >
                 <option value="retry">Retry (2x)</option>
-                <option value="fail">Fail Run</option>
-                <option value="skip">Skip Node</option>
-                <option value="local_agent">Local Fallback</option>
+                <option value="fail">Fail run</option>
+                <option value="skip">Skip node</option>
+                <option value="local_agent">Local fallback</option>
               </select>
             </Field>
           </div>
@@ -2194,16 +2192,16 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
       {/* ─── Google A2A Protocol: A2A Channel / Swarm Inspector ─── */}
       {type === "a2a_channel" && (
         <>
-          <Field label="Swarm Coordination Mode">
+          <Field label="Swarm coordination mode">
             <select
               value={node.data.a2aChannelMode ?? "debate"}
               onChange={(e) => onUpdate({ a2aChannelMode: e.target.value as "debate" | "round_robin" | "consensus" | "delegation" })}
               className={`${inputClass} cursor-pointer`}
             >
               <option value="debate">Debate & Peer Review</option>
-              <option value="consensus">Consensus Voting</option>
+              <option value="consensus">Consensus voting</option>
               <option value="round_robin">Round-Robin Turns</option>
-              <option value="delegation">Supervisor Delegation</option>
+              <option value="delegation">Supervisor delegation</option>
             </select>
           </Field>
           <Field label="Channel Discussion Topic / Goal" hint="Supports dynamic templates {{ results.agent }}">
@@ -2212,10 +2210,10 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               onChange={(e) => onUpdate({ a2aChannelTopic: e.target.value })}
               rows={3}
               placeholder="Synthesize findings into strategic conclusion..."
-              className={`${inputClass} resize-y text-[9px]`}
+              className={`${inputClass} resize-y text-xs`}
             />
           </Field>
-          <Field label="Max Dialogue Turns">
+          <Field label="Max dialogue turns">
             <NumberInput
               min={1}
               max={10}
@@ -2231,7 +2229,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
       {/* ─── Code Sandbox Inspector ─── */}
       {type === "code_sandbox" && (
         <>
-          <Field label="Programming Language">
+          <Field label="Programming language">
             <select
               value={node.data.codeLanguage ?? "python"}
               onChange={(e) => onUpdate({ codeLanguage: e.target.value as "javascript" | "python" })}
@@ -2255,7 +2253,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
                   ? "# Python sandbox script\nitems = input.get('items', [])\ntotal = sum(items)\nreturn {'total': total, 'count': len(items)}"
                   : "// JavaScript sandbox\nconst items = input.items || [];\nconst total = items.reduce((a, b) => a + b, 0);\nreturn { total, count: items.length };"
               }
-              className={`${inputClass} resize-y text-[9px] font-mono leading-relaxed`}
+              className={`${inputClass} resize-y text-xs font-mono leading-relaxed`}
             />
           </Field>
         </>
@@ -2264,7 +2262,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
       {/* ─── Swarm Consensus Inspector ─── */}
       {type === "consensus" && (
         <>
-          <Field label="Consensus Strategy">
+          <Field label="Consensus strategy">
             <select
               value={node.data.consensusStrategy ?? "majority_vote"}
               onChange={(e) =>
@@ -2279,7 +2277,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
             >
               <option value="majority_vote">Majority Vote / Primary Model</option>
               <option value="judge_synthesis">Referee Judge LLM Synthesis</option>
-              <option value="highest_confidence">Highest Confidence Response</option>
+              <option value="highest_confidence">Highest confidence response</option>
             </select>
           </Field>
           <Field
@@ -2293,7 +2291,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               emptyValue={undefined}
               defaultText={'[\n  "groq/compound",\n  "google/gemma-4-26b-a4b-it:free",\n  "cohere/north-mini-code:free"\n]'}
               rows={4}
-              className={`${inputClass} resize-y text-[9px] font-mono leading-relaxed`}
+              className={`${inputClass} resize-y text-xs font-mono leading-relaxed`}
             />
           </Field>
         </>
@@ -2308,7 +2306,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               onChange={(e) => onUpdate({ criticRubric: e.target.value })}
               rows={4}
               placeholder="1. Verify factual accuracy against references\n2. Flag any compliance or security risks\n3. Ensure response is clear, structured, and under 500 words"
-              className={`${inputClass} resize-y text-[9px] leading-relaxed`}
+              className={`${inputClass} resize-y text-xs leading-relaxed`}
             />
           </Field>
           <div className="grid grid-cols-2 gap-2">
@@ -2322,7 +2320,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
                 onCommit={(v) => onUpdate({ criticPassScore: v })}
               />
             </Field>
-            <Field label="Max Refine Turns">
+            <Field label="Max refine turns">
               <NumberInput
                 min={1}
                 max={5}
@@ -2339,7 +2337,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
       {/* Sticky Note Inspector */}
       {type === "sticky_note" && (
         <>
-          <Field label="Note Color">
+          <Field label="Note color">
             <select
               value={(node.data.noteColor as string) ?? "yellow"}
               onChange={(e) => onUpdate({ noteColor: e.target.value })}
@@ -2368,7 +2366,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
       {/* Frame Inspector */}
       {type === "frame" && (
         <>
-          <Field label="Frame Title">
+          <Field label="Frame title">
             <input
               value={(node.data.frameTitle as string) ?? ""}
               onChange={(e) => onUpdate({ frameTitle: e.target.value })}
@@ -2376,7 +2374,7 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               className={inputClass}
             />
           </Field>
-          <Field label="Background Opacity">
+          <Field label="Background opacity">
             <input
               type="range"
               min={0}
@@ -2384,9 +2382,9 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
               step={0.05}
               value={(node.data.frameOpacity as number) ?? 0.08}
               onChange={(e) => onUpdate({ frameOpacity: Number(e.target.value) })}
-              className="w-full accent-indigo-500 cursor-pointer"
+              className="w-full accent-[var(--text-muted)] cursor-pointer"
             />
-            <div className="text-[8px] text-slate-500 text-right">
+            <div className="text-xs text-[var(--text-muted)] text-right">
               {(((node.data.frameOpacity as number) ?? 0.08) * 100).toFixed(0)}%
             </div>
           </Field>
@@ -2395,25 +2393,25 @@ export function NodeInspector({ node, onUpdate, onDelete, allNodeIds, onOpenSubg
 
       {/* Breakpoint Toggle (debug mode) */}
       {onToggleBreakpoint && (type === "agent" || type === "supervisor" || type === "tool" || type === "router" || type === "approval") && (
-        <div className="border-t border-slate-200 dark:border-slate-700/60 pt-2">
+        <div className="border-t border-[var(--border-subtle)] pt-2">
           <button
             type="button"
             onClick={() => onToggleBreakpoint(node.id)}
             className={clsx(
-              "inline-flex w-full items-center justify-center gap-1.5 rounded border px-2 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-colors cursor-pointer",
+              "inline-flex w-full items-center justify-center gap-1.5 rounded border px-2 py-1.5 text-xs font-medium transition-colors cursor-pointer",
               node.data.breakpoint
-                ? "border-red-400 bg-red-950/40 text-red-300"
-                : "border-slate-700 text-slate-400 hover:border-red-400 hover:text-red-300"
+                ? "border-[var(--state-error)]/40 bg-[var(--state-error)]/40 text-[var(--state-error)]"
+                : "border-[var(--border-strong)] text-[var(--text-muted)] hover:border-[var(--state-error)]/40 hover:text-[var(--state-error)]"
             )}
           >
-            <Circle className={clsx("h-3 w-3", node.data.breakpoint ? "fill-red-500 text-red-500" : "text-slate-500")} />
-            {node.data.breakpoint ? "BREAKPOINT SET" : "SET BREAKPOINT"}
+            <Circle className={clsx("h-3 w-3", node.data.breakpoint ? "fill-[var(--text-muted)] text-[var(--state-error)]" : "text-[var(--text-muted)]")} />
+            {node.data.breakpoint ? "Breakpoint set" : "Set breakpoint"}
           </button>
         </div>
       )}
 
-      <div className="border-t border-slate-200 dark:border-slate-700/60 pt-2">
-        <p className="text-[8px] text-slate-500 leading-tight">
+      <div className="border-t border-[var(--border-subtle)] pt-2">
+        <p className="text-xs text-[var(--text-muted)] leading-tight">
           {'Edges: drag from the right handle to connect. Click an edge then edit its label in the inspector to set a branch condition.'}
         </p>
       </div>

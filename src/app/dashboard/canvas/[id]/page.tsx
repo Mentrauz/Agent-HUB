@@ -3,22 +3,6 @@
 import React, { use, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  ArrowLeft,
-  Save,
-  Play,
-  Loader2,
-  ExternalLink,
-  Pencil,
-  RefreshCw,
-  Network,
-  Ghost,
-  History,
-  Share2,
-  GitBranch,
-  Check,
-  MoreHorizontal,
-} from "lucide-react";
 import { skillsApi } from "@/lib/api/skills";
 import { executionsApi } from "@/lib/api/executions";
 import { AgentGraphCanvas } from "@/components/canvas/AgentGraphCanvas";
@@ -33,10 +17,10 @@ import { buildInitialGraphFromSkill } from "@/components/canvas/graphUtils";
 import { clsx } from "clsx";
 import { getPrefilledExecutionInput } from "@/lib/execution/inputHelper";
 import { JsonEditorModal } from "@/components/common/JsonEditorModal";
-import { Maximize2, ChevronDown, ChevronUp } from "lucide-react";
+import { BTN_PRIMARY, BTN_PRIMARY_SM, BTN_SECONDARY, BTN_SECONDARY_SM, FIELD, META, Tag } from "@/components/ui/surfaces";
 
 const menuItemClass =
-  "w-full inline-flex items-center gap-2 px-3 py-1.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-indigo-950/50 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed text-left";
+  "block w-full cursor-pointer px-3 py-2 text-left font-sans text-[13px] text-[var(--text-secondary)] transition-colors hover:bg-[var(--text-primary)]/[0.04] hover:text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-40";
 
 export default function CanvasEditorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -83,7 +67,7 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
   const shareSnapshot = async () => {
     try {
       await navigator.clipboard.writeText(`${window.location.origin}/dashboard/canvas/${id}/snapshot`);
-      toast.success("Snapshot link copied", "Share it anywhere — it renders read-only.");
+      toast.success("Snapshot link copied", "Share it anywhere. It renders read-only.");
     } catch {
       toast.error("Copy failed", "Clipboard unavailable.");
     }
@@ -305,11 +289,8 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
         title="Agent graph not found"
         description="This graph does not exist or you do not have access to it."
         action={
-          <Link
-            href="/dashboard/canvas"
-            className="px-4 py-2 rounded border border-indigo-400 bg-indigo-600 text-white text-xs font-mono font-semibold hover:bg-indigo-500 transition-all cursor-pointer"
-          >
-            [ BACK TO CANVAS ]
+          <Link href="/dashboard/canvas" className={BTN_SECONDARY}>
+            Back to canvas
           </Link>
         }
       />
@@ -319,75 +300,44 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
   const canDiff = Boolean(publishedGraph && graphDiff && !tracing);
 
   return (
-    <div className="h-full flex flex-col gap-2">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 border-b border-slate-200 dark:border-indigo-950/80 pb-2 shrink-0">
-        <div className="flex items-center gap-3 min-w-0">
-          <Link
-            href="/dashboard/canvas"
-            className="p-2 rounded border border-slate-200 dark:border-indigo-900/50 hover:border-indigo-400 text-slate-600 dark:text-slate-400 hover:text-indigo-600 transition-colors shrink-0"
-            title="Back to canvas gallery"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-          <div className="min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-base sm:text-xl font-pixel text-pixel-glow uppercase tracking-wide truncate">
-                {skill.name}
-              </h1>
-              <StatusBadge status={skill.status} />
-              {syncStatus === "saving" && (
-                <span className="text-[9px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold border border-amber-500/30 inline-flex items-center gap-1">
-                  <Loader2 className="h-2.5 w-2.5 animate-spin" /> SAVING…
-                </span>
-              )}
-              {syncStatus === "unsaved" && (
-                <span className="text-[9px] px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold border border-blue-500/30 inline-flex items-center gap-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" /> UNSAVED
-                </span>
-              )}
-              {syncStatus === "synced" && (
-                <span className="text-[9px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/30 inline-flex items-center gap-1">
-                  <Check className="h-2.5 w-2.5 text-emerald-500" /> AUTO-SYNCED
-                </span>
-              )}
-              {hasGraph && (
-                <span className="text-[9px] px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 font-bold border border-violet-200 dark:border-violet-500/40 inline-flex items-center gap-1">
-                  <Network className="h-3 w-3" /> GRAPH
-                </span>
-              )}
-            </div>
-            {/* Subtitle: graph shape + run analytics for this version */}
-            <p className="text-[10px] text-slate-600 dark:text-slate-400 mt-0.5 truncate font-mono">
-              draft v{draft.versionNumber} · {graph?.nodes.length ?? 0} nodes · {graph?.edges.length ?? 0} edges
-              {analytics.runs > 0 && (
-                <>
-                  {" · "}runs <b className="text-slate-900 dark:text-slate-100">{analytics.runs}</b>
-                  {" · "}success{" "}
-                  <b className={clsx(analytics.successRate !== null && analytics.successRate >= 70 ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400")}>
-                    {analytics.successRate === null ? "—" : `${analytics.successRate}%`}
-                  </b>
-                  {" · "}avg{" "}
-                  <b className="text-slate-900 dark:text-slate-100">
-                    {analytics.avgDurationMs >= 1000 ? `${(analytics.avgDurationMs / 1000).toFixed(1)}s` : `${Math.round(analytics.avgDurationMs)}ms`}
-                  </b>
-                  {" · "}failures{" "}
-                  <b className={analytics.failures > 0 ? "text-red-600 dark:text-red-400" : "text-slate-900 dark:text-slate-100"}>{analytics.failures}</b>
-                </>
-              )}
-            </p>
+    <div className="flex h-full flex-col gap-3">
+      <div className="flex shrink-0 flex-col items-start justify-between gap-3 border-b border-[var(--border-subtle)] pb-3 lg:flex-row lg:items-center">
+        <div className="min-w-0 space-y-1">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <Link
+              href="/dashboard/canvas"
+              className="rounded-[6px] font-sans text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+            >
+              Agent canvas
+            </Link>
+            <h1 className="truncate font-sans text-xl font-medium text-[var(--text-primary)]">{skill.name}</h1>
+            <StatusBadge status={skill.status} />
+            {syncStatus === "saving" && <Tag tone="warn">Saving</Tag>}
+            {syncStatus === "unsaved" && <Tag tone="accent">Unsaved</Tag>}
+            {syncStatus === "synced" && <Tag tone="good">Saved</Tag>}
           </div>
+          <p className={clsx(META, "truncate")}>
+            draft v{draft.versionNumber} · {graph?.nodes.length ?? 0} nodes · {graph?.edges.length ?? 0} edges
+            {analytics.runs > 0 && (
+              <>
+                {" · "}
+                {analytics.runs} runs · {analytics.successRate === null ? "no" : `${analytics.successRate}%`} success · avg{" "}
+                {analytics.avgDurationMs >= 1000 ? `${(analytics.avgDurationMs / 1000).toFixed(1)}s` : `${Math.round(analytics.avgDurationMs)}ms`}
+                {" · "}
+                <span className={analytics.failures > 0 ? "text-[var(--state-error)]" : undefined}>{analytics.failures} failures</span>
+              </>
+            )}
+          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 text-xs font-mono w-full lg:w-auto justify-start lg:justify-end">
+        <div className="flex w-full flex-wrap items-center justify-start gap-2 lg:w-auto lg:justify-end">
           <button
             type="button"
             onClick={() => saveMutation.mutate()}
             disabled={saveMutation.isPending || !hasGraph || Boolean(activeExecutionId) || editingSubgraph}
-            className="inline-flex items-center justify-center gap-1 px-3 py-1.5 rounded border border-cyan-400 bg-cyan-600 text-white text-[11px] font-bold hover:bg-cyan-500 transition-all cursor-pointer disabled:opacity-40 shadow-sm"
+            className={BTN_SECONDARY_SM}
           >
-            {saveMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
-            Save Graph
+            {saveMutation.isPending ? "Saving" : "Save graph"}
           </button>
 
           {lastExecution && !tracing && (
@@ -395,11 +345,10 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
               type="button"
               onClick={() => replayMutation.mutate(lastExecution.id)}
               disabled={replayMutation.isPending || !hasGraph || editingSubgraph}
-              className="inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded border border-emerald-400 bg-emerald-600 text-white text-[11px] font-semibold hover:bg-emerald-500 shadow-sm transition-all cursor-pointer disabled:opacity-40"
+              className={BTN_SECONDARY_SM}
               title="Re-run the last execution deterministically"
             >
-              {replayMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <History className="h-3 w-3" />}
-              Replay
+              {replayMutation.isPending ? "Starting" : "Replay"}
             </button>
           )}
 
@@ -407,46 +356,42 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
             type="button"
             onClick={handlePreview}
             disabled={previewMutation.isPending || !hasGraph || tracing || editingSubgraph}
-            className="inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded border border-violet-400 bg-violet-600 text-white text-[11px] font-semibold hover:bg-violet-500 shadow-sm transition-all cursor-pointer disabled:opacity-40"
+            className={BTN_SECONDARY_SM}
             title="Dry-run the graph without persisting anything"
           >
-            {previewMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Ghost className="h-3 w-3" />}
-            Ghost Preview
+            {previewMutation.isPending ? "Starting" : "Ghost preview"}
           </button>
 
           <button
             type="button"
             onClick={handleRun}
             disabled={runMutation.isPending || !hasGraph || tracing || editingSubgraph}
-            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded border border-indigo-400 bg-indigo-600 text-white text-[11px] font-bold hover:bg-indigo-500 shadow-md shadow-indigo-500/30 transition-all cursor-pointer disabled:opacity-40"
+            className={BTN_PRIMARY_SM}
           >
-            {runMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Play className="h-3 w-3" />}
-            Run Graph
+            {runMutation.isPending ? "Starting" : "Run graph"}
           </button>
 
           {activeExecutionId && (
-            <Link
-              href={`/dashboard/executions/${activeExecutionId}`}
-              className="inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded border border-emerald-400 bg-emerald-600 text-white text-[11px] font-semibold hover:bg-emerald-500 transition-all shadow-sm"
-            >
-              <ExternalLink className="h-3 w-3" /> Full Trace
+            <Link href={`/dashboard/executions/${activeExecutionId}`} className={BTN_SECONDARY_SM}>
+              Full trace
             </Link>
           )}
 
-          {/* Secondary actions */}
           <div ref={moreRef} className="relative">
             <button
               type="button"
               onClick={() => setShowMore((s) => !s)}
-              className="inline-flex items-center justify-center px-2 py-1.5 rounded border border-slate-300 dark:border-indigo-900/50 bg-slate-50 dark:bg-indigo-950/30 text-slate-700 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-700 transition-all cursor-pointer"
-              title="More actions"
+              className={BTN_SECONDARY_SM}
               aria-haspopup="menu"
               aria-expanded={showMore}
             >
-              <MoreHorizontal className="h-3.5 w-3.5" />
+              More
             </button>
             {showMore && (
-              <div role="menu" className="absolute right-0 top-9 z-50 w-48 py-1 rounded-lg border border-slate-200 dark:border-indigo-900/60 bg-white dark:bg-[#0c0d18] shadow-xl">
+              <div
+                role="menu"
+                className="absolute right-0 top-10 z-50 w-52 overflow-hidden rounded-[10px] border border-[var(--border-subtle)] bg-[var(--surface-elevated)] py-1 shadow-[0_8px_24px_rgba(0,0,0,0.24)]"
+              >
                 <Link
                   href={`/dashboard/skills/${skill.id}/edit`}
                   role="menuitem"
@@ -454,7 +399,7 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
                   title="Open the classic form editor for this skill"
                   onClick={() => setShowMore(false)}
                 >
-                  <Pencil className="h-3 w-3" /> Form Editor
+                  Form editor
                 </Link>
                 {canDiff && (
                   <button
@@ -467,7 +412,7 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
                     className={menuItemClass}
                     title="Visual diff against the published version"
                   >
-                    <GitBranch className="h-3 w-3" /> Diff vs published
+                    Diff against published
                   </button>
                 )}
                 <button
@@ -481,7 +426,7 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
                   className={menuItemClass}
                   title="Copy a read-only snapshot link"
                 >
-                  <Share2 className="h-3 w-3" /> Copy snapshot link
+                  Copy snapshot link
                 </button>
               </div>
             )}
@@ -489,35 +434,28 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
         </div>
       </div>
 
-      {/* Execution input bar */}
       {!tracing && (
-        <div className="shrink-0 rounded-lg border border-slate-200 dark:border-indigo-900/40 bg-white/95 dark:bg-[#0c0d16]/90 px-2.5 py-1.5 space-y-1.5 shadow-xs backdrop-blur-xs font-mono">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-700 dark:text-indigo-400 flex items-center gap-1.5 shrink-0">
-              <Play className="h-3 w-3 text-emerald-500 fill-emerald-500/20" /> INPUT:
-            </span>
-            <div
-              onClick={() => setIsJsonModalOpen(true)}
-              className="flex-1 min-w-0 px-3 py-1 rounded bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-indigo-950/60 text-[11px] text-slate-700 dark:text-slate-300 truncate cursor-pointer hover:border-indigo-400 transition-colors"
-              title="Click to expand full JSON editor"
-            >
-              {runInput.replace(/\s+/g, " ").slice(0, 120) || "{ }"}
-            </div>
+        <div className="shrink-0 space-y-2 rounded-[10px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-3 py-2">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="shrink-0 font-sans text-[13px] text-[var(--text-muted)]">Input</span>
             <button
               type="button"
               onClick={() => setIsJsonModalOpen(true)}
-              className="shrink-0 p-1.5 rounded border border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/80 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/80 transition-all cursor-pointer"
-              title="Expand fullscreen JSON editor"
+              className="min-w-0 flex-1 cursor-pointer truncate rounded-[6px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] px-3 py-1 text-left font-mono text-xs text-[var(--text-secondary)] transition-colors hover:border-[var(--border-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+              title="Open the JSON editor"
             >
-              <Maximize2 className="h-3 w-3" />
+              {runInput.replace(/\s+/g, " ").slice(0, 120) || "{ }"}
+            </button>
+            <button type="button" onClick={() => setIsJsonModalOpen(true)} className={clsx(BTN_SECONDARY_SM, "shrink-0")}>
+              Expand
             </button>
             <button
               type="button"
               onClick={() => setShowInputBox((p) => !p)}
-              className="shrink-0 p-1.5 rounded border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-colors cursor-pointer"
-              title={showInputBox ? "Hide raw text box" : "Show inline raw text box"}
+              aria-expanded={showInputBox}
+              className={clsx(BTN_SECONDARY_SM, "shrink-0")}
             >
-              {showInputBox ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+              {showInputBox ? "Hide box" : "Show box"}
             </button>
             <button
               type="button"
@@ -526,10 +464,10 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
                 if (runInputError) setRunInputError(null);
                 toast.info("Input reloaded from schema sample");
               }}
-              className="shrink-0 px-1.5 py-1 text-[10px] text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+              className={clsx(BTN_SECONDARY_SM, "shrink-0")}
               title="Reload input from the schema sample"
             >
-              ↻ Sample
+              Sample
             </button>
           </div>
 
@@ -542,19 +480,20 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
               }}
               rows={3}
               spellCheck={false}
+              aria-label="Run input JSON"
               placeholder="{ }"
-              className={`w-full rounded border bg-white dark:bg-black/60 px-3 py-2 text-[11px] text-slate-900 dark:text-slate-300 placeholder:text-slate-400 focus:outline-none transition-colors resize-y shadow-inner ${runInputError ? "border-red-500" : "border-slate-300 dark:border-indigo-900/50 focus:border-indigo-500"
-                }`}
+              className={clsx(FIELD, "w-full resize-y p-3 font-mono text-xs", runInputError && "border-[var(--state-error)]")}
             />
           )}
           {runInputError && (
-            <p className="text-[10px] text-red-600 dark:text-red-400 font-semibold">[ JSON ERROR ] {runInputError}</p>
+            <p role="alert" className="font-sans text-[13px] text-[var(--state-error)]">
+              Invalid JSON: {runInputError}
+            </p>
           )}
         </div>
       )}
 
-      {/* Canvas */}
-      <div className="flex-1 min-h-[420px]">
+      <div className="min-h-[420px] flex-1">
         <AgentGraphCanvas
           graph={graph}
           onChange={handleGraphChange}
@@ -570,9 +509,9 @@ export default function CanvasEditorPage({ params }: { params: Promise<{ id: str
                   setActiveExecutionId(null);
                   setActivePreviewId(null);
                 }}
-                className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-300 dark:border-slate-500/50 text-[9px] text-slate-700 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors cursor-pointer"
+                className={BTN_SECONDARY_SM}
               >
-                <RefreshCw className="h-3 w-3" /> BACK TO EDIT
+                Back to edit
               </button>
             ) : undefined
           }

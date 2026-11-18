@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
-import { Sparkles, Loader2, Wand2, ChevronDown, ChevronUp, AlertCircle } from "lucide-react";
 import { clsx } from "clsx";
 import type { AgentGraphDefinition } from "@/types/graph";
+import { BTN_PRIMARY_SM, BTN_SECONDARY_SM } from "@/components/ui/surfaces";
 
 interface CanvasCopilotProps {
   /** Called with the generated graph when the user submits a prompt. */
@@ -21,22 +21,22 @@ interface CopilotExample {
 
 const EXAMPLES: CopilotExample[] = [
   {
-    label: "Customer Support Pipeline",
+    label: "Customer support pipeline",
     prompt:
       "Build a multi-agent customer support pipeline with an intent classifier, support agent, billing agent, and HITL gate for refunds > $500",
   },
   {
-    label: "Research Assistant",
+    label: "Research assistant",
     prompt:
       "Create a research pipeline that searches the web, extracts key findings, summarizes them, and outputs a structured report",
   },
   {
-    label: "Code Review Loop",
+    label: "Code review loop",
     prompt:
       "Design a code review loop: a coder agent writes code, a critic agent reviews it, and they iterate until approved or max 3 rounds",
   },
   {
-    label: "RAG Pipeline",
+    label: "RAG pipeline",
     prompt:
       "Build a RAG pipeline with document retrieval, chunk embedding, a vector search step, and an LLM answer generation agent",
   },
@@ -95,47 +95,45 @@ export function CanvasCopilot({ onGraphGenerated, disabled = false, position = "
 
   const isBottom = position === "bottom";
 
+  const examples = (
+    <div
+      className={clsx(
+        "max-h-52 space-y-0.5 overflow-y-auto px-2 py-2",
+        isBottom ? "border-b border-[var(--border-subtle)]" : "border-t border-[var(--border-subtle)]"
+      )}
+    >
+      <div className="px-2 pb-1 font-sans text-xs text-[var(--text-muted)]">Example prompts</div>
+      {EXAMPLES.map((ex) => (
+        <button
+          key={ex.label}
+          type="button"
+          onClick={() => applyExample(ex)}
+          className="w-full cursor-pointer rounded-[8px] px-2 py-1.5 text-left transition-colors hover:bg-[var(--text-primary)]/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+        >
+          <div className="font-sans text-[13px] text-[var(--text-primary)]">{ex.label}</div>
+          <div className="truncate font-sans text-xs text-[var(--text-muted)]">{ex.prompt}</div>
+        </button>
+      ))}
+    </div>
+  );
+
   return (
     <div
       className={clsx(
-        "absolute left-1/2 z-40 -translate-x-1/2 w-[600px] max-w-[calc(100%-3rem)] transition-all",
+        "absolute left-1/2 z-40 w-[600px] max-w-[calc(100%-3rem)] -translate-x-1/2",
         isBottom ? "bottom-5" : "top-3"
       )}
     >
-      <div className="rounded-xl border border-slate-200 dark:border-indigo-500/40 bg-white/95 dark:bg-[#0a0a14]/95 backdrop-blur-md shadow-2xl shadow-indigo-500/20 font-mono overflow-hidden flex flex-col">
-        {/* If positioned at bottom, expanded examples appear above the input */}
-        {expanded && isBottom && (
-          <div className="border-b border-slate-200 dark:border-indigo-500/20 px-3 py-2.5 space-y-1 bg-slate-50/50 dark:bg-black/30 max-h-52 overflow-y-auto">
-            <div className="text-[8px] text-slate-500 uppercase tracking-widest font-bold mb-1">
-              Example Prompts (Talk to Graph)
-            </div>
-            {EXAMPLES.map((ex) => (
-              <button
-                key={ex.label}
-                onClick={() => applyExample(ex)}
-                className="w-full flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-left hover:bg-indigo-50/80 dark:hover:bg-indigo-500/10 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30 transition-all cursor-pointer"
-              >
-                <Sparkles className="h-3 w-3 text-indigo-500 dark:text-indigo-400 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[9px] font-bold text-indigo-700 dark:text-indigo-300">{ex.label}</div>
-                  <div className="text-[8px] text-slate-500 truncate">{ex.prompt}</div>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
+      <div className="flex flex-col overflow-hidden rounded-[12px] border border-[var(--border-subtle)] bg-[var(--surface-elevated)] shadow-[0_8px_24px_rgba(0,0,0,0.24)]">
+        {expanded && isBottom && examples}
 
-        {/* Error */}
         {error && (
-          <div className="px-3 py-1.5 border-b border-red-300 dark:border-red-500/30 bg-red-50 dark:bg-red-950/40 text-[9px] text-red-600 dark:text-red-400 flex items-center gap-1.5">
-            <AlertCircle className="h-3 w-3 shrink-0" />
+          <p role="alert" className="border-b border-[var(--border-subtle)] px-3.5 py-2 font-sans text-[13px] text-[var(--state-error)]">
             {error}
-          </div>
+          </p>
         )}
 
-        {/* Main input row */}
-        <div className="flex items-center gap-2 px-3.5 py-2.5">
-          <Sparkles className="h-4 w-4 text-indigo-500 dark:text-indigo-400 shrink-0 animate-pulse" />
+        <div className="flex items-center gap-2 px-3 py-2.5">
           <input
             value={prompt}
             onChange={(e) => {
@@ -148,64 +146,25 @@ export function CanvasCopilot({ onGraphGenerated, disabled = false, position = "
                 handleSubmit();
               }
             }}
-            placeholder="Talk to graph… e.g. 'Build a customer support pipeline with intent classification and HITL approval'"
-            className="flex-1 bg-transparent text-[11px] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none"
+            aria-label="Describe the graph to generate"
+            placeholder="Describe a graph, for example a support pipeline with intent classification and approval"
+            className="h-8 flex-1 bg-transparent px-1 font-sans text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none"
             disabled={isGenerating}
           />
-          <button
-            onClick={handleSubmit}
-            disabled={!prompt.trim() || isGenerating}
-            className={clsx(
-              "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer",
-              prompt.trim() && !isGenerating
-                ? "bg-indigo-600 text-white hover:bg-indigo-500 shadow-md shadow-indigo-500/25 active:scale-95"
-                : "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed"
-            )}
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="h-3 w-3 animate-spin" /> GENERATING…
-              </>
-            ) : (
-              <>
-                <Wand2 className="h-3 w-3" /> GENERATE
-              </>
-            )}
+          <button type="button" onClick={handleSubmit} disabled={!prompt.trim() || isGenerating} className={BTN_PRIMARY_SM}>
+            {isGenerating ? "Generating" : "Generate"}
           </button>
           <button
+            type="button"
             onClick={() => setExpanded(!expanded)}
-            className="p-1 rounded hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer"
-            title="Show examples"
+            aria-expanded={expanded}
+            className={BTN_SECONDARY_SM}
           >
-            {expanded ? (
-              isBottom ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronUp className="h-3.5 w-3.5" />
-            ) : (
-              isBottom ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />
-            )}
+            Examples
           </button>
         </div>
 
-        {/* If positioned at top, expanded examples appear below the input */}
-        {expanded && !isBottom && (
-          <div className="border-t border-slate-200 dark:border-indigo-500/20 px-3 py-2 space-y-1">
-            <div className="text-[8px] text-slate-500 uppercase tracking-widest font-bold mb-1">
-              Example Prompts
-            </div>
-            {EXAMPLES.map((ex) => (
-              <button
-                key={ex.label}
-                onClick={() => applyExample(ex)}
-                className="w-full flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-left hover:bg-indigo-50/80 dark:hover:bg-indigo-500/10 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-500/30 transition-all cursor-pointer"
-              >
-                <Sparkles className="h-3 w-3 text-indigo-500 dark:text-indigo-400 shrink-0" />
-                <div className="min-w-0">
-                  <div className="text-[9px] font-bold text-indigo-700 dark:text-indigo-300">{ex.label}</div>
-                  <div className="text-[8px] text-slate-500 truncate">{ex.prompt}</div>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
+        {expanded && !isBottom && examples}
       </div>
     </div>
   );

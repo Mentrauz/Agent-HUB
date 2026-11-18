@@ -33,7 +33,7 @@ import { useExecutionStream, replayEvents } from "./useExecutionStream";
 import { computeLayout } from "./autoLayout";
 import { validateGraph } from "./graphValidation";
 import { collapseSelection } from "./subgraphUtils";
-import { Workflow, Play, Link2, X, Pause, Radio, Flame, LayoutTemplate, AlertTriangle, GitBranch, Keyboard, Copy, Boxes, CornerUpLeft, Maximize, Minimize, Undo2, Redo2, Search, Download, Upload, Package, Bug, PanelLeftClose, PanelLeft, PanelRightClose, PanelRight, ChevronDown, ChevronUp, Check, Network, Sparkles, Activity } from "lucide-react";
+import { Workflow, Play, Link2, X, Pause, Radio, Flame, LayoutTemplate, AlertTriangle, GitBranch, Keyboard, Copy, Boxes, CornerUpLeft, Maximize, Minimize, Undo2, Redo2, Search, Download, Upload, Package, Bug, PanelLeftClose, PanelLeft, PanelRightClose, PanelRight, ChevronDown, ChevronUp, Network, Sparkles, Activity } from "lucide-react";
 import { toast } from "@/stores/toastStore";
 import { QuickConnectSearch } from "./quickConnectSearch";
 import { AlignmentBar } from "./AlignmentBar";
@@ -49,24 +49,24 @@ import { ExecutionProgressOverlay } from "./ExecutionProgressOverlay";
 import { ExecutionTimeline } from "./ExecutionTimeline";
 import { clsx } from "clsx";
 
-const labelClass = "text-[9px] font-mono uppercase tracking-widest text-indigo-700 dark:text-indigo-400/80 font-semibold";
+const labelClass = "text-xs font-mono text-[var(--accent-primary)] font-medium";
 
 const toolbarGroupClass =
-  "inline-flex shrink-0 items-center rounded-lg border border-slate-300 dark:border-slate-700 bg-white/95 dark:bg-[#0c0d18]/95 shadow-sm overflow-hidden";
+  "inline-flex shrink-0 items-center rounded-lg border border-[var(--border-strong)] bg-[var(--surface-raised)]/95 overflow-hidden";
 const toolbarIconBtnClass =
-  "p-1.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-30 cursor-pointer";
+  "p-1.5 text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] transition-colors disabled:opacity-30 cursor-pointer";
 const toolbarTextBtnClass =
-  "inline-flex items-center gap-1 px-2 py-1 text-[9px] font-bold uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer disabled:opacity-30";
-const toolbarIdleClass = "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-300";
+  "inline-flex items-center gap-1 px-2 py-1 text-xs font-medium whitespace-nowrap transition-colors cursor-pointer disabled:opacity-30";
+const toolbarIdleClass = "text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)] hover:text-[var(--accent-primary)]";
 const toolbarPillClass =
-  "inline-flex shrink-0 items-center gap-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/95 dark:bg-[#0c0d18]/95 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider whitespace-nowrap text-slate-700 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors shadow-sm cursor-pointer";
-const toolbarDivider = <div className="w-px h-3.5 bg-slate-200 dark:bg-slate-700" />;
+  "inline-flex shrink-0 items-center gap-1 rounded-lg border border-[var(--border-strong)] bg-[var(--surface-raised)]/95 px-2.5 py-1 text-xs font-medium whitespace-nowrap text-[var(--text-secondary)] hover:border-[var(--accent-primary)]/40 hover:text-[var(--accent-primary)] transition-colors cursor-pointer";
+const toolbarDivider = <div className="w-px h-3.5 bg-[var(--surface-sunken)]" />;
 const sidePanelClass =
-  "shrink-0 transition-all duration-200 overflow-hidden rounded border border-slate-200 dark:border-indigo-900/40 bg-white/90 dark:bg-[#0a0a0a]/70 shadow-sm flex flex-col";
+  "shrink-0 transition-colors duration-200 overflow-hidden rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)]/90 flex flex-col";
 const sidePanelHeaderClass =
-  "flex items-center justify-between px-2.5 py-2 border-b border-slate-200 dark:border-indigo-900/40 bg-slate-50/50 dark:bg-indigo-950/20 shrink-0";
+  "flex items-center justify-between px-2.5 py-2 border-b border-[var(--border-subtle)] bg-[var(--surface-sunken)]/50 shrink-0";
 const sidePanelToggleClass =
-  "p-1 rounded hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors cursor-pointer";
+  "p-1 rounded hover:bg-[var(--surface-sunken)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer";
 
 const SHORTCUTS = [
   ["⌘/Ctrl + Z", "undo"],
@@ -755,28 +755,27 @@ function CanvasInner({
       if (!traversed) return {
         ...e,
         animated: false,
-        style: { stroke: "#334155", strokeWidth: 1, opacity: 0.3, ...(e.style ?? {}) },
+        style: { stroke: "var(--border-strong)", strokeWidth: 1, opacity: 0.4, ...(e.style ?? {}) },
       };
       return {
         ...e,
         animated: true,
         style: {
-          stroke: "#818cf8",
-          strokeWidth: 2.5,
-          filter: "drop-shadow(0 0 6px rgba(129, 140, 248, 0.6))",
+          stroke: "var(--accent-primary)",
+          strokeWidth: 2,
           ...(e.style ?? {}),
         },
       };
     });
   }, [edges, inTraceMode, effTraversed]);
 
-  // Coverage view (edit mode): never-traversed edges render dashed amber.
+  // Coverage view (edit mode): never-traversed edges render dashed in the warning colour.
   const coverageEdges = useMemo(() => {
     if (!coverageMode || inTraceMode) return edges;
     return edges.map((e) =>
       coveredEdges.has(e.id)
-        ? { ...e, style: { ...(e.style ?? {}), stroke: "#34d399", strokeWidth: 1.5 } }
-        : { ...e, style: { ...(e.style ?? {}), stroke: "#f59e0b", strokeDasharray: "6 4", strokeWidth: 1.5, opacity: 0.85 } }
+        ? { ...e, style: { ...(e.style ?? {}), stroke: "var(--state-success)", strokeWidth: 1.5 } }
+        : { ...e, style: { ...(e.style ?? {}), stroke: "var(--state-warning)", strokeDasharray: "6 4", strokeWidth: 1.5, opacity: 0.85 } }
     );
   }, [edges, coverageMode, inTraceMode, coveredEdges]);
 
@@ -1022,21 +1021,21 @@ function CanvasInner({
   // App chrome follows the app's light/dark theme; the canvas surface (and the
   // panels floating over it) follow the canvas theme (neon / graphite / paper).
   const canvasBgClass = isCalmGreen
-    ? (isDark ? "bg-[#000000]" : "bg-[#F4F6F5]")
-    : (canvasTheme === "paper" ? "bg-slate-50" : canvasTheme === "graphite" ? "bg-[#14161c]" : "bg-[#07070d]");
+    ? (isDark ? "bg-[var(--surface-raised)]" : "bg-[var(--surface-raised)]")
+    : (canvasTheme === "paper" ? "bg-[var(--surface-sunken)]" : canvasTheme === "graphite" ? "bg-[var(--surface-raised)]" : "bg-[var(--surface-raised)]");
   const floatingPanelClass = clsx(
-    "absolute z-20 rounded-lg backdrop-blur-md shadow-2xl font-mono border",
+    "absolute z-20 rounded-[10px] font-mono border",
     canvasTheme === "paper"
-      ? "border-slate-200 bg-white/95 text-slate-800"
+      ? "border-[var(--border-subtle)] bg-[var(--surface-raised)]/95 text-[var(--text-primary)]"
       : canvasTheme === "graphite"
-        ? "border-slate-600/60 bg-[#1a1d27]/95 text-slate-200"
-        : "border-slate-700/60 bg-[#0a0a14]/95 text-slate-200"
+        ? "border-[var(--border-strong)] bg-[var(--surface-raised)]/95 text-[var(--text-muted)]"
+        : "border-[var(--border-strong)] bg-[var(--surface-raised)]/95 text-[var(--text-muted)]"
   );
   const fullScreenToggle = (
     <button
       type="button"
       onClick={toggleFullScreen}
-      className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-indigo-400 bg-indigo-600 text-white px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider whitespace-nowrap hover:bg-indigo-500 transition-colors shadow-sm cursor-pointer"
+      className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] px-2.5 py-1 text-xs font-medium whitespace-nowrap hover:bg-[var(--cta-primary-hover)] transition-colors cursor-pointer"
       title={isFullScreen ? "Exit full-screen (Esc / F11)" : "Full-screen (F11)"}
     >
       {isFullScreen ? <Minimize className="h-3 w-3" /> : <Maximize className="h-3 w-3" />}
@@ -1044,11 +1043,11 @@ function CanvasInner({
     </button>
   );
   const graphStats = (
-    <div className="border-t border-slate-200 dark:border-slate-700/60 pt-2 space-y-1.5">
-      <div className="text-[9px] uppercase tracking-wider text-slate-500 font-bold">GRAPH STATS</div>
-      <div className="flex justify-between text-[9px] text-slate-600 dark:text-slate-400"><span>Nodes</span><span className="text-indigo-600 dark:text-indigo-300 font-bold">{nodes.length}</span></div>
-      <div className="flex justify-between text-[9px] text-slate-600 dark:text-slate-400"><span>Edges</span><span className="text-indigo-600 dark:text-indigo-300 font-bold">{edges.length}</span></div>
-      <div className="flex justify-between text-[9px] text-slate-600 dark:text-slate-400"><span>Branches</span><span className="text-indigo-600 dark:text-indigo-300 font-bold">{edges.filter((e) => e.label).length}</span></div>
+    <div className="border-t border-[var(--border-subtle)] pt-2 space-y-1.5">
+      <div className="text-xs text-[var(--text-muted)] font-medium">Graph stats</div>
+      <div className="flex justify-between text-xs text-[var(--text-secondary)]"><span>Nodes</span><span className="text-[var(--accent-primary)] font-medium">{nodes.length}</span></div>
+      <div className="flex justify-between text-xs text-[var(--text-secondary)]"><span>Edges</span><span className="text-[var(--accent-primary)] font-medium">{edges.length}</span></div>
+      <div className="flex justify-between text-xs text-[var(--text-secondary)]"><span>Branches</span><span className="text-[var(--accent-primary)] font-medium">{edges.filter((e) => e.label).length}</span></div>
     </div>
   );
 
@@ -1056,7 +1055,7 @@ function CanvasInner({
     <div
       className={clsx(
         "flex flex-col font-mono",
-        isFullScreen ? "fixed inset-0 z-[9999] p-2 bg-slate-100 dark:bg-[#07070d]" : "relative h-full"
+        isFullScreen ? "fixed inset-0 z-[9999] p-2 bg-[var(--surface-sunken)]" : "relative h-full"
       )}
     >
       <div className="flex-1 min-h-0 flex gap-2">
@@ -1064,7 +1063,7 @@ function CanvasInner({
         {!readOnly && (
           <div className={clsx(sidePanelClass, leftOpen ? "w-52" : "w-10")}>
             <div className={sidePanelHeaderClass}>
-              {leftOpen && <span className="text-[9px] font-bold uppercase tracking-widest text-indigo-700 dark:text-indigo-400">NODES</span>}
+              {leftOpen && <span className="text-xs font-medium text-[var(--accent-primary)]">Nodes</span>}
               <button
                 type="button"
                 onClick={() => setLeftOpen((p) => !p)}
@@ -1088,10 +1087,10 @@ function CanvasInner({
           {!inTraceMode && (!readOnly || isFullScreen) && (
             <div className="shrink-0 flex items-center gap-2">
               {isFullScreen && (
-                <div className="hidden md:flex shrink-0 items-center gap-2 pr-1 text-[10px] whitespace-nowrap">
-                  <Workflow className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                  <span className="font-bold uppercase tracking-widest text-slate-900 dark:text-slate-100">CANVAS EDITOR</span>
-                  <span className="text-slate-500 dark:text-slate-400"><b>{nodes.length}</b> nodes · <b>{edges.length}</b> edges</span>
+                <div className="hidden md:flex shrink-0 items-center gap-2 pr-1 text-xs whitespace-nowrap">
+                  <Workflow className="h-4 w-4 text-[var(--accent-primary)]" />
+                  <span className="font-medium text-[var(--text-primary)]">Canvas editor</span>
+                  <span className="text-[var(--text-muted)]"><b>{nodes.length}</b> nodes · <b>{edges.length}</b> edges</span>
                 </div>
               )}
               {!readOnly && (
@@ -1110,7 +1109,7 @@ function CanvasInner({
                   {/* Layout & Selection group */}
                   <div className={toolbarGroupClass}>
                     <button type="button" onClick={handleAutoLayout} className={clsx(toolbarTextBtnClass, toolbarIdleClass)} title="Arrange nodes in layered columns">
-                      <LayoutTemplate className="h-3 w-3" /> AUTO LAYOUT
+                      <LayoutTemplate className="h-3 w-3" /> Auto layout
                     </button>
                     {toolbarDivider}
                     <button
@@ -1120,7 +1119,7 @@ function CanvasInner({
                       className={clsx(toolbarTextBtnClass, toolbarIdleClass)}
                       title="Collapse selection into macro"
                     >
-                      <Boxes className="h-3 w-3" /> MACRO
+                      <Boxes className="h-3 w-3" /> Macro
                     </button>
                     {toolbarDivider}
                     <button type="button" onClick={() => setShowNodeSearch((s) => !s)} className={clsx(toolbarTextBtnClass, toolbarIdleClass)} title="Find node (⌘+F)">
@@ -1139,7 +1138,7 @@ function CanvasInner({
                     </button>
                     {toolbarDivider}
                     <button type="button" onClick={() => setShowExportDialog(true)} className={clsx(toolbarTextBtnClass, toolbarIdleClass)} title="Export graph (PNG/SVG/PDF/Mermaid/LangGraph)">
-                      EXPORT…
+                      Export…
                     </button>
                   </div>
 
@@ -1148,37 +1147,37 @@ function CanvasInner({
                     <button
                       type="button"
                       onClick={() => setShowMacroLibrary((p) => !p)}
-                      className={clsx(toolbarTextBtnClass, showMacroLibrary ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50" : toolbarIdleClass)}
+                      className={clsx(toolbarTextBtnClass, showMacroLibrary ? "text-[var(--accent-primary)] bg-[var(--accent-primary)]/10" : toolbarIdleClass)}
                       title="Toggle My Components library"
                     >
-                      <Package className="h-3 w-3" /> COMPONENTS
+                      <Package className="h-3 w-3" /> Components
                     </button>
                     {toolbarDivider}
                     <button
                       type="button"
                       onClick={() => setShowDebugger((p) => !p)}
-                      className={clsx(toolbarTextBtnClass, showDebugger ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50" : toolbarIdleClass)}
+                      className={clsx(toolbarTextBtnClass, showDebugger ? "text-[var(--accent-primary)] bg-[var(--accent-primary)]/10" : toolbarIdleClass)}
                       title="Toggle debugger panel"
                     >
-                      <Bug className="h-3 w-3" /> DEBUG
+                      <Bug className="h-3 w-3" /> Debug
                     </button>
                     {toolbarDivider}
                     <button
                       type="button"
                       onClick={() => setShowA2ADirectory(true)}
-                      className={clsx(toolbarTextBtnClass, "text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/50")}
+                      className={clsx(toolbarTextBtnClass, "text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10")}
                       title="Open Google A2A Agent Directory"
                     >
-                      <Network className="h-3 w-3 text-purple-500" /> A2A DIRECTORY
+                      <Network className="h-3 w-3 text-[var(--accent-primary)]" /> A2A directory
                     </button>
                     {toolbarDivider}
                     <button
                       type="button"
                       onClick={() => setShowMarketplace((p) => !p)}
-                      className={clsx(toolbarTextBtnClass, showMarketplace ? "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50" : toolbarIdleClass)}
+                      className={clsx(toolbarTextBtnClass, showMarketplace ? "text-[var(--state-warning)] bg-[var(--state-warning)]/10" : toolbarIdleClass)}
                       title="Marketplace Templates"
                     >
-                      <Sparkles className="h-3 w-3 text-amber-500" /> MARKETPLACE
+                      <Sparkles className="h-3 w-3 text-[var(--state-warning)]" /> Marketplace
                     </button>
                     {coverage && coverage.length > 0 && (
                       <>
@@ -1186,10 +1185,10 @@ function CanvasInner({
                         <button
                           type="button"
                           onClick={() => setCoverageMode((c) => !c)}
-                          className={clsx(toolbarTextBtnClass, coverageMode ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300" : toolbarIdleClass)}
+                          className={clsx(toolbarTextBtnClass, coverageMode ? "bg-[var(--state-success)]/10 text-[var(--state-success)]" : toolbarIdleClass)}
                           title="Branch coverage highlights"
                         >
-                          <GitBranch className="h-3 w-3" /> {coverageMode ? "COVERAGE ON" : "COVERAGE"}
+                          <GitBranch className="h-3 w-3" /> {coverageMode ? "Coverage on" : "COVERAGE"}
                         </button>
                       </>
                     )}
@@ -1203,15 +1202,15 @@ function CanvasInner({
                   <>
                     <div className="relative">
                       <button type="button" onClick={() => setShowShortcuts((s) => !s)} className={toolbarPillClass} title="Keyboard shortcuts">
-                        <Keyboard className="h-3 w-3" /> <span className="hidden xl:inline">SHORTCUTS</span>
+                        <Keyboard className="h-3 w-3" /> <span className="hidden xl:inline">Shortcuts</span>
                       </button>
                       {showShortcuts && (
-                        <div className="absolute right-0 top-8 z-[100] w-64 space-y-1.5 rounded-xl border border-slate-200/80 dark:border-indigo-500/30 bg-white/95 dark:bg-[#0c0d18]/95 p-3 shadow-2xl backdrop-blur-md">
-                          <div className="text-[9px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1">SHORTCUTS</div>
+                        <div className="absolute right-0 top-8 z-[100] w-64 space-y-1.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)]/95 p-3">
+                          <div className="mb-1 text-xs font-medium text-[var(--text-primary)]">Shortcuts</div>
                           {SHORTCUTS.map(([key, desc]) => (
-                            <div key={key} className="flex items-center justify-between gap-2 text-[9px]">
-                              <kbd className="rounded border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-black/50 px-1 py-0.5 font-mono text-slate-700 dark:text-slate-300">{key}</kbd>
-                              <span className="text-slate-500">{desc}</span>
+                            <div key={key} className="flex items-center justify-between gap-2 text-xs">
+                              <kbd className="rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)] px-1 py-0.5 font-mono text-[var(--text-secondary)]">{key}</kbd>
+                              <span className="text-[var(--text-muted)]">{desc}</span>
                             </div>
                           ))}
                         </div>
@@ -1229,16 +1228,16 @@ function CanvasInner({
 
           {/* Trace status bar */}
           {inTraceMode && (
-            <div className="shrink-0 flex flex-wrap items-center justify-between gap-2 rounded border border-indigo-200 dark:border-indigo-500/40 bg-indigo-50 dark:bg-indigo-950/40 px-3 py-1.5 text-[10px]">
-              <div className="flex items-center gap-2 text-indigo-700 dark:text-indigo-300">
-                <span className={clsx("inline-block h-2 w-2 rounded-full", trace.connected ? "bg-emerald-500 animate-pulse" : "bg-red-500")} />
-                <span className="font-bold tracking-wider">
-                  {isPreview ? "GHOST PREVIEW · DRY-RUN" : "LIVE TRACE"} · {effExecutionStatus ?? "CONNECTING…"}
+            <div className="shrink-0 flex flex-wrap items-center justify-between gap-2 rounded border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 px-3 py-1.5 text-xs">
+              <div className="flex items-center gap-2 text-[var(--accent-primary)]">
+                <span className={clsx("inline-block h-2 w-2 rounded-full", trace.connected ? "bg-[var(--state-success)]" : "bg-[var(--state-error)]")} />
+                <span className="font-medium">
+                  {isPreview ? "Ghost preview · dry-run" : "Live trace"} · {effExecutionStatus ?? "Connecting…"}
                 </span>
                 {trace.connected ? (
-                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">[SSE STREAM]</span>
+                  <span className="text-[var(--state-success)] font-medium">[SSE STREAM]</span>
                 ) : !terminal ? (
-                  <span className="text-amber-600 dark:text-amber-400 font-semibold">[RECONNECTING]</span>
+                  <span className="text-[var(--state-warning)] font-medium">[RECONNECTING]</span>
                 ) : null}
               </div>
               <div className="flex items-center gap-2">
@@ -1246,14 +1245,14 @@ function CanvasInner({
                   type="button"
                   onClick={() => setShowTimeline((p) => !p)}
                   className={clsx(
-                    "inline-flex items-center gap-1 px-2 py-1 rounded border text-[9px] font-bold uppercase tracking-wider transition-colors cursor-pointer",
+                    "inline-flex items-center gap-1 px-2 py-1 rounded border text-xs font-medium transition-colors cursor-pointer",
                     showTimeline
-                      ? "border-indigo-400 bg-indigo-500/20 text-indigo-700 dark:text-indigo-300"
-                      : "border-indigo-300 dark:border-indigo-500/50 text-indigo-600 dark:text-indigo-400 hover:border-indigo-400"
+                      ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/20 text-[var(--accent-primary)]"
+                      : "border-[var(--accent-primary)]/25 text-[var(--accent-primary)] hover:border-[var(--accent-primary)]/40"
                   )}
                   title="Toggle execution timeline"
                 >
-                  <Activity className="h-3 w-3" /> TIMELINE
+                  <Activity className="h-3 w-3" /> Timeline
                 </button>
                 {traceHeaderExtra}
                 {fullScreenToggle}
@@ -1263,19 +1262,19 @@ function CanvasInner({
 
           {/* Subgraph breadcrumb */}
           {inSubgraph && (
-            <div className="shrink-0 flex flex-wrap items-center justify-between gap-2 rounded border border-slate-400/50 dark:border-slate-500/50 bg-slate-100 dark:bg-slate-900/60 px-3 py-1.5">
-              <div className="flex items-center gap-1.5 text-[10px] font-mono text-slate-700 dark:text-slate-300">
-                <Boxes className="h-3.5 w-3.5 text-slate-500" />
-                <span className="font-bold uppercase tracking-widest">{inTraceMode ? "SUBGRAPH TRACE" : "Editing macro"}</span>
-                <span className="text-indigo-600 dark:text-indigo-400 font-bold">› {subgraphStack[subgraphStack.length - 1].label}</span>
-                {!inTraceMode && <span className="text-[9px] text-amber-600 dark:text-amber-400 font-semibold">(exit to save it back)</span>}
+            <div className="shrink-0 flex flex-wrap items-center justify-between gap-2 rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)] px-3 py-1.5">
+              <div className="flex items-center gap-1.5 text-xs font-mono text-[var(--text-secondary)]">
+                <Boxes className="h-3.5 w-3.5 text-[var(--text-muted)]" />
+                <span className="font-medium">{inTraceMode ? "Subgraph trace" : "Editing macro"}</span>
+                <span className="text-[var(--accent-primary)] font-medium">› {subgraphStack[subgraphStack.length - 1].label}</span>
+                {!inTraceMode && <span className="text-xs text-[var(--state-warning)] font-medium">(exit to save it back)</span>}
               </div>
               <button
                 type="button"
                 onClick={writeBackSubgraph}
-                className="inline-flex items-center gap-1 rounded border border-indigo-400 bg-indigo-600 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-white hover:bg-indigo-500 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 rounded border border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)] px-2 py-1 text-xs font-medium text-[var(--cta-primary-text)] hover:bg-[var(--cta-primary-hover)] transition-colors cursor-pointer"
               >
-                <CornerUpLeft className="h-3 w-3" /> {inTraceMode ? "BACK" : "EXIT SUBGRAPH"}
+                <CornerUpLeft className="h-3 w-3" /> {inTraceMode ? "BACK" : "Exit subgraph"}
               </button>
             </div>
           )}
@@ -1285,7 +1284,7 @@ function CanvasInner({
             ref={wrapperRef}
             onDrop={onDrop}
             onDragOver={onDragOver}
-            className={clsx("relative flex-1 min-h-0 rounded border border-slate-200 dark:border-indigo-900/40 overflow-hidden", canvasBgClass)}
+            className={clsx("relative flex-1 min-h-0 rounded border border-[var(--border-subtle)] overflow-hidden", canvasBgClass)}
           >
             <ReactFlow
               nodes={traceNodes}
@@ -1342,29 +1341,29 @@ function CanvasInner({
                 }
               />
               <Controls className={clsx(
-                "!shadow-lg [&>button]:!shadow-sm",
+                "![&>button]:!",
                 isCalmGreen
                   ? (isDark
-                      ? "!border-[#252D2A] !bg-[#000000] [&>button]:!border-[#252D2A] [&>button]:!text-[#8D9691] [&>button]:!bg-[#000000] [&>button:hover]:!bg-[#0a0e0c] [&>button:hover]:!text-[#E7E9E5]"
-                      : "!border-[#D5DDD9] !bg-white [&>button]:!border-[#D5DDD9] [&>button]:!text-[#33433C] [&>button]:!bg-white [&>button:hover]:!bg-slate-100")
+                      ? "!border-[var(--surface-raised)] !bg-[var(--surface-raised)] [&>button]:!border-[var(--surface-raised)] [&>button]:!text-[var(--surface-raised)] [&>button]:!bg-[var(--surface-raised)] [&>button:hover]:!bg-[var(--surface-raised)] [&>button:hover]:!text-[var(--surface-raised)]"
+                      : "!border-[var(--surface-raised)] !bg-[var(--surface-raised)] [&>button]:!border-[var(--surface-raised)] [&>button]:!text-[var(--surface-raised)] [&>button]:!bg-[var(--surface-raised)] [&>button:hover]:!bg-[var(--surface-sunken)]")
                   : (canvasTheme === "paper"
-                      ? "!border-slate-200 !bg-white [&>button]:!border-slate-200 [&>button]:!text-slate-700 [&>button]:!bg-white [&>button:hover]:!bg-slate-100"
+                      ? "!border-[var(--border-subtle)] !bg-[var(--surface-raised)] [&>button]:!border-[var(--border-subtle)] [&>button]:!text-[var(--text-secondary)] [&>button]:!bg-[var(--surface-raised)] [&>button:hover]:!bg-[var(--surface-sunken)]"
                       : canvasTheme === "graphite"
-                        ? "!border-slate-600 !bg-[#1a1d27] [&>button]:!border-slate-600 [&>button]:!text-slate-300 [&>button]:!bg-[#1a1d27] [&>button:hover]:!bg-slate-700"
-                        : "!border-slate-700 !bg-[#0a0a14] [&>button]:!border-slate-700 [&>button]:!text-slate-400 [&>button]:!bg-[#0a0a14] [&>button:hover]:!bg-slate-800 [&>button:hover]:!text-white")
+                        ? "!border-[var(--border-strong)] !bg-[var(--surface-raised)] [&>button]:!border-[var(--border-strong)] [&>button]:!text-[var(--text-muted)] [&>button]:!bg-[var(--surface-raised)] [&>button:hover]:!bg-[var(--surface-elevated)]"
+                        : "!border-[var(--border-strong)] !bg-[var(--surface-raised)] [&>button]:!border-[var(--border-strong)] [&>button]:!text-[var(--text-muted)] [&>button]:!bg-[var(--surface-raised)] [&>button:hover]:!bg-[var(--surface-elevated)] [&>button:hover]:!text-[var(--text-primary)]")
               )} />
               <MiniMap
                 pannable
                 zoomable
                 className={clsx(
-                  "!shadow-lg",
+                  "!",
                   isCalmGreen
-                    ? (isDark ? "!bg-[#000000] !border-[#252D2A]" : "!bg-white !border-[#D5DDD9]")
+                    ? (isDark ? "!bg-[var(--surface-raised)] !border-[var(--surface-raised)]" : "!bg-[var(--surface-raised)] !border-[var(--surface-raised)]")
                     : (canvasTheme === "paper"
-                        ? "!bg-white !border-slate-200"
+                        ? "!bg-[var(--surface-raised)] !border-[var(--border-subtle)]"
                         : canvasTheme === "graphite"
-                          ? "!bg-[#1a1d27] !border-slate-600"
-                          : "!bg-[#0a0a14] !border-slate-700")
+                          ? "!bg-[var(--surface-raised)] !border-[var(--border-strong)]"
+                          : "!bg-[var(--surface-raised)] !border-[var(--border-strong)]")
                 )}
                 maskColor={isDark ? (isCalmGreen ? "rgba(0, 0, 0, 0.75)" : "rgba(0, 0, 0, 0.6)") : "rgba(241, 245, 249, 0.7)"}
                 nodeColor={(n) => {
@@ -1383,21 +1382,21 @@ function CanvasInner({
             {/* Node search overlay */}
             {showNodeSearch && (
               <div className="absolute left-1/2 top-2 z-30 -translate-x-1/2 w-72 max-w-[calc(100%-1rem)]">
-                <div className="rounded-lg border border-indigo-300 dark:border-indigo-500/50 bg-white/95 dark:bg-[#0c0d18]/95 p-2 shadow-xl backdrop-blur-md">
+                <div className="rounded-lg border border-[var(--accent-primary)]/25 bg-[var(--surface-raised)]/95 p-2">
                   <div className="flex items-center gap-2">
-                    <Search className="h-3.5 w-3.5 text-indigo-500 shrink-0" />
+                    <Search className="h-3.5 w-3.5 text-[var(--accent-primary)] shrink-0" />
                     <input
                       autoFocus
                       value={nodeSearchQuery}
                       onChange={(e) => setNodeSearchQuery(e.target.value)}
                       placeholder="Search nodes by name, type, or prompt..."
-                      className="flex-1 bg-transparent text-[11px] font-mono text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none"
+                      className="flex-1 bg-transparent text-xs font-mono text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none"
                       onKeyDown={(e) => {
                         if (e.key === "Escape") { setShowNodeSearch(false); setNodeSearchQuery(""); }
                         if (e.key === "Enter" && filteredNodes.length > 0) focusNode(filteredNodes[0].id);
                       }}
                     />
-                    <button type="button" onClick={() => { setShowNodeSearch(false); setNodeSearchQuery(""); }} className="text-slate-400 hover:text-slate-600"><X className="h-3 w-3" /></button>
+                    <button type="button" onClick={() => { setShowNodeSearch(false); setNodeSearchQuery(""); }} className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]"><X className="h-3 w-3" /></button>
                   </div>
                   {nodeSearchQuery && filteredNodes.length > 0 && (
                     <div className="mt-2 max-h-40 overflow-y-auto space-y-0.5">
@@ -1406,16 +1405,16 @@ function CanvasInner({
                           key={n.id}
                           type="button"
                           onClick={() => focusNode(n.id)}
-                          className="w-full flex items-center gap-2 rounded px-2 py-1 text-left hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition-colors cursor-pointer"
+                          className="w-full flex items-center gap-2 rounded px-2 py-1 text-left hover:bg-[var(--accent-primary)]/10 transition-colors cursor-pointer"
                         >
-                          <span className="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 uppercase shrink-0 w-16">{n.type}</span>
-                          <span className="text-[10px] font-mono text-slate-800 dark:text-slate-200 truncate">{n.data.label}</span>
+                          <span className="text-xs font-mono text-[var(--accent-primary)] shrink-0 w-16">{n.type}</span>
+                          <span className="text-xs font-mono text-[var(--text-primary)] truncate">{n.data.label}</span>
                         </button>
                       ))}
                     </div>
                   )}
                   {nodeSearchQuery && filteredNodes.length === 0 && (
-                    <p className="mt-2 text-[10px] text-slate-500 text-center">No nodes found</p>
+                    <p className="mt-2 text-xs text-[var(--text-muted)] text-center">No nodes found</p>
                   )}
                 </div>
               </div>
@@ -1426,22 +1425,22 @@ function CanvasInner({
               <div className="absolute bottom-3 left-14 z-20 font-mono">
                 <div className="relative">
                   {showValidationDetails && (
-                    <div className="absolute bottom-9 left-0 w-80 max-h-52 overflow-y-auto rounded-xl border border-amber-400/50 dark:border-amber-500/40 bg-white/95 dark:bg-[#0d0e1a]/95 backdrop-blur-md shadow-2xl p-3 space-y-1.5 z-30">
-                      <div className="flex items-center justify-between border-b border-amber-200 dark:border-amber-500/20 pb-1.5 mb-1">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300">
-                          Graph Issues ({issues.length})
+                    <div className="absolute bottom-9 left-0 w-80 max-h-52 overflow-y-auto rounded-xl border border-[var(--state-warning)]/40 bg-[var(--surface-raised)]/95 p-3 space-y-1.5 z-30">
+                      <div className="flex items-center justify-between border-b border-[var(--state-warning)]/25 pb-1.5 mb-1">
+                        <span className="text-xs font-medium text-[var(--state-warning)]">
+                          Graph issues ({issues.length})
                         </span>
                         <button
                           type="button"
                           onClick={() => setShowValidationDetails(false)}
-                          className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                          className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                         >
                           <X className="h-3 w-3" />
                         </button>
                       </div>
                       {issues.map((issue, i) => (
-                        <div key={i} className="flex items-start gap-1.5 text-[9px] leading-tight text-slate-800 dark:text-slate-200">
-                          <span className={clsx("shrink-0 font-bold", issue.severity === "error" ? "text-red-500" : "text-amber-500")}>
+                        <div key={i} className="flex items-start gap-1.5 text-xs leading-tight text-[var(--text-primary)]">
+                          <span className={clsx("shrink-0 font-medium", issue.severity === "error" ? "text-[var(--state-error)]" : "text-[var(--state-warning)]")}>
                             [{issue.severity.toUpperCase()}]
                           </span>
                           <span>{issue.message}</span>
@@ -1453,11 +1452,11 @@ function CanvasInner({
                   <button
                     type="button"
                     onClick={() => setShowValidationDetails((p) => !p)}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-amber-400/60 dark:border-amber-500/40 bg-amber-50/95 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 transition-all shadow-md backdrop-blur-md text-[10px] font-bold cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-[var(--state-warning)] hover:bg-[var(--state-warning)]/10 transition-colors text-xs font-medium cursor-pointer"
                   >
-                    <AlertTriangle className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                    <AlertTriangle className="h-3.5 w-3.5 text-[var(--state-warning)] shrink-0" />
                     <span>
-                      {issues.filter((i) => i.severity === "error").length} Error(s) · {issues.filter((i) => i.severity === "warning").length} Warning(s)
+                      {issues.filter((i) => i.severity === "error").length} errors · {issues.filter((i) => i.severity === "warning").length} warnings
                     </span>
                     {showValidationDetails ? <ChevronDown className="h-3 w-3" /> : <ChevronUp className="h-3 w-3" />}
                   </button>
@@ -1469,18 +1468,17 @@ function CanvasInner({
             {nodes.length <= 2 && !inTraceMode && !readOnly && (
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                 <div className="text-center space-y-3">
-                  <Workflow className={clsx("h-12 w-12 mx-auto", canvasTheme === "paper" ? "text-indigo-400/60" : "text-indigo-500/40")} />
-                  <p className={clsx("text-[12px] font-medium", canvasTheme === "paper" ? "text-slate-600" : "text-slate-500")}>Drag nodes from the left palette</p>
-                  <p className={clsx("text-[10px]", canvasTheme === "paper" ? "text-slate-500" : "text-slate-600")}>Connect them to design your multi-agent architecture</p>
+                  <Workflow className={clsx("h-12 w-12 mx-auto", canvasTheme === "paper" ? "text-[var(--accent-primary)]/60" : "text-[var(--accent-primary)]/40")} />
+                  <p className={clsx("text-[12px] font-medium", canvasTheme === "paper" ? "text-[var(--text-secondary)]" : "text-[var(--text-muted)]")}>Drag nodes from the left palette</p>
+                  <p className={clsx("text-xs", canvasTheme === "paper" ? "text-[var(--text-muted)]" : "text-[var(--text-secondary)]")}>Connect them to design your multi-agent architecture</p>
                 </div>
               </div>
             )}
 
             {/* Terminal banner (top-centre — the progress overlay owns bottom-centre) */}
             {terminal && (
-              <div className="pointer-events-none absolute top-3 left-1/2 -translate-x-1/2 z-10 rounded-lg border border-emerald-500/50 bg-emerald-950/80 backdrop-blur-sm px-5 py-2 text-[10px] font-bold tracking-widest text-emerald-300 shadow-xl flex items-center gap-1.5">
-                <Check className="h-3 w-3 shrink-0" />
-                <span>{isPreview ? "PREVIEW" : "EXECUTION"} {effExecutionStatus}</span>
+              <div className="pointer-events-none absolute top-3 left-1/2 -translate-x-1/2 z-10 rounded-[10px] border border-[var(--border-subtle)] bg-[var(--surface-elevated)] px-4 py-2 font-sans text-[13px] text-[var(--text-primary)] flex items-center gap-1.5">
+                <span>{isPreview ? "Preview" : "Execution"} {String(effExecutionStatus).toLowerCase().replace(/_/g, " ")}</span>
               </div>
             )}
 
@@ -1587,11 +1585,11 @@ function CanvasInner({
 
           {/* Trace time-travel scrubber */}
           {inTraceMode && trace.events.length > 1 && (
-            <div className="shrink-0 flex items-center gap-2 rounded border border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/70 dark:bg-[#0a0a14] px-3 py-1.5 text-[9px] font-mono">
+            <div className="shrink-0 flex items-center gap-2 rounded border border-[var(--accent-primary)]/25 bg-[var(--accent-primary)]/10 px-3 py-1.5 text-xs font-mono">
               <button
                 type="button"
                 onClick={toggleScrubPlay}
-                className="shrink-0 p-1 rounded hover:bg-indigo-100 dark:hover:bg-white/10 text-indigo-700 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-white transition-colors cursor-pointer"
+                className="shrink-0 p-1 rounded hover:bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors cursor-pointer"
                 title={scrubPlaying ? "Pause replay" : "Play replay"}
               >
                 {scrubPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
@@ -1605,15 +1603,15 @@ function CanvasInner({
                   setScrubIndex(Number(e.target.value));
                   setScrubPlaying(false);
                 }}
-                className="flex-1 accent-indigo-600 dark:accent-indigo-400 h-1 bg-slate-300 dark:bg-slate-700 rounded-lg cursor-pointer"
+                className="flex-1 accent-[var(--text-muted)] dark:accent-[var(--text-muted)] h-1 bg-[var(--surface-elevated)] rounded-lg cursor-pointer"
               />
-              <span className="text-slate-600 dark:text-slate-400 shrink-0 font-mono text-[9px] tabular-nums">
+              <span className="text-[var(--text-secondary)] shrink-0 font-mono text-xs tabular-nums">
                 {clampedScrubIndex}/{totalEvents}
               </span>
               <select
                 value={scrubSpeed}
                 onChange={(e) => setScrubSpeed(Number(e.target.value))}
-                className="shrink-0 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#0a0a0a] px-1 py-0.5 text-[9px] text-slate-700 dark:text-slate-300 cursor-pointer"
+                className="shrink-0 rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-1 py-0.5 text-xs text-[var(--text-secondary)] cursor-pointer"
                 title="Replay speed"
               >
                 <option value={1}>1×</option>
@@ -1625,7 +1623,7 @@ function CanvasInner({
                 <button
                   type="button"
                   onClick={() => { setScrubIndex(null); setScrubPlaying(false); }}
-                  className="shrink-0 inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer"
+                  className="shrink-0 inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium text-[var(--state-success)] hover:bg-[var(--state-success)]/10 transition-colors cursor-pointer"
                   title="Follow the live stream again"
                 >
                   <Radio className="h-2.5 w-2.5" /> LIVE
@@ -1636,16 +1634,16 @@ function CanvasInner({
 
           {/* Live event console */}
           {inTraceMode && trace.events.length > 0 && (
-            <div className="shrink-0 h-24 overflow-y-auto rounded border border-slate-200 dark:border-indigo-900/40 bg-slate-50 dark:bg-black/50 p-2 space-y-0.5 font-mono text-[8px]">
+            <div className="shrink-0 h-24 overflow-y-auto rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-2 space-y-0.5 font-mono text-xs">
               {trace.events.slice(-30).map((ev, i) => {
                 const nodeId = "nodeId" in ev ? ev.nodeId : undefined;
                 const detail = "detail" in ev ? ev.detail : undefined;
                 return (
-                  <div key={i} className="flex items-center gap-2 text-slate-600 dark:text-slate-500">
+                  <div key={i} className="flex items-center gap-2 text-[var(--text-secondary)]">
                     <span className="shrink-0">{new Date(ev.at).toLocaleTimeString()}</span>
-                    <span className="font-semibold shrink-0 text-indigo-600 dark:text-indigo-400">{ev.type}</span>
-                    {nodeId && <span className="truncate text-slate-800 dark:text-slate-300">{nodeId}</span>}
-                    {detail && <span className="truncate text-slate-500 dark:text-slate-600">{detail}</span>}
+                    <span className="font-medium shrink-0 text-[var(--accent-primary)]">{ev.type}</span>
+                    {nodeId && <span className="truncate text-[var(--text-primary)]">{nodeId}</span>}
+                    {detail && <span className="truncate text-[var(--text-muted)]">{detail}</span>}
                   </div>
                 );
               })}
@@ -1656,7 +1654,7 @@ function CanvasInner({
         {/* ─── Right inspector (collapsible) ─── */}
         <div className={clsx(sidePanelClass, rightOpen ? "w-72" : "w-10")}>
           <div className={sidePanelHeaderClass}>
-            {rightOpen && <span className="text-[9px] font-bold uppercase tracking-widest text-indigo-700 dark:text-indigo-400">INSPECTOR</span>}
+            {rightOpen && <span className="text-xs font-medium text-[var(--accent-primary)]">Inspector</span>}
             <button
               type="button"
               onClick={() => setRightOpen((p) => !p)}
@@ -1682,62 +1680,62 @@ function CanvasInner({
                   />
                 ) : (
                   <div className="space-y-2">
-                    <div className="text-[10px] uppercase tracking-widest text-indigo-700 dark:text-indigo-400/80 font-bold">
-                      {isPreview ? "GHOST PREVIEW" : "LIVE TRACE"}
+                    <div className="text-xs text-[var(--accent-primary)] font-medium">
+                      {isPreview ? "Ghost preview" : "Live trace"}
                     </div>
-                    <p className="text-[9px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
                       {isPreview
-                        ? "Dry-run against your current input — nothing is persisted and approval gates auto-pass. Predicts the exact path before you commit to a real run."
-                        : "Canvas is locked while the agent traverses the graph. Nodes pulse while running, glow green on success, amber while awaiting human approval, and red on failure."}
+                        ? "Dry run against your current input. Nothing is persisted and approval gates pass automatically, so you can see the path before a real run."
+                        : "The canvas is locked while the agent runs. Node borders show state: accent while running, green on success, amber while awaiting approval and red on failure."}
                     </p>
-                    <div className="space-y-1 text-[9px] text-slate-700 dark:text-slate-400">
-                      <div className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-full bg-indigo-500 dark:bg-indigo-400 animate-pulse" /> RUNNING</div>
-                      <div className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-full bg-emerald-500 dark:bg-emerald-400" /> SUCCESS</div>
-                      <div className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-full bg-amber-500 dark:bg-amber-400" /> AWAITING APPROVAL</div>
-                      <div className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-full bg-red-500 dark:bg-red-400" /> FAILED</div>
+                    <div className="space-y-1 text-xs text-[var(--text-secondary)]">
+                      <div className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-full bg-[var(--cta-primary-bg)]" /> Running</div>
+                      <div className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-full bg-[var(--state-success)]" /> Success</div>
+                      <div className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-full bg-[var(--state-warning)]" /> Awaiting approval</div>
+                      <div className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-full bg-[var(--state-error)]" /> Failed</div>
                     </div>
 
                     {/* Heatmap toggle */}
-                    <div className="border-t border-slate-200 dark:border-slate-700/60 pt-2">
+                    <div className="border-t border-[var(--border-subtle)] pt-2">
                       <button
                         type="button"
                         onClick={() => setHeatmap((h) => !h)}
                         className={clsx(
-                          "inline-flex w-full items-center justify-center gap-1.5 rounded border px-2 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-colors cursor-pointer",
+                          "inline-flex w-full items-center justify-center gap-1.5 rounded border px-2 py-1.5 text-xs font-medium transition-colors cursor-pointer",
                           heatmap
-                            ? "border-orange-400 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300"
-                            : "border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-orange-400 hover:text-orange-600 dark:hover:text-orange-300"
+                            ? "border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-[var(--state-warning)]"
+                            : "border-[var(--border-strong)] text-[var(--text-secondary)] hover:border-[var(--state-warning)]/40 hover:text-[var(--state-warning)]"
                         )}
                       >
-                        <Flame className="h-3 w-3" /> {heatmap ? "HEATMAP: LATENCY ON" : "SHOW LATENCY HEATMAP"}
+                        <Flame className="h-3 w-3" /> {heatmap ? "Heatmap: latency on" : "Show latency heatmap"}
                       </button>
                       {heatmap && maxLatency > 0 && (
-                        <p className="mt-1 text-[8px] text-slate-500 dark:text-slate-500">
+                        <p className="mt-1 text-xs text-[var(--text-muted)]">
                           Slowest node avg {maxLatency >= 1000 ? `${(maxLatency / 1000).toFixed(1)}s` : `${Math.round(maxLatency)}ms`} · cool = fast, hot = slow
                         </p>
                       )}
                     </div>
 
-                    <div className="border-t border-slate-200 dark:border-slate-700/60 pt-2 space-y-1.5">
-                      <div className="text-[9px] uppercase tracking-wider text-slate-500 font-bold">STATS</div>
-                      <div className="flex justify-between text-[9px] text-slate-600 dark:text-slate-400"><span>Events received</span><span className="text-indigo-600 dark:text-indigo-300 font-bold">{trace.events.length}</span></div>
-                      <div className="flex justify-between text-[9px] text-slate-600 dark:text-slate-400"><span>Nodes touched</span><span className="text-indigo-600 dark:text-indigo-300 font-bold">{Object.keys(effStatuses).length}</span></div>
-                      <div className="flex justify-between text-[9px] text-slate-600 dark:text-slate-400"><span>Status</span><span className="text-emerald-600 dark:text-emerald-300 font-bold">{effExecutionStatus ?? "—"}</span></div>
+                    <div className="border-t border-[var(--border-subtle)] pt-2 space-y-1.5">
+                      <div className="text-xs text-[var(--text-muted)] font-medium">Stats</div>
+                      <div className="flex justify-between text-xs text-[var(--text-secondary)]"><span>Events received</span><span className="text-[var(--accent-primary)] font-medium">{trace.events.length}</span></div>
+                      <div className="flex justify-between text-xs text-[var(--text-secondary)]"><span>Nodes touched</span><span className="text-[var(--accent-primary)] font-medium">{Object.keys(effStatuses).length}</span></div>
+                      <div className="flex justify-between text-xs text-[var(--text-secondary)]"><span>Status</span><span className="text-[var(--state-success)] font-medium">{effExecutionStatus ?? "—"}</span></div>
                     </div>
                   </div>
                 )
               ) : selectedEdge ? (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="text-[10px] uppercase tracking-widest text-indigo-700 dark:text-indigo-400/80 font-bold flex items-center gap-1.5">
+                    <div className="text-xs text-[var(--accent-primary)] font-medium flex items-center gap-1.5">
                       <Link2 className="h-3.5 w-3.5" /> EDGE
                     </div>
                     <button
                       type="button"
                       onClick={deleteSelected}
-                      className="inline-flex items-center gap-1 px-2 py-1 rounded border border-red-300 dark:border-red-400/50 text-[9px] font-mono text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--state-error)]/25 text-xs font-mono text-[var(--state-error)] hover:bg-[var(--state-error)]/10 transition-colors cursor-pointer"
                     >
-                      <X className="h-3 w-3" /> REMOVE
+                      <X className="h-3 w-3" /> Remove
                     </button>
                   </div>
                   <div className="space-y-1">
@@ -1746,22 +1744,22 @@ function CanvasInner({
                       value={typeof selectedEdge.label === "string" ? selectedEdge.label : ""}
                       onChange={(e) => updateEdgeLabel(selectedEdge.id, e.target.value)}
                       placeholder="e.g. true / false / high / worker / join"
-                      className="w-full rounded border border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a] px-2.5 py-1.5 text-[10px] text-slate-900 dark:text-slate-100 font-mono placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none transition-colors shadow-sm"
+                      className="w-full rounded border border-[var(--border-strong)] bg-[var(--surface-raised)] px-2.5 py-1.5 text-xs text-[var(--text-primary)] font-mono placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)]/40 focus:outline-none transition-colors"
                     />
-                    <p className="text-[8px] text-slate-500 dark:text-slate-400 leading-tight">
+                    <p className="text-xs text-[var(--text-muted)] leading-tight">
                       Router & supervisor nodes pick the outgoing edge whose label matches their decision. Parallel nodes use{" "}
-                      <code className="text-teal-600 dark:text-teal-400">worker</code>/<code className="text-teal-600 dark:text-teal-400">join</code> and loop nodes use{" "}
-                      <code className="text-fuchsia-600 dark:text-fuchsia-400">body</code>/<code className="text-fuchsia-600 dark:text-fuchsia-400">exit</code> labels.
+                      <code className="text-[var(--accent-primary)]">worker</code>/<code className="text-[var(--accent-primary)]">join</code> and loop nodes use{" "}
+                      <code className="text-[var(--accent-primary)]">body</code>/<code className="text-[var(--accent-primary)]">exit</code> labels.
                     </p>
                   </div>
-                  <div className="border-t border-slate-200 dark:border-slate-700/60 pt-2 text-[9px] text-slate-600 dark:text-slate-400 font-mono">
+                  <div className="border-t border-[var(--border-subtle)] pt-2 text-xs text-[var(--text-secondary)] font-mono">
                     {selectedEdge.source} → {selectedEdge.target}
                   </div>
                 </div>
               ) : readOnly ? (
                 <div className="space-y-2">
-                  <div className="text-[10px] uppercase tracking-widest text-indigo-700 dark:text-indigo-400/80 font-bold">SNAPSHOT</div>
-                  <p className="text-[9px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <div className="text-xs text-[var(--accent-primary)] font-medium">Snapshot</div>
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
                     Read-only view of the graph and its most recent execution trace.
                   </p>
                   {graphStats}
@@ -1778,8 +1776,8 @@ function CanvasInner({
                 />
               ) : (
                 <div className="space-y-2">
-                  <div className="text-[10px] uppercase tracking-widest text-indigo-700 dark:text-indigo-400/80 font-bold">INSPECTOR</div>
-                  <p className="text-[9px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <div className="text-xs text-[var(--accent-primary)] font-medium">Inspector</div>
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
                     Select a node to configure its prompt, tools, condition, or loop count. Click an edge to rename the branch
                     (router edges pick by label).
                   </p>

@@ -95,7 +95,7 @@ function buildTimeline(events: ExecutionEvent[]): TimelineStep[] {
             label: `Tool: ${ev.toolName}`,
             detail: ev.action ? `action: ${ev.action}` : undefined,
             status: "RUNNING",
-            color: "text-cyan-400",
+            color: "text-[var(--text-secondary)]",
           });
         }
         break;
@@ -114,7 +114,7 @@ function buildTimeline(events: ExecutionEvent[]): TimelineStep[] {
               label: `Tool: ${ev.toolName}`,
               detail: ev.durationMs ? `${ev.durationMs}ms` : ev.status,
               status: ev.status,
-              color: ev.status === "SUCCESS" ? "text-emerald-400" : "text-red-400",
+              color: ev.status === "SUCCESS" ? "text-[var(--state-success)]" : "text-[var(--state-error)]",
             });
           }
         }
@@ -129,7 +129,7 @@ function buildTimeline(events: ExecutionEvent[]): TimelineStep[] {
             label: `LLM: ${ev.model ?? "model"}`,
             detail: ev.tokenEstimate ? `~${ev.tokenEstimate} tokens` : undefined,
             status: "RUNNING",
-            color: "text-violet-400",
+            color: "text-[var(--text-secondary)]",
           });
         }
         break;
@@ -152,7 +152,7 @@ function buildTimeline(events: ExecutionEvent[]): TimelineStep[] {
               label: `LLM: ${ev.model ?? "model"}`,
               detail: parts.join(" ") || ev.status,
               status: ev.status,
-              color: ev.status === "SUCCESS" ? "text-emerald-400" : "text-red-400",
+              color: ev.status === "SUCCESS" ? "text-[var(--state-success)]" : "text-[var(--state-error)]",
             });
           }
         }
@@ -167,7 +167,7 @@ function buildTimeline(events: ExecutionEvent[]): TimelineStep[] {
             label: `MCP: ${ev.toolName}`,
             detail: `server: ${ev.serverId}`,
             status: "RUNNING",
-            color: "text-fuchsia-400",
+            color: "text-[var(--text-secondary)]",
           });
         }
         break;
@@ -191,7 +191,7 @@ function buildTimeline(events: ExecutionEvent[]): TimelineStep[] {
             type: "router",
             label: `→ ${ev.chosenLabel}`,
             detail: ev.mode === "ai" ? `AI: ${ev.reason ?? "model chose"}` : `condition: ${ev.reason ?? "matched"}`,
-            color: "text-amber-400",
+            color: "text-[var(--state-warning)]",
           });
         }
         break;
@@ -203,7 +203,7 @@ function buildTimeline(events: ExecutionEvent[]): TimelineStep[] {
             at: ev.at,
             type: "loop",
             label: ev.exited ? `Exited after ${ev.iteration} iterations` : `Iteration ${ev.iteration}/${ev.maxIterations}`,
-            color: ev.exited ? "text-slate-400" : "text-fuchsia-400",
+            color: ev.exited ? "text-[var(--text-muted)]" : "text-[var(--accent-primary)]",
           });
         }
         break;
@@ -217,7 +217,7 @@ function buildTimeline(events: ExecutionEvent[]): TimelineStep[] {
             label: `${ev.status === "started" ? "Branch started" : "Branch completed"}: ${ev.branchNodeId}`,
             detail: ev.mode,
             status: ev.status === "started" ? "RUNNING" : "SUCCESS",
-            color: "text-teal-400",
+            color: "text-[var(--text-secondary)]",
           });
         }
         break;
@@ -231,7 +231,7 @@ function buildTimeline(events: ExecutionEvent[]): TimelineStep[] {
             label: "Approval requested",
             detail: ev.reason,
             status: "AWAITING_APPROVAL",
-            color: "text-amber-400",
+            color: "text-[var(--state-warning)]",
           });
         }
         break;
@@ -245,7 +245,7 @@ function buildTimeline(events: ExecutionEvent[]): TimelineStep[] {
             label: `Decision: ${ev.decision}`,
             detail: ev.resolvedBy ? `by ${ev.resolvedBy}` : undefined,
             status: ev.decision === "APPROVED" ? "SUCCESS" : "FAILED",
-            color: ev.decision === "APPROVED" ? "text-emerald-400" : "text-red-400",
+            color: ev.decision === "APPROVED" ? "text-[var(--state-success)]" : "text-[var(--state-error)]",
           });
         }
         break;
@@ -262,7 +262,7 @@ function buildTimeline(events: ExecutionEvent[]): TimelineStep[] {
             label: `A2A: ${ev.capability ?? "task"}`,
             detail: parts.join(" · "),
             status: ev.status === "COMPLETED" ? "SUCCESS" : ev.status === "FAILED" ? "FAILED" : "RUNNING",
-            color: "text-purple-400",
+            color: "text-[var(--text-secondary)]",
           });
         }
         break;
@@ -289,31 +289,31 @@ const STATUS_FILTER_CONFIG: Array<{
   {
     status: "RUNNING",
     label: "RUNNING",
-    activeClasses: "border-indigo-400 dark:border-indigo-500/60 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300",
+    activeClasses: "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
     icon: <Loader2 className="h-2 w-2 animate-spin" />,
   },
   {
     status: "SUCCESS",
     label: "SUCCESS",
-    activeClasses: "border-emerald-400 dark:border-emerald-500/60 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300",
+    activeClasses: "border-[var(--state-success)]/40 bg-[var(--state-success)]/10 text-[var(--state-success)]",
     icon: <Check className="h-2 w-2" />,
   },
   {
     status: "FAILED",
     label: "FAILED",
-    activeClasses: "border-red-400 dark:border-red-500/60 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300",
+    activeClasses: "border-[var(--state-error)]/40 bg-[var(--state-error)]/10 text-[var(--state-error)]",
     icon: <X className="h-2 w-2" />,
   },
   {
     status: "AWAITING_APPROVAL",
     label: "AWAITING",
-    activeClasses: "border-amber-400 dark:border-amber-500/60 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300",
+    activeClasses: "border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-[var(--state-warning)]",
     icon: <Shield className="h-2 w-2" />,
   },
   {
     status: "SKIPPED",
     label: "SKIPPED",
-    activeClasses: "border-slate-400 dark:border-slate-500/60 bg-slate-100 dark:bg-slate-950/40 text-slate-600 dark:text-slate-300",
+    activeClasses: "border-[var(--border-strong)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
     icon: <Clock className="h-2 w-2" />,
   },
 ];
@@ -461,49 +461,49 @@ function formatDuration(ms: number): string {
 function statusIcon(status: GraphNodeStatus, _isRunning?: boolean) {
   switch (status) {
     case "RUNNING":
-      return <Loader2 className="h-3 w-3 animate-spin text-indigo-400" />;
+      return <Loader2 className="h-3 w-3 animate-spin text-[var(--text-secondary)]" />;
     case "SUCCESS":
-      return <Check className="h-3 w-3 text-emerald-400" />;
+      return <Check className="h-3 w-3 text-[var(--state-success)]" />;
     case "FAILED":
-      return <X className="h-3 w-3 text-red-400" />;
+      return <X className="h-3 w-3 text-[var(--state-error)]" />;
     case "AWAITING_APPROVAL":
-      return <Shield className="h-3 w-3 text-amber-400" />;
+      return <Shield className="h-3 w-3 text-[var(--state-warning)]" />;
     case "SKIPPED":
-      return <Clock className="h-3 w-3 text-slate-500" />;
+      return <Clock className="h-3 w-3 text-[var(--text-muted)]" />;
     default:
-      return <Clock className="h-3 w-3 text-slate-500" />;
+      return <Clock className="h-3 w-3 text-[var(--text-muted)]" />;
   }
 }
 
 function statusColor(status: GraphNodeStatus): string {
   switch (status) {
     case "RUNNING":
-      return "border-indigo-400/60 bg-indigo-500/5";
+      return "border-[var(--border-subtle)] bg-[var(--cta-primary-bg)]/5";
     case "SUCCESS":
-      return "border-emerald-400/60 bg-emerald-500/5";
+      return "border-[var(--state-success)]/40 bg-[var(--state-success)]/5";
     case "FAILED":
-      return "border-red-400/60 bg-red-500/5";
+      return "border-[var(--state-error)]/40 bg-[var(--state-error)]/5";
     case "AWAITING_APPROVAL":
-      return "border-amber-400/60 bg-amber-500/5";
+      return "border-[var(--state-warning)]/40 bg-[var(--state-warning)]/5";
     case "SKIPPED":
-      return "border-slate-400/40 bg-slate-500/5";
+      return "border-[var(--border-strong)] bg-[var(--surface-elevated)]/5";
     default:
-      return "border-slate-400/40";
+      return "border-[var(--border-strong)]";
   }
 }
 
 function statusDotColor(status: GraphNodeStatus): string {
   switch (status) {
     case "RUNNING":
-      return "bg-indigo-400";
+      return "bg-[var(--cta-primary-bg)]";
     case "SUCCESS":
-      return "bg-emerald-400";
+      return "bg-[var(--state-success)]";
     case "FAILED":
-      return "bg-red-400";
+      return "bg-[var(--state-error)]";
     case "AWAITING_APPROVAL":
-      return "bg-amber-400";
+      return "bg-[var(--state-warning)]";
     default:
-      return "bg-slate-500";
+      return "bg-[var(--surface-elevated)]";
   }
 }
 
@@ -697,18 +697,18 @@ export function ExecutionTimeline({
   return (
     <div className="h-full flex flex-col font-mono">
       {/* Header */}
-      <div className="shrink-0 px-3 py-2.5 border-b border-slate-200 dark:border-slate-700/60">
+      <div className="shrink-0 px-3 py-2.5 border-b border-[var(--border-subtle)]">
         <div className="flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-1.5">
-            <Activity className="h-3 w-3 text-indigo-400" />
-            <span className="text-[10px] uppercase tracking-widest text-indigo-400 font-bold">
-              TIMELINE
+            <Activity className="h-3 w-3 text-[var(--text-secondary)]" />
+            <span className="text-xs text-[var(--text-secondary)] font-medium">
+              Timeline
             </span>
           </div>
           {onClose && (
             <button
               onClick={onClose}
-              className="p-0.5 rounded hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+              className="p-0.5 rounded hover:bg-[var(--surface-sunken)] text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors cursor-pointer"
             >
               <PanelRightClose className="h-3 w-3" />
             </button>
@@ -717,18 +717,18 @@ export function ExecutionTimeline({
 
         {/* Search bar */}
         <div className="relative mb-2">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-2.5 w-2.5 text-slate-400" />
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-2.5 w-2.5 text-[var(--text-muted)]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search nodes, types, events…"
-            className="w-full pl-6 pr-6 py-1 text-[8px] rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0a0a0a] text-slate-800 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 transition-colors"
+            className="w-full pl-6 pr-6 py-1 text-xs rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--border-subtle)] transition-colors"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
             >
               <X className="h-2.5 w-2.5" />
             </button>
@@ -746,15 +746,15 @@ export function ExecutionTimeline({
                 key={status}
                 onClick={() => toggleStatusFilter(status)}
                 className={clsx(
-                  "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[7px] font-bold border transition-all cursor-pointer",
+                  "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs font-medium border transition-colors cursor-pointer",
                   active
                     ? activeClasses
-                    : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-400"
+                    : "border-[var(--border-subtle)] text-[var(--text-muted)] hover:border-[var(--border-strong)]"
                 )}
               >
                 {icon}
                 {label}
-                <span className="text-[6px] opacity-60">{count}</span>
+                <span className="text-[10px] opacity-60">{count}</span>
               </button>
             );
           })}
@@ -765,10 +765,10 @@ export function ExecutionTimeline({
               <button
                 onClick={() => setShowTypeFilter((p) => !p)}
                 className={clsx(
-                  "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[7px] font-bold border transition-all cursor-pointer",
+                  "inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs font-medium border transition-colors cursor-pointer",
                   typeFilters.size > 0
-                    ? "border-violet-400 dark:border-violet-500/60 bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300"
-                    : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-400"
+                    ? "border-[var(--accent-primary)]/40 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]"
+                    : "border-[var(--border-subtle)] text-[var(--text-muted)] hover:border-[var(--border-strong)]"
                 )}
               >
                 TYPE
@@ -776,11 +776,11 @@ export function ExecutionTimeline({
                 <ChevronDown className="h-2 w-2" />
               </button>
               {showTypeFilter && (
-                <div className="absolute left-0 top-5 z-50 w-44 max-h-40 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0c0d18] shadow-xl">
+                <div className="absolute left-0 top-5 z-50 w-44 max-h-40 overflow-y-auto rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)]">
                   {typeFilters.size > 0 && (
                     <button
                       onClick={() => setTypeFilters(new Set())}
-                      className="w-full text-left px-2 py-1.5 text-[7px] text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 cursor-pointer"
+                      className="w-full text-left px-2 py-1.5 text-xs text-[var(--text-muted)] hover:bg-[var(--surface-sunken)] border-b border-[var(--border-subtle)] cursor-pointer"
                     >
                       Clear all types
                     </button>
@@ -792,12 +792,12 @@ export function ExecutionTimeline({
                       className={clsx(
                         "w-full flex items-center justify-between px-2 py-1.5 text-left transition-colors cursor-pointer",
                         typeFilters.has(type)
-                          ? "bg-violet-50 dark:bg-violet-950/30 text-violet-700 dark:text-violet-300"
-                          : "hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-400"
+                          ? "bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]"
+                          : "hover:bg-[var(--surface-sunken)] text-[var(--text-secondary)]"
                       )}
                     >
-                      <span className="text-[8px] font-bold truncate">{type}</span>
-                      <span className="text-[7px] opacity-50">{count}</span>
+                      <span className="text-xs font-medium truncate">{type}</span>
+                      <span className="text-xs opacity-50">{count}</span>
                     </button>
                   ))}
                 </div>
@@ -809,16 +809,16 @@ export function ExecutionTimeline({
           {hasActiveFilters && (
             <button
               onClick={clearAllFilters}
-              className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[7px] font-bold border border-red-300 dark:border-red-500/40 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs font-medium border border-[var(--state-error)]/25 text-[var(--state-error)] hover:bg-[var(--state-error)]/10 transition-colors cursor-pointer"
             >
-              <X className="h-2 w-2" /> CLEAR
+              <X className="h-2 w-2" /> Clear
             </button>
           )}
         </div>
 
         {/* Summary bar */}
-        <div className="flex items-center gap-3 text-[8px]">
-          <span className="text-slate-400">
+        <div className="flex items-center gap-3 text-xs">
+          <span className="text-[var(--text-muted)]">
             {hasActiveFilters ? (
               <>{filteredCompleted.length}/{filteredSteps.length} of {steps.length} steps</>
             ) : (
@@ -826,13 +826,13 @@ export function ExecutionTimeline({
             )}
           </span>
           {totalDuration > 0 && (
-            <span className="text-slate-500">
+            <span className="text-[var(--text-muted)]">
               {formatDuration(totalDuration)}
             </span>
           )}
           {isRunning && (
-            <span className="flex items-center gap-1 text-indigo-400">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-indigo-400 animate-pulse" />
+            <span className="flex items-center gap-1 text-[var(--text-secondary)]">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--cta-primary-bg)]" />
               LIVE
             </span>
           )}
@@ -842,59 +842,59 @@ export function ExecutionTimeline({
         <div className="flex items-center gap-1 mt-1.5">
           <button
             onClick={expandAll}
-            className="px-1.5 py-0.5 text-[7px] font-bold rounded border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-indigo-400 hover:text-indigo-400 transition-colors cursor-pointer"
+            className="px-1.5 py-0.5 text-xs font-medium rounded border border-[var(--border-subtle)] text-[var(--text-muted)] hover:border-[var(--border-subtle)] hover:text-[var(--text-secondary)] transition-colors cursor-pointer"
           >
-            EXPAND ALL
+            Expand all
           </button>
           <button
             onClick={collapseAll}
-            className="px-1.5 py-0.5 text-[7px] font-bold rounded border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-indigo-400 hover:text-indigo-400 transition-colors cursor-pointer"
+            className="px-1.5 py-0.5 text-xs font-medium rounded border border-[var(--border-subtle)] text-[var(--text-muted)] hover:border-[var(--border-subtle)] hover:text-[var(--text-secondary)] transition-colors cursor-pointer"
           >
-            COLLAPSE
+            Collapse
           </button>
           <div className="flex-1" />
           <button
             onClick={() => setAutoScroll((p) => !p)}
             className={clsx(
-              "px-1.5 py-0.5 text-[7px] font-bold rounded border transition-colors cursor-pointer",
+              "px-1.5 py-0.5 text-xs font-medium rounded border transition-colors cursor-pointer",
               autoScroll
-                ? "border-indigo-400/50 bg-indigo-500/10 text-indigo-400"
-                : "border-slate-200 dark:border-slate-700 text-slate-500"
+                ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/10 text-[var(--accent-primary)]"
+                : "border-[var(--border-subtle)] text-[var(--text-muted)]"
             )}
           >
-            {autoScroll ? "AUTO-SCROLL" : "SCROLL OFF"}
+            {autoScroll ? "Auto-scroll" : "Scroll off"}
           </button>
           {/* Export dropdown */}
           {steps.length > 0 && (
             <div className="relative" ref={exportMenuRef}>
               <button
                 onClick={() => setShowExportMenu((p) => !p)}
-                className="flex items-center gap-0.5 px-1.5 py-0.5 text-[7px] font-bold rounded border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-emerald-400 hover:text-emerald-400 transition-colors cursor-pointer"
+                className="flex items-center gap-0.5 px-1.5 py-0.5 text-xs font-medium rounded border border-[var(--border-subtle)] text-[var(--text-muted)] hover:border-[var(--state-success)]/40 hover:text-[var(--state-success)] transition-colors cursor-pointer"
                 title="Export timeline"
               >
-                <Download className="h-2.5 w-2.5" /> EXPORT
+                <Download className="h-2.5 w-2.5" /> Export
               </button>
               {showExportMenu && (
-                <div className="absolute right-0 top-6 z-50 w-40 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0c0d18] shadow-xl overflow-hidden">
+                <div className="absolute right-0 top-6 z-50 w-40 rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] overflow-hidden">
                   <button
                     onClick={() => { exportTimelineAsJSON(steps); setShowExportMenu(false); }}
-                    className="w-full flex items-center gap-2 px-2.5 py-2 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-2 px-2.5 py-2 text-left hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                   >
-                    <FileJson className="h-3 w-3 text-blue-400" />
+                    <FileJson className="h-3 w-3 text-[var(--text-secondary)]" />
                     <div>
-                      <div className="text-[9px] font-bold text-slate-700 dark:text-slate-200">JSON Trace</div>
-                      <div className="text-[7px] text-slate-400">Structured data with timestamps</div>
+                      <div className="text-xs font-medium text-[var(--text-secondary)]">JSON Trace</div>
+                      <div className="text-xs text-[var(--text-muted)]">Structured data with timestamps</div>
                     </div>
                   </button>
-                  <div className="h-px bg-slate-100 dark:bg-slate-800" />
+                  <div className="h-px bg-[var(--surface-sunken)]" />
                   <button
                     onClick={() => { exportTimelineAsMarkdown(steps); setShowExportMenu(false); }}
-                    className="w-full flex items-center gap-2 px-2.5 py-2 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-2 px-2.5 py-2 text-left hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                   >
-                    <FileText className="h-3 w-3 text-emerald-400" />
+                    <FileText className="h-3 w-3 text-[var(--state-success)]" />
                     <div>
-                      <div className="text-[9px] font-bold text-slate-700 dark:text-slate-200">Markdown Report</div>
-                      <div className="text-[7px] text-slate-400">Formatted with tables &amp; headers</div>
+                      <div className="text-xs font-medium text-[var(--text-secondary)]">Markdown report</div>
+                      <div className="text-xs text-[var(--text-muted)]">Formatted with tables &amp; headers</div>
                     </div>
                   </button>
                 </div>
@@ -907,15 +907,15 @@ export function ExecutionTimeline({
       {/* Timeline Steps */}          <div ref={containerRef} className="flex-1 min-h-0 overflow-y-auto px-3 py-2 space-y-0 scrollbar-thin">
         {filteredSteps.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center py-8">
-            <Activity className="h-6 w-6 text-slate-600 dark:text-slate-700 mb-2" />
-            <p className="text-[9px] text-slate-500 dark:text-slate-600">
+            <Activity className="h-6 w-6 text-[var(--text-secondary)] mb-2" />
+            <p className="text-xs text-[var(--text-muted)]">
               {steps.length === 0 ? "Waiting for execution events…" : "No steps match the current filters"}
             </p>
           </div>
         ) : (
           <div className="relative">
             {/* Vertical connector line */}
-            <div className="absolute left-[7px] top-2 bottom-2 w-px bg-slate-200 dark:bg-slate-700/60" />
+            <div className="absolute left-[7px] top-2 bottom-2 w-px bg-[var(--surface-sunken)]" />
 
             {filteredSteps.map((step) => {
               const isExpanded = expandedSteps.has(step.key);
@@ -928,7 +928,7 @@ export function ExecutionTimeline({
                   {/* Status dot on the timeline */}
                   <div className={clsx(
                     "absolute left-0 top-2.5 w-[15px] h-[15px] rounded-full border-2 flex items-center justify-center z-10",
-                    isCurrentlyRunning ? "border-indigo-400 bg-indigo-950/80 animate-pulse" : "border-[#0a0a14] dark:border-[#0a0a14]",
+                    isCurrentlyRunning ? "border-[var(--accent-primary)]/40 bg-[var(--cta-primary-bg)]/80" : "border-[var(--surface-raised)]",
                     isCurrentlyRunning ? "" : statusDotColor(step.status) + "/20"
                   )}>
                     <span className={clsx("block h-1.5 w-1.5 rounded-full", statusDotColor(step.status))} />
@@ -939,51 +939,51 @@ export function ExecutionTimeline({
                     type="button"
                     onClick={() => toggleExpand(step.key)}
                     className={clsx(
-                      "w-full text-left rounded-lg border px-2.5 py-2 transition-all cursor-pointer",
+                      "w-full text-left rounded-[8px] border px-2.5 py-2 transition-colors cursor-pointer",
                       statusColor(step.status),
-                      isCurrentlyRunning && "shadow-[0_0_12px_rgba(99,102,241,0.15)]",
+                      isCurrentlyRunning && "",
                       "hover:brightness-110"
                     )}
                   >
                     {/* Card Header */}
                     <div className="flex items-center gap-1.5">
                       {NodeIcon && (
-                        <NodeIcon className={clsx("h-3 w-3 shrink-0", meta?.accent?.split(" ")[1] ?? "text-slate-400")} />
+                        <NodeIcon className={clsx("h-3 w-3 shrink-0", meta?.accent?.split(" ")[1] ?? "text-[var(--text-muted)]")} />
                       )}
-                      <span className="text-[9px] font-bold text-slate-200 dark:text-slate-100 truncate flex-1">
+                      <span className="text-xs font-medium text-[var(--text-muted)] truncate flex-1">
                         {step.nodeLabel}
                       </span>
                       <span className="flex items-center gap-1 shrink-0">
                         {statusIcon(step.status, isCurrentlyRunning)}
                         {step.subEvents.length > 0 && (
-                          <span className="text-[7px] text-slate-500 bg-slate-800/40 px-1 rounded">
+                          <span className="text-xs text-[var(--text-muted)] bg-[var(--surface-elevated)]/40 px-1 rounded">
                             {step.subEvents.length}
                           </span>
                         )}
                         {isExpanded ? (
-                          <ChevronUp className="h-2.5 w-2.5 text-slate-500" />
+                          <ChevronUp className="h-2.5 w-2.5 text-[var(--text-muted)]" />
                         ) : (
-                          <ChevronDown className="h-2.5 w-2.5 text-slate-500" />
+                          <ChevronDown className="h-2.5 w-2.5 text-[var(--text-muted)]" />
                         )}
                       </span>
                     </div>
 
                     {/* Metadata Row */}
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[7px] text-slate-500 font-mono">{formatTime(step.startedAt)}</span>
+                      <span className="text-xs text-[var(--text-muted)] font-mono">{formatTime(step.startedAt)}</span>
                       {step.durationMs !== undefined && (
-                        <span className="text-[7px] text-slate-400 font-mono">
+                        <span className="text-xs text-[var(--text-muted)] font-mono">
                           {formatDuration(step.durationMs)}
                         </span>
                       )}
-                      <span className="text-[7px] text-slate-600 dark:text-slate-500 uppercase">
+                      <span className="text-xs text-[var(--text-secondary)]">
                         {step.nodeType}
                       </span>
                     </div>
 
                     {/* Detail preview when collapsed */}
                     {!isExpanded && step.detail && (
-                      <div className="mt-1 text-[8px] text-slate-400 dark:text-slate-500 truncate">
+                      <div className="mt-1 text-xs text-[var(--text-muted)] truncate">
                         {step.detail}
                       </div>
                     )}
@@ -991,62 +991,62 @@ export function ExecutionTimeline({
 
                   {/* Expanded Detail Panel */}
                   {isExpanded && (
-                    <div className="mt-1 ml-1 rounded-lg border border-slate-200 dark:border-slate-700/40 bg-white/50 dark:bg-[#0c0d18]/60 p-2 space-y-1.5">
+                    <div className="mt-1 ml-1 rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)]/50 p-2 space-y-1.5">
                       {/* Detail & Error */}
                       {step.detail && (
-                        <div className="text-[8px] text-slate-400 dark:text-slate-500 leading-relaxed">
-                          <span className="text-slate-500 dark:text-slate-400 font-bold">Output: </span>
+                        <div className="text-xs text-[var(--text-muted)] leading-relaxed">
+                          <span className="text-[var(--text-muted)] font-medium">Output: </span>
                           {step.detail}
                         </div>
                       )}
                       {step.error && (
-                        <div className="text-[8px] text-red-400 leading-relaxed bg-red-500/5 rounded px-1.5 py-1">
-                          <span className="font-bold">Error: </span>
+                        <div className="text-xs text-[var(--state-error)] leading-relaxed bg-[var(--state-error)]/5 rounded px-1.5 py-1">
+                          <span className="font-medium">Error: </span>
                           {step.error}
                         </div>
                       )}
 
                       {/* Timing */}
-                      <div className="flex items-center gap-3 text-[7px] text-slate-500">
+                      <div className="flex items-center gap-3 text-xs text-[var(--text-muted)]">
                         <span>Start: {formatTime(step.startedAt)}</span>
                         {step.endedAt && <span>End: {formatTime(step.endedAt)}</span>}
                         {step.durationMs !== undefined && (
-                          <span className="text-slate-400 font-bold">Duration: {formatDuration(step.durationMs)}</span>
+                          <span className="text-[var(--text-muted)] font-medium">Duration: {formatDuration(step.durationMs)}</span>
                         )}
                       </div>
 
                       {/* Sub-events */}
                       {step.subEvents.length > 0 && (
-                        <div className="space-y-0.5 pt-1 border-t border-slate-100 dark:border-slate-800">
-                          <div className="text-[7px] text-slate-500 uppercase tracking-wider font-bold mb-1">
-                            SUB-EVENTS
+                        <div className="space-y-0.5 pt-1 border-t border-[var(--border-subtle)]">
+                          <div className="text-xs text-[var(--text-muted)] font-medium mb-1">
+                            Sub-events
                           </div>
                           {step.subEvents.map((sub, si) => (
                             <div
                               key={si}
-                              className="flex items-center gap-1.5 px-1.5 py-0.5 rounded text-[8px]"
+                              className="flex items-center gap-1.5 px-1.5 py-0.5 rounded text-xs"
                             >
                               <span className={clsx("shrink-0", sub.color)}>
                                 {subEventIcon(sub.type)}
                               </span>
-                              <span className="text-slate-300 dark:text-slate-200 font-semibold truncate">
+                              <span className="text-[var(--text-muted)] font-medium truncate">
                                 {sub.label}
                               </span>
                               {sub.detail && (
-                                <span className="text-slate-500 dark:text-slate-400 truncate text-[7px]">
+                                <span className="text-[var(--text-muted)] truncate text-xs">
                                   {sub.detail}
                                 </span>
                               )}
-                              <span className="ml-auto shrink-0 text-[6px] text-slate-600 dark:text-slate-600">
+                              <span className="ml-auto shrink-0 text-[10px] text-[var(--text-secondary)]">
                                 {formatTime(sub.at)}
                               </span>
                               {sub.status && sub.status !== "RUNNING" && (
                                 <span className={clsx(
                                   "shrink-0 w-1.5 h-1.5 rounded-full",
-                                  sub.status === "SUCCESS" ? "bg-emerald-400" :
-                                  sub.status === "FAILED" ? "bg-red-400" :
-                                  sub.status === "AWAITING_APPROVAL" ? "bg-amber-400" :
-                                  "bg-slate-500"
+                                  sub.status === "SUCCESS" ? "bg-[var(--state-success)]" :
+                                  sub.status === "FAILED" ? "bg-[var(--state-error)]" :
+                                  sub.status === "AWAITING_APPROVAL" ? "bg-[var(--state-warning)]" :
+                                  "bg-[var(--surface-elevated)]"
                                 )} />
                               )}
                             </div>
@@ -1061,7 +1061,7 @@ export function ExecutionTimeline({
                             e.stopPropagation();
                             onNodeClick(step.nodeId);
                           }}
-                          className="w-full flex items-center justify-center gap-1 py-1 rounded border border-slate-200 dark:border-slate-700/50 text-[8px] text-slate-400 hover:text-indigo-400 hover:border-indigo-400/50 transition-colors cursor-pointer"
+                          className="w-full flex items-center justify-center gap-1 py-1 rounded border border-[var(--border-subtle)] text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--border-subtle)] transition-colors cursor-pointer"
                         >
                           <ArrowRight className="h-2 w-2" /> Focus on canvas
                         </button>

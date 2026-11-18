@@ -1464,129 +1464,18 @@
 }
 
 /* =========================================================================
-   Canvas Execution Animations — Agent Graph Runtime
-   (These work on both light and dark canvas — box-shadows still visible)
+   Canvas run states: a static border and ring in the state colour. No glow,
+   no pulse, no hover lift. Which node is running is also shown by its dot.
    ========================================================================= */
 
-@keyframes node-running {
-  0%, 100% {
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5), 0 4px 16px rgba(99, 102, 241, 0.15);
-  }
-  50% {
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.8), 0 8px 32px rgba(99, 102, 241, 0.25);
-  }
-}
-
-@keyframes node-success {
-  0% { box-shadow: 0 0 0 rgba(16, 185, 129, 0); }
-  30% { box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.8), 0 8px 24px rgba(16, 185, 129, 0.3); }
-  100% { box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.4), 0 4px 12px rgba(16, 185, 129, 0.15); }
-}
-
-@keyframes node-failed {
-  0% { box-shadow: 0 0 0 rgba(239, 68, 68, 0); }
-  20% { box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.9), 0 8px 24px rgba(239, 68, 68, 0.35); }
-  40% { box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.6), 0 4px 16px rgba(239, 68, 68, 0.2); }
-  100% { box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.4), 0 4px 12px rgba(239, 68, 68, 0.12); }
-}
-
-@keyframes node-awaiting {
-  0%, 100% { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.4), 0 4px 12px rgba(245, 158, 11, 0.1); }
-  50% { box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.7), 0 8px 24px rgba(245, 158, 11, 0.2); }
-}
-
-@keyframes node-ripple {
-  0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(2.5); opacity: 0; }
-}
-
-@keyframes edge-travel {
-  0% { stroke-dashoffset: 20; opacity: 0.3; }
-  50% { opacity: 1; }
-  100% { stroke-dashoffset: 0; opacity: 0.3; }
-}
-
-@keyframes edge-glow {
-  0%, 100% { stroke: rgba(99, 102, 241, 0.5); stroke-width: 1.5; }
-  50% { stroke: rgba(99, 102, 241, 0.9); stroke-width: 2.5; }
-}
-
-.canvas-node-running  { animation: node-running  1.2s ease-in-out infinite !important; }
-.canvas-node-success  { animation: node-success  0.6s ease-out forwards !important; }
-.canvas-node-failed   { animation: node-failed   0.8s ease-out forwards !important; }
-.canvas-node-awaiting { animation: node-awaiting 1.5s ease-in-out infinite !important; }
-.canvas-edge-traversed { animation: edge-glow   1.5s ease-in-out infinite !important; }
-.canvas-edge-traveling {
-  stroke-dasharray: 10 10;
-  animation: edge-travel 0.8s linear infinite !important;
-}
-
-@keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.5), 0 0 20px rgba(251, 191, 36, 0.3); }
-  50% { box-shadow: 0 0 0 8px rgba(251, 191, 36, 0), 0 0 30px rgba(251, 191, 36, 0.4); }
-  100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0), 0 0 20px rgba(251, 191, 36, 0.1); }
-}
-
-.animate-pulse-ring { animation: pulse-ring 1.2s ease-in-out 2 !important; }
-
 .canvas-node {
-  transition: box-shadow 0.3s ease, opacity 0.3s ease, transform 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
-.canvas-node:hover { transform: translateY(-1px); }
-
-@keyframes data-flow-particle {
-  0% { stroke-dashoffset: 20; opacity: 0.2; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { stroke-dashoffset: 0; opacity: 0.2; }
-}
-
-.canvas-edge-data-flow {
-  stroke-dasharray: 4 16;
-  animation: data-flow-particle 1.2s linear infinite !important;
-}
-
-@keyframes router-decision-pulse {
-  0%, 100% { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3), 0 4px 12px rgba(245, 158, 11, 0.1); }
-  50% { box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.55), 0 8px 24px rgba(245, 158, 11, 0.2); }
-}
-
-.canvas-node-router-decided { animation: router-decision-pulse 2s ease-in-out infinite !important; }
-
-@keyframes loop-iteration-glow {
-  0%, 100% { box-shadow: 0 0 0 2px rgba(217, 70, 239, 0.3), 0 4px 12px rgba(217, 70, 239, 0.1); }
-  50% { box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.55), 0 8px 24px rgba(217, 70, 239, 0.2); }
-}
-
-.canvas-node-loop-active { animation: loop-iteration-glow 1.5s ease-in-out infinite !important; }
-
-@keyframes parallel-fan-glow {
-  0%, 100% { box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.3), 0 4px 12px rgba(20, 184, 166, 0.1); }
-  50% { box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.55), 0 8px 24px rgba(20, 184, 166, 0.2); }
-}
-
-.canvas-node-parallel-active { animation: parallel-fan-glow 1.5s ease-in-out infinite !important; }
-
-@keyframes approval-pending-pulse {
-  0%, 100% { box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.3), 0 4px 12px rgba(249, 115, 22, 0.1); }
-  50% { box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.6), 0 8px 28px rgba(249, 115, 22, 0.25); }
-}
-
-.canvas-node-approval-pending { animation: approval-pending-pulse 1.8s ease-in-out infinite !important; }
-
-@keyframes llm-streaming-glow {
-  0%, 100% { box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.4), 0 4px 16px rgba(99, 102, 241, 0.15); }
-  33% { box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.5), 0 8px 24px rgba(139, 92, 246, 0.2); }
-  66% { box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.45), 0 6px 20px rgba(99, 102, 241, 0.18); }
-}
-
-.canvas-node-llm-streaming { animation: llm-streaming-glow 2s ease-in-out infinite !important; }
-
-@media (prefers-reduced-motion: reduce) {
-  .canvas-node-running, .canvas-node-success, .canvas-node-failed,
-  .canvas-node-awaiting, .canvas-edge-traversed, .canvas-edge-traveling { animation: none !important; }
-}
+.canvas-node-running  { border-color: var(--accent-primary) !important; box-shadow: 0 0 0 1px var(--accent-primary) !important; }
+.canvas-node-success  { border-color: var(--state-success) !important; box-shadow: 0 0 0 1px var(--state-success) !important; }
+.canvas-node-failed   { border-color: var(--state-error) !important; box-shadow: 0 0 0 1px var(--state-error) !important; }
+.canvas-node-awaiting { border-color: var(--state-warning) !important; box-shadow: 0 0 0 1px var(--state-warning) !important; }
 
 /* Landing canvases (simulator + hero preview): slow dashes on idle edges so flow direction reads before a run */
 @keyframes edge-idle-flow {

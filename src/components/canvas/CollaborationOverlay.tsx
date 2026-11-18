@@ -212,17 +212,17 @@ export function CollaborationOverlay({
       {/* Presence indicator bar */}
       <div className="absolute top-2 right-2 z-20 flex items-center gap-1.5">
         <div
-          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700/60 bg-[#0a0a14]/95 backdrop-blur-sm px-2 py-1"
+          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-elevated)] px-2 py-1"
           title="Presence syncs across tabs of this browser only — it does not show other devices or users."
         >
-          <Users className="h-3 w-3 text-indigo-400" />
-          <span className="text-[9px] font-bold text-indigo-300">
+          <Users className="h-3 w-3 text-[var(--text-muted)]" />
+          <span className="font-mono text-xs tabular-nums text-[var(--text-secondary)]">
             {peerList.length + 1} tab{peerList.length + 1 === 1 ? "" : "s"} open here
           </span>
           <div className="flex -space-x-1">
             {/* Self indicator */}
             <div
-              className="h-4 w-4 rounded-full border-2 border-[#0a0a14] flex items-center justify-center"
+              className="h-4 w-4 rounded-full border-2 border-[var(--surface-elevated)] flex items-center justify-center"
               style={{ backgroundColor: identity.color }}
               title={`${identity.name} (you)`}
             >
@@ -231,7 +231,7 @@ export function CollaborationOverlay({
             {peerList.map((peer) => (
               <div
                 key={peer.id}
-                className="h-4 w-4 rounded-full border-2 border-[#0a0a14] flex items-center justify-center"
+                className="h-4 w-4 rounded-full border-2 border-[var(--surface-elevated)] flex items-center justify-center"
                 style={{ backgroundColor: peer.color }}
                 title={peer.name}
               >

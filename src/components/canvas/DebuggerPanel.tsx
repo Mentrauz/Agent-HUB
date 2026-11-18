@@ -112,13 +112,13 @@ export function DebuggerPanel({
     <div className="space-y-3 font-mono">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="text-[10px] uppercase tracking-widest text-indigo-400/80 font-bold flex items-center gap-1.5">
-          <Bug className="h-3.5 w-3.5" /> DEBUGGER
+        <div className="text-xs text-[var(--text-secondary)]/80 font-medium flex items-center gap-1.5">
+          <Bug className="h-3.5 w-3.5" /> Debugger
         </div>
         {isRunning && (
-          <span className="inline-flex items-center gap-1 text-[8px] text-emerald-400 font-bold">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            RUNNING
+          <span className="inline-flex items-center gap-1 text-xs text-[var(--state-success)] font-medium">
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--state-success)]" />
+            Running
           </span>
         )}
       </div>
@@ -128,45 +128,45 @@ export function DebuggerPanel({
         {isRunning ? (
           <button
             onClick={onPause}
-            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-amber-500/50 bg-amber-950/40 text-[8px] font-bold text-amber-300 hover:bg-amber-900/40 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--state-warning)]/40 bg-[var(--state-warning)]/40 text-xs font-medium text-[var(--state-warning)] hover:bg-[var(--state-warning)]/40 transition-colors cursor-pointer"
           >
-            <Pause className="h-2.5 w-2.5" /> PAUSE
+            <Pause className="h-2.5 w-2.5" /> Pause
           </button>
         ) : (
           <button
             onClick={onContinue}
-            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-emerald-500/50 bg-emerald-950/40 text-[8px] font-bold text-emerald-300 hover:bg-emerald-900/40 transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--state-success)]/40 bg-[var(--state-success)]/40 text-xs font-medium text-[var(--state-success)] hover:bg-[var(--state-success)]/40 transition-colors cursor-pointer"
           >
-            <Play className="h-2.5 w-2.5" /> CONTINUE
+            <Play className="h-2.5 w-2.5" /> Continue
           </button>
         )}
         <button
           onClick={onStepNext}
           disabled={!isRunning}
-          className="inline-flex items-center gap-1 px-2 py-1 rounded border border-indigo-500/50 bg-indigo-950/40 text-[8px] font-bold text-indigo-300 hover:bg-indigo-900/40 transition-colors cursor-pointer disabled:opacity-40"
+          className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--cta-primary-hover)]/40 transition-colors cursor-pointer disabled:opacity-40"
         >
-          <SkipForward className="h-2.5 w-2.5" /> STEP NEXT
+          <SkipForward className="h-2.5 w-2.5" /> Step next
         </button>
         <button
           onClick={onRestart}
-          className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-700 text-[8px] font-bold text-slate-400 hover:text-white hover:border-slate-500 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1 px-2 py-1 rounded border border-[var(--border-strong)] text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-colors cursor-pointer"
         >
-          <RotateCcw className="h-2.5 w-2.5" /> RESTART
+          <RotateCcw className="h-2.5 w-2.5" /> Restart
         </button>
       </div>
 
       {/* Running Nodes */}
       {runningNodeIds.length > 0 && (
-        <div className="rounded border border-indigo-500/30 bg-indigo-950/30 p-2">
-          <div className="text-[8px] text-indigo-400 font-bold uppercase tracking-wider mb-1">
+        <div className="rounded border border-[var(--border-subtle)] bg-[var(--cta-primary-bg)]/30 p-2">
+          <div className="text-xs text-[var(--text-secondary)] font-medium mb-1">
             Current Execution Point
           </div>
           {runningNodeIds.map((id) => (
-            <div key={id} className="flex items-center gap-1.5 text-[9px]">
-              <span className="h-2 w-2 rounded-full bg-indigo-400 animate-ping" />
-              <span className="text-indigo-300 font-semibold">{id}</span>
+            <div key={id} className="flex items-center gap-1.5 text-xs">
+              <span className="h-2 w-2 rounded-full bg-[var(--cta-primary-bg)]" />
+              <span className="text-[var(--text-secondary)] font-medium">{id}</span>
               {nodeDetails[id] && (
-                <span className="text-slate-500 truncate text-[8px]">{nodeDetails[id]}</span>
+                <span className="text-[var(--text-muted)] truncate text-xs">{nodeDetails[id]}</span>
               )}
             </div>
           ))}
@@ -174,27 +174,27 @@ export function DebuggerPanel({
       )}
 
       {/* Breakpoints Section */}
-      <div className="border-t border-indigo-900/30 pt-2">
+      <div className="border-t border-[var(--border-subtle)] pt-2">
         <button
           onClick={() => setShowBreakpoints(!showBreakpoints)}
-          className="inline-flex items-center gap-1 text-[8px] uppercase tracking-wider text-slate-500 font-bold hover:text-white transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1 text-xs text-[var(--text-muted)] font-medium hover:text-[var(--text-primary)] transition-colors cursor-pointer"
         >
           {showBreakpoints ? <ChevronDown className="h-2.5 w-2.5" /> : <ChevronRight className="h-2.5 w-2.5" />}
           Breakpoints
         </button>
         {showBreakpoints && (
-          <div className="mt-1 text-[8px] text-slate-500 leading-relaxed">
-            Click the <Circle className="h-2 w-2 inline text-red-400" /> icon on any node&apos;s inspector to toggle a breakpoint.
+          <div className="mt-1 text-xs text-[var(--text-muted)] leading-relaxed">
+            Click the <Circle className="h-2 w-2 inline text-[var(--state-error)]" /> icon on any node&apos;s inspector to toggle a breakpoint.
             Execution pauses before that node runs.
           </div>
         )}
       </div>
 
       {/* Variable Inspector */}
-      <div className="border-t border-indigo-900/30 pt-2">
+      <div className="border-t border-[var(--border-subtle)] pt-2">
         <button
           onClick={() => setShowVars(!showVars)}
-          className="inline-flex items-center gap-1 text-[8px] uppercase tracking-wider text-slate-500 font-bold hover:text-white transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1 text-xs text-[var(--text-muted)] font-medium hover:text-[var(--text-primary)] transition-colors cursor-pointer"
         >
           {showVars ? <ChevronDown className="h-2.5 w-2.5" /> : <ChevronRight className="h-2.5 w-2.5" />}
           <Eye className="h-2.5 w-2.5" /> Variables
@@ -202,21 +202,21 @@ export function DebuggerPanel({
         {showVars && (
           <div className="mt-1.5 space-y-1">
             {variables.map((v) => (
-              <div key={v.key} className="rounded border border-slate-700/40 bg-black/30 overflow-hidden">
+              <div key={v.key} className="rounded border border-[var(--border-strong)] bg-[var(--surface-sunken)]/30 overflow-hidden">
                 <div
-                  className="flex items-center gap-1.5 px-2 py-1 cursor-pointer hover:bg-white/5 transition-colors"
+                  className="flex items-center gap-1.5 px-2 py-1 cursor-pointer hover:bg-[var(--surface-raised)]/5 transition-colors"
                   onClick={() => toggleExpand(v.key)}
                 >
                   {v.expanded ? (
-                    <ChevronDown className="h-2.5 w-2.5 text-slate-500 shrink-0" />
+                    <ChevronDown className="h-2.5 w-2.5 text-[var(--text-muted)] shrink-0" />
                   ) : (
-                    <ChevronRight className="h-2.5 w-2.5 text-slate-500 shrink-0" />
+                    <ChevronRight className="h-2.5 w-2.5 text-[var(--text-muted)] shrink-0" />
                   )}
-                  <span className="text-indigo-400 font-semibold text-[9px]">{v.key}</span>
+                  <span className="text-[var(--text-secondary)] font-medium text-xs">{v.key}</span>
                   {!v.expanded && (
                     <>
-                      <span className="text-slate-600">=</span>
-                      <span className="text-slate-400 text-[8px] truncate">
+                      <span className="text-[var(--text-secondary)]">=</span>
+                      <span className="text-[var(--text-muted)] text-xs truncate">
                         {formatValue(v.value)}
                       </span>
                     </>
@@ -226,7 +226,7 @@ export function DebuggerPanel({
                       e.stopPropagation();
                       startEdit(v.key, v.value);
                     }}
-                    className="ml-auto p-0.5 rounded hover:bg-white/10 text-slate-500 hover:text-white transition-colors cursor-pointer"
+                    className="ml-auto p-0.5 rounded hover:bg-[var(--surface-raised)]/10 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
                   >
                     <Edit3 className="h-2.5 w-2.5" />
                   </button>
@@ -239,26 +239,26 @@ export function DebuggerPanel({
                           value={editValue}
                           onChange={(e) => setEditValue(e.target.value)}
                           rows={4}
-                          className="w-full rounded border border-indigo-500/50 bg-black/40 px-2 py-1 text-[8px] text-white font-mono focus:outline-none resize-y"
+                          className="w-full rounded border border-[var(--border-subtle)] bg-[var(--surface-sunken)]/40 px-2 py-1 text-xs text-[var(--text-primary)] font-mono focus:outline-none resize-y"
                           autoFocus
                         />
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => saveEdit(v.key)}
-                            className="px-1.5 py-0.5 rounded bg-indigo-600 text-white text-[7px] font-bold hover:bg-indigo-500 cursor-pointer"
+                            className="px-1.5 py-0.5 rounded bg-[var(--cta-primary-bg)] text-[var(--cta-primary-text)] text-xs font-medium hover:bg-[var(--cta-primary-hover)] cursor-pointer"
                           >
                             SAVE
                           </button>
                           <button
                             onClick={() => setEditingVar(null)}
-                            className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 text-[7px] font-bold hover:text-white cursor-pointer"
+                            className="px-1.5 py-0.5 rounded bg-[var(--surface-elevated)] text-[var(--text-muted)] text-xs font-medium hover:text-[var(--text-primary)] cursor-pointer"
                           >
-                            CANCEL
+                            Cancel
                           </button>
                         </div>
                       </div>
                     ) : (
-                      <pre className="text-[8px] text-slate-400 font-mono whitespace-pre-wrap overflow-x-auto max-h-24 overflow-y-auto">
+                      <pre className="text-xs text-[var(--text-muted)] font-mono whitespace-pre-wrap overflow-x-auto max-h-24 overflow-y-auto">
                         {JSON.stringify(v.value, null, 2)}
                       </pre>
                     )}

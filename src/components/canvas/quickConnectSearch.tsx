@@ -27,7 +27,6 @@ import {
   FileOutput,
   StickyNote,
   Frame,
-  X,
   Clock,
   Radio,
   Rss,
@@ -165,96 +164,65 @@ export function QuickConnectSearch({
 
   return (
     <div
-      className="fixed z-[10000] pointer-events-auto"
+      className="pointer-events-auto fixed z-[10000]"
       style={{ left: position.x, top: position.y, transform: "translate(-50%, -100%) translateY(-12px)" }}
     >
       <div
-        className="rounded-xl border border-slate-200 dark:border-indigo-500/50 bg-white/98 dark:bg-[#0a0a14]/98 backdrop-blur-md p-2.5 shadow-2xl shadow-indigo-500/10 w-72 font-mono"
+        className="w-72 rounded-[12px] border border-[var(--border-subtle)] bg-[var(--surface-elevated)] p-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.24)]"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1.5">
-            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[9px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
-              Quick Connect
-            </span>
-          </div>
+        <div className="mb-2 flex items-center justify-between px-0.5">
+          <span className="font-sans text-[13px] font-medium text-[var(--text-primary)]">Quick connect</span>
           <button
+            type="button"
             onClick={onClose}
-            className="p-0.5 rounded hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer"
+            className="cursor-pointer rounded-[4px] font-sans text-xs text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
           >
-            <X className="h-3 w-3" />
+            Close
           </button>
         </div>
 
-        {/* Source hint */}
         {sourceNodeId && (
-          <div className="text-[8px] text-slate-500 mb-1.5 truncate">
-            from: <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{sourceNodeId}</span> →
-          </div>
+          <div className="mb-1.5 truncate px-0.5 font-mono text-xs text-[var(--text-muted)]">from {sourceNodeId}</div>
         )}
 
-        {/* Search input */}
-        <div className="flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700/60 bg-slate-50 dark:bg-black/40 px-2.5 py-1.5 mb-2">
-          <Search className="h-3.5 w-3.5 text-indigo-500 dark:text-indigo-400 shrink-0" />
-          <input
-            ref={inputRef}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Search nodes… (↑↓ navigate, Enter select)"
-            className="flex-1 bg-transparent text-[11px] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none"
-          />
-        </div>
+        <input
+          ref={inputRef}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+          aria-label="Search node types"
+          placeholder="Search nodes. Arrows to move, Enter to add"
+          className="mb-2 h-8 w-full rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] px-2.5 font-sans text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)] focus:outline-none"
+        />
 
-        {/* Results */}
-        <div className="max-h-64 overflow-y-auto space-y-0.5">
+        <div className="max-h-64 space-y-0.5 overflow-y-auto">
           {filteredTypes.map((meta, i) => {
             const Icon = ICON_MAP[meta.type] ?? CircleDot;
             return (
               <button
                 key={meta.type}
+                type="button"
                 onClick={() => onSelect(meta.type)}
                 onMouseEnter={() => setSelectedIndex(i)}
                 className={clsx(
-                  "w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-all cursor-pointer",
-                  i === selectedIndex
-                    ? "bg-indigo-50 dark:bg-indigo-500/20 border border-indigo-200 dark:border-indigo-500/30"
-                    : "border border-transparent hover:bg-slate-50 dark:hover:bg-white/5"
+                  "flex w-full cursor-pointer items-center gap-2.5 rounded-[8px] px-2.5 py-2 text-left transition-colors",
+                  i === selectedIndex ? "bg-[var(--text-primary)]/[0.06]" : "hover:bg-[var(--text-primary)]/[0.04]"
                 )}
               >
-                <Icon
-                  className={clsx(
-                    "h-4 w-4 shrink-0",
-                    meta.accent.split(" ")[0]
-                  )}
-                />
+                <Icon className="h-4 w-4 shrink-0 text-[var(--text-secondary)]" />
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold text-slate-900 dark:text-white tracking-wider">
-                      {meta.label}
-                    </span>
-                    <span
-                      className={clsx(
-                        "px-1 py-0.5 rounded border text-[7px] font-bold tracking-wider",
-                        meta.badgeClass
-                      )}
-                    >
-                      {meta.tag}
-                    </span>
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-sans text-[13px] text-[var(--text-primary)]">{meta.label}</span>
+                    <span className="font-mono text-xs text-[var(--text-muted)]">{meta.tag}</span>
                   </div>
-                  <div className="text-[8px] text-slate-500 truncate mt-0.5">
-                    {meta.description}
-                  </div>
+                  <div className="truncate font-sans text-xs text-[var(--text-muted)]">{meta.description}</div>
                 </div>
               </button>
             );
           })}
           {filteredTypes.length === 0 && (
-            <div className="text-center py-4 text-[10px] text-slate-500">
-              No matching node types
-            </div>
+            <div className="py-4 text-center font-sans text-[13px] text-[var(--text-muted)]">No matching node types</div>
           )}
         </div>
       </div>

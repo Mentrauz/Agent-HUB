@@ -125,18 +125,18 @@ function tokenizeForHighlight(src: string): HighlightToken[] {
 
 // ─── Syntax highlighting colors ───
 const TOKEN_COLORS: Record<TokenKind, string> = {
-  root: "text-cyan-400 dark:text-cyan-300 font-bold",
-  dot: "text-slate-400 dark:text-slate-500",
-  ident: "text-indigo-300 dark:text-indigo-200",
-  op: "text-amber-400 dark:text-amber-300 font-bold",
-  string: "text-emerald-400 dark:text-emerald-300",
-  number: "text-orange-300 dark:text-orange-200",
-  bool: "text-violet-400 dark:text-violet-300 font-bold",
-  null: "text-slate-500 dark:text-slate-400 italic",
-  paren: "text-slate-300 dark:text-slate-400",
-  bracket: "text-slate-300 dark:text-slate-400",
-  text: "text-slate-200 dark:text-slate-100",
-  error: "text-red-400 dark:text-red-300 underline decoration-wavy",
+  root: "text-[var(--text-secondary)] font-medium",
+  dot: "text-[var(--text-muted)]",
+  ident: "text-[var(--text-secondary)]",
+  op: "text-[var(--state-warning)] font-medium",
+  string: "text-[var(--state-success)]",
+  number: "text-[var(--state-warning)]",
+  bool: "text-[var(--text-secondary)] font-medium",
+  null: "text-[var(--text-muted)] ",
+  paren: "text-[var(--text-muted)]",
+  bracket: "text-[var(--text-muted)]",
+  text: "text-[var(--text-muted)]",
+  error: "text-[var(--state-error)] underline decoration-wavy",
 };
 
 // ─── Lightweight expression validation ───
@@ -214,7 +214,7 @@ function validateExpression(expr: string, allNodeIds: string[]): ValidationError
         // It's being used as a path root — check if it's a known one
         if (!["results", "input", "item"].includes(word)) {
           errors.push({
-            message: `Unknown root "${word}" — use results., input. or item.`,
+            message: `Unknown root "${word}". use results., input. or item.`,
             position: pos,
             severity: "error",
           });
@@ -229,7 +229,7 @@ function validateExpression(expr: string, allNodeIds: string[]): ValidationError
     const nodeId = match[1];
     if (allNodeIds.length > 0 && !allNodeIds.includes(nodeId)) {
       errors.push({
-        message: `References unknown node "${nodeId}" — it may not exist in this graph`,
+        message: `References unknown node "${nodeId}". it may not exist in this graph`,
         position: match.index!,
         severity: "warning",
       });
@@ -239,7 +239,7 @@ function validateExpression(expr: string, allNodeIds: string[]): ValidationError
   // Check for empty condition (just whitespace)
   if (expr.trim().length > 0 && !/[=!<>]/.test(expr) && !/contains|startsWith|endsWith/.test(expr)) {
     errors.push({
-      message: "Expression has no comparison operator — add ==, !=, >, <, >=, <=, contains, startsWith, or endsWith",
+      message: "Expression has no comparison operator. add ==, !=, >, <, >=, <=, contains, startsWith, or endsWith",
       position: 0,
       severity: "warning",
     });
@@ -258,15 +258,15 @@ interface AutocompleteItem {
 }
 
 const OPERATOR_SUGGESTIONS: AutocompleteItem[] = [
-  { label: "==", description: "equals", insertText: " == ", icon: <span className="text-amber-400">=</span>, category: "operator" },
-  { label: "!=", description: "not equals", insertText: " != ", icon: <span className="text-amber-400">≠</span>, category: "operator" },
-  { label: ">", description: "greater than", insertText: " > ", icon: <span className="text-amber-400">&gt;</span>, category: "operator" },
-  { label: ">=", description: "greater or equal", insertText: " >= ", icon: <span className="text-amber-400">≥</span>, category: "operator" },
-  { label: "<", description: "less than", insertText: " < ", icon: <span className="text-amber-400">&lt;</span>, category: "operator" },
-  { label: "<=", description: "less or equal", insertText: " <= ", icon: <span className="text-amber-400">≤</span>, category: "operator" },
-  { label: "contains", description: "string contains", insertText: " contains ", icon: <span className="text-amber-400">∈</span>, category: "operator" },
-  { label: "startsWith", description: "string starts with", insertText: " startsWith ", icon: <span className="text-amber-400">→</span>, category: "operator" },
-  { label: "endsWith", description: "string ends with", insertText: " endsWith ", icon: <span className="text-amber-400">←</span>, category: "operator" },
+  { label: "==", description: "equals", insertText: " == ", icon: <span className="text-[var(--state-warning)]">=</span>, category: "operator" },
+  { label: "!=", description: "not equals", insertText: " != ", icon: <span className="text-[var(--state-warning)]">≠</span>, category: "operator" },
+  { label: ">", description: "greater than", insertText: " > ", icon: <span className="text-[var(--state-warning)]">&gt;</span>, category: "operator" },
+  { label: ">=", description: "greater or equal", insertText: " >= ", icon: <span className="text-[var(--state-warning)]">≥</span>, category: "operator" },
+  { label: "<", description: "less than", insertText: " < ", icon: <span className="text-[var(--state-warning)]">&lt;</span>, category: "operator" },
+  { label: "<=", description: "less or equal", insertText: " <= ", icon: <span className="text-[var(--state-warning)]">≤</span>, category: "operator" },
+  { label: "contains", description: "string contains", insertText: " contains ", icon: <span className="text-[var(--state-warning)]">∈</span>, category: "operator" },
+  { label: "startsWith", description: "string starts with", insertText: " startsWith ", icon: <span className="text-[var(--state-warning)]">→</span>, category: "operator" },
+  { label: "endsWith", description: "string ends with", insertText: " endsWith ", icon: <span className="text-[var(--state-warning)]">←</span>, category: "operator" },
 ];
 
 function getAutocompleteItems(
@@ -286,21 +286,21 @@ function getAutocompleteItems(
         label: id,
         description: "node output",
         insertText: id,
-        icon: <Box className="h-2.5 w-2.5 text-cyan-400" />,
+        icon: <Box className="h-2.5 w-2.5 text-[var(--text-secondary)]" />,
         category: "path" as const,
       }));
     }
     if (root === "input") {
       return [
-        { label: "query", description: "user query input", insertText: "query", icon: <Variable className="h-2.5 w-2.5 text-cyan-400" />, category: "path" as const },
-        { label: "data", description: "input data payload", insertText: "data", icon: <Variable className="h-2.5 w-2.5 text-cyan-400" />, category: "path" as const },
+        { label: "query", description: "user query input", insertText: "query", icon: <Variable className="h-2.5 w-2.5 text-[var(--text-secondary)]" />, category: "path" as const },
+        { label: "data", description: "input data payload", insertText: "data", icon: <Variable className="h-2.5 w-2.5 text-[var(--text-secondary)]" />, category: "path" as const },
       ];
     }
     if (root === "item") {
       return [
-        { label: "name", description: "item name", insertText: "name", icon: <Variable className="h-2.5 w-2.5 text-cyan-400" />, category: "path" as const },
-        { label: "value", description: "item value", insertText: "value", icon: <Variable className="h-2.5 w-2.5 text-cyan-400" />, category: "path" as const },
-        { label: "index", description: "item index", insertText: "index", icon: <Variable className="h-2.5 w-2.5 text-cyan-400" />, category: "path" as const },
+        { label: "name", description: "item name", insertText: "name", icon: <Variable className="h-2.5 w-2.5 text-[var(--text-secondary)]" />, category: "path" as const },
+        { label: "value", description: "item value", insertText: "value", icon: <Variable className="h-2.5 w-2.5 text-[var(--text-secondary)]" />, category: "path" as const },
+        { label: "index", description: "item index", insertText: "index", icon: <Variable className="h-2.5 w-2.5 text-[var(--text-secondary)]" />, category: "path" as const },
       ];
     }
   }
@@ -309,10 +309,10 @@ function getAutocompleteItems(
   const nodeDotMatch = beforeCursor.match(/results\.([A-Za-z_]\w*)\.$/);
   if (nodeDotMatch) {
     return [
-      { label: "decision", description: "router decision", insertText: "decision", icon: <ChevronRight className="h-2.5 w-2.5 text-cyan-400" />, category: "path" as const },
-      { label: "content", description: "agent output content", insertText: "content", icon: <ChevronRight className="h-2.5 w-2.5 text-cyan-400" />, category: "path" as const },
-      { label: "status", description: "execution status", insertText: "status", icon: <ChevronRight className="h-2.5 w-2.5 text-cyan-400" />, category: "path" as const },
-      { label: "output", description: "raw output", insertText: "output", icon: <ChevronRight className="h-2.5 w-2.5 text-cyan-400" />, category: "path" as const },
+      { label: "decision", description: "router decision", insertText: "decision", icon: <ChevronRight className="h-2.5 w-2.5 text-[var(--text-secondary)]" />, category: "path" as const },
+      { label: "content", description: "agent output content", insertText: "content", icon: <ChevronRight className="h-2.5 w-2.5 text-[var(--text-secondary)]" />, category: "path" as const },
+      { label: "status", description: "execution status", insertText: "status", icon: <ChevronRight className="h-2.5 w-2.5 text-[var(--text-secondary)]" />, category: "path" as const },
+      { label: "output", description: "raw output", insertText: "output", icon: <ChevronRight className="h-2.5 w-2.5 text-[var(--text-secondary)]" />, category: "path" as const },
     ];
   }
 
@@ -326,12 +326,12 @@ function getAutocompleteItems(
   const atStart = beforeCursor.trim() === "" || beforeCursor.match(/[(|&!]\s*$/);
   if (atStart) {
     return [
-      { label: "results", description: "node execution outputs", insertText: "results.", icon: <Braces className="h-2.5 w-2.5 text-cyan-400" />, category: "root" as const },
-      { label: "input", description: "user-provided input", insertText: "input.", icon: <Variable className="h-2.5 w-2.5 text-cyan-400" />, category: "root" as const },
-      { label: "item", description: "current map iteration item", insertText: "item.", icon: <Box className="h-2.5 w-2.5 text-cyan-400" />, category: "root" as const },
-      { label: "true", description: "boolean true", insertText: "true", icon: <span className="text-violet-400 text-[9px]">T</span>, category: "literal" as const },
-      { label: "false", description: "boolean false", insertText: "false", icon: <span className="text-violet-400 text-[9px]">F</span>, category: "literal" as const },
-      { label: "null", description: "null value", insertText: "null", icon: <span className="text-slate-400 text-[9px]">∅</span>, category: "literal" as const },
+      { label: "results", description: "node execution outputs", insertText: "results.", icon: <Braces className="h-2.5 w-2.5 text-[var(--text-secondary)]" />, category: "root" as const },
+      { label: "input", description: "user-provided input", insertText: "input.", icon: <Variable className="h-2.5 w-2.5 text-[var(--text-secondary)]" />, category: "root" as const },
+      { label: "item", description: "current map iteration item", insertText: "item.", icon: <Box className="h-2.5 w-2.5 text-[var(--text-secondary)]" />, category: "root" as const },
+      { label: "true", description: "boolean true", insertText: "true", icon: <span className="text-[var(--text-secondary)] text-xs">T</span>, category: "literal" as const },
+      { label: "false", description: "boolean false", insertText: "false", icon: <span className="text-[var(--text-secondary)] text-xs">F</span>, category: "literal" as const },
+      { label: "null", description: "null value", insertText: "null", icon: <span className="text-[var(--text-muted)] text-xs">∅</span>, category: "literal" as const },
     ];
   }
 
@@ -463,23 +463,23 @@ export function ConditionExpressionEditor({
     <div className="relative">
       {/* Label */}
       <div className="flex items-center justify-between mb-1">
-        <label className="text-[8px] uppercase tracking-widest text-slate-500 font-bold">
-          CONDITION EXPRESSION
+        <label className="text-xs text-[var(--text-muted)] font-medium">
+          Condition expression
         </label>
         {value.trim() && (
           <div className="flex items-center gap-1">
             {hasErrors ? (
-              <span className="flex items-center gap-0.5 text-[8px] text-red-400 font-bold">
+              <span className="flex items-center gap-0.5 text-xs text-[var(--state-error)] font-medium">
                 <AlertCircle className="h-2.5 w-2.5" />
                 {errors.filter((e) => e.severity === "error").length} error(s)
               </span>
             ) : hasWarnings ? (
-              <span className="flex items-center gap-0.5 text-[8px] text-amber-400 font-bold">
+              <span className="flex items-center gap-0.5 text-xs text-[var(--state-warning)] font-medium">
                 <AlertCircle className="h-2.5 w-2.5" />
                 {errors.filter((e) => e.severity === "warning").length} warning(s)
               </span>
             ) : (
-              <span className="flex items-center gap-0.5 text-[8px] text-emerald-400 font-bold">
+              <span className="flex items-center gap-0.5 text-xs text-[var(--state-success)] font-medium">
                 <Check className="h-2.5 w-2.5" />
                 valid
               </span>
@@ -493,18 +493,18 @@ export function ConditionExpressionEditor({
         className={clsx(
           "relative rounded border overflow-hidden transition-colors",
           hasErrors
-            ? "border-red-500/60 dark:border-red-500/40"
+            ? "border-[var(--state-error)]/40"
             : hasWarnings
-            ? "border-amber-500/60 dark:border-amber-500/40"
+            ? "border-[var(--state-warning)]/40"
             : isFocused
-            ? "border-amber-500 dark:border-amber-500/60"
-            : "border-slate-300 dark:border-indigo-900/50"
+            ? "border-[var(--state-warning)]/40"
+            : "border-[var(--border-strong)]"
         )}
       >
         {/* Syntax-highlighted overlay */}
         <pre
           ref={preRef}
-          className="absolute inset-0 pointer-events-none overflow-hidden p-2.5 text-[10px] font-mono leading-relaxed whitespace-pre-wrap break-words"
+          className="absolute inset-0 pointer-events-none overflow-hidden p-2.5 text-xs font-mono leading-relaxed whitespace-pre-wrap break-words"
           aria-hidden="true"
         >
           {tokens.map((token, i) => (
@@ -514,7 +514,7 @@ export function ConditionExpressionEditor({
           ))}
           {/* Show a cursor placeholder when empty */}
           {!value && (
-            <span className="text-slate-500">
+            <span className="text-[var(--text-muted)]">
               results.classifier.decision == &quot;high&quot;
             </span>
           )}
@@ -536,18 +536,18 @@ export function ConditionExpressionEditor({
           spellCheck={false}
           rows={2}
           className={clsx(
-            "relative w-full p-2.5 text-[10px] font-mono leading-relaxed resize-none focus:outline-none",
-            "bg-transparent caret-amber-400",
-            "text-transparent selection:bg-amber-500/20",
+            "relative w-full p-2.5 text-xs font-mono leading-relaxed resize-none focus:outline-none",
+            "bg-transparent caret-[var(--text-muted)]",
+            "text-transparent selection:bg-[var(--state-warning)]/20",
             readOnly && "cursor-not-allowed"
           )}
-          style={{ caretColor: "#fbbf24" }}
+          style={{ caretColor: "var(--text-primary)" }}
         />
       </div>
 
       {/* Autocomplete dropdown */}
       {showAutocomplete && acItems.length > 0 && (
-        <div className="absolute z-50 mt-1 w-full max-h-40 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#0c0d18] shadow-xl font-mono">
+        <div className="absolute z-50 mt-1 w-full max-h-40 overflow-y-auto rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] font-mono">
           {acItems.slice(0, 12).map((item, idx) => (
             <button
               key={`${item.label}-${idx}`}
@@ -559,15 +559,15 @@ export function ConditionExpressionEditor({
               className={clsx(
                 "w-full flex items-center gap-2 px-2.5 py-1.5 text-left transition-colors cursor-pointer",
                 idx === acIndex
-                  ? "bg-amber-50 dark:bg-amber-950/30"
-                  : "hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                  ? "bg-[var(--state-warning)]/10"
+                  : "hover:bg-[var(--surface-sunken)]"
               )}
             >
               <span className="shrink-0">{item.icon}</span>
-              <span className="text-[10px] font-bold text-slate-800 dark:text-slate-100 truncate">
+              <span className="text-xs font-medium text-[var(--text-primary)] truncate">
                 {item.label}
               </span>
-              <span className="text-[8px] text-slate-400 dark:text-slate-500 truncate ml-auto">
+              <span className="text-xs text-[var(--text-muted)] truncate ml-auto">
                 {item.description}
               </span>
             </button>
@@ -582,10 +582,10 @@ export function ConditionExpressionEditor({
             <div
               key={i}
               className={clsx(
-                "flex items-start gap-1.5 px-2 py-1 rounded text-[8px] leading-tight",
+                "flex items-start gap-1.5 px-2 py-1 rounded text-xs leading-tight",
                 err.severity === "error"
-                  ? "bg-red-500/10 dark:bg-red-950/20 text-red-500 dark:text-red-400 border border-red-500/20"
-                  : "bg-amber-500/10 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                  ? "bg-[var(--state-error)]/10 text-[var(--state-error)] border border-[var(--state-error)]/40"
+                  : "bg-[var(--state-warning)]/10 text-[var(--state-warning)] border border-[var(--state-warning)]/40"
               )}
             >
               <AlertCircle className="h-2.5 w-2.5 shrink-0 mt-0.5" />
@@ -596,15 +596,15 @@ export function ConditionExpressionEditor({
       )}
 
       {/* Reference hint */}
-      <p className="text-[7px] text-slate-400 dark:text-slate-500 leading-tight mt-1">
-        Use <code className="text-amber-600 dark:text-amber-400">results.nodeId.field</code> or{" "}
-        <code className="text-amber-600 dark:text-amber-400">input.field</code> to reference state.{" "}
-        Operators: <code className="text-amber-600 dark:text-amber-400">==</code>{" "}
-        <code className="text-amber-600 dark:text-amber-400">!=</code>{" "}
-        <code className="text-amber-600 dark:text-amber-400">&gt;</code>{" "}
-        <code className="text-amber-600 dark:text-amber-400">&lt;</code>{" "}
-        <code className="text-amber-600 dark:text-amber-400">contains</code>{" "}
-        <code className="text-amber-600 dark:text-amber-400">startsWith</code>
+      <p className="text-xs text-[var(--text-muted)] leading-tight mt-1">
+        Use <code className="text-[var(--state-warning)]">results.nodeId.field</code> or{" "}
+        <code className="text-[var(--state-warning)]">input.field</code> to reference state.{" "}
+        Operators: <code className="text-[var(--state-warning)]">==</code>{" "}
+        <code className="text-[var(--state-warning)]">!=</code>{" "}
+        <code className="text-[var(--state-warning)]">&gt;</code>{" "}
+        <code className="text-[var(--state-warning)]">&lt;</code>{" "}
+        <code className="text-[var(--state-warning)]">contains</code>{" "}
+        <code className="text-[var(--state-warning)]">startsWith</code>
       </p>
     </div>
   );

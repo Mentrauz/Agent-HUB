@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { Download, X, Image, Code2, FileJson, Loader2, FileCode2, FileText, GitBranch, Code, FileType } from "lucide-react";
 import { clsx } from "clsx";
 import {
   EXPORT_FORMATS,
@@ -22,22 +21,6 @@ interface ExportDialogProps {
   graph: AgentGraphDefinition;
   canvasContainerRef?: React.RefObject<HTMLDivElement | null>;
 }
-
-const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  visual: Image,
-  code: Code2,
-  data: FileJson,
-};
-
-const FORMAT_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  png: Image,
-  svg: FileCode2,
-  pdf: FileText,
-  mermaid: GitBranch,
-  "langgraph-py": Code,
-  "langgraph-ts": FileCode2,
-  json: FileJson,
-};
 
 const CATEGORIES = ["visual", "code", "data"] as const;
 
@@ -105,79 +88,58 @@ export function ExportDialog({ isOpen, onClose, graph, canvasContainerRef }: Exp
   const filteredFormats = EXPORT_FORMATS.filter((f) => f.category === activeCategory);
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="export-title">
+      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
 
-      {/* Dialog */}
-      <div className="relative w-[480px] max-w-[90vw] rounded-xl border border-slate-700/60 bg-[#0a0a14] shadow-2xl font-mono overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700/60">
-          <div className="flex items-center gap-2">
-            <Download className="h-4 w-4 text-indigo-400" />
-            <span className="text-[11px] font-bold text-white uppercase tracking-widest">
-              Export Graph
-            </span>
-          </div>
+      <div className="relative w-[480px] max-w-[90vw] overflow-hidden rounded-[16px] border border-[var(--border-subtle)] bg-[var(--surface-elevated)] shadow-[0_8px_24px_rgba(0,0,0,0.24)]">
+        <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-5 py-4">
+          <h2 id="export-title" className="font-sans text-base font-medium text-[var(--text-primary)]">
+            Export graph
+          </h2>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1 rounded hover:bg-white/10 text-slate-500 hover:text-white transition-colors cursor-pointer"
+            className="h-8 cursor-pointer rounded-[8px] px-2 font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
           >
-            <X className="h-4 w-4" />
+            Close
           </button>
         </div>
 
-        {/* Category tabs */}
-        <div className="flex items-center gap-1 px-4 pt-3">
-          {CATEGORIES.map((cat) => {
-            const Icon = CATEGORY_ICONS[cat];
-            return (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={clsx(
-                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer",
-                  activeCategory === cat
-                    ? "bg-indigo-600 text-white"
-                    : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700"
-                )}
-              >
-                <Icon className="h-3 w-3" />
-                {cat}
-              </button>
-            );
-          })}
+        <div className="flex items-center gap-5 px-5 pt-4 font-sans text-sm">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              aria-pressed={activeCategory === cat}
+              onClick={() => setActiveCategory(cat)}
+              className={clsx(
+                "cursor-pointer rounded-[6px] capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
+                activeCategory === cat ? "text-[var(--text-primary)]" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+              )}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
-        {/* Format cards */}
-        <div className="p-4 space-y-2">
-          {filteredFormats.map((format) => {
-            const FormatIcon = FORMAT_ICONS[format.id] || FileType;
-            return (
+        <ul className="m-5 divide-y divide-[var(--border-subtle)] rounded-[10px] border border-[var(--border-subtle)]">
+          {filteredFormats.map((format) => (
+            <li key={format.id}>
               <button
-                key={format.id}
+                type="button"
                 onClick={() => handleExport(format)}
                 disabled={exporting !== null}
-                className="w-full flex items-center gap-3 rounded-lg border border-slate-700/60 bg-[#0d0d1a] p-3 text-left hover:border-indigo-400/50 hover:bg-indigo-950/30 transition-all cursor-pointer disabled:opacity-50"
+                className="flex w-full cursor-pointer items-baseline justify-between gap-4 px-4 py-3 text-left transition-colors hover:bg-[var(--text-primary)]/[0.04] disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <div className="p-2 rounded-lg bg-indigo-950/40 border border-indigo-500/20 text-indigo-400 shrink-0">
-                  <FormatIcon className="h-4 w-4" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-[10px] font-bold text-white tracking-wider">
-                    {format.label}
-                  </div>
-                  <div className="text-[8px] text-slate-500">{format.description}</div>
-                </div>
-                {exporting === format.id ? (
-                  <Loader2 className="h-4 w-4 text-indigo-400 animate-spin shrink-0" />
-                ) : (
-                  <Download className="h-3.5 w-3.5 text-slate-500 shrink-0" />
-                )}
+                <span className="min-w-0 space-y-0.5">
+                  <span className="block font-sans text-sm text-[var(--text-primary)]">{format.label}</span>
+                  <span className="block font-sans text-[13px] text-[var(--text-muted)]">{format.description}</span>
+                </span>
+                <span className="shrink-0 font-mono text-xs text-[var(--text-muted)]">{exporting === format.id ? "Exporting" : "Download"}</span>
               </button>
-            );
-          })}
-        </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

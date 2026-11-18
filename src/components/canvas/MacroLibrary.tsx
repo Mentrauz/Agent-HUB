@@ -1,17 +1,10 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import {
-  Package,
-  Trash2,
-  GripVertical,
-  Copy,
-  Star,
-  FolderOpen,
-} from "lucide-react";
 import type { Edge } from "@xyflow/react";
 import type { AgentGraphDefinition, GraphNodeType } from "@/types/graph";
 import type { CanvasNode } from "./graphUtils";
+import { BTN_PRIMARY_SM, BTN_SECONDARY_SM } from "@/components/ui/surfaces";
 
 const STORAGE_KEY = "agent-studio-component-library";
 
@@ -129,100 +122,72 @@ export function MacroLibrary({
   });
 
   return (
-    <div className="space-y-2 font-mono">
-      <div className="flex items-center justify-between">
-        <div className="text-[10px] uppercase tracking-widest text-indigo-700 dark:text-indigo-400/80 font-bold px-1 flex items-center gap-1.5">
-          <Package className="h-3.5 w-3.5" /> MY COMPONENTS
-        </div>
-        <div className="flex items-center gap-1">
-          {selectedNodeIds.size > 0 && (
-            <button
-              onClick={() => setShowSave(!showSave)}
-              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-emerald-400/50 bg-emerald-950/40 text-[8px] font-bold text-emerald-400 hover:bg-emerald-900/40 transition-colors cursor-pointer"
-              title="Save selection as component"
-            >
-              <Star className="h-2.5 w-2.5" /> SAVE
-            </button>
-          )}
-        </div>
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="px-1 font-sans text-sm font-medium text-[var(--text-primary)]">My components</h2>
+        {selectedNodeIds.size > 0 && (
+          <button type="button" onClick={() => setShowSave(!showSave)} className={BTN_SECONDARY_SM} title="Save selection as component">
+            Save selection
+          </button>
+        )}
       </div>
 
-      {/* Save form */}
       {showSave && (
-        <div className="rounded border border-emerald-300 dark:border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/20 p-2 space-y-1.5">
-          <div className="text-[8px] text-emerald-700 dark:text-emerald-400 font-bold uppercase tracking-wider">
-            Save {selectedNodeIds.size} selected nodes as component
-          </div>
-          <div className="flex items-center gap-1.5">
+        <div className="space-y-2 rounded-[10px] border border-[var(--border-subtle)] p-3">
+          <div className="font-sans text-[13px] text-[var(--text-muted)]">Save {selectedNodeIds.size} selected nodes as a component</div>
+          <div className="flex items-center gap-2">
             <input
               value={savingName}
               onChange={(e) => setSavingName(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") saveSelection();
               }}
-              placeholder="Component name…"
-              className="flex-1 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-black/40 px-2 py-1 text-[9px] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:border-emerald-500"
+              aria-label="Component name"
+              placeholder="Component name"
+              className="h-8 flex-1 rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] px-2.5 font-sans text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)] focus:outline-none"
               autoFocus
             />
-            <button
-              onClick={saveSelection}
-              disabled={!savingName.trim()}
-              className="px-2 py-1 rounded bg-emerald-600 text-white text-[8px] font-bold hover:bg-emerald-500 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
-            >
-              SAVE
+            <button type="button" onClick={saveSelection} disabled={!savingName.trim()} className={BTN_PRIMARY_SM}>
+              Save
             </button>
           </div>
         </div>
       )}
 
-      {/* Search */}
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder="Search components…"
-        className="w-full rounded border border-slate-300 dark:border-slate-700/60 bg-white dark:bg-black/40 px-2.5 py-1.5 text-[9px] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:border-indigo-500"
+        aria-label="Search components"
+        placeholder="Search components"
+        className="h-8 w-full rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] px-2.5 font-sans text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)] focus:outline-none"
       />
 
-      {/* Component list */}
       <div className="space-y-1">
         {filtered.length === 0 && (
-          <div className="text-center py-4 space-y-2">
-            <FolderOpen className="h-6 w-6 mx-auto text-slate-600" />
-            <p className="text-[9px] text-slate-500">
-              {components.length === 0
-                ? "No saved components yet. Select nodes and click SAVE."
-                : "No matching components"}
-            </p>
-          </div>
+          <p className="py-4 text-center font-sans text-[13px] text-[var(--text-muted)]">
+            {components.length === 0 ? "No saved components yet. Select nodes and choose Save selection." : "No matching components"}
+          </p>
         )}
         {filtered.map((macro) => (
           <div
             key={macro.id}
-            className="group flex items-center gap-2 rounded border border-slate-200 dark:border-slate-700/60 bg-slate-50/90 dark:bg-[#0b0b12]/80 px-2.5 py-2 hover:border-indigo-400 dark:hover:border-indigo-400/70 hover:bg-indigo-50/80 dark:hover:bg-indigo-950/40 transition-all"
+            className="group flex items-center gap-2 rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-2.5 py-2 transition-colors hover:border-[var(--border-strong)]"
           >
-            <GripVertical className="h-3.5 w-3.5 text-slate-400 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="min-w-0 flex-1">
-              <div className="text-[10px] font-bold text-slate-800 dark:text-slate-200 truncate">
-                {macro.name}
-              </div>
-              <div className="text-[8px] text-slate-500 truncate">
-                {macro.description}
-              </div>
+              <div className="truncate font-sans text-[13px] text-[var(--text-primary)]">{macro.name}</div>
+              <div className="truncate font-mono text-xs text-[var(--text-muted)]">{macro.description}</div>
             </div>
-            <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button
-                onClick={() => onAddMacro(macro.graph)}
-                className="p-1 rounded hover:bg-indigo-500/20 text-indigo-400 cursor-pointer"
-                title="Add to canvas"
-              >
-                <Copy className="h-3 w-3" />
+            <div className="flex shrink-0 items-center gap-1">
+              <button type="button" onClick={() => onAddMacro(macro.graph)} className={BTN_SECONDARY_SM} title="Add to canvas">
+                Add
               </button>
               <button
+                type="button"
                 onClick={() => deleteMacro(macro.id)}
-                className="p-1 rounded hover:bg-red-500/20 text-red-400 cursor-pointer"
+                className={BTN_SECONDARY_SM + " text-[var(--state-error)]"}
                 title="Delete"
               >
-                <Trash2 className="h-3 w-3" />
+                Delete
               </button>
             </div>
           </div>

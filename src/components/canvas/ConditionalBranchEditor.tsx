@@ -87,26 +87,26 @@ export function ConditionalBranchEditor({
   );
 
   return (
-    <div className="rounded-lg border border-slate-200 dark:border-slate-700/60 overflow-hidden">
+    <div className="rounded-[8px] border border-[var(--border-subtle)] overflow-hidden">
       {/* Header */}
       <button
         type="button"
         onClick={() => setExpanded((p) => !p)}
-        className="w-full flex items-center justify-between px-3 py-2 bg-slate-50 dark:bg-slate-800/30 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+        className="w-full flex items-center justify-between px-3 py-2 bg-[var(--surface-sunken)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
       >
         <div className="flex items-center gap-1.5">
-          <GitBranch className="h-3 w-3 text-amber-500" />
-          <span className="text-[9px] uppercase tracking-widest text-amber-700 dark:text-amber-400 font-bold">
-            BRANCHING CONFIG
+          <GitBranch className="h-3 w-3 text-[var(--state-warning)]" />
+          <span className="text-xs text-[var(--state-warning)] font-medium">
+            Branching config
           </span>
-          <span className="text-[8px] text-slate-400 font-mono">
+          <span className="text-xs text-[var(--text-muted)] font-mono">
             ({branches.length} branch{branches.length !== 1 ? "es" : ""})
           </span>
         </div>
         {expanded ? (
-          <ChevronUp className="h-3 w-3 text-slate-400" />
+          <ChevronUp className="h-3 w-3 text-[var(--text-muted)]" />
         ) : (
-          <ChevronDown className="h-3 w-3 text-slate-400" />
+          <ChevronDown className="h-3 w-3 text-[var(--text-muted)]" />
         )}
       </button>
 
@@ -114,35 +114,35 @@ export function ConditionalBranchEditor({
         <div className="p-3 space-y-3">
           {/* Mode Toggle */}
           <div className="space-y-1">
-            <label className="text-[8px] uppercase tracking-widest text-slate-500 font-bold">Mode</label>
+            <label className="text-xs text-[var(--text-muted)] font-medium">Mode</label>
             <div className="flex gap-1">
               <button
                 type="button"
                 disabled={readOnly}
                 onClick={() => onUpdate({ routerMode: "deterministic" })}
                 className={clsx(
-                  "flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded border text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer",
+                  "flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded border text-xs font-medium transition-colors cursor-pointer",
                   routerMode === "deterministic"
-                    ? "border-amber-400 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300"
-                    : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-amber-300",
+                    ? "border-[var(--state-warning)]/40 bg-[var(--state-warning)]/10 text-[var(--state-warning)]"
+                    : "border-[var(--border-subtle)] text-[var(--text-muted)] hover:border-[var(--state-warning)]/25",
                   readOnly && "opacity-50 cursor-not-allowed"
                 )}
               >
-                <Zap className="h-2.5 w-2.5" /> CONDITION
+                <Zap className="h-2.5 w-2.5" /> Condition
               </button>
               <button
                 type="button"
                 disabled={readOnly}
                 onClick={() => onUpdate({ routerMode: "ai" })}
                 className={clsx(
-                  "flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded border text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer",
+                  "flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded border text-xs font-medium transition-colors cursor-pointer",
                   routerMode === "ai"
-                    ? "border-violet-400 bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300"
-                    : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-violet-300",
+                    ? "border-[var(--accent-primary)]/40 bg-[var(--accent-primary)]/10 text-[var(--accent-primary)]"
+                    : "border-[var(--border-subtle)] text-[var(--text-muted)] hover:border-[var(--border-subtle)]",
                   readOnly && "opacity-50 cursor-not-allowed"
                 )}
               >
-                <Bot className="h-2.5 w-2.5" /> AI ROUTER
+                <Bot className="h-2.5 w-2.5" /> AI router
               </button>
             </div>
           </div>
@@ -157,8 +157,8 @@ export function ConditionalBranchEditor({
             />
           ) : (
             <div className="space-y-1">
-              <label className="text-[8px] uppercase tracking-widest text-slate-500 font-bold">
-                AI ROUTER PROMPT
+              <label className="text-xs text-[var(--text-muted)] font-medium">
+                AI router prompt
               </label>
               <textarea
                 value={routerPrompt}
@@ -167,13 +167,13 @@ export function ConditionalBranchEditor({
                 rows={3}
                 placeholder="Describe how the AI should choose between branches…"
                 className={clsx(
-                  "w-full rounded border px-2.5 py-1.5 text-[10px] font-mono resize-y focus:outline-none transition-colors",
+                  "w-full rounded border px-2.5 py-1.5 text-xs font-mono resize-y focus:outline-none transition-colors",
                   readOnly
-                    ? "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/30 text-slate-600 dark:text-slate-400"
-                    : "border-slate-300 dark:border-indigo-900/50 bg-white dark:bg-[#0a0a0a] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-violet-500"
+                    ? "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-[var(--text-secondary)]"
+                    : "border-[var(--border-strong)] bg-[var(--surface-raised)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-subtle)]"
                 )}
               />
-              <p className="text-[7px] text-slate-400 dark:text-slate-500 leading-tight">
+              <p className="text-xs text-[var(--text-muted)] leading-tight">
                 The LLM will pick one of the branch labels below as its decision.
               </p>
             </div>
@@ -181,13 +181,13 @@ export function ConditionalBranchEditor({
 
           {/* Branches */}
           <div className="space-y-1.5">
-            <label className="text-[8px] uppercase tracking-widest text-slate-500 font-bold">
-              OUTGOING BRANCHES
+            <label className="text-xs text-[var(--text-muted)] font-medium">
+              Outgoing branches
             </label>
             {branches.length === 0 && (
-              <div className="flex items-center gap-1.5 p-2 rounded bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-700/30">
-                <AlertTriangle className="h-3 w-3 text-amber-500 shrink-0" />
-                <span className="text-[8px] text-amber-700 dark:text-amber-300">
+              <div className="flex items-center gap-1.5 p-2 rounded bg-[var(--state-warning)]/10 border border-[var(--state-warning)]/25">
+                <AlertTriangle className="h-3 w-3 text-[var(--state-warning)] shrink-0" />
+                <span className="text-xs text-[var(--state-warning)]">
                   No branches defined. Add at least one outgoing branch.
                 </span>
               </div>
@@ -195,18 +195,18 @@ export function ConditionalBranchEditor({
             {branches.map((branch, idx) => (
               <div
                 key={branch.id}
-                className="flex items-center gap-2 p-2 rounded border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-[#0a0a0a]/60 group"
+                className="flex items-center gap-2 p-2 rounded border border-[var(--border-subtle)] bg-[var(--surface-raised)] group"
               >
-                <ArrowRight className="h-3 w-3 text-slate-400 shrink-0" />
+                <ArrowRight className="h-3 w-3 text-[var(--text-muted)] shrink-0" />
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[8px] text-slate-400 font-bold shrink-0">#{idx + 1}</span>
+                    <span className="text-xs text-[var(--text-muted)] font-medium shrink-0">#{idx + 1}</span>
                     <input
                       value={branch.label}
                       onChange={(e) => updateBranch(branch.id, { label: e.target.value })}
                       readOnly={readOnly}
                       placeholder="branch-label"
-                      className="flex-1 min-w-0 rounded border border-slate-200 dark:border-slate-700 bg-transparent px-1.5 py-0.5 text-[10px] font-mono text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                      className="flex-1 min-w-0 rounded border border-[var(--border-subtle)] bg-transparent px-1.5 py-0.5 text-xs font-mono text-[var(--text-primary)] focus:outline-none focus:border-[var(--border-subtle)]"
                     />
                     {routerMode === "deterministic" && (
                       <ConditionExpressionEditor
@@ -222,7 +222,7 @@ export function ConditionalBranchEditor({
                   <button
                     type="button"
                     onClick={() => removeBranch(branch.id)}
-                    className="p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-950/40 text-slate-400 hover:text-red-500 transition-all cursor-pointer"
+                    className="p-0.5 rounded opacity-0 group-hover:opacity-100 hover:bg-[var(--state-error)]/10 text-[var(--text-muted)] hover:text-[var(--state-error)] transition-colors cursor-pointer"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -240,13 +240,13 @@ export function ConditionalBranchEditor({
                     if (e.key === "Enter") addBranch();
                   }}
                   placeholder="new branch label…"
-                  className="flex-1 rounded border border-dashed border-slate-300 dark:border-slate-600 bg-transparent px-2 py-1 text-[9px] font-mono text-slate-700 dark:text-slate-300 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="flex-1 rounded border border-dashed border-[var(--border-strong)] bg-transparent px-2 py-1 text-xs font-mono text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--border-subtle)] transition-colors"
                 />
                 <button
                   type="button"
                   onClick={addBranch}
                   disabled={!newBranchLabel.trim()}
-                  className="p-1 rounded border border-dashed border-slate-300 dark:border-slate-600 text-slate-400 hover:text-indigo-500 hover:border-indigo-400 transition-colors cursor-pointer disabled:opacity-30"
+                  className="p-1 rounded border border-dashed border-[var(--border-strong)] text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:border-[var(--border-subtle)] transition-colors cursor-pointer disabled:opacity-30"
                 >
                   <Plus className="h-3 w-3" />
                 </button>
@@ -256,34 +256,34 @@ export function ConditionalBranchEditor({
 
           {/* Visual Preview */}
           {branches.length > 0 && (
-            <div className="pt-1 border-t border-slate-100 dark:border-slate-800">
-              <label className="text-[8px] uppercase tracking-widest text-slate-400 font-bold mb-1.5 block">
-                VISUAL PREVIEW
+            <div className="pt-1 border-t border-[var(--border-subtle)]">
+              <label className="text-xs text-[var(--text-muted)] font-medium mb-1.5 block">
+                Visual preview
               </label>
               <div className="flex items-center gap-1 overflow-x-auto pb-1">
-                <div className="shrink-0 px-2 py-1 rounded bg-indigo-100 dark:bg-indigo-900/40 text-[8px] font-bold text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700/50">
-                  ROUTER
+                <div className="shrink-0 px-2 py-1 rounded bg-[var(--surface-sunken)] text-xs font-medium text-[var(--text-secondary)] border border-[var(--border-subtle)]">
+                  Router
                 </div>
-                <div className="text-slate-300 dark:text-slate-600">→</div>
+                <div className="text-[var(--text-muted)]">→</div>
                 {branches.map((branch, idx) => (
                   <React.Fragment key={branch.id}>
-                    <div className="shrink-0 px-2 py-1 rounded border text-[8px] font-bold">
+                    <div className="shrink-0 px-2 py-1 rounded border text-xs font-medium">
                       {idx === 0 ? (
-                        <span className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700/50">
+                        <span className="bg-[var(--state-success)]/10 text-[var(--state-success)] border-[var(--state-success)]/25">
                           {branch.label || "—"}
                         </span>
                       ) : idx === 1 ? (
-                        <span className="bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700/50">
+                        <span className="bg-[var(--state-error)]/10 text-[var(--state-error)] border-[var(--state-error)]/25">
                           {branch.label || "—"}
                         </span>
                       ) : (
-                        <span className="bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-700/50">
+                        <span className="bg-[var(--surface-sunken)] text-[var(--text-secondary)] border-[var(--border-subtle)]">
                           {branch.label || "—"}
                         </span>
                       )}
                     </div>
                     {idx < branches.length - 1 && (
-                      <span className="text-slate-300 dark:text-slate-600 text-[8px]">·</span>
+                      <span className="text-[var(--text-muted)] text-xs">·</span>
                     )}
                   </React.Fragment>
                 ))}

@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { CANVAS_NODE_TYPES } from "./nodeTypes";
 import { GraphNodeType } from "@/types/graph";
-import { Search, X } from "lucide-react";
+import { clsx } from "clsx";
 
 interface NodePaletteProps {
   onDragStart: (event: React.DragEvent, type: GraphNodeType) => void;
@@ -11,11 +11,11 @@ interface NodePaletteProps {
 }
 
 const CATEGORIES = [
-  { id: "all", label: "ALL" },
-  { id: "triggers", label: "TRIGGERS" },
-  { id: "agent_core", label: "AGENT CORE" },
-  { id: "actions_apis", label: "APIS & ACTIONS" },
-  { id: "data_ops", label: "DATA OPS" },
+  { id: "all", label: "All" },
+  { id: "triggers", label: "Triggers" },
+  { id: "agent_core", label: "Agent core" },
+  { id: "actions_apis", label: "APIs and actions" },
+  { id: "data_ops", label: "Data ops" },
 ] as const;
 
 function getNodeCategory(type: GraphNodeType): "triggers" | "agent_core" | "actions_apis" | "data_ops" | "visuals" {
@@ -81,48 +81,44 @@ export function NodePalette({ onDragStart, disabled = false }: NodePaletteProps)
   }, [search, activeCategory]);
 
   return (
-    <div className="h-full flex flex-col font-mono select-none">
-      <div className="px-1 pb-2 space-y-1.5 shrink-0">
-        <div className="flex items-center justify-between">
-          <div className="text-[10px] uppercase tracking-widest text-indigo-700 dark:text-indigo-400 font-bold">
-            NODE PALETTE
-          </div>
-          <span className="text-[9px] text-slate-500 font-bold">
-            {filteredNodes.length}
-          </span>
+    <div className="flex h-full select-none flex-col">
+      <div className="shrink-0 space-y-2 px-1 pb-3">
+        <div className="flex items-baseline justify-between">
+          <h2 className="font-sans text-sm font-medium text-[var(--text-primary)]">Nodes</h2>
+          <span className="font-mono text-xs tabular-nums text-[var(--text-muted)]">{filteredNodes.length}</span>
         </div>
 
-        {/* Search */}
         <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-slate-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search nodes (rss, jina, cron…)"
-            className="w-full pl-6 pr-6 py-1 text-[9px] rounded bg-white dark:bg-[#07080f] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 transition-colors"
+            aria-label="Search nodes"
+            placeholder="Search nodes"
+            className="h-8 w-full rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] px-2.5 pr-14 font-sans text-[13px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--accent-primary)] focus:outline-none"
           />
           {search && (
             <button
+              type="button"
               onClick={() => setSearch("")}
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-[4px] font-sans text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)]"
             >
-              <X className="h-2.5 w-2.5" />
+              Clear
             </button>
           )}
         </div>
 
-        {/* Category Pills */}
-        <div className="flex flex-wrap gap-1 pt-0.5">
+        <div className="flex flex-wrap gap-x-3 gap-y-1">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
+              type="button"
+              aria-pressed={activeCategory === cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-1.5 py-0.5 text-[8px] font-bold rounded transition-all cursor-pointer ${
-                activeCategory === cat.id
-                  ? "bg-indigo-600 text-white shadow-xs"
-                  : "bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800"
-              }`}
+              className={clsx(
+                "cursor-pointer rounded-[4px] font-sans text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]",
+                activeCategory === cat.id ? "text-[var(--text-primary)]" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+              )}
             >
               {cat.label}
             </button>
@@ -130,8 +126,7 @@ export function NodePalette({ onDragStart, disabled = false }: NodePaletteProps)
         </div>
       </div>
 
-      {/* Single Unified Scrollable Node List */}
-      <div className="flex-1 min-h-0 space-y-1.5 overflow-y-auto pr-1 scrollbar-thin">
+      <div className="scrollbar-thin min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
         {filteredNodes.map((meta) => {
           const Icon = meta.icon;
           return (
@@ -140,28 +135,24 @@ export function NodePalette({ onDragStart, disabled = false }: NodePaletteProps)
               draggable={!disabled}
               onDragStart={(e) => onDragStart(e, meta.type)}
               title={meta.description}
-              className={`group flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-800/80 bg-slate-50/90 dark:bg-[#0c0d18]/90 px-2.5 py-2 cursor-grab transition-all hover:border-indigo-400 dark:hover:border-indigo-500/60 hover:bg-indigo-50/80 dark:hover:bg-indigo-950/40 shadow-xs hover:shadow-md ${
-                disabled ? "opacity-40 cursor-not-allowed" : "active:cursor-grabbing hover:-translate-y-0.5"
-              }`}
+              className={clsx(
+                "flex items-center gap-2.5 rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] px-2.5 py-2 transition-colors hover:border-[var(--border-strong)]",
+                disabled ? "cursor-not-allowed opacity-40" : "cursor-grab active:cursor-grabbing"
+              )}
             >
-              <Icon className="h-4 w-4 shrink-0 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform" />
+              <Icon className="h-4 w-4 shrink-0 text-[var(--text-secondary)]" />
               <div className="min-w-0 flex-1">
-                <div className="text-[10px] font-bold text-slate-800 dark:text-slate-100 tracking-wider truncate">{meta.label}</div>
-                <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">{meta.description}</div>
+                <div className="truncate font-sans text-[13px] text-[var(--text-primary)]">{meta.label}</div>
+                <div className="truncate font-sans text-xs text-[var(--text-muted)]">{meta.description}</div>
               </div>
-              <span className={`px-1.5 py-0.5 rounded border text-[8px] font-bold ${meta.badgeClass} shrink-0`}>
-                {meta.tag}
-              </span>
+              <span className="shrink-0 font-mono text-xs text-[var(--text-muted)]">{meta.tag}</span>
             </div>
           );
         })}
         {filteredNodes.length === 0 && (
-          <div className="text-center py-4 text-[9px] text-slate-400">
-            No matching nodes found
-          </div>
+          <div className="py-4 text-center font-sans text-[13px] text-[var(--text-muted)]">No matching nodes</div>
         )}
       </div>
     </div>
   );
 }
-

@@ -46,8 +46,6 @@ import {
   Check,
   X,
   Loader2,
-  Brain,
-  Zap,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { CANVAS_NODE_TYPE_MAP } from "./nodeTypes";
@@ -70,7 +68,7 @@ function statusClasses(status: CanvasNodeData["traceStatus"]): string {
     case "AWAITING_APPROVAL":
       return "canvas-node-awaiting";
     case "SKIPPED":
-      return "border-slate-500 opacity-60";
+      return "border-[var(--border-strong)] opacity-60";
     default:
       return "";
   }
@@ -80,9 +78,9 @@ function statusClasses(status: CanvasNodeData["traceStatus"]): string {
 function heatmapClasses(latency?: number, max?: number): string {
   if (latency === undefined || !max || max <= 0) return "";
   const ratio = Math.min(1, latency / max);
-  if (ratio < 0.33) return "border-sky-400 shadow-[0_0_14px_rgba(56,189,248,0.4)]";
-  if (ratio < 0.66) return "border-amber-400 shadow-[0_0_14px_rgba(245,158,11,0.5)]";
-  return "border-red-400 shadow-[0_0_16px_rgba(239,68,68,0.6)]";
+  if (ratio < 0.33) return "border-[var(--accent-primary)]/40 ";
+  if (ratio < 0.66) return "border-[var(--state-warning)]/40 ";
+  return "border-[var(--state-error)]/40 ";
 }
 
 function formatMs(ms: number): string {
@@ -94,14 +92,14 @@ function statusDot(status: CanvasNodeData["traceStatus"]) {
   if (!status) return null;
   const color =
     status === "SUCCESS"
-      ? "bg-emerald-400"
+      ? "bg-[var(--state-success)]"
       : status === "FAILED"
-        ? "bg-red-400"
+        ? "bg-[var(--state-error)]"
         : status === "AWAITING_APPROVAL"
-          ? "bg-amber-400"
-          : "bg-indigo-400";
+          ? "bg-[var(--state-warning)]"
+          : "bg-[var(--cta-primary-bg)]";
   return (
-    <span className={clsx("inline-block h-2 w-2 rounded-full", color, status === "RUNNING" && "animate-ping")} />
+    <span className={clsx("inline-block h-2 w-2 rounded-full", color, false)} />
   );
 }
 
@@ -122,51 +120,26 @@ function NodeLiveTokenStream({
   const parts = stream.text.split(/<\/?think>/);
 
   return (
-    <div className="mt-1.5 p-2 rounded-lg bg-slate-950/95 dark:bg-black/95 border border-cyan-500/40 font-mono text-[8px] space-y-1.5 shadow-lg shadow-cyan-950/30">
-      <div className="flex items-center justify-between text-[7.5px] border-b border-indigo-950/80 pb-1">
-        <span className="flex items-center gap-1.5 font-bold tracking-wider">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
-          </span>
-          <span className={clsx("flex items-center gap-1 font-pixel text-[7px]", stream.isThinking ? "text-violet-300" : "text-cyan-300")}>
-            {stream.isThinking ? (
-              <>
-                <Brain className="h-2.5 w-2.5 text-violet-400" /> REASONING
-              </>
-            ) : (
-              <>
-                <Zap className="h-2.5 w-2.5 text-cyan-400" /> LIVE STREAM
-              </>
-            )}
-          </span>
+    <div className="mt-1.5 space-y-1.5 rounded-[8px] border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-2 font-mono text-xs">
+      <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-1 text-[10px]">
+        <span className="flex items-center gap-1.5 font-sans text-[var(--text-secondary)]">
+          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[var(--accent-primary)]" />
+          {stream.isThinking ? "Reasoning" : "Live stream"}
         </span>
-        <div className="flex items-center gap-1.5 text-slate-400 font-mono text-[7px]">
-          {stream.tokensPerSec ? (
-            <span className="px-1 py-0.5 rounded bg-cyan-950/80 border border-cyan-800/50 text-cyan-300 font-bold">
-              {stream.tokensPerSec} tok/s
-            </span>
-          ) : (
-            <span className="text-cyan-400 font-semibold">SSE LIVE</span>
-          )}
-          {stream.totalTokens !== undefined && stream.totalTokens > 0 && (
-            <span className="text-slate-400">
-              {stream.totalTokens} tok
-            </span>
-          )}
+        <div className="flex items-center gap-1.5 tabular-nums text-[var(--text-muted)]">
+          {stream.tokensPerSec ? <span>{stream.tokensPerSec} tok/s</span> : <span>live</span>}
+          {stream.totalTokens !== undefined && stream.totalTokens > 0 && <span>{stream.totalTokens} tok</span>}
         </div>
       </div>
 
       <div
         ref={containerRef}
-        className="max-h-28 overflow-y-auto break-words whitespace-pre-wrap leading-relaxed custom-scrollbar text-slate-100 font-mono text-[7.5px] select-text"
+        className="custom-scrollbar max-h-28 select-text overflow-y-auto whitespace-pre-wrap break-words font-mono text-[10px] leading-relaxed text-[var(--text-muted)]"
       >
         {hasThinking && parts.length > 1 ? (
           <>
-            <div className="p-1 rounded bg-violet-950/40 border border-violet-800/30 text-violet-300 text-[7px] italic mb-1">
-              <span className="font-bold uppercase text-[6.5px] text-violet-400 flex items-center gap-1 mb-0.5">
-                <BrainCircuit className="h-2.5 w-2.5 text-violet-400" /> Chain-of-Thought:
-              </span>
+            <div className="mb-1 rounded-[4px] border border-[var(--border-subtle)] p-1 text-[var(--text-secondary)]">
+              <span className="mb-0.5 block font-sans text-[10px] text-[var(--text-muted)]">Chain of thought</span>
               {parts[1]}
             </div>
             <span>{parts.slice(2).join("") || parts[0]}</span>
@@ -174,9 +147,7 @@ function NodeLiveTokenStream({
         ) : (
           <span>{stream.text}</span>
         )}
-        {stream.active && (
-          <span className="inline-block w-1.5 h-3 bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)] animate-pulse ml-0.5 align-middle" />
-        )}
+        {stream.active && <span className="ml-0.5 inline-block h-3 w-1.5 bg-[var(--text-muted)] align-middle" />}
       </div>
     </div>
   );
@@ -209,14 +180,14 @@ function BaseShell({
   return (
     <div
       className={clsx(
-        "relative w-[230px] rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-raised)] font-mono shadow-md transition-all duration-150 canvas-node",
+        "canvas-node relative w-[230px] rounded-[12px] border border-[var(--border-subtle)] bg-[var(--surface-raised)] font-mono",
         accentClass,
         statusClasses(data.traceStatus) || heatmapClasses(data.heatmapLatency, data.heatmapMax),
-        selected && "ring-2 ring-cyan-400 shadow-[0_0_16px_rgba(34,211,238,0.25)]",
-        isHighlighted && "ring-2 ring-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.4)] animate-pulse-ring"
+        selected && "ring-2 ring-[var(--accent-primary)]",
+        isHighlighted && "ring-2 ring-[var(--state-warning)]"
       )}
     >
-      {showTarget && <Handle type="target" position={Position.Left} className="!bg-cyan-400 !border-0 !w-2.5 !h-2.5 shadow-sm" />}
+      {showTarget && <Handle type="target" position={Position.Left} className="!bg-[var(--text-muted)] !border-0 !w-2 !h-2" />}
       {Array.from({ length: Math.max(1, sourceCount) }).map((_, i) => (
         <Handle
           key={i}
@@ -224,33 +195,33 @@ function BaseShell({
           id={sourceCount > 1 ? `src-${i}` : undefined}
           position={Position.Right}
           style={sourceCount > 1 ? { top: `${((i + 1) * 100) / (sourceCount + 1)}%` } : undefined}
-          className="!bg-emerald-400 !border-0 !w-2.5 !h-2.5"
+          className="!bg-[var(--text-muted)] !border-0 !w-2 !h-2"
         />
       ))}
 
       <div className="p-2.5 space-y-1.5">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="text-cyan-400 shrink-0">{icon}</span>
-            <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--text-primary)] truncate">
+            <span className="text-[var(--text-secondary)] shrink-0">{icon}</span>
+            <span className="text-xs font-medium text-[var(--text-primary)] truncate">
               {data.label}
             </span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             {statusDot(data.traceStatus)}
-            <span className={clsx("px-1.5 py-0.5 rounded border text-[8px] font-bold tracking-wider", badgeClass)}>
+            <span className={clsx("px-1.5 py-0.5 rounded border text-xs font-medium ", badgeClass)}>
               {badge}
             </span>
           </div>
         </div>
         {children}
         {data.heatmapLatency !== undefined && data.heatmapMax !== undefined && data.heatmapMax > 0 && (
-          <div className="flex items-center gap-1 text-[8px] font-bold text-[var(--text-muted)] truncate">
-            <Clock className="h-2.5 w-2.5 text-cyan-400" /> {formatMs(data.heatmapLatency)}
+          <div className="flex items-center gap-1 text-xs font-medium text-[var(--text-muted)] truncate">
+            <Clock className="h-2.5 w-2.5 text-[var(--accent-primary)]" /> {formatMs(data.heatmapLatency)}
           </div>
         )}
         {data.traceDetail && (
-          <div className="text-[8px] text-slate-600 dark:text-slate-400 leading-tight truncate" title={data.traceDetail}>
+          <div className="text-xs text-[var(--text-secondary)] leading-tight truncate" title={data.traceDetail}>
             {data.traceDetail}
           </div>
         )}
@@ -275,12 +246,12 @@ function AgentNode({ data, selected }: NodePropsShape) {
       badge={meta.tag}
       selected={selected}
     >
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 leading-tight line-clamp-2" title={data.prompt}>
+      <div className="text-xs text-[var(--text-muted)] leading-tight line-clamp-2" title={data.prompt}>
         {promptPreview || "No prompt configured"}
       </div>
       {llmCall && (
-        <div className="flex items-center gap-1.5 mt-1 text-[7px] text-slate-400">
-          {llmCall.model && <span className="text-indigo-500 dark:text-indigo-400 font-semibold">{llmCall.model}</span>}
+        <div className="flex items-center gap-1.5 mt-1 text-xs text-[var(--text-muted)]">
+          {llmCall.model && <span className="text-[var(--text-secondary)] font-medium">{llmCall.model}</span>}
           {llmCall.inputTokens !== undefined && (
             <span>↑{llmCall.inputTokens}</span>
           )}
@@ -310,19 +281,19 @@ function SupervisorNode({ data, selected }: NodePropsShape) {
       selected={selected}
       sourceCount={Math.max(1, 2)}
     >
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 leading-tight line-clamp-2" title={data.prompt}>
+      <div className="text-xs text-[var(--text-muted)] leading-tight line-clamp-2" title={data.prompt}>
         {(data.prompt ?? "No prompt configured").slice(0, 80)}
       </div>
       {llmCall && (
-        <div className="flex items-center gap-1.5 mt-1 text-[7px] text-slate-400">
-          {llmCall.model && <span className="text-violet-500 dark:text-violet-400 font-semibold">{llmCall.model}</span>}
+        <div className="flex items-center gap-1.5 mt-1 text-xs text-[var(--text-muted)]">
+          {llmCall.model && <span className="text-[var(--text-secondary)] font-medium">{llmCall.model}</span>}
           {llmCall.inputTokens !== undefined && <span>↑{llmCall.inputTokens}</span>}
           {llmCall.outputTokens !== undefined && <span>↓{llmCall.outputTokens}</span>}
         </div>
       )}
       {decision && (
         <div className="flex items-center gap-1 mt-1">
-          <span className="text-[8px] px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 font-bold border border-violet-200 dark:border-violet-700/50">
+          <span className="text-xs px-1.5 py-0.5 rounded bg-[var(--surface-sunken)] text-[var(--text-secondary)] font-medium border border-[var(--border-subtle)]">
             → {decision.chosenLabel || "default"}
           </span>
         </div>
@@ -343,16 +314,16 @@ function ToolNode({ data, selected }: NodePropsShape) {
       badge={meta.tag}
       selected={selected}
     >
-      <div className="text-[9px] text-cyan-700 dark:text-cyan-300 font-semibold truncate">{data.toolName ?? "no tool selected"}</div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">action · {data.action ?? "—"}</div>
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">{data.toolName ?? "no tool selected"}</div>
+      <div className="text-xs text-[var(--text-muted)] truncate">action · {data.action ?? "—"}</div>
       {toolCall && (
         <div className="flex items-center gap-1 mt-1">
-          <span className={`text-[8px] px-1.5 py-0.5 rounded font-bold border inline-flex items-center gap-1 ${
+          <span className={`text-xs px-1.5 py-0.5 rounded font-medium border inline-flex items-center gap-1 ${
             toolCall.status === "SUCCESS"
-              ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700/50"
+              ? "bg-[var(--state-success)]/10 text-[var(--state-success)] border-[var(--state-success)]/25"
               : toolCall.status === "RUNNING"
-                ? "bg-cyan-100 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-300 border-cyan-200 dark:border-cyan-700/50"
-                : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700/50"
+                ? "bg-[var(--surface-sunken)] text-[var(--text-secondary)] border-[var(--border-subtle)]"
+                : "bg-[var(--state-error)]/10 text-[var(--state-error)] border-[var(--state-error)]/25"
           }`}>
             {toolCall.status === "RUNNING" ? (
               <>
@@ -369,7 +340,7 @@ function ToolNode({ data, selected }: NodePropsShape) {
             )}
           </span>
           {toolCall.durationMs !== undefined && (
-            <span className="text-[7px] text-slate-400">{toolCall.durationMs}ms</span>
+            <span className="text-xs text-[var(--text-muted)]">{toolCall.durationMs}ms</span>
           )}
         </div>
       )}
@@ -390,16 +361,16 @@ function RouterNode({ data, selected }: NodePropsShape) {
       selected={selected}
       sourceCount={2}
     >
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 leading-tight line-clamp-2" title={data.condition}>
+      <div className="text-xs text-[var(--text-muted)] leading-tight line-clamp-2" title={data.condition}>
         {data.routerMode === "ai" ? (data.routerPrompt ?? "AI router — model picks branch") : (data.condition ?? "no condition")}
       </div>
       {decision && (
         <div className="flex items-center gap-1 mt-1">
-          <span className="text-[8px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-bold border border-amber-200 dark:border-amber-700/50">
+          <span className="text-xs px-1.5 py-0.5 rounded bg-[var(--state-warning)]/10 text-[var(--state-warning)] font-medium border border-[var(--state-warning)]/25">
             → {decision.chosenLabel || "default"}
           </span>
           {decision.reason && (
-            <span className="text-[7px] text-slate-400 truncate max-w-[80px]" title={decision.reason}>
+            <span className="text-xs text-[var(--text-muted)] truncate max-w-[80px]" title={decision.reason}>
               {decision.reason}
             </span>
           )}
@@ -421,23 +392,23 @@ function ApprovalNode({ data, selected }: NodePropsShape) {
       badge={meta.tag}
       selected={selected}
     >
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 leading-tight line-clamp-2" title={data.approvalReason}>
+      <div className="text-xs text-[var(--text-muted)] leading-tight line-clamp-2" title={data.approvalReason}>
         {data.approvalReason ?? "No reason configured"}
       </div>
       {approval?.decision && (
         <div className="flex items-center gap-1 mt-1">
-          <span className={`text-[8px] px-1.5 py-0.5 rounded font-bold border inline-flex items-center gap-1 ${
+          <span className={`text-xs px-1.5 py-0.5 rounded font-medium border inline-flex items-center gap-1 ${
             approval.decision === "APPROVED"
-              ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700/50"
-              : "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-200 dark:border-red-700/50"
+              ? "bg-[var(--state-success)]/10 text-[var(--state-success)] border-[var(--state-success)]/25"
+              : "bg-[var(--state-error)]/10 text-[var(--state-error)] border-[var(--state-error)]/25"
           }`}>
             {approval.decision === "APPROVED" ? (
               <>
-                <Check className="h-2 w-2" /> APPROVED
+                <Check className="h-2 w-2" /> Approved
               </>
             ) : (
               <>
-                <X className="h-2 w-2" /> DENIED
+                <X className="h-2 w-2" /> Denied
               </>
             )}
           </span>
@@ -459,13 +430,13 @@ function LoopNode({ data, selected }: NodePropsShape) {
       badge={`LOOP · ${data.maxIterations ?? 3}×`}
       selected={selected}
     >
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">repeats body edge, then exits</div>
+      <div className="text-xs text-[var(--text-muted)]">repeats body edge, then exits</div>
       {loopState && (
         <div className="flex items-center gap-1 mt-1">
-          <span className={`text-[8px] px-1.5 py-0.5 rounded font-bold border inline-flex items-center gap-1 ${
+          <span className={`text-xs px-1.5 py-0.5 rounded font-medium border inline-flex items-center gap-1 ${
             loopState.exited
-              ? "bg-slate-100 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700/50"
-              : "bg-fuchsia-100 dark:bg-fuchsia-900/40 text-fuchsia-700 dark:text-fuchsia-300 border-fuchsia-200 dark:border-fuchsia-700/50"
+              ? "bg-[var(--surface-sunken)] text-[var(--text-muted)] border-[var(--border-subtle)]"
+              : "bg-[var(--surface-sunken)] text-[var(--text-secondary)] border-[var(--border-subtle)]"
           }`}>
             {loopState.exited ? (
               <>
@@ -489,11 +460,11 @@ function ParallelNode({ data, selected }: NodePropsShape) {
       icon={<Target className="h-3.5 w-3.5" />}
       accentClass={meta.accent}
       badgeClass={meta.badgeClass}
-      badge={data.parallelMode === "map" ? "MAP" : "FAN-OUT"}
+      badge={data.parallelMode === "map" ? "MAP" : "Fan-out"}
       selected={selected}
       sourceCount={data.parallelMode === "map" ? 2 : 3}
     >
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">
+      <div className="text-xs text-[var(--text-muted)] truncate">
         {data.parallelMode === "map" ? `map ${data.mapField ?? "input.items"}` : "fan-out branches"}
       </div>
     </BaseShell>
@@ -512,7 +483,7 @@ function StartNode({ data, selected }: NodePropsShape) {
       selected={selected}
       showTarget={false}
     >
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">entry · user input</div>
+      <div className="text-xs text-[var(--text-muted)]">entry · user input</div>
     </BaseShell>
   );
 }
@@ -531,10 +502,10 @@ function SubgraphNode({ data, selected }: NodePropsShape) {
       badge={meta.tag}
       selected={selected}
     >
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 leading-tight">
+      <div className="text-xs text-[var(--text-muted)] leading-tight">
         {innerNodes > 0 ? `${innerNodes} inner nodes · ${innerEdges} edges` : "empty macro — open & build it"}
       </div>
-      <div className="text-[8px] text-slate-400 dark:text-slate-500 truncate">
+      <div className="text-xs text-[var(--text-muted)] truncate">
         in {Object.keys(data.inputMapping ?? {}).length} · out {Object.keys(data.outputMapping ?? {}).length}
       </div>
     </BaseShell>
@@ -553,7 +524,7 @@ function EndNode({ data, selected }: NodePropsShape) {
       selected={selected}
       showSource={false}
     >
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">terminal · final output</div>
+      <div className="text-xs text-[var(--text-muted)]">terminal · final output</div>
     </BaseShell>
   );
 }
@@ -571,8 +542,8 @@ function McpServerNode({ data, selected }: NodePropsShape) {
       badge={meta.tag}
       selected={selected}
     >
-      <div className="text-[9px] text-violet-700 dark:text-violet-300 font-semibold truncate">{data.mcpServerId ?? "no server"}</div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">{data.mcpTransport ?? "SSE"} · {data.mcpEndpoint ?? "—"}</div>
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">{data.mcpServerId ?? "no server"}</div>
+      <div className="text-xs text-[var(--text-muted)] truncate">{data.mcpTransport ?? "SSE"} · {data.mcpEndpoint ?? "—"}</div>
     </BaseShell>
   );
 }
@@ -588,8 +559,8 @@ function McpToolNode({ data, selected }: NodePropsShape) {
       badge={meta.tag}
       selected={selected}
     >
-      <div className="text-[9px] text-fuchsia-700 dark:text-fuchsia-300 font-semibold truncate">{data.mcpToolName ?? "no tool"}</div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">server: {data.mcpToolServer ?? "—"}</div>
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">{data.mcpToolName ?? "no tool"}</div>
+      <div className="text-xs text-[var(--text-muted)] truncate">server: {data.mcpToolServer ?? "—"}</div>
     </BaseShell>
   );
 }
@@ -605,8 +576,8 @@ function SkillNode({ data, selected }: NodePropsShape) {
       badge={meta.tag}
       selected={selected}
     >
-      <div className="text-[9px] text-sky-700 dark:text-sky-300 font-semibold truncate">{data.skillId || "select skill"}</div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">marketplace skill</div>
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">{data.skillId || "select skill"}</div>
+      <div className="text-xs text-[var(--text-muted)]">marketplace skill</div>
     </BaseShell>
   );
 }
@@ -622,7 +593,7 @@ function HttpNode({ data, selected }: NodePropsShape) {
       badge={data.httpMethod ?? "GET"}
       selected={selected}
     >
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate" title={data.httpUrl}>{data.httpUrl ?? "https://…"}</div>
+      <div className="text-xs text-[var(--text-muted)] truncate" title={data.httpUrl}>{data.httpUrl ?? "https://…"}</div>
     </BaseShell>
   );
 }
@@ -638,8 +609,8 @@ function TransformNode({ data, selected }: NodePropsShape) {
       badge={meta.tag}
       selected={selected}
     >
-      <div className="text-[9px] text-emerald-700 dark:text-emerald-300 font-semibold truncate">{data.transformOp ?? "map"}</div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">{data.transformExpr ?? "—"}</div>
+      <div className="text-xs text-[var(--state-success)] font-medium truncate">{data.transformOp ?? "map"}</div>
+      <div className="text-xs text-[var(--text-muted)] truncate">{data.transformExpr ?? "—"}</div>
     </BaseShell>
   );
 }
@@ -655,10 +626,10 @@ function CodeSandboxNode({ data, selected }: NodePropsShape) {
       badge={data.codeLanguage?.toUpperCase() ?? "PYTHON"}
       selected={selected}
     >
-      <div className="text-[9px] text-yellow-700 dark:text-yellow-300 font-semibold truncate font-mono">
+      <div className="text-xs text-[var(--state-warning)] font-medium truncate font-mono">
         {data.codeLanguage === "javascript" ? "js/v8 sandbox" : "python microvm"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 font-mono truncate">
+      <div className="text-xs text-[var(--text-muted)] font-mono truncate">
         {data.codeSnippet ? data.codeSnippet.slice(0, 30) + "..." : "return output"}
       </div>
     </BaseShell>
@@ -676,10 +647,10 @@ function ConsensusNode({ data, selected }: NodePropsShape) {
       badge={meta.tag}
       selected={selected}
     >
-      <div className="text-[9px] text-purple-700 dark:text-purple-300 font-semibold truncate">
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">
         {data.consensusStrategy === "judge_synthesis" ? "Judge Synthesis" : "Majority Vote"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">
+      <div className="text-xs text-[var(--text-muted)] truncate">
         {data.consensusModels?.length ?? 3} candidate models
       </div>
     </BaseShell>
@@ -697,10 +668,10 @@ function CriticNode({ data, selected }: NodePropsShape) {
       badge={meta.tag}
       selected={selected}
     >
-      <div className="text-[9px] text-rose-700 dark:text-rose-300 font-semibold truncate">
+      <div className="text-xs text-[var(--state-error)] font-medium truncate">
         Pass ≥ {data.criticPassScore ?? 80}/100
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">
+      <div className="text-xs text-[var(--text-muted)] truncate">
         Max {data.criticMaxTurns ?? 2} refinement turns
       </div>
     </BaseShell>
@@ -718,7 +689,7 @@ function DelayNode({ data, selected }: NodePropsShape) {
       badge={`${(data.delayMs ?? 1000) >= 1000 ? `${(data.delayMs ?? 1000) / 1000}s` : `${data.delayMs ?? 1000}ms`}`}
       selected={selected}
     >
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">pause execution</div>
+      <div className="text-xs text-[var(--text-muted)]">pause execution</div>
     </BaseShell>
   );
 }
@@ -735,8 +706,8 @@ function AggregateNode({ data, selected }: NodePropsShape) {
       selected={selected}
       sourceCount={2}
     >
-      <div className="text-[9px] text-amber-700 dark:text-amber-300 font-semibold truncate">{data.aggregateMode ?? "concat"}</div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">combine branch results</div>
+      <div className="text-xs text-[var(--state-warning)] font-medium truncate">{data.aggregateMode ?? "concat"}</div>
+      <div className="text-xs text-[var(--text-muted)]">combine branch results</div>
     </BaseShell>
   );
 }
@@ -752,8 +723,8 @@ function VariableNode({ data, selected }: NodePropsShape) {
       badge={data.varOp === "set" ? "SET" : "GET"}
       selected={selected}
     >
-      <div className="text-[9px] text-indigo-700 dark:text-indigo-300 font-semibold truncate">{data.varName ?? "var"}</div>
-      {data.varOp === "set" && <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">{JSON.stringify(data.varValue).slice(0, 40)}</div>}
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">{data.varName ?? "var"}</div>
+      {data.varOp === "set" && <div className="text-xs text-[var(--text-muted)] truncate">{JSON.stringify(data.varValue).slice(0, 40)}</div>}
     </BaseShell>
   );
 }
@@ -770,7 +741,7 @@ function OutputNode({ data, selected }: NodePropsShape) {
       selected={selected}
       showSource={false}
     >
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">{data.outputTemplate ?? "{{ results }}"}</div>
+      <div className="text-xs text-[var(--text-muted)] truncate">{data.outputTemplate ?? "{{ results }}"}</div>
     </BaseShell>
   );
 }
@@ -787,10 +758,10 @@ function ScheduleTriggerNode({ data, selected }: NodePropsShape) {
       selected={selected}
       showTarget={false}
     >
-      <div className="text-[9px] text-blue-600 dark:text-blue-400 font-bold truncate">
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">
         {data.cronExpression ?? "0 9 * * *"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">
+      <div className="text-xs text-[var(--text-muted)] truncate">
         {data.scheduleInterval ?? "Recurrent execution"}
       </div>
     </BaseShell>
@@ -809,10 +780,10 @@ function WebhookTriggerNode({ data, selected }: NodePropsShape) {
       selected={selected}
       showTarget={false}
     >
-      <div className="text-[9px] text-purple-600 dark:text-purple-400 font-bold truncate">
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">
         {data.webhookPath ?? "/api/webhooks/incoming"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">
+      <div className="text-xs text-[var(--text-muted)]">
         Inbound event listener
       </div>
     </BaseShell>
@@ -830,10 +801,10 @@ function RssFeedNode({ data, selected }: NodePropsShape) {
       badge={`${data.rssMaxItems ?? 10} ITEMS`}
       selected={selected}
     >
-      <div className="text-[9px] text-orange-600 dark:text-orange-400 font-semibold truncate">
+      <div className="text-xs text-[var(--state-warning)] font-medium truncate">
         {data.rssUrl ?? "RSS / Atom Stream"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">
+      <div className="text-xs text-[var(--text-muted)]">
         Autonomous feed ingestion
       </div>
     </BaseShell>
@@ -851,10 +822,10 @@ function WebReaderNode({ data, selected }: NodePropsShape) {
       badge="MARKDOWN"
       selected={selected}
     >
-      <div className="text-[9px] text-emerald-600 dark:text-emerald-400 font-semibold truncate">
+      <div className="text-xs text-[var(--state-success)] font-medium truncate">
         {data.readerUrl ?? "https://r.jina.ai/..."}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">
+      <div className="text-xs text-[var(--text-muted)]">
         Jina Reader AI parser
       </div>
     </BaseShell>
@@ -873,10 +844,10 @@ function NotificationDispatcherNode({ data, selected }: NodePropsShape) {
       badge={dest}
       selected={selected}
     >
-      <div className="text-[9px] text-sky-600 dark:text-sky-400 font-semibold truncate">
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">
         {data.dispatchWebhookUrl ? "Webhook Configured" : "Outgoing Dispatcher"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">
+      <div className="text-xs text-[var(--text-muted)] truncate">
         {data.dispatchMessage?.slice(0, 32) || "Alert delivery"}
       </div>
     </BaseShell>
@@ -895,10 +866,10 @@ function DataMapperNode({ data, selected }: NodePropsShape) {
       badge={`${keyCount} FIELDS`}
       selected={selected}
     >
-      <div className="text-[9px] text-pink-600 dark:text-pink-400 font-semibold truncate">
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">
         {keyCount > 0 ? Object.keys(data.mapperSchema ?? {}).slice(0, 3).join(", ") : "JSON Transform"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">
+      <div className="text-xs text-[var(--text-muted)]">
         Schema mapper
       </div>
     </BaseShell>
@@ -915,13 +886,13 @@ function SearxngNode({ data, selected }: NodePropsShape) {
       icon={<Search className="h-3.5 w-3.5" />}
       accentClass={meta.accent}
       badgeClass={meta.badgeClass}
-      badge="OPEN SEARCH"
+      badge="Open search"
       selected={selected}
     >
-      <div className="text-[9px] text-sky-600 dark:text-sky-400 font-semibold truncate">
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">
         {data.searxngQuery || "Web Query"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">
+      <div className="text-xs text-[var(--text-muted)] truncate">
         {data.searxngHost || "https://searx.be"}
       </div>
     </BaseShell>
@@ -936,13 +907,13 @@ function Crawl4AiNode({ data, selected }: NodePropsShape) {
       icon={<FileSpreadsheet className="h-3.5 w-3.5" />}
       accentClass={meta.accent}
       badgeClass={meta.badgeClass}
-      badge="AI CRAWLER"
+      badge="AI crawler"
       selected={selected}
     >
-      <div className="text-[9px] text-emerald-600 dark:text-emerald-400 font-semibold truncate">
+      <div className="text-xs text-[var(--state-success)] font-medium truncate">
         {data.crawl4aiUrl || "Target URL"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">
+      <div className="text-xs text-[var(--text-muted)]">
         Markdown Extractor
       </div>
     </BaseShell>
@@ -957,13 +928,13 @@ function DoclingNode({ data, selected }: NodePropsShape) {
       icon={<FileCheck className="h-3.5 w-3.5" />}
       accentClass={meta.accent}
       badgeClass={meta.badgeClass}
-      badge="DOCLING · IBM"
+      badge="Docling · ibm"
       selected={selected}
     >
-      <div className="text-[9px] text-cyan-600 dark:text-cyan-400 font-semibold truncate">
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">
         {data.doclingDocumentUrl ? data.doclingDocumentUrl.split("/").pop() : "Document / PDF"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">
+      <div className="text-xs text-[var(--text-muted)]">
         Table & Text Parser
       </div>
     </BaseShell>
@@ -978,13 +949,13 @@ function GotenbergNode({ data, selected }: NodePropsShape) {
       icon={<FileOutput className="h-3.5 w-3.5" />}
       accentClass={meta.accent}
       badgeClass={meta.badgeClass}
-      badge="PDF EXPORTER"
+      badge="PDF exporter"
       selected={selected}
     >
-      <div className="text-[9px] text-rose-600 dark:text-rose-400 font-semibold truncate">
+      <div className="text-xs text-[var(--state-error)] font-medium truncate">
         {data.gotenbergPaperSize || "A4"} · {data.gotenbergLandscape ? "Landscape" : "Portrait"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">
+      <div className="text-xs text-[var(--text-muted)]">
         Gotenberg PDF Engine
       </div>
     </BaseShell>
@@ -1002,10 +973,10 @@ function NocodbNode({ data, selected }: NodePropsShape) {
       badge={(data.nocodbOperation || "CREATE").toUpperCase()}
       selected={selected}
     >
-      <div className="text-[9px] text-amber-600 dark:text-amber-400 font-semibold truncate">
+      <div className="text-xs text-[var(--state-warning)] font-medium truncate">
         {data.nocodbTableId || "Table ID"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">
+      <div className="text-xs text-[var(--text-muted)] truncate">
         {data.nocodbHost || "NocoDB API"}
       </div>
     </BaseShell>
@@ -1023,10 +994,10 @@ function PocketbaseNode({ data, selected }: NodePropsShape) {
       badge={(data.pocketbaseAction || "STORE").toUpperCase()}
       selected={selected}
     >
-      <div className="text-[9px] text-indigo-600 dark:text-indigo-400 font-semibold truncate">
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">
         {data.pocketbaseCollection || "Collection"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">
+      <div className="text-xs text-[var(--text-muted)]">
         State & KV Persistence
       </div>
     </BaseShell>
@@ -1041,13 +1012,13 @@ function QdrantNode({ data, selected }: NodePropsShape) {
       icon={<BrainCircuit className="h-3.5 w-3.5" />}
       accentClass={meta.accent}
       badgeClass={meta.badgeClass}
-      badge="VECTOR RAG"
+      badge="Vector RAG"
       selected={selected}
     >
-      <div className="text-[9px] text-purple-600 dark:text-purple-400 font-semibold truncate">
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">
         {data.qdrantCollection || "Collection"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">
+      <div className="text-xs text-[var(--text-muted)]">
         Top {data.qdrantTopK ?? 3} Recall
       </div>
     </BaseShell>
@@ -1065,10 +1036,10 @@ function AudioTranscriberNode({ data, selected }: NodePropsShape) {
       badge="WHISPER"
       selected={selected}
     >
-      <div className="text-[9px] text-violet-600 dark:text-violet-400 font-semibold truncate">
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">
         {data.audioSourceUrl ? "Audio Stream" : "Audio Input"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">
+      <div className="text-xs text-[var(--text-muted)]">
         Lang: {data.audioLanguage || "Auto"}
       </div>
     </BaseShell>
@@ -1083,13 +1054,13 @@ function PiperTtsNode({ data, selected }: NodePropsShape) {
       icon={<Volume2 className="h-3.5 w-3.5" />}
       accentClass={meta.accent}
       badgeClass={meta.badgeClass}
-      badge="PIPER TTS"
+      badge="Piper TTS"
       selected={selected}
     >
-      <div className="text-[9px] text-teal-600 dark:text-teal-400 font-semibold truncate">
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">
         {data.piperVoice || "Default Voice"}
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400">
+      <div className="text-xs text-[var(--text-muted)]">
         Local Speech Synthesis
       </div>
     </BaseShell>
@@ -1099,11 +1070,11 @@ function PiperTtsNode({ data, selected }: NodePropsShape) {
 // ─── Sticky Note (Markdown Documentation) ───
 
 const NOTE_COLORS: Record<string, string> = {
-  yellow: "bg-amber-500/10 border-amber-400/50 text-amber-900 dark:text-amber-200",
-  pink: "bg-pink-500/10 border-pink-400/50 text-pink-900 dark:text-pink-200",
-  blue: "bg-blue-500/10 border-blue-400/50 text-blue-900 dark:text-blue-200",
-  green: "bg-emerald-500/10 border-emerald-400/50 text-emerald-900 dark:text-emerald-200",
-  purple: "bg-purple-500/10 border-purple-400/50 text-purple-900 dark:text-purple-200",
+  yellow: "bg-[var(--state-warning)]/10 border-[var(--state-warning)]/40 text-[var(--state-warning)]",
+  pink: "bg-[var(--cta-primary-bg)]/10 border-[var(--accent-primary)]/40 text-[var(--accent-primary)]",
+  blue: "bg-[var(--cta-primary-bg)]/10 border-[var(--accent-primary)]/40 text-[var(--accent-primary)]",
+  green: "bg-[var(--state-success)]/10 border-[var(--state-success)]/40 text-[var(--state-success)]",
+  purple: "bg-[var(--cta-primary-bg)]/10 border-[var(--accent-primary)]/40 text-[var(--accent-primary)]",
 };
 
 function StickyNoteNode({ data, selected }: NodePropsShape) {
@@ -1115,18 +1086,18 @@ function StickyNoteNode({ data, selected }: NodePropsShape) {
   return (
     <div
       className={clsx(
-        "relative w-fit min-w-[260px] max-w-[320px] rounded-xl border backdrop-blur-md font-mono shadow-md p-3.5 min-h-[100px] transition-all",
+        "relative w-fit min-w-[260px] max-w-[320px] rounded-xl border font-mono p-3.5 min-h-[100px] transition-colors",
         NOTE_COLORS[color] || NOTE_COLORS.yellow,
-        selected && "ring-2 ring-indigo-500/80 dark:ring-indigo-400/80"
+        selected && "ring-2 ring-[var(--accent-primary)]"
       )}
     >
-      <div className="flex items-center gap-1.5 mb-2 border-b border-black/5 dark:border-white/10 pb-1.5">
+      <div className="flex items-center gap-1.5 mb-2 border-b border-[var(--border-subtle)]/5 pb-1.5">
         <StickyNote className="h-3.5 w-3.5 opacity-80" />
-        <span className="text-[10px] font-bold uppercase tracking-wider truncate">
-          {data.label || "NOTE"}
+        <span className="text-xs font-medium truncate">
+          {data.label || "Note"}
         </span>
       </div>
-      <div className={clsx("text-[10px] opacity-90 whitespace-pre-wrap break-words leading-relaxed", !expanded && "line-clamp-6")}>
+      <div className={clsx("text-xs opacity-90 whitespace-pre-wrap break-words leading-relaxed", !expanded && "line-clamp-6")}>
         {content}
       </div>
       {isLong && (
@@ -1136,7 +1107,7 @@ function StickyNoteNode({ data, selected }: NodePropsShape) {
             e.stopPropagation();
             setExpanded((x) => !x);
           }}
-          className="nodrag mt-1.5 text-[9px] font-bold uppercase tracking-wider opacity-70 hover:opacity-100 hover:underline cursor-pointer"
+          className="nodrag mt-1.5 text-xs font-medium opacity-70 hover:opacity-100 hover:underline cursor-pointer"
         >
           {expanded ? "Show less" : "Show more"}
         </button>
@@ -1151,16 +1122,16 @@ function FrameNode({ data, selected }: NodePropsShape) {
   return (
     <div
       className={clsx(
-        "relative w-full h-full rounded-lg border-2 border-dashed border-indigo-400/50 dark:border-indigo-500/40",
-        "bg-indigo-50/8 dark:bg-indigo-950/15",
-        selected && "ring-2 ring-indigo-500/70 dark:ring-indigo-400/70"
+        "relative w-full h-full rounded-lg border-2 border-dashed border-[var(--border-subtle)]",
+        "bg-[var(--surface-sunken)]",
+        selected && "ring-2 ring-[var(--accent-primary)]"
       )}
       style={{ minHeight: 200, minWidth: 300 }}
     >
-      <div className="absolute -top-3 left-3 px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/60 rounded border border-indigo-300 dark:border-indigo-500/40">
+      <div className="absolute -top-3 left-3 px-2 py-0.5 bg-[var(--surface-sunken)] rounded border border-[var(--border-subtle)]">
         <div className="flex items-center gap-1.5">
-          <Frame className="h-3 w-3 text-indigo-600 dark:text-indigo-400" />
-          <span className="text-[9px] font-bold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider">
+          <Frame className="h-3 w-3 text-[var(--text-secondary)]" />
+          <span className="text-xs font-medium text-[var(--text-secondary)]">
             {(data.frameTitle as string) ?? "Phase"}
           </span>
         </div>
@@ -1186,23 +1157,23 @@ function A2ADelegateNode({ data, selected }: NodePropsShape) {
   return (
     <BaseShell
       data={data}
-      icon={<Network className="h-3.5 w-3.5 text-purple-500" />}
+      icon={<Network className="h-3.5 w-3.5 text-[var(--text-secondary)]" />}
       accentClass={meta.accent}
       badgeClass={meta.badgeClass}
       badge={meta.tag}
       selected={selected}
     >
-      <div className="flex items-center gap-1 text-[9px] text-purple-700 dark:text-purple-300 font-semibold truncate" title={data.a2aAgentUrl}>
-        <Globe className="h-2.5 w-2.5 text-purple-500 shrink-0" />
+      <div className="flex items-center gap-1 text-xs text-[var(--text-secondary)] font-medium truncate" title={data.a2aAgentUrl}>
+        <Globe className="h-2.5 w-2.5 text-[var(--text-secondary)] shrink-0" />
         <span className="truncate">{urlDisplay}</span>
       </div>
-      <div className="text-[8px] text-slate-500 dark:text-slate-400 truncate">
-        cap · <span className="font-semibold text-purple-600 dark:text-purple-400">{data.a2aCapability ?? "default_task"}</span>
+      <div className="text-xs text-[var(--text-muted)] truncate">
+        cap · <span className="font-medium text-[var(--text-secondary)]">{data.a2aCapability ?? "default_task"}</span>
       </div>
 
       {delegation && (
-        <div className="mt-1 flex items-center justify-between text-[7px] text-slate-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">
-          <span className="font-bold text-purple-400">{delegation.status}</span>
+        <div className="mt-1 flex items-center justify-between text-xs text-[var(--text-muted)] bg-[var(--surface-sunken)] px-1.5 py-0.5 rounded border border-[var(--border-subtle)]">
+          <span className="font-medium text-[var(--text-secondary)]">{delegation.status}</span>
           {delegation.durationMs !== undefined && <span>{delegation.durationMs}ms</span>}
         </div>
       )}
@@ -1217,31 +1188,31 @@ function A2AChannelNode({ data, selected }: NodePropsShape) {
   return (
     <BaseShell
       data={data}
-      icon={<MessagesSquare className="h-3.5 w-3.5 text-cyan-500" />}
+      icon={<MessagesSquare className="h-3.5 w-3.5 text-[var(--text-secondary)]" />}
       accentClass={meta.accent}
       badgeClass={meta.badgeClass}
       badge={meta.tag}
       selected={selected}
       sourceCount={2}
     >
-      <div className="text-[9px] text-cyan-700 dark:text-cyan-300 font-semibold truncate">
-        Swarm Mode: <span className="uppercase text-cyan-500">{data.a2aChannelMode ?? "debate"}</span>
+      <div className="text-xs text-[var(--text-secondary)] font-medium truncate">
+        Swarm Mode: <span className="text-[var(--text-secondary)]">{data.a2aChannelMode ?? "debate"}</span>
       </div>
-      <div className="flex items-center gap-1 text-[8px] text-slate-500 dark:text-slate-400 truncate" title={data.a2aChannelTopic}>
-        <Target className="h-2.5 w-2.5 text-cyan-500 shrink-0" />
+      <div className="flex items-center gap-1 text-xs text-[var(--text-muted)] truncate" title={data.a2aChannelTopic}>
+        <Target className="h-2.5 w-2.5 text-[var(--text-secondary)] shrink-0" />
         <span className="truncate">{data.a2aChannelTopic ?? "Consensus Discussion"}</span>
       </div>
 
       {messages.length > 0 && (
         <div className="mt-1 space-y-1">
-          <div className="text-[7px] font-bold text-cyan-400 uppercase tracking-wider">
+          <div className="text-xs font-medium text-[var(--text-secondary)]">
             Exchanges ({messages.length} turns):
           </div>
-          <div className="max-h-16 overflow-y-auto text-[7px] text-slate-300 space-y-0.5 bg-cyan-950/20 p-1 rounded border border-cyan-500/20">
+          <div className="max-h-16 overflow-y-auto text-xs text-[var(--text-muted)] space-y-0.5 bg-[var(--surface-sunken)] p-1 rounded border border-[var(--border-subtle)]">
             {messages.slice(-3).map((m, idx) => (
               // Messages only append, so the absolute index is a stable key for the sliding window.
               <div key={Math.max(0, messages.length - 3) + idx} className="truncate">
-                <span className="font-semibold text-cyan-400">{m.sender}:</span> {m.content}
+                <span className="font-medium text-[var(--text-secondary)]">{m.sender}:</span> {m.content}
               </div>
             ))}
           </div>
